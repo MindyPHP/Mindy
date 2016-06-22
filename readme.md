@@ -10,9 +10,14 @@ composer require mindy/query_builder
 
 ```php
 require('vendor/autoload.php'); // Composer autoloader
+
+use Mindy\QueryBuilder\QueryFactory;
+use Mindy\QueryBuilder\Mysql\Adapter;
+use Mindy\QueryBuilder\LegacyLookupBuilder;
+
 $pdo = new PDO(...);
 // PDO является не обязательным, используется для экранирования
-$factory = new QueryFactory(new \Mindy\QueryFactory\Mysql\Adapter($pdo), new \Mindy\Query\LegacyLookupBuilder);
+$factory = new QueryFactory(new Adapter($pdo), new LegacyLookupBuilder);
 
 $qb = $factory->getQueryBuilder();
 $sql = $qb->setTypeSelect()->setFrom('test')->setSelect('*')->toSQL();
