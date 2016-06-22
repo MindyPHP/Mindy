@@ -11,6 +11,12 @@ namespace Mindy\QueryBuilder;
 interface ILookupCollection
 {
     /**
+     * @param array $collection
+     * @return mixed
+     */
+    public function addCollection(array $collection);
+
+    /**
      * @param $lookup
      * @return bool
      */

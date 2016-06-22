@@ -12,38 +12,21 @@ use Exception;
 
 class LookupBuilder implements ILookupBuilder
 {
-    protected $where;
-
+    /**
+     * @var array
+     */
+    protected $where = [];
+    /**
+     * @var string
+     */
     protected $defaultLookup = 'exact';
-
-    private $lookups = [
-        'isnull',
-        'lte',
-        'lt',
-        'gte',
-        'gt',
-        'exact',
-        'contains',
-        'icontains',
-        'startswith',
-        'istartswith',
-        'endswith',
-        'iendswith',
-        'in',
-        'range',
-        'year',
-        'month',
-        'day',
-        'week_day',
-        'hour',
-        'minute',
-        'second',
-        'search',
-        'regex',
-        'iregex',
-        'raw',
-    ];
-
+    /**
+     * @var ILookupCollection
+     */
+    protected $collection;
+    /**
+     * @var string
+     */
     private $separator = '__';
 
     public function setWhere(array $where)
@@ -57,8 +40,11 @@ class LookupBuilder implements ILookupBuilder
         if (substr_count($column, $this->separator) > 1) {
             throw new Exception('LookupBuilder not support nested column names');
         }
-        
+
         $lookup = key($data);
+        if ($this->collection->has($lookup) === false) {
+            throw new Exception('Unknown lookup: ' . $lookup);
+        }
         $value = array_shift($data);
         return [$lookup, $column, $value];
     }
@@ -73,5 +59,11 @@ class LookupBuilder implements ILookupBuilder
             $conditions[] = $this->parseLookup($lookup, $value);
         }
         return $conditions;
+    }
+
+    public function setCollection(ILookupCollection $collection)
+    {
+        $this->collection = $collection;
+        return $this;
     }
 }

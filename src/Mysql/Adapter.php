@@ -40,7 +40,7 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     public function getLookupCollection()
     {
-        return new LookupCollection($this);
+        return new LookupCollection($this->lookups);
     }
 
     public function getRandomOrder()

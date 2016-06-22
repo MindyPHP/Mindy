@@ -232,12 +232,13 @@ class QueryBuilder
      */
     public function generateWhereSQL()
     {
+        $adapter = $this->getAdapter();
         $conditions = $this
             ->getLookupBuilder()
+            ->setCollection($adapter->getLookupCollection())
             ->setWhere($this->where)
             ->generateCondition();
         $whereSQL = [];
-        $adapter = $this->getAdapter();
         foreach ($conditions as $item) {
             list($lookup, $column, $value) = $item;
             $whereSQL[] = $adapter->runLookup($lookup, $column, $value);
@@ -496,7 +497,6 @@ class QueryBuilder
      */
     public function toSQL()
     {
-        $adapter = $this->getAdapter();
         switch ($this->getType()) {
             case self::TYPE_RAW:
                 return $this->generateRawSql();

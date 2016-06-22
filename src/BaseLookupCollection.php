@@ -11,6 +11,26 @@ namespace Mindy\QueryBuilder;
 abstract class BaseLookupCollection implements ILookupCollection
 {
     /**
+     * @var array
+     */
+    protected $lookups = [];
+
+    public function __construct(array $lookups = [])
+    {
+        $this->lookups = $lookups;
+    }
+
+    /**
+     * @param array $collection
+     * @return $this
+     */
+    public function addCollection(array $collection)
+    {
+        $this->lookups = array_merge($this->lookups, $collection);
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getLookups()
@@ -99,7 +119,7 @@ abstract class BaseLookupCollection implements ILookupCollection
      */
     public function has($lookup)
     {
-        return array_key_exists($lookup, $this->getLookups());
+        return array_key_exists($lookup, array_merge($this->getLookups(), $this->lookups));
     }
 
     /**
@@ -110,7 +130,9 @@ abstract class BaseLookupCollection implements ILookupCollection
      */
     public function run($adapter, $lookup, $column, $value)
     {
-        $lookups = $this->getLookups();
-        return $lookups[$lookup]->__invoke($adapter, $column, $value);
+        $lookups = array_merge($this->getLookups(), $this->lookups);
+        /** @var \Closure $closure */
+        $closure = $lookups[$lookup];
+        return $closure->__invoke($adapter, $column, $value);
     }
 }

@@ -20,10 +20,15 @@ abstract class BaseAdapter
      * @var null|\PDO
      */
     protected $driver = null;
+    /**
+     * @var array of lookups Closure
+     */
+    protected $lookups = [];
 
-    public function __construct($driver = null)
+    public function __construct($driver = null, array $lookups = [])
     {
         $this->driver = $driver;
+        $this->lookups = $lookups;
     }
 
     /**
@@ -162,14 +167,18 @@ abstract class BaseAdapter
             }, $sql);
     }
 
+    /**
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     * @exception \Exception
+     */
     public function runLookup($lookup, $column, $value)
     {
         $collectionLookup = $this->getLookupCollection();
-        if ($collectionLookup->has($lookup)) {
-            return $collectionLookup->run($this, $lookup, $column, $value);
-        }
-
-        throw new Exception('Unknown lookup: ' . $lookup);
+        $collectionLookup->addCollection($this->lookups);
+        return $collectionLookup->run($this, $lookup, $column, $value);
     }
 
     /**

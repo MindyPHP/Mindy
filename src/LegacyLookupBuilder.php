@@ -12,38 +12,21 @@ use Exception;
 
 class LegacyLookupBuilder implements ILookupBuilder
 {
-    protected $where;
-
+    /**
+     * @var array
+     */
+    protected $where = [];
+    /**
+     * @var string
+     */
     protected $defaultLookup = 'exact';
-
-    private $lookups = [
-        'isnull',
-        'lte',
-        'lt',
-        'gte',
-        'gt',
-        'exact',
-        'contains',
-        'icontains',
-        'startswith',
-        'istartswith',
-        'endswith',
-        'iendswith',
-        'in',
-        'range',
-        'year',
-        'month',
-        'day',
-        'week_day',
-        'hour',
-        'minute',
-        'second',
-        'search',
-        'regex',
-        'iregex',
-        'raw',
-    ];
-
+    /**
+     * @var ILookupCollection
+     */
+    protected $collection;
+    /**
+     * @var string
+     */
     private $separator = '__';
 
     public function setWhere(array $where)
@@ -56,7 +39,7 @@ class LegacyLookupBuilder implements ILookupBuilder
     {
         if (substr_count($rawLookup, $this->separator) > 0) {
             list($column, $lookup) = explode($this->separator, $rawLookup);
-            if (in_array($lookup, $this->lookups) == false) {
+            if ($this->collection->has($lookup) == false) {
                 throw new Exception('Unknown lookup:' . $lookup);
             }
             return [$lookup, $column, $value];
@@ -72,5 +55,11 @@ class LegacyLookupBuilder implements ILookupBuilder
             $conditions[] = $this->parseLookup($lookup, $value);
         }
         return $conditions;
+    }
+
+    public function setCollection(ILookupCollection $collection)
+    {
+        $this->collection = $collection;
+        return $this;
     }
 }

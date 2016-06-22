@@ -63,7 +63,7 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     public function getLookupCollection()
     {
-        return new LookupCollection;
+        return new LookupCollection($this->lookups);
     }
 
     /**
