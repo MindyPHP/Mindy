@@ -51,6 +51,12 @@ abstract class BaseLookupCollection implements ILookupCollection
             'istartswith' => function (IAdapter $adapter, $column, $value) {
                 return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8')) . '%';
             },
+            'endswith' => function (IAdapter $adapter, $column, $value) {
+                return $adapter->quoteColumn($column) . ' LIKE %' . $adapter->quoteValue($value);
+            },
+            'iendswith' => function (IAdapter $adapter, $column, $value) {
+                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE %' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8'));
+            },
             'in' => function (IAdapter $adapter, $column, $value) {
                 return $adapter->quoteColumn($column) . ' IN (' . implode(',', $value) . ')';
             },
