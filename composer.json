@@ -1,0 +1,25 @@
+{
+  "name": "mindy/query_builder",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Falaleev Maxim",
+      "email": "max@studio107.ru"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mindy\\QueryBuilder\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mindy\\QueryBuilder\\Test\\": "test/"
+    }
+  }
+}
