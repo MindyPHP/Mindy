@@ -25,9 +25,25 @@ $pdo = new PDO(...);
 $factory = new QueryFactory(new Adapter($pdo), new LegacyLookupBuilder);
 
 $qb = $factory->getQueryBuilder();
-$sql = $qb->setTypeSelect()->setFrom('test')->setSelect('*')->toSQL();
-echo $sql;
+$qb->setTypeSelect()->setFrom('test')->setSelect('*');
+echo $qb->toSQL();
 // Output: SELECT * FROM `test`
+```
+
+## Добавление lookup'ов
+
+```php
+$lookups = [
+	'foo' => function (IAdapter $adapter, $column, $value) {
+		return $adapter->quoteColumn($column) . ' ??? ' . $adapter->quoteValue($value);
+	}
+];
+$factory = new QueryFactory(new Adapter($pdo, $lookups), new LegacyLookupBuilder);
+$qb = $factory->getQueryBuilder()->setTypeSelect()->setSelect('*')->setFrom('test')->setWhere([
+	'name__foo' => 1
+]);
+echo $qb->toSQL();
+// Output: SELECT * FROM `test` WHERE `name` ??? 1
 ```
 
 ## Lookup
