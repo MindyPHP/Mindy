@@ -39,7 +39,7 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
         $insertSQL = $qb
             ->setType(QueryBuilder::TYPE_INSERT)
-            ->setInsert(['name' => 'foo'])
+            ->setInsert([['name' => 'foo']])
             ->setFrom('test')
             ->toSQL();
         $pdo->query($insertSQL)->execute();

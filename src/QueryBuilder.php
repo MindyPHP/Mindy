@@ -410,12 +410,12 @@ class QueryBuilder
     }
 
     /**
-     * @param array $values columns [name => value...]
+     * @param array $values rows with columns [name => value...]
      * @return $this
      */
-    public function setInsert(array $values)
+    public function setInsert(array $rows)
     {
-        $this->insert = $values;
+        $this->insert = $rows;
         return $this;
     }
 
@@ -425,14 +425,21 @@ class QueryBuilder
      */
     public function generateInsertValuesSQL()
     {
-        $columns = [];
-        $values = [];
+        $row = [];
         $adapter = $this->getAdapter();
-        foreach ($this->insert as $column => $value) {
-            $columns[] = $adapter->quoteColumn($column);
-            $values[] = $adapter->quoteValue($value);
+        $columns = [];
+        foreach ($this->insert as $entry) {
+            if (empty($columns)) {
+                $columns = array_map(function($column) use ($adapter) {
+                    return $adapter->quoteColumn($column);
+                }, array_keys($entry));
+            }
+            $values = array_map(function($value) use ($adapter) {
+                return $adapter->quoteValue($value);
+            }, array_values($entry));
+            $row[] = '(' . implode(',', $values) . ')';
         }
-        return ' (' . implode(',', $columns) . ') VALUES (' . implode(',', $values) . ')';
+        return ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $row);
     }
 
     /**

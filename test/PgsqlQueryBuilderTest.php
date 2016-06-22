@@ -76,7 +76,9 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
     public function testInsert()
     {
         $qb = $this->getQueryBuilder();
-        $qb->setTypeInsert()->setAlias('t')->setInsert(['name' => 'qwe'])->setFrom('test');
+        $qb->setTypeInsert()->setAlias('t')->setInsert([
+            ['name' => 'qwe']
+        ])->setFrom('test');
         $this->assertEquals($qb->toSQL(), 'INSERT INTO "test" ("name") VALUES (\'qwe\')');
     }
 
