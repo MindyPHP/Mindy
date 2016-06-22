@@ -17,7 +17,7 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
 {
     protected function createPDOInstance()
     {
-        return new PDO('mysql:host=localhost;dbname=mindy_query_builder;charset=utf8', 'root', '', [
+        return new PDO('mysql:host=127.0.0.1;dbname=test;charset=utf8', 'root', '', [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
@@ -28,6 +28,16 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $pdo = $this->createPDOInstance();
 
         $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
+        $sqlDump = <<<SQL
+CREATE TABLE `test` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL;
+
+        $pdo->query($sqlDump)->execute();
+
         $deleteSQL = $qb->setType(QueryBuilder::TYPE_DELETE)->setFrom('test')->toSQL();
         $pdo->query($deleteSQL)->execute();
 

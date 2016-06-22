@@ -6,3 +6,6 @@ php:
   - hhvm
 
 install: composer install
+
+services:
+  - mysql
