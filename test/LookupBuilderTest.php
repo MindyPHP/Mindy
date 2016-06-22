@@ -33,6 +33,8 @@ class LookupBuilderTest extends \PHPUnit_Framework_TestCase
             [['id' => ['icontains' => 'FOO']], 'LOWER(id) LIKE %foo%'],
             [['id' => ['startswith' => 'FOO']], 'id LIKE FOO%'],
             [['id' => ['istartswith' => 'FOO']], 'LOWER(id) LIKE foo%'],
+            [['id' => ['endswith' => 'FOO']], 'id LIKE %FOO'],
+            [['id' => ['iendswith' => 'FOO']], 'LOWER(id) LIKE %foo'],
             [['id' => ['in' => [1, 2]]], 'id IN (1,2)'],
             [['id' => ['raw' => "REGEXP '^[abc]'"]], "id REGEXP '^[abc]'"],
             [['id' => ['regex' => '^[abc]']], "BINARY id REGEXP ^[abc]"],

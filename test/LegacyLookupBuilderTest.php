@@ -33,6 +33,8 @@ class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
             [['id__icontains' => 'FOO'], 'LOWER(id) LIKE %foo%'],
             [['id__startswith' => 'FOO'], 'id LIKE FOO%'],
             [['id__istartswith' => 'FOO'], 'LOWER(id) LIKE foo%'],
+            [['id__endswith' => 'FOO'], 'id LIKE %FOO'],
+            [['id__iendswith' => 'FOO'], 'LOWER(id) LIKE %foo'],
             [['id__in' => [1, 2]], 'id IN (1,2)'],
             [['id__raw' => "REGEXP '^[abc]'"], "id REGEXP '^[abc]'"],
             [['id__regex' => '^[abc]'], "BINARY id REGEXP ^[abc]"],
