@@ -28,16 +28,6 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $pdo = $this->createPDOInstance();
 
         $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
-        $sqlDump = <<<SQL
-CREATE TABLE `test` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL;
-
-        $pdo->query($sqlDump)->execute();
-
         $deleteSQL = $qb->setType(QueryBuilder::TYPE_DELETE)->setFrom('test')->toSQL();
         $pdo->query($deleteSQL)->execute();
 

@@ -7,5 +7,9 @@ php:
 
 install: composer install
 
+before_script:
+  - mysql -u root -e 'CREATE DATABASE test;'
+  - mysql -u root test < test/dump.sql
+
 services:
   - mysql
