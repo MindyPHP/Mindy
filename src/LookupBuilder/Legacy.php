@@ -20,7 +20,7 @@ class Legacy extends Base
             } else {
                 $this->callback->setLookupBuilder($this);
                 $this->callback->setQueryBuilder($this->qb);
-                return $this->callback->fetch($rawLookup, $value, $this->separator);
+                return $this->callback->fetch(explode($this->separator, $rawLookup), $value);
             }
         } else if (substr_count($rawLookup, $this->separator) == 1) {
             list($column, $lookup) = explode($this->separator, $rawLookup);

@@ -3,6 +3,7 @@
 namespace Mindy\QueryBuilder\Tests;
 
 use Adapter;
+use Exception;
 use Mindy\QueryBuilder\Callback;
 use Mindy\QueryBuilder\Interfaces\ICallback;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
@@ -12,7 +13,7 @@ class Model
 {
     public function getFields()
     {
-        
+
     }
 }
 
@@ -26,13 +27,12 @@ class FetchCallback extends Callback implements ICallback
         return $this;
     }
 
-    public function fetch($lookup, $value, $separator)
+    public function fetch(array $lookupNodes, $value)
     {
         /** @var \Mindy\QueryBuilder\QueryBuilder $qb */
         $qb = $this->qb;
-        $nodes = explode($separator, $lookup);
         $lookup = $this->lookupBuilder->getDefault();
-        foreach ($nodes as $nodeName) {
+        foreach ($lookupNodes as $nodeName) {
             switch ($nodeName) {
                 case 'products':
                     $qb->setJoin('LEFT JOIN', $nodeName, ['product_id' => 'id'], 'product');
@@ -53,7 +53,11 @@ class FetchCallback extends Callback implements ICallback
             }
         }
 
-        return [$lookup, $column, $value];
+        if (isset($column)) {
+            return [$lookup, $column, $value];
+        } else {
+            throw new Exception('Unknown column');
+        }
     }
 }
 

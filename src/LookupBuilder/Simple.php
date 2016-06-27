@@ -20,7 +20,7 @@ class Simple extends Base
         if (substr_count($column, $this->separator) > 1) {
             $this->callback->setLookupBuilder($this);
             $this->callback->setQueryBuilder($this->qb);
-            return $this->callback->fetch($column, $value, $this->separator);
+            return $this->callback->fetch(explode($this->separator, $column), $value);
         } else {
             if ($this->hasLookup($lookup) === false) {
                 if (empty($this->callback)) {

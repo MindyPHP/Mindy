@@ -25,9 +25,9 @@ interface ICallback
     public function setLookupBuilder(ILookupBuilder $lookupBuilder);
 
     /**
-     * @param $lookup
+     * @param $lookupNodes
      * @param $value
      * @return mixed
      */
-    public function fetch($lookup, $value, $separator);
+    public function fetch(array $lookupNodes, $value);
 }
