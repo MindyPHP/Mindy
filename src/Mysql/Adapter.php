@@ -9,7 +9,7 @@
 namespace Mindy\QueryBuilder\Mysql;
 
 use Mindy\QueryBuilder\BaseAdapter;
-use Mindy\QueryBuilder\IAdapter;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class Adapter extends BaseAdapter implements IAdapter
 {

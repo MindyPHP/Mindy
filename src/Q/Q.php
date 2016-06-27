@@ -6,7 +6,10 @@
  * Time: 11:59
  */
 
-namespace Mindy\QueryBuilder;
+namespace Mindy\QueryBuilder\Q;
+
+use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 
 class Q
 {
@@ -71,7 +74,7 @@ class Q
                 $sql[] = '(' . $where->toSQL() . ')';
 
             } else if (is_numeric($i)) {
-                $conditions = $this->lookupBuilder->setWhere($where)->generateCondition();
+                $conditions = $this->lookupBuilder->parse($where);
                 $tmpSql = [];
                 foreach ($conditions as $condition) {
                     list($lookup, $column, $value) = $condition;
@@ -80,7 +83,7 @@ class Q
                 $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
 
             } else if (!is_numeric($i)) {
-                $conditions = $this->lookupBuilder->setWhere([$i => $where])->generateCondition();
+                $conditions = $this->lookupBuilder->parse([$i => $where]);
                 $tmpSql = [];
                 foreach ($conditions as $condition) {
                     list($lookup, $column, $value) = $condition;

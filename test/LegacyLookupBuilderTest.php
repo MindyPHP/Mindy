@@ -10,7 +10,9 @@ namespace Mindy\QueryBuilder\Tests;
 
 use Adapter;
 use Mindy\QueryBuilder\LegacyLookupBuilder;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilder;
+use Mindy\QueryBuilder\Sqlite\LookupCollection;
 
 class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,7 +55,8 @@ class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLookups($where, $whereSql)
     {
-        $qb = new QueryBuilder(new Adapter, new LegacyLookupBuilder);
+        $collection = new LookupCollection();
+        $qb = new QueryBuilder(new Adapter, new Legacy($collection->getLookups()));
         $qb->setSelect('*')->setFrom('tests')->setWhere($where);
         $this->assertEquals($qb->toSQL(), 'SELECT * FROM tests WHERE ' . $whereSql);
     }

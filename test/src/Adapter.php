@@ -7,7 +7,7 @@
  */
 
 use Mindy\QueryBuilder\BaseAdapter;
-use Mindy\QueryBuilder\IAdapter;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 /**
  * Dummy adapter is a mysql adapter without quoting
@@ -32,7 +32,7 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
-     * @return array
+     * @return LookupCollection
      */
     public function getLookupCollection()
     {

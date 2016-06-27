@@ -9,8 +9,7 @@
 namespace Mindy\QueryBuilder\Sqlite;
 
 use Mindy\QueryBuilder\BaseAdapter;
-use Mindy\QueryBuilder\IAdapter;
-use Mindy\QueryBuilder\ILookupCollection;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class Adapter extends BaseAdapter implements IAdapter
 {

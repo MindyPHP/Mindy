@@ -8,8 +8,8 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\IAdapter;
-use Mindy\QueryBuilder\LegacyLookupBuilder;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\Mysql\Adapter;
 use Mindy\QueryBuilder\QueryBuilder;
 
@@ -22,7 +22,7 @@ class CustomLookupTest extends \PHPUnit_Framework_TestCase
                 return $adapter->quoteColumn($column) . ' ??? ' . $adapter->quoteValue($value);
             }
         ];
-        $qb = new QueryBuilder(new Adapter(null, $lookups), new LegacyLookupBuilder());
+        $qb = new QueryBuilder(new Adapter(null, $lookups), new Legacy($lookups));
         $qb->setTypeSelect()->setSelect('*')->setFrom('test')->setWhere([
             'name__foo' => 1
         ]);

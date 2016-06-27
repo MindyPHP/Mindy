@@ -8,6 +8,8 @@
 
 namespace Mindy\QueryBuilder;
 
+use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+
 class QueryBuilderFactory
 {
     /**

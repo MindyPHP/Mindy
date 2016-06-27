@@ -9,13 +9,12 @@
 namespace Mindy\QueryBuilder\Pgsql;
 
 use Mindy\QueryBuilder\BaseAdapter;
-use Mindy\QueryBuilder\IAdapter;
-use Mindy\QueryBuilder\ILookupCollection;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class Adapter extends BaseAdapter implements IAdapter
 {
     /**
-     * @return ILookupCollection
+     * @return LookupCollection
      */
     public function getLookupCollection()
     {

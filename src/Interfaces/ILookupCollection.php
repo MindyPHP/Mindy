@@ -6,16 +6,10 @@
  * Time: 15:20
  */
 
-namespace Mindy\QueryBuilder;
+namespace Mindy\QueryBuilder\Interfaces;
 
 interface ILookupCollection
 {
-    /**
-     * @param array $collection
-     * @return mixed
-     */
-    public function addCollection(array $collection);
-
     /**
      * @param $lookup
      * @return bool

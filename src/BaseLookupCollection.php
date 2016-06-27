@@ -8,6 +8,9 @@
 
 namespace Mindy\QueryBuilder;
 
+use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Mindy\QueryBuilder\Interfaces\ILookupCollection;
+
 abstract class BaseLookupCollection implements ILookupCollection
 {
     /**

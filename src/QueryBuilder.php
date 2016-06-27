@@ -9,6 +9,9 @@
 namespace Mindy\QueryBuilder;
 
 use Exception;
+use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+use Mindy\QueryBuilder\Q\Q;
+use Mindy\QueryBuilder\Q\QAnd;
 
 class QueryBuilder
 {
@@ -53,6 +56,8 @@ class QueryBuilder
     public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
     {
         $this->adapter = $adapter;
+        
+        $lookupBuilder->setQueryBuilder($this);
         $this->lookupBuilder = $lookupBuilder;
     }
 
@@ -213,7 +218,7 @@ class QueryBuilder
      * Generate SELECT SQL
      * @return string
      */
-    public function generateSelectSQL()
+    protected function generateSelectSQL()
     {
         $rawSelect = (array)$this->select;
 
@@ -257,7 +262,7 @@ class QueryBuilder
      * Genertate FROM SQL
      * @return string
      */
-    public function generateFromSQL()
+    protected function generateFromSQL()
     {
         $alias = $this->getAlias();
         $adapter = $this->getAdapter();
@@ -287,7 +292,7 @@ class QueryBuilder
      * @return string
      * @throws Exception
      */
-    public function generateWhereSQL()
+    protected function generateWhereSQL()
     {
         if (empty($this->where) && empty($this->exclude)) {
             return '';
@@ -295,7 +300,6 @@ class QueryBuilder
 
         $adapter = $this->getAdapter();
         $lookupBuilder = $this->getLookupBuilder();
-        $lookupBuilder->setCollection($adapter->getLookupCollection());
         if (empty($this->where)) {
             $whereSql = '';
         } else {
@@ -372,7 +376,7 @@ class QueryBuilder
      * @return string join sql
      * @throws Exception
      */
-    public function generateJoinSQL()
+    protected function generateJoinSQL()
     {
         if (empty($this->join)) {
             return '';
@@ -412,7 +416,7 @@ class QueryBuilder
      * Generate GROUP SQL
      * @return string
      */
-    public function generateGroupSQL()
+    protected function generateGroupSQL()
     {
         if (empty($this->group)) {
             return '';
@@ -442,7 +446,7 @@ class QueryBuilder
      * Generate ORDER SQL
      * @return string
      */
-    public function generateOrderSQL()
+    protected function generateOrderSQL()
     {
         if (empty($this->order)) {
             return '';
@@ -487,7 +491,7 @@ class QueryBuilder
      * Generate INSERT SQL
      * @return string
      */
-    public function generateInsertSQL()
+    protected function generateInsertSQL()
     {
         return 'INSERT INTO ' . $this->getAdapter()->quoteTableName($this->from);
     }
@@ -506,7 +510,7 @@ class QueryBuilder
      * Generate INSERT VALUES SQL
      * @return string
      */
-    public function generateInsertValuesSQL()
+    protected function generateInsertValuesSQL()
     {
         $row = [];
         $adapter = $this->getAdapter();
@@ -529,7 +533,7 @@ class QueryBuilder
      * Generate DELETE SQL
      * @return string
      */
-    public function generateDeleteSQL()
+    protected function generateDeleteSQL()
     {
         return 'DELETE';
     }
@@ -548,7 +552,7 @@ class QueryBuilder
      * Generate UPDATE SQL
      * @return string
      */
-    public function generateUpdateSQL()
+    protected function generateUpdateSQL()
     {
         $updateSQL = [];
         $adapter = $this->getAdapter();
@@ -568,7 +572,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function generateRawSql()
+    protected function generateRawSql()
     {
         return $this->getAdapter()->quoteSql($this->tablePrefix, $this->raw);
     }

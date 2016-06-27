@@ -9,7 +9,7 @@
 namespace Mindy\QueryBuilder\Mysql;
 
 use Mindy\QueryBuilder\BaseLookupCollection;
-use Mindy\QueryBuilder\IAdapter;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class LookupCollection extends BaseLookupCollection
 {

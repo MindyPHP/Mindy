@@ -8,8 +8,9 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\LegacyLookupBuilder;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\Mysql\Adapter;
+use Mindy\QueryBuilder\Mysql\LookupCollection;
 use Mindy\QueryBuilder\QueryBuilder;
 use PDO;
 
@@ -27,16 +28,18 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $pdo = $this->createPDOInstance();
 
-        $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
+        $collection = new LookupCollection();
+        $lookupBuilder = new Legacy($collection->getLookups());
+        $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
         $deleteSQL = $qb->setType(QueryBuilder::TYPE_DELETE)->setFrom('test')->toSQL();
         $pdo->query($deleteSQL)->execute();
 
-        $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
+        $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
         $qb->setSelect('COUNT(*)')->setFrom('test');
         $this->assertEquals($qb->toSQL(), 'SELECT COUNT(*) FROM `test`');
         $this->assertEquals(0, $pdo->query($qb->toSQL())->fetchColumn());
 
-        $qb = new QueryBuilder(new Adapter($pdo), new LegacyLookupBuilder);
+        $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
         $insertSQL = $qb
             ->setType(QueryBuilder::TYPE_INSERT)
             ->setInsert([['name' => 'foo']])

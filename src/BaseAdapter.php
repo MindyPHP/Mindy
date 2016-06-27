@@ -9,6 +9,7 @@
 namespace Mindy\QueryBuilder;
 
 use Exception;
+use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 
 abstract class BaseAdapter
 {
@@ -32,7 +33,7 @@ abstract class BaseAdapter
     }
 
     /**
-     * @return ILookupCollection
+     * @return BaseLookupCollection|ILookupCollection
      */
     abstract public function getLookupCollection();
 
@@ -176,9 +177,7 @@ abstract class BaseAdapter
      */
     public function runLookup($lookup, $column, $value)
     {
-        $collectionLookup = $this->getLookupCollection();
-        $collectionLookup->addCollection($this->lookups);
-        return $collectionLookup->run($this, $lookup, $column, $value);
+        return $this->getLookupCollection()->run($this, $lookup, $column, $value);
     }
 
     /**

@@ -10,7 +10,9 @@ namespace Mindy\QueryBuilder\Tests;
 
 use Adapter;
 use Mindy\QueryBuilder\LookupBuilder;
+use Mindy\QueryBuilder\LookupBuilder\Simple;
 use Mindy\QueryBuilder\QueryBuilder;
+use Mindy\QueryBuilder\Sqlite\LookupCollection;
 
 class LookupBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -53,7 +55,8 @@ class LookupBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLookups($where, $whereSql)
     {
-        $qb = new QueryBuilder(new Adapter, new LookupBuilder);
+        $collection = new LookupCollection();
+        $qb = new QueryBuilder(new Adapter, new Simple($collection->getLookups()));
         $qb->setSelect('*')->setFrom('tests')->setWhere($where);
         $this->assertEquals($qb->toSQL(), 'SELECT * FROM tests WHERE ' . $whereSql);
     }

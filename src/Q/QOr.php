@@ -6,7 +6,7 @@
  * Time: 11:59
  */
 
-namespace Mindy\QueryBuilder;
+namespace Mindy\QueryBuilder\Q;
 
 class QOr extends Q
 {
