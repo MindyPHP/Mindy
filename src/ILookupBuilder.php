@@ -14,11 +14,15 @@ namespace Mindy\QueryBuilder;
  */
 interface ILookupBuilder
 {
+    /**
+     * @param ILookupCollection $collection
+     * @return $this
+     */
     public function setCollection(ILookupCollection $collection);
 
     /**
-     * @param array $where
+     * @param array|Q $where
      * @return LegacyLookupBuilder|LookupBuilder
      */
-    public function setWhere(array $where);
+    public function setWhere($where);
 }

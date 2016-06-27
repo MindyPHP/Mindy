@@ -29,7 +29,7 @@ class LegacyLookupBuilder implements ILookupBuilder
      */
     private $separator = '__';
 
-    public function setWhere(array $where)
+    public function setWhere($where)
     {
         $this->where = $where;
         return $this;
@@ -52,6 +52,10 @@ class LegacyLookupBuilder implements ILookupBuilder
     {
         $conditions = [];
         foreach ($this->where as $lookup => $value) {
+            if (is_numeric($lookup)) {
+                $lookup = key($value);
+                $value = array_shift($value);
+            }
             $conditions[] = $this->parseLookup($lookup, $value);
         }
         return $conditions;

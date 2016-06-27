@@ -22,12 +22,19 @@ class QueryBuilder
     protected $insert = [];
     protected $type = null;
     protected $alias = '';
-    protected $select = [];
+    protected $select = ['*'];
     protected $from = '';
     protected $raw = '';
     protected $order = [];
     protected $group = [];
-    protected $where = [];
+    /**
+     * @var array|Q
+     */
+    protected $where;
+    /**
+     * @var array|Q
+     */
+    protected $exclude;
     protected $join = [];
     protected $tablePrefix = '';
     /**
@@ -137,9 +144,59 @@ class QueryBuilder
      * @param array $where lookups
      * @return $this
      */
-    public function setWhere(array $where)
+    public function setWhere($where)
     {
+        if (($where instanceof Q) == false) {
+            $where = new QAnd($where);
+        }
         $this->where = $where;
+        return $this;
+    }
+
+    /**
+     * @param $where
+     * @return $this
+     */
+    public function addWhere($where)
+    {
+        if (empty($this->where)) {
+            $this->setWhere($where);
+        } else {
+            if (($where instanceof Q) == false) {
+                $where = new QAnd($where);
+            }
+            $this->where->addWhere($where);
+        }
+        return $this;
+    }
+
+    /**
+     * @param array $exclude lookups
+     * @return $this
+     */
+    public function setExclude($exclude)
+    {
+        if (($exclude instanceof Q) == false) {
+            $exclude = new QAnd($exclude);
+        }
+        $this->exclude = $exclude;
+        return $this;
+    }
+
+    /**
+     * @param $exclude
+     * @return $this
+     */
+    public function addExclude($exclude)
+    {
+        if (empty($this->exclude)) {
+            $this->setExclude($exclude);
+        } else {
+            if (($exclude instanceof Q) == false) {
+                $exclude = new QAnd($exclude);
+            }
+            $this->exclude->addWhere($exclude);
+        }
         return $this;
     }
 
@@ -205,10 +262,10 @@ class QueryBuilder
         $alias = $this->getAlias();
         $adapter = $this->getAdapter();
         if (strpos($this->from, 'SELECT') !== false) {
-            return ' FROM (' . $this->from . ')' . (empty($this->alias) ? '' : ' AS '. $adapter->quoteTableName($alias));
+            return ' FROM (' . $this->from . ')' . (empty($this->alias) ? '' : ' AS ' . $adapter->quoteTableName($alias));
         } else {
             $tableName = $adapter->getRawTableName($this->tablePrefix, $this->from);
-            return ' FROM ' . $adapter->quoteTableName($tableName) . (empty($this->alias) ? '' : ' AS '. $adapter->quoteTableName($alias));
+            return ' FROM ' . $adapter->quoteTableName($tableName) . (empty($this->alias) ? '' : ' AS ' . $adapter->quoteTableName($alias));
         }
     }
 
@@ -232,19 +289,44 @@ class QueryBuilder
      */
     public function generateWhereSQL()
     {
-        $adapter = $this->getAdapter();
-        $conditions = $this
-            ->getLookupBuilder()
-            ->setCollection($adapter->getLookupCollection())
-            ->setWhere($this->where)
-            ->generateCondition();
-        $whereSQL = [];
-        foreach ($conditions as $item) {
-            list($lookup, $column, $value) = $item;
-            $whereSQL[] = $adapter->runLookup($lookup, $column, $value);
+        if (empty($this->where) && empty($this->exclude)) {
+            return '';
         }
 
-        return empty($conditions) ? '' : ' WHERE ' . implode(', ', $whereSQL);
+        $adapter = $this->getAdapter();
+        $lookupBuilder = $this->getLookupBuilder();
+        $lookupBuilder->setCollection($adapter->getLookupCollection());
+        if (empty($this->where)) {
+            $whereSql = '';
+        } else {
+            $where = $this->where;
+            $where->setLookupBuilder($lookupBuilder);
+            $where->setAdapter($adapter);
+            $whereSql = $where->toSQL();
+        }
+
+        if (empty($this->exclude)) {
+            $excludeSql = '';
+        } else {
+            $exclude = $this->exclude;
+            $exclude->setLookupBuilder($lookupBuilder);
+            $exclude->setAdapter($adapter);
+            $excludeSql = $exclude->toSQL();
+        }
+
+        if (empty($whereSql) && empty($excludeSql)) {
+            return '';
+        } else {
+            $sql = ' WHERE ';
+            if (!empty($whereSql)) {
+                $sql .= $whereSql;
+            }
+
+            if (!empty($excludeSql)) {
+                $sql .= ' AND NOT (' . $excludeSql . ')';
+            }
+            return $sql;
+        }
     }
 
     /**
@@ -431,11 +513,11 @@ class QueryBuilder
         $columns = [];
         foreach ($this->insert as $entry) {
             if (empty($columns)) {
-                $columns = array_map(function($column) use ($adapter) {
+                $columns = array_map(function ($column) use ($adapter) {
                     return $adapter->quoteColumn($column);
                 }, array_keys($entry));
             }
-            $values = array_map(function($value) use ($adapter) {
+            $values = array_map(function ($value) use ($adapter) {
                 return $adapter->quoteValue($value);
             }, array_values($entry));
             $row[] = '(' . implode(',', $values) . ')';

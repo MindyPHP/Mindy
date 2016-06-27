@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
+use Mindy\QueryBuilder\Q;
 use Mindy\QueryBuilder\Sqlite\Adapter;
 
 class SqliteQueryBuilderTest extends DummyQueryBuilderTest
@@ -123,5 +124,33 @@ class SqliteQueryBuilderTest extends DummyQueryBuilderTest
             ->setJoin('INNER JOIN', $qbSub->toSQL(), ['u.id' => 'c.user_id'], 'u');
 
         $this->assertEquals($qb->toSQL(), 'SELECT `c`.* FROM `comment` AS `c` INNER JOIN (SELECT `id` FROM `user`) AS `u` ON `u`.`id`=`c`.`user_id`');
+    }
+
+    public function testWhereOr()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->setTypeSelect()->setFrom('test')
+            ->setWhere([
+                'id' => 1,
+                new Q([
+                    ['username' => 'foo'],
+                    ['username' => 'bar']
+                ], 'OR')
+            ]);
+        $this->assertEquals($qb->toSQL(), "SELECT * FROM `test` WHERE `id`=1 AND (`username`='foo' OR `username`='bar')");
+
+        $qb = $this->getQueryBuilder();
+        $qb->setTypeSelect()->setFrom('test')
+            ->setWhere([
+                'is_published' => true
+            ])
+            ->setExclude([
+                'id' => 2,
+                new Q([
+                    ['username' => 'foo'],
+                    ['username' => 'bar']
+                ], 'OR')
+            ]);
+        $this->assertEquals($qb->toSQL(), "SELECT * FROM `test` WHERE `is_published`=1 AND NOT (`id`=2 AND (`username`='foo' OR `username`='bar'))");
     }
 }

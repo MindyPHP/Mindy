@@ -29,7 +29,7 @@ class LookupBuilder implements ILookupBuilder
      */
     private $separator = '__';
 
-    public function setWhere(array $where)
+    public function setWhere($where)
     {
         $this->where = $where;
         return $this;
@@ -52,11 +52,11 @@ class LookupBuilder implements ILookupBuilder
     public function generateCondition()
     {
         $conditions = [];
-        foreach ($this->where as $lookup => $value) {
-            if (is_array($value) == false) {
-                $value = [$this->defaultLookup => $value];
+        foreach ($this->where as $column => $data) {
+            if (is_array($data) == false) {
+                $data = [$this->defaultLookup => $data];
             }
-            $conditions[] = $this->parseLookup($lookup, $value);
+            $conditions[] = $this->parseLookup($column, $data);
         }
         return $conditions;
     }
