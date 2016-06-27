@@ -8,11 +8,18 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Sqlite\Adapter;
+use Mindy\QueryBuilder\Mysql\Adapter;
 use PDO;
 
-class QuoteTest extends \PHPUnit_Framework_TestCase
+class MysqlQuoteTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!extension_loaded('pdo') || !extension_loaded('pdo_mysql')) {
+            $this->markTestSkipped('pdo and pdo_mysql extension are required.');
+        }
+    }
+
     protected function getAdapter()
     {
         $pdo = new PDO('mysql:root@localhost');
@@ -24,11 +31,6 @@ class QuoteTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->getAdapter();
         $this->assertEquals(123, $adapter->quoteValue(123));
         $this->assertEquals("'string'", $adapter->quoteValue('string'));
-        // Sqlite3
-        // A string constant is formed by enclosing the string in single quotes (').
-        // A single quote within the string can be encoded by putting two single
-        // quotes in a row - as in Pascal. C-style escapes using the backslash
-        // character are not supported because they are not standard SQL.
         $this->assertEquals("'It\\'s interesting'", $adapter->quoteValue("It's interesting"));
     }
 
