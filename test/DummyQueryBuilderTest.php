@@ -192,6 +192,12 @@ class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
                         ], 'OR'));
                 },
                 'SELECT * FROM ' . $table('test') . ' WHERE ' . $column('is_published') . '=' . $value(1) . ' AND NOT (' . $column('id') . '=2 AND (' . $column('username') . '=' . $value('foo') . ' OR ' . $column('username') . '=' . $value('bar') . '))'
+            ],
+            [
+                function (QueryBuilder $qb) {
+                    return $qb->setFrom('test')->setOrder('id')->setLimit(10)->setOffset(10);
+                },
+                'SELECT * FROM ' . $table('test') . ' ORDER BY ' . $column('id') . ' ASC LIMIT 10 OFFSET 10'
             ]
         ];
     }

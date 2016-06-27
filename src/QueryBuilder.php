@@ -28,6 +28,8 @@ class QueryBuilder
     protected $select = ['*'];
     protected $from = '';
     protected $raw = '';
+    protected $limit = '';
+    protected $offset = '';
     protected $order = [];
     protected $group = [];
     /**
@@ -214,6 +216,71 @@ class QueryBuilder
         return array_key_exists($alias, $this->join);
     }
 
+    public function setLimit($limit)
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    protected function generateLimitSQL()
+    {
+        if (empty($this->limit)) {
+            return '';
+        }
+
+        if ($this->hasLimit($this->limit)) {
+            return ' LIMIT ' . $this->limit;
+        }
+
+        return '';
+    }
+
+    /**
+     * Checks to see if the given offset is effective.
+     * @param mixed $offset the given offset
+     * @return boolean whether the offset is effective
+     */
+    protected function hasOffset($offset)
+    {
+        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * @param $offset
+     * @return $this
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateOffsetSQL()
+    {
+        if (empty($this->offset)) {
+            return '';
+        }
+
+        if ($this->hasOffset($this->offset)) {
+            return ' OFFSET ' . $this->offset;
+        }
+
+        return '';
+    }
+
+    /**
+     * Checks to see if the given limit is effective.
+     * @param mixed $limit the given limit
+     * @return boolean whether the limit is effective
+     */
+    protected function hasLimit($limit)
+    {
+        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+    }
+
     /**
      * Generate SELECT SQL
      * @return string
@@ -238,6 +305,11 @@ class QueryBuilder
             } else if (empty($subQuery) && strpos($column, '.') !== false) {
                 $newSelect = [];
                 foreach (explode(',', $column) as $item) {
+                    /*
+                    if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $item, $matches)) {
+                        list(, $rawColumn, $rawAlias) = $matches;
+                    }
+                    */
                     if (strpos($item, 'AS') !== false) {
                         list($rawColumn, $rawAlias) = explode('AS', $item);
                     } else {
@@ -433,12 +505,12 @@ class QueryBuilder
     }
 
     /**
-     * @param array $columns columns
+     * @param array|string $columns columns
      * @return $this
      */
-    public function setOrder(array $columns)
+    public function setOrder($columns)
     {
-        $this->order = $columns;
+        $this->order = (array)$columns;
         return $this;
     }
 
@@ -610,13 +682,15 @@ class QueryBuilder
                 ]);
             case self::TYPE_SELECT:
             default:
-                return strtr('{select}{from}{where}{join}{group}{order}', [
+                return strtr('{select}{from}{where}{join}{group}{order}{limit}{offset}', [
                     '{select}' => $this->generateSelectSQL(),
                     '{from}' => $this->generateFromSQL(),
                     '{where}' => $this->generateWhereSQL(),
                     '{group}' => $this->generateGroupSQL(),
                     '{order}' => $this->generateOrderSQL(),
-                    '{join}' => $this->generateJoinSQL()
+                    '{join}' => $this->generateJoinSQL(),
+                    '{limit}' => $this->generateLimitSQL(),
+                    '{offset}' => $this->generateOffsetSQL()
                 ]);
         }
     }
