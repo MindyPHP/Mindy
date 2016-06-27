@@ -35,10 +35,22 @@ abstract class Base implements ILookupBuilder
      */
     protected $qb = null;
 
-    public function __construct(array $lookups, ICallback $callback = null)
+    public function __construct(array $lookups = [], ICallback $callback = null)
     {
         $this->lookups = $lookups;
         $this->callback = $callback;
+    }
+
+    public function setLookups(array $lookups)
+    {
+        $this->lookups = $lookups;
+        return $this;
+    }
+
+    public function setCallback(ICallback $callback)
+    {
+        $this->callback = $callback;
+        return $this;
     }
 
     public function setQueryBuilder(QueryBuilder $qb)

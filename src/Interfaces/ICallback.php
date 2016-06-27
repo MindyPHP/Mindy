@@ -8,8 +8,22 @@
 
 namespace Mindy\QueryBuilder\Interfaces;
 
+use Mindy\QueryBuilder\QueryBuilder;
+
 interface ICallback
 {
+    /**
+     * @param QueryBuilder $qb
+     * @return mixed
+     */
+    public function setQueryBuilder(QueryBuilder $qb);
+
+    /**
+     * @param ILookupBuilder $lookupBuilder
+     * @return mixed
+     */
+    public function setLookupBuilder(ILookupBuilder $lookupBuilder);
+
     /**
      * @param $lookup
      * @param $value

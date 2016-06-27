@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder;
 
+use Mindy\QueryBuilder\Interfaces\ICallback;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 
 class QueryBuilderFactory
@@ -20,11 +21,14 @@ class QueryBuilderFactory
      * @var ILookupBuilder
      */
     protected $lookupBuilder;
+
     /**
      * QueryBuilder constructor.
      * @param BaseAdapter $adapter
+     * @param ILookupBuilder $lookupBuilder
+     * @param ICallback $callback
      */
-    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
+    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder, ICallback $callback = null)
     {
         $this->adapter = $adapter;
         $this->lookupBuilder = $lookupBuilder;

@@ -14,16 +14,25 @@ class Simple extends Base
 {
     protected function parseLookup($column, array $data)
     {
-        if (substr_count($column, $this->separator) > 1) {
-            throw new Exception('LookupBuilder not support nested column names');
-        }
-
         $lookup = key($data);
-        if ($this->hasLookup($lookup) === false) {
-            throw new Exception('Unknown lookup: ' . $lookup);
-        }
         $value = array_shift($data);
-        return [$lookup, $column, $value];
+
+        if (substr_count($column, $this->separator) > 1) {
+            $this->callback->setLookupBuilder($this);
+            $this->callback->setQueryBuilder($this->qb);
+            return $this->callback->fetch($column, $value, $this->separator);
+        } else {
+            if ($this->hasLookup($lookup) === false) {
+                if (empty($this->callback)) {
+                    throw new Exception('Unknown lookup:' . $lookup);
+                } else {
+                    $this->callback->setLookupBuilder($this);
+                    $this->callback->setQueryBuilder($this->qb);
+                    return $this->callback->fetch($column, $value, $this->separator);
+                }
+            }
+            return [$lookup, $column, $value];
+        }
     }
 
     public function parse(array $where)

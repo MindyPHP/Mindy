@@ -7,7 +7,6 @@ use Mindy\QueryBuilder\Callback;
 use Mindy\QueryBuilder\Interfaces\ICallback;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilderFactory;
-use Mindy\QueryBuilder\Sqlite\LookupCollection;
 
 class Model
 {
@@ -71,17 +70,12 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
      */
     public $factory;
 
-    public function getAdapter()
-    {
-        return ;
-    }
-
     protected function setUp()
     {
         parent::setUp();
-        $collection = new LookupCollection();
         $adapter = new Adapter(null, []);
-        $this->factory = new QueryBuilderFactory($adapter, new Legacy($collection->getLookups(), new FetchCallback));
+        $lookupBuilder = new Legacy($adapter->getLookupCollection()->getLookups(), new FetchCallback());
+        $this->factory = new QueryBuilderFactory($adapter, $lookupBuilder);
     }
 
     protected function getQueryBuilder()

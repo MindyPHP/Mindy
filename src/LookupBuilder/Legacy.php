@@ -14,17 +14,18 @@ class Legacy extends Base
 {
     protected function parseLookup($rawLookup, $value)
     {
-        if (substr_count($rawLookup, $this->separator) > 0) {
+        if (substr_count($rawLookup, $this->separator) > 1) {
+            if (empty($this->callback)) {
+                throw new Exception('Unknown lookup: ' . $rawLookup);
+            } else {
+                $this->callback->setLookupBuilder($this);
+                $this->callback->setQueryBuilder($this->qb);
+                return $this->callback->fetch($rawLookup, $value, $this->separator);
+            }
+        } else if (substr_count($rawLookup, $this->separator) == 1) {
             list($column, $lookup) = explode($this->separator, $rawLookup);
-
             if ($this->hasLookup($lookup) == false) {
-                if (empty($this->callback)) {
-                    throw new Exception('Unknown lookup:' . $lookup);
-                } else {
-                    $this->callback->setLookupBuilder($this);
-                    $this->callback->setQueryBuilder($this->qb);
-                    return $this->callback->fetch($rawLookup, $value, $this->separator);
-                }
+                throw new Exception('Unknown lookup:' . $lookup);
             }
             return [$lookup, $column, $value];
         } else {
