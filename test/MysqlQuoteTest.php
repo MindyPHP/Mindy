@@ -22,7 +22,7 @@ class MysqlQuoteTest extends \PHPUnit_Framework_TestCase
 
     protected function getAdapter()
     {
-        $pdo = new PDO('mysql:root@localhost');
+        $pdo = new PDO('mysql:host=localhost;dbname=test', 'root', '');
         return new Adapter($pdo);
     }
 
