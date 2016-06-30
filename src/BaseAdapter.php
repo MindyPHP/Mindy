@@ -163,8 +163,9 @@ abstract class BaseAdapter
         return strpos($name, "'") !== false ? $name : "'" . $name . "'";
     }
 
-    public function quoteSql($tablePrefix, $sql)
+    public function quoteSql($sql)
     {
+        $tablePrefix = $this->tablePrefix;
         return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])/',
             function ($matches) use ($tablePrefix) {
                 if (isset($matches[3])) {
