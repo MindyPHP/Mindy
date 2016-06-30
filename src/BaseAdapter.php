@@ -176,6 +176,26 @@ abstract class BaseAdapter
     }
 
     /**
+     * Checks to see if the given limit is effective.
+     * @param mixed $limit the given limit
+     * @return boolean whether the limit is effective
+     */
+    protected function hasLimit($limit)
+    {
+        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+    }
+
+    /**
+     * Checks to see if the given offset is effective.
+     * @param mixed $offset the given offset
+     * @return boolean whether the offset is effective
+     */
+    protected function hasOffset($offset)
+    {
+        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
      * @param $lookup
      * @param $column
      * @param $value
@@ -203,4 +223,52 @@ abstract class BaseAdapter
      * @return string
      */
     abstract public function convertToBoolean($value);
+
+    /**
+     * @param integer $limit
+     * @param integer $offset
+     * @return string the LIMIT and OFFSET clauses
+     */
+    public function generateLimitOffsetSQL($limit, $offset)
+    {
+        $sql = '';
+        if ($this->hasLimit($limit)) {
+            $sql = 'LIMIT ' . $limit;
+        }
+        if ($this->hasOffset($offset)) {
+            $sql .= ' OFFSET ' . $offset;
+        }
+        return ltrim($sql);
+    }
+
+    /**
+     * Builds a SQL statement for adding a primary key constraint to an existing table.
+     * @param string $name the name of the primary key constraint.
+     * @param string $table the table that the primary key constraint will be added to.
+     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+     * @return string the SQL statement for adding a primary key constraint to an existing table.
+     */
+    public function addPrimaryKey($name, $table, $columns)
+    {
+        if (is_string($columns)) {
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        foreach ($columns as $i => $col) {
+            $columns[$i] = $this->quoteColumn($col);
+        }
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ADD CONSTRAINT '
+        . $this->quoteColumn($name) . '  PRIMARY KEY ('
+        . implode(', ', $columns) . ' )';
+    }
+
+    /**
+     * Builds a SQL statement for removing a primary key constraint to an existing table.
+     * @param string $name the name of the primary key constraint to be removed.
+     * @param string $table the table that the primary key constraint will be removed from.
+     * @return string the SQL statement for removing a primary key constraint from an existing table.
+     */
+    public function dropPrimaryKey($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP CONSTRAINT ' . $this->quoteColumn($name);
+    }
 }

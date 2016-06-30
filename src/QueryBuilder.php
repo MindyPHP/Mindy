@@ -222,29 +222,6 @@ class QueryBuilder
         return $this;
     }
 
-    protected function generateLimitSQL()
-    {
-        if (empty($this->limit)) {
-            return '';
-        }
-
-        if ($this->hasLimit($this->limit)) {
-            return ' LIMIT ' . $this->limit;
-        }
-
-        return '';
-    }
-
-    /**
-     * Checks to see if the given offset is effective.
-     * @param mixed $offset the given offset
-     * @return boolean whether the offset is effective
-     */
-    protected function hasOffset($offset)
-    {
-        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
-    }
-
     /**
      * @param $offset
      * @return $this
@@ -255,30 +232,14 @@ class QueryBuilder
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    protected function generateOffsetSQL()
+    protected function generateLimitOffsetSQL()
     {
-        if (empty($this->offset)) {
-            return '';
+        $sql = $this->getAdapter()->generateLimitOffsetSQL($this->limit, $this->offset);
+        if (!empty($sql)) {
+            return ' ' . $sql;
         }
-
-        if ($this->hasOffset($this->offset)) {
-            return ' OFFSET ' . $this->offset;
-        }
-
+        
         return '';
-    }
-
-    /**
-     * Checks to see if the given limit is effective.
-     * @param mixed $limit the given limit
-     * @return boolean whether the limit is effective
-     */
-    protected function hasLimit($limit)
-    {
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
     }
 
     /**
@@ -682,15 +643,14 @@ class QueryBuilder
                 ]);
             case self::TYPE_SELECT:
             default:
-                return strtr('{select}{from}{where}{join}{group}{order}{limit}{offset}', [
+                return strtr('{select}{from}{where}{join}{group}{order}{limit_offset}', [
                     '{select}' => $this->generateSelectSQL(),
                     '{from}' => $this->generateFromSQL(),
                     '{where}' => $this->generateWhereSQL(),
                     '{group}' => $this->generateGroupSQL(),
                     '{order}' => $this->generateOrderSQL(),
                     '{join}' => $this->generateJoinSQL(),
-                    '{limit}' => $this->generateLimitSQL(),
-                    '{offset}' => $this->generateOffsetSQL()
+                    '{limit_offset}' => $this->generateLimitOffsetSQL(),
                 ]);
         }
     }
