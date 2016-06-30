@@ -9,6 +9,7 @@
 namespace Mindy\QueryBuilder;
 
 use Exception;
+use Mindy\Query\Expression;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 
 abstract class BaseAdapter
@@ -209,23 +210,6 @@ abstract class BaseAdapter
     }
 
     /**
-     * @return string
-     */
-    abstract public function getRandomOrder();
-
-    /**
-     * @param null $value
-     * @return string
-     */
-    abstract public function convertToDateTime($value = null);
-
-    /**
-     * @param $value
-     * @return string
-     */
-    abstract public function convertToBoolean($value);
-
-    /**
      * @param integer $limit
      * @param integer $offset
      * @return string the LIMIT and OFFSET clauses
@@ -240,6 +224,40 @@ abstract class BaseAdapter
             $sql .= ' OFFSET ' . $offset;
         }
         return ltrim($sql);
+    }
+
+    /**
+     * @param $type
+     * @return string
+     */
+    public function getColumnType($type)
+    {
+        throw new Exception('Not implemented');
+    }
+
+    /**
+     * Processes columns and properly quote them if necessary.
+     * It will join all columns into a string with comma as separators.
+     * @param string|array $columns the columns to be processed
+     * @return string the processing result
+     */
+    public function buildColumns($columns)
+    {
+        if (!is_array($columns)) {
+            if (strpos($columns, '(') !== false) {
+                return $columns;
+            } else {
+                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            }
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $column->expression;
+            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->quoteColumn($column);
+            }
+        }
+        return is_array($columns) ? implode(', ', $columns) : $columns;
     }
 
     /**
@@ -271,5 +289,43 @@ abstract class BaseAdapter
     public function dropPrimaryKey($name, $table)
     {
         return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP CONSTRAINT ' . $this->quoteColumn($name);
+    }
+
+    public function generateAlterColumnSQL($table, $column, $type, $columnType)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' CHANGE '
+        . $this->quoteColumn($column) . ' '
+        . $this->quoteColumn($column) . ' '
+        . $columnType;
+    }
+
+    /**
+     * @return string
+     */
+    public function generateInsertSQL($tableName, $columns, $rows)
+    {
+        $sql = [];
+        $columns = array_map(function ($column) {
+            return $this->quoteColumn($column);
+        }, $columns);
+
+        foreach ($rows as $values) {
+            $record = [];
+            foreach ($values as $value) {
+                if (is_string($value)) {
+                    $value = $this->quoteValue($value);
+                } elseif ($value === true) {
+                    $value = 'TRUE';
+                } elseif ($value === false) {
+                    $value = 'FALSE';
+                } elseif ($value === null) {
+                    $value = 'NULL';
+                }
+
+                $record[] = $value;
+            }
+            $sql[] = '(' . implode(',', $record) . ')';
+        }
+        return 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $sql);
     }
 }

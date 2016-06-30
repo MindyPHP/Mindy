@@ -15,28 +15,6 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 class Adapter extends BaseAdapter implements IAdapter
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
-     */
-    public $typeMap = [
-        Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_STRING => 'varchar(255)',
-        Schema::TYPE_TEXT => 'text',
-        Schema::TYPE_SMALLINT => 'smallint(6)',
-        Schema::TYPE_INTEGER => 'int(11)',
-        Schema::TYPE_BIGINT => 'bigint(20)',
-        Schema::TYPE_FLOAT => 'float',
-        Schema::TYPE_DECIMAL => 'decimal(10,0)',
-        Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
-        Schema::TYPE_TIME => 'time',
-        Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'blob',
-        Schema::TYPE_BOOLEAN => 'tinyint(1)',
-        Schema::TYPE_MONEY => 'decimal(19,4)',
-    ];
-    
-    /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
      * @param string $name table name

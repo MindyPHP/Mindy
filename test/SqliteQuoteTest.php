@@ -24,6 +24,12 @@ class SqliteQuoteTest extends \PHPUnit_Framework_TestCase
     {
         return new Adapter(new PDO('sqlite::memory:'));
     }
+
+    public function testAutoQuoting()
+    {
+        $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
+        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $this->getAdapter()->quoteSql($sql));
+    }
     
     public function testQuoteValue()
     {

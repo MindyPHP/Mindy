@@ -14,28 +14,6 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 class Adapter extends BaseAdapter implements IAdapter
 {
     /**
-     * @var array mapping from abstract column types (keys) to physical column types (values).
-     */
-    public $typeMap = [
-        Schema::TYPE_PK => 'serial NOT NULL PRIMARY KEY',
-        Schema::TYPE_BIGPK => 'bigserial NOT NULL PRIMARY KEY',
-        Schema::TYPE_STRING => 'varchar(255)',
-        Schema::TYPE_TEXT => 'text',
-        Schema::TYPE_SMALLINT => 'smallint',
-        Schema::TYPE_INTEGER => 'integer',
-        Schema::TYPE_BIGINT => 'bigint',
-        Schema::TYPE_FLOAT => 'double precision',
-        Schema::TYPE_DECIMAL => 'numeric(10,0)',
-        Schema::TYPE_DATETIME => 'timestamp(0)',
-        Schema::TYPE_TIMESTAMP => 'timestamp(0)',
-        Schema::TYPE_TIME => 'time(0)',
-        Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'bytea',
-        Schema::TYPE_BOOLEAN => 'boolean',
-        Schema::TYPE_MONEY => 'numeric(19,4)',
-    ];
-
-    /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
      */
@@ -260,5 +238,52 @@ class Adapter extends BaseAdapter implements IAdapter
     public function quoteSimpleTableName($name)
     {
         return strpos($name, '"') !== false ? $name : '"' . $name . '"';
+    }
+
+    /**
+     * Builds a SQL statement for changing the definition of a column.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
+     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
+     * @return string the SQL statement for changing the definition of a column.
+     */
+    public function generateAlterColumnSQL($table, $column, $type, $columnType)
+    {
+        // https://github.com/yiisoft/yii2/issues/4492
+        // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
+        if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
+            $type = 'TYPE ' . $columnType;
+        }
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ALTER COLUMN ' . $this->quoteColumn($column) . ' ' . $type;
+    }
+
+    public function generateInsertSQL($tableName, $columns, $rows)
+    {
+        $row = [];
+        $columns = array_map(function ($column) {
+            return $this->quoteColumn($column);
+        }, $columns);
+
+        foreach ($rows as $values) {
+            $record = [];
+            foreach ($values as $value) {
+                if (is_string($value)) {
+                    $value = $this->quoteValue($value);
+                } elseif ($value === true) {
+                    $value = 'TRUE';
+                } elseif ($value === false) {
+                    $value = 'FALSE';
+                } elseif ($value === null) {
+                    $value = 'NULL';
+                }
+                
+                $record[] = $value;
+            }
+            $row[] = '(' . implode(',', $record) . ')';
+        }
+        return 'INSERT INTO (' . implode(',', $columns) . ') VALUES ' . implode(',', $row);
     }
 }

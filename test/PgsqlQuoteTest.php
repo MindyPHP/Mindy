@@ -11,7 +11,7 @@ namespace Mindy\QueryBuilder\Tests;
 use Mindy\QueryBuilder\Pgsql\Adapter;
 use PDO;
 
-class PgsqlQueryBuilder extends \PHPUnit_Framework_TestCase
+class PgsqlQuoteTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
@@ -23,6 +23,12 @@ class PgsqlQueryBuilder extends \PHPUnit_Framework_TestCase
     protected function getAdapter()
     {
         return new Adapter(new PDO('pgsql:root@localhost'));
+    }
+
+    public function testAutoQuoting()
+    {
+        $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
+        $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $this->getAdapter()->quoteSql($sql));
     }
 
     public function testQuoteValue()

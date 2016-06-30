@@ -19,7 +19,10 @@ class QueryBuilder
     const TYPE_INSERT = 'INSERT';
     const TYPE_UPDATE = 'UPDATE';
     const TYPE_DELETE = 'DELETE';
+    const TYPE_DROP_TABLE = 'DROP_TABLE';
     const TYPE_RAW = 'RAW';
+    const TYPE_CREATE_TABLE = 'CREATE_TABLE';
+    const TYPE_ALTER_COLUMN = 'ALTER_COLUMN';
 
     protected $update = [];
     protected $insert = [];
@@ -32,6 +35,15 @@ class QueryBuilder
     protected $offset = '';
     protected $order = [];
     protected $group = [];
+    protected $alterColumn = [];
+    /**
+     * @var array
+     */
+    protected $createTable = [];
+    /**
+     * @var string
+     */
+    protected $dropTable;
     /**
      * @var array|Q
      */
@@ -51,14 +63,17 @@ class QueryBuilder
      */
     protected $lookupBuilder;
 
+    protected $schema;
+
     /**
      * QueryBuilder constructor.
      * @param BaseAdapter $adapter
      */
-    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
+    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder, $schema = null)
     {
         $this->adapter = $adapter;
-        
+        $this->schema = $schema;
+
         $lookupBuilder->setQueryBuilder($this);
         $this->lookupBuilder = $lookupBuilder;
     }
@@ -238,7 +253,7 @@ class QueryBuilder
         if (!empty($sql)) {
             return ' ' . $sql;
         }
-        
+
         return '';
     }
 
@@ -521,45 +536,13 @@ class QueryBuilder
     }
 
     /**
-     * Generate INSERT SQL
-     * @return string
-     */
-    protected function generateInsertSQL()
-    {
-        return 'INSERT INTO ' . $this->getAdapter()->quoteTableName($this->from);
-    }
-
-    /**
      * @param array $values rows with columns [name => value...]
      * @return $this
      */
-    public function setInsert(array $rows)
+    public function setInsert($tableName, array $columns, array $rows)
     {
-        $this->insert = $rows;
+        $this->insert = [$tableName, $columns, $rows];
         return $this;
-    }
-
-    /**
-     * Generate INSERT VALUES SQL
-     * @return string
-     */
-    protected function generateInsertValuesSQL()
-    {
-        $row = [];
-        $adapter = $this->getAdapter();
-        $columns = [];
-        foreach ($this->insert as $entry) {
-            if (empty($columns)) {
-                $columns = array_map(function ($column) use ($adapter) {
-                    return $adapter->quoteColumn($column);
-                }, array_keys($entry));
-            }
-            $values = array_map(function ($value) use ($adapter) {
-                return $adapter->quoteValue($value);
-            }, array_values($entry));
-            $row[] = '(' . implode(',', $values) . ')';
-        }
-        return ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $row);
     }
 
     /**
@@ -619,10 +602,21 @@ class QueryBuilder
         switch ($this->getType()) {
             case self::TYPE_RAW:
                 return $this->generateRawSql();
+            case self::TYPE_ALTER_COLUMN:
+                return strtr('{sql}', [
+                    '{sql}' => $this->generateAlterColumnSQL()
+                ]);
+            case self::TYPE_DROP_TABLE:
+                return strtr('{sql}', [
+                    '{sql}' => $this->generateDropTableSql()
+                ]);
+            case self::TYPE_CREATE_TABLE:
+                return strtr('{sql}', [
+                    '{sql}' => $this->generateCreateTableSql()
+                ]);
             case self::TYPE_INSERT:
-                return strtr('{insert}{values}', [
-                    '{insert}' => $this->generateInsertSQL(),
-                    '{values}' => $this->generateInsertValuesSQL(),
+                return strtr('{sql}', [
+                    '{sql}' => $this->generateInsertSQL(),
                 ]);
             case self::TYPE_UPDATE:
                 return strtr('{update}{where}{join}{order}{group}', [
@@ -653,5 +647,116 @@ class QueryBuilder
                     '{limit_offset}' => $this->generateLimitOffsetSQL(),
                 ]);
         }
+    }
+
+    /**
+     * @return \Mindy\Query\Schema\Schema|\Mindy\Query\Mysql\Schema|\Mindy\Query\Sqlite\Schema|\Mindy\Query\Pgsql\Schema
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
+
+    public function setTypeDropTable()
+    {
+        $this->type = self::TYPE_DROP_TABLE;
+        return $this;
+    }
+
+    public function dropTable($tableName)
+    {
+        $this->setTypeDropTable();
+        $this->dropTable = $tableName;
+        return $this;
+    }
+
+    protected function generateDropTableSql()
+    {
+        return "DROP TABLE " . $this->getAdapter()->quoteTableName($this->dropTable);
+    }
+
+
+    public function setTypeCreateTable()
+    {
+        $this->type = self::TYPE_CREATE_TABLE;
+        return $this;
+    }
+
+    public function createTable($tableName, array $columns = [], $options = null)
+    {
+        $this->setTypeCreateTable();
+        $this->createTable = [$tableName, $columns, $options];
+        return $this;
+    }
+
+    /**
+     * Builds a SQL statement for creating a new DB table.
+     *
+     * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
+     * where name stands for a column name which will be properly quoted by the method, and definition
+     * stands for the column type which can contain an abstract DB type.
+     * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
+     *
+     * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
+     * inserted into the generated SQL.
+     *
+     * For example,
+     *
+     * ~~~
+     * $sql = $queryBuilder->createTable('user', [
+     *  'id' => 'pk',
+     *  'name' => 'string',
+     *  'age' => 'integer',
+     * ]);
+     * ~~~
+     *
+     * @param string $table the name of the table to be created. The name will be properly quoted by the method.
+     * @param array $columns the columns (name => definition) in the new table.
+     * @param string $options additional SQL fragment that will be appended to the generated SQL.
+     * @return string the SQL statement for creating a new DB table.
+     */
+    protected function generateCreateTableSql()
+    {
+        $adapter = $this->getAdapter();
+        list($tableName, $columns, $options) = $this->createTable;
+
+        $cols = [];
+        foreach ($columns as $name => $type) {
+            if (is_string($name)) {
+                $cols[] = "\t" . $adapter->quoteColumn($name) . ' ' . $this->getSchema()->getColumnType($type);
+            } else {
+                $cols[] = "\t" . $type;
+            }
+        }
+        $sql = "CREATE TABLE " . $adapter->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
+        return empty($options) ? $sql : $sql . ' ' . $options;
+    }
+
+    public function alterColumn($table, $column, $type)
+    {
+        $this->setTypeAlterColumn();
+        $this->alterColumn = [$table, $column, $type];
+        return $this;
+    }
+
+    public function setTypeAlterColumn()
+    {
+        $this->type = self::TYPE_ALTER_COLUMN;
+        return $this;
+    }
+
+    protected function generateAlterColumnSQL()
+    {
+        list($table, $column, $type) = $this->alterColumn;
+        return $this->getAdapter()->generateAlterColumnSQL($table, $column, $type, $this->getSchema()->getColumnType($type));
+    }
+
+    /**
+     * @return string
+     */
+    protected function generateInsertSQL()
+    {
+        list($tableName, $columns, $rows) = $this->insert;
+        return $this->getAdapter()->generateInsertSQL($tableName, $columns, $rows);
     }
 }
