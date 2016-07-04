@@ -416,7 +416,6 @@ class QueryBuilder
                 // Reason: Dynamic sql build in callbacks
                 $where = $adapter->sqlWhere($this->where);
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
-                var_dump($this->generateJoin());
                 return $adapter->generateSelectSQL(
                     $this->select,
                     $this->from,

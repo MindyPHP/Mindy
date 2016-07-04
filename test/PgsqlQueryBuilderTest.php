@@ -23,6 +23,6 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
         $qb = $this->getQueryBuilder()->setTypeInsert()->insert('bool_values', ['bool_col'], [
             [true]
         ]);
-        $this->assertEquals($adapter->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES (TRUE)'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES ((TRUE))'), $qb->toSQL());
     }
 }

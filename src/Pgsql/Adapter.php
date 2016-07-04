@@ -156,38 +156,6 @@ class Adapter extends BaseAdapter implements IAdapter
         return strpos($name, '"') !== false ? $name : '"' . $name . '"';
     }
 
-    public function generateInsertSQL($tableName, $columns, $rows)
-    {
-        return $this->sqlInsert($tableName, $columns, $rows);
-    }
-
-    public function sqlInsert($tableName, array $columns = [], array $rows = [])
-    {
-        $row = [];
-        $columns = array_map(function ($column) {
-            return $this->quoteColumn($column);
-        }, $columns);
-
-        foreach ($rows as $values) {
-            $record = [];
-            foreach ($values as $value) {
-                if (is_string($value)) {
-                    $value = $this->quoteValue($value);
-                } elseif ($value === true) {
-                    $value = 'TRUE';
-                } elseif ($value === false) {
-                    $value = 'FALSE';
-                } elseif ($value === null) {
-                    $value = 'NULL';
-                }
-
-                $record[] = $value;
-            }
-            $row[] = '(' . implode(',', $record) . ')';
-        }
-        return 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $row);
-    }
-
     /**
      * @param $oldTableName
      * @param $newTableName

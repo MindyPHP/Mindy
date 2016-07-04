@@ -140,16 +140,16 @@ abstract class BaseAdapter implements ISQLGenerator
     public function quoteTableName($name)
     {
         if (strpos($name, '(') !== false || strpos($name, '{{') !== false) {
-            return $this->quoteSql($name);
+            return $name;
         }
         if (strpos($name, '.') === false) {
-            return $this->quoteSql($this->quoteSimpleTableName($name));
+            return $this->quoteSimpleTableName($name);
         }
         $parts = explode('.', $name);
         foreach ($parts as $i => $part) {
             $parts[$i] = $this->quoteSimpleTableName($part);
         }
-        return $this->quoteSql(implode('.', $parts));
+        return implode('.', $parts);
     }
 
     /**

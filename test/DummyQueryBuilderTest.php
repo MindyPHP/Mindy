@@ -124,7 +124,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $adapter = $this->getAdapter();
         $this->assertEquals(
-            $adapter->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES (@qwe@)'),
+            $adapter->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES ((@qwe@))'),
             $qb->setTypeInsert()->insert('test', ['name'], [
                 ['qwe']
             ])->toSQL()
@@ -137,7 +137,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->getAdapter();
         $this->assertEquals(
             $adapter->quoteSql('UPDATE [[test]] SET [[name]]=@bar@ WHERE [[name]]=@foo@'),
-            $qb->setTypeUpdate()->update(['name' => 'bar'])->where(['name' => 'foo'])->from('test')->toSQL()
+            $qb->setTypeUpdate()->update('test', ['name' => 'bar'])->where(['name' => 'foo'])->toSQL()
         );
     }
 
