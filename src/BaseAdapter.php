@@ -360,9 +360,7 @@ abstract class BaseAdapter implements ISQLGenerator
             list($orderColumns, $orderOptions) = $order;
         }
 
-        if (is_string($where) === false) {
-            $where = $this->sqlWhere($where);
-        }
+        $where = $this->sqlWhere($where);
         $orderSql = $this->sqlOrderBy($orderColumns, $orderOptions);
         $unionSql = $this->sqlUnion($union);
 
@@ -378,7 +376,6 @@ abstract class BaseAdapter implements ISQLGenerator
             '{union}' => empty($union) ? '' : $unionSql . $orderSql
         ]);
     }
-
 
 
     /**
@@ -627,6 +624,10 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlWhere($where)
     {
+        if (is_string($where)) {
+            return $where;
+        }
+
         if (empty($where)) {
             return '';
         }
@@ -808,22 +809,20 @@ abstract class BaseAdapter implements ISQLGenerator
         return $this->sqlInsert($tableName, $columns, $rows);
     }
 
-    public function generateDeleteSQL($from, $where, $join)
+    public function generateDeleteSQL($from, $where)
     {
-        return strtr('{delete}{from}{where}{join}', [
+        return strtr('{delete}{from}{where}', [
             '{delete}' => 'DELETE',
             '{from}' => $this->sqlFrom($from),
-            '{where}' => $this->sqlWhere($where),
-            '{join}' => $join
+            '{where}' => $this->sqlWhere($where)
         ]);
     }
 
-    public function generateUpdateSQL($tableName, $update, $where, $join)
+    public function generateUpdateSQL($tableName, $update, $where)
     {
-        return strtr('{update}{where}{join}', [
+        return strtr('{update}{where}', [
             '{update}' => $this->sqlUpdate($tableName, $update),
             '{where}' => $this->sqlWhere($where),
-            '{join}' => $join
         ]);
     }
 

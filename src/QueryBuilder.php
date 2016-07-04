@@ -383,15 +383,17 @@ class QueryBuilder
                 return $adapter->generateInsertSQL($tableName, $columns, $rows);
 
             case self::TYPE_UPDATE:
-                return $adapter->generateUpdateSQL($this->from, $this->update, $this->where, $this->generateJoin());
+                return $adapter->generateUpdateSQL($this->from, $this->update, $this->where);
 
             case self::TYPE_DELETE:
-                return $adapter->generateDeleteSQL($this->from, $this->where, $this->generateJoin());
+                return $adapter->generateDeleteSQL($this->from, $this->where);
 
             case self::TYPE_SELECT:
             default:
-                // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
+                // Fetch where conditions before pass it to adapter.
+                // Reason: Dynamic sql build in callbacks
                 $where = $adapter->sqlWhere($this->where);
+                // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
                 return $adapter->generateSelectSQL(
                     $this->select,
                     $this->from,

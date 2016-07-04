@@ -289,21 +289,4 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     {
         return 'PRAGMA foreign_keys=' . $this->getBoolean($check);
     }
-
-    public function generateDeleteSQL($from, $where, $join)
-    {
-        if (!empty($join)) {
-            throw new Exception("SQLite doesn't support JOINs in DELETE statements.");
-        }
-        return parent::generateDeleteSQL($from, $where, $join);
-    }
-
-    public function generateUpdateSQL($tableName, $update, $where, $join)
-    {
-        if (!empty($join)) {
-            throw new Exception("SQLite doesn't support JOINs in UPDATE statements.");
-        }
-
-        return parent::generateUpdateSQL($tableName, $update, $where, $join);
-    }
 }
