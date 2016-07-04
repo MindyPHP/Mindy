@@ -361,7 +361,7 @@ abstract class BaseAdapter implements ISQLGenerator
         $orderSql = $this->sqlOrderBy($orderColumns, $orderOptions);
         $unionSql = $this->sqlUnion($union);
 
-        return strtr('{select}{from}{where}{join}{group}{having}{order}{limit_offset}{union}', [
+        return strtr('{select}{from}{join}{where}{group}{having}{order}{limit_offset}{union}', [
             '{select}' => $this->sqlSelect($select),
             '{from}' => $this->sqlFrom($from),
             '{where}' => $where,

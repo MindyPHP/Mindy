@@ -66,7 +66,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         ]);
         $sql = $qb->toSQL();
         $this->assertTrue($qb->hasJoin("products"));
-        $this->assertEquals('SELECT * FROM test AS t WHERE categories.name IN (foo, bar) LEFT JOIN products AS products ON t.product_id=products.id LEFT JOIN categories AS categories ON products.category_id=categories.id',
+        $this->assertEquals('SELECT * FROM test AS t LEFT JOIN products AS products ON t.product_id=products.id LEFT JOIN categories AS categories ON products.category_id=categories.id WHERE categories.name IN (foo, bar)',
             str_replace(['`', "'"], '', $sql));
     }
 
@@ -110,7 +110,7 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($qb->hasJoin("products"));
         $this->assertTrue($qb->hasJoin("categories"));
         $this->assertTrue($qb->hasJoin("statuses"));
-        $this->assertEquals('SELECT * FROM test WHERE name IN (foo, bar) LEFT JOIN products AS products ON product_id=id LEFT JOIN categories AS categories ON category.id=product.category_id LEFT JOIN statuses AS statuses ON status.id=product.status_id',
+        $this->assertEquals('SELECT * FROM test LEFT JOIN products AS products ON product_id=id LEFT JOIN categories AS categories ON category.id=product.category_id LEFT JOIN statuses AS statuses ON status.id=product.status_id WHERE name IN (foo, bar)',
             str_replace(['`', "'"], '', $sql));
     }
 }

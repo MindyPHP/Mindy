@@ -78,10 +78,43 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->getAdapter();
         $this->assertEquals(
             $adapter->quoteSql('SELECT [[t]].* FROM [[comment]] AS [[t]] LEFT JOIN [[user]] AS [[u]] ON [[t]].[[user_id]]=[[u]].[[id]]'),
-            $qb
-                ->select('t.*')
-                ->from(['t' => 'comment'])
-                ->join('LEFT JOIN', 'user', ['t.user_id' => 'u.id'], 'u')->toSQL()
+            $qb->select('t.*')->from(['t' => 'comment'])->join('LEFT JOIN', 'user', ['t.user_id' => 'u.id'], 'u')->toSQL()
+        );
+    }
+
+    public function testJoinCloneAfterToSQL()
+    {
+        $qb = $this->getQueryBuilder();
+        $adapter = $this->getAdapter();
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT [[t]].* FROM [[comment]] AS [[t]] LEFT JOIN [[user]] AS [[u]] ON [[t]].[[user_id]]=[[u]].[[id]]'),
+            $qb->select('t.*')->from(['t' => 'comment'])->join('LEFT JOIN', 'user', ['t.user_id' => 'u.id'], 'u')->toSQL()
+        );
+
+        $clone = clone $qb;
+        $clone->select('t.id');
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT [[t]].[[id]] FROM [[comment]] AS [[t]] LEFT JOIN [[user]] AS [[u]] ON [[t]].[[user_id]]=[[u]].[[id]]'),
+            $clone->toSQL()
+        );
+    }
+
+    public function testJoinCloneBeforeToSQL()
+    {
+        $qb = $this->getQueryBuilder();
+        $adapter = $this->getAdapter();
+        $qb->select('t.*')->from(['t' => 'comment'])->join('LEFT JOIN', 'user', ['t.user_id' => 'u.id'], 'u');
+        $clone = clone $qb;
+
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT [[t]].* FROM [[comment]] AS [[t]] LEFT JOIN [[user]] AS [[u]] ON [[t]].[[user_id]]=[[u]].[[id]]'),
+            $qb->toSQL()
+        );
+
+        $clone->select('t.id');
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT [[t]].[[id]] FROM [[comment]] AS [[t]] LEFT JOIN [[user]] AS [[u]] ON [[t]].[[user_id]]=[[u]].[[id]]'),
+            $clone->toSQL()
         );
     }
 
@@ -330,10 +363,10 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $sql = <<<SQL
 SELECT COUNT(*)
 FROM [[test]]
-WHERE [[test]].[[name]]=@username@ AND [[test2]].[[amount]] IS NOT NULL AND
-([[test3]].[[id]] IS NULL OR [[test3]].[[status]] IN (@passed@, @active@, @registered@))
 INNER JOIN [[test2]] ON [[test]].[[fkey]]=[[test2]].[[id]]
 LEFT JOIN [[test3]] ON [[test2]].[[fkey]]=[[test3]].[[id]]
+WHERE [[test]].[[name]]=@username@ AND [[test2]].[[amount]] IS NOT NULL AND
+([[test3]].[[id]] IS NULL OR [[test3]].[[status]] IN (@passed@, @active@, @registered@))
 GROUP BY [[test]].[[user_id]]
 HAVING [[test3]].[[age]]>10
 ORDER BY [[test]].[[created]] DESC NULLS LAST
@@ -376,7 +409,7 @@ SQL;
             ->join('LEFT JOIN', 'users', ['c.user_id' => 'u.id'], 'u');
         $adapter = $this->getAdapter();
 
-        $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] WHERE [[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1)) LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]]';
+        $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]] WHERE [[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1))';
 
         $this->assertEquals($adapter->quoteSql($sql), $qb->toSQL());
     }
