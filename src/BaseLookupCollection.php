@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder;
 
+use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 
@@ -41,7 +42,14 @@ abstract class BaseLookupCollection implements ILookupCollection
         return [
             'exact' => function (IAdapter $adapter, $column, $value) {
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
-                return $adapter->quoteColumn($column) . '=' . $adapter->quoteValue($value);
+                if ($value instanceof QueryBuilder) {
+                    $sqlValue = '(' . $value->toSQL() . ')';
+                } else if (strpos($value, 'SELECT') !== false) {
+                    $sqlValue = '(' . $value . ')';
+                } else {
+                    $sqlValue = $adapter->quoteValue($value);
+                }
+                return $adapter->quoteColumn($column) . '=' . $sqlValue;
             },
             'gte' => function (IAdapter $adapter, $column, $value) {
                 return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);
@@ -63,28 +71,38 @@ abstract class BaseLookupCollection implements ILookupCollection
                 return $adapter->quoteColumn($column) . ' ' . ((bool)$value ? 'IS NULL' : 'IS NOT NULL');
             },
             'contains' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' LIKE %' . $adapter->quoteValue($value) . '%';
+                return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue('%' . $value . '%');
             },
             'icontains' => function (IAdapter $adapter, $column, $value) {
-                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE %' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8')) . '%';
+                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8') . '%');
             },
             'startswith' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue($value) . '%';
+                return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue($value . '%');
             },
             'istartswith' => function (IAdapter $adapter, $column, $value) {
-                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8')) . '%';
+                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8') . '%');
             },
             'endswith' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' LIKE %' . $adapter->quoteValue($value);
+                return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue('%' . $value);
             },
             'iendswith' => function (IAdapter $adapter, $column, $value) {
-                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE %' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8'));
+                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8'));
             },
             'in' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' IN (' . implode(',', $value) . ')';
+                if (is_array($value)) {
+                    $quotedValues = array_map(function ($item) use ($adapter) {
+                        return $adapter->quoteValue($item);
+                    }, $value);
+                    $sqlValue = implode(', ', $quotedValues);
+                } else if ($value instanceof QueryBuilder) {
+                    $sqlValue = $value->toSQL();
+                } else {
+                    $sqlValue = $adapter->quoteSql($value);
+                }
+                return $adapter->quoteColumn($column) . ' IN (' . $sqlValue . ')';
             },
             'raw' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' ' . $value;
+                return $adapter->quoteColumn($column) . ' ' . $adapter->quoteSql($value);
             },
             'regex' => function (IAdapter $adapter, $column, $value) {
                 return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $value;
@@ -126,16 +144,22 @@ abstract class BaseLookupCollection implements ILookupCollection
     }
 
     /**
+     * @param $adapter
      * @param $lookup
      * @param $column
      * @param $value
      * @return mixed
+     * @throws Exception
      */
     public function run($adapter, $lookup, $column, $value)
     {
         $lookups = array_merge($this->getLookups(), $this->lookups);
         /** @var \Closure $closure */
-        $closure = $lookups[$lookup];
-        return $closure->__invoke($adapter, $column, $value);
+        if ($this->has($lookup)) {
+            $closure = $lookups[$lookup];
+            return $closure->__invoke($adapter, $column, $value);
+        } else {
+            throw new Exception("Unknown lookup: " . $lookup);
+        }
     }
 }

@@ -14,20 +14,10 @@ interface ICallback
 {
     /**
      * @param QueryBuilder $qb
-     * @return mixed
-     */
-    public function setQueryBuilder(QueryBuilder $qb);
-
-    /**
      * @param ILookupBuilder $lookupBuilder
-     * @return mixed
-     */
-    public function setLookupBuilder(ILookupBuilder $lookupBuilder);
-
-    /**
-     * @param $lookupNodes
+     * @param array $lookupNodes
      * @param $value
      * @return mixed
      */
-    public function fetch(array $lookupNodes, $value);
+    public function fetch(QueryBuilder $qb, ILookupBuilder $lookupBuilder, array $lookupNodes, $value);
 }

@@ -10,6 +10,8 @@ namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Sqlite\Adapter;
 
+require_once 'DummyQueryBuilderTest.php';
+
 class SqliteQueryBuilderTest extends DummyQueryBuilderTest
 {
     public function getAdapter()

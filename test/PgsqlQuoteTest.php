@@ -22,7 +22,11 @@ class PgsqlQuoteTest extends \PHPUnit_Framework_TestCase
 
     protected function getAdapter()
     {
-        return new Adapter(new PDO('pgsql:root@localhost'));
+        try {
+            return new Adapter(new PDO('pgsql:dbname=test;host=localhost'));
+        } catch (\Exception $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 
     public function testAutoQuoting()

@@ -28,7 +28,7 @@ class QueryBuilderFactory
      * @param ILookupBuilder $lookupBuilder
      * @param ICallback $callback
      */
-    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder, ICallback $callback = null)
+    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
     {
         $this->adapter = $adapter;
         $this->lookupBuilder = $lookupBuilder;

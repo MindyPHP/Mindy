@@ -10,5 +10,5 @@ namespace Mindy\QueryBuilder\Q;
 
 class QOr extends Q
 {
-    public $operator = 'AND';
+    public $operator = 'OR';
 }

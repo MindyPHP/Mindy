@@ -31,19 +31,18 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $collection = new LookupCollection();
         $lookupBuilder = new Legacy($collection->getLookups());
         $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
-        $deleteSQL = $qb->setType(QueryBuilder::TYPE_DELETE)->setFrom('test')->toSQL();
+        $deleteSQL = $qb->setType(QueryBuilder::TYPE_DELETE)->from('test')->toSQL();
         $pdo->query($deleteSQL)->execute();
 
         $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
-        $qb->setSelect('COUNT(*)')->setFrom('test');
+        $qb->select('COUNT(*)')->from('test');
         $this->assertEquals($qb->toSQL(), 'SELECT COUNT(*) FROM `test`');
         $this->assertEquals(0, $pdo->query($qb->toSQL())->fetchColumn());
 
         $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
         $insertSQL = $qb
             ->setType(QueryBuilder::TYPE_INSERT)
-            ->setInsert([['name' => 'foo']])
-            ->setFrom('test')
+            ->insert('test', ['name'], ['foo'])
             ->toSQL();
         $pdo->query($insertSQL)->execute();
     }

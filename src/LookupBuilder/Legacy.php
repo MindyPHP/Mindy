@@ -18,9 +18,7 @@ class Legacy extends Base
             if (empty($this->callback)) {
                 throw new Exception('Unknown lookup: ' . $rawLookup);
             } else {
-                $this->callback->setLookupBuilder($this);
-                $this->callback->setQueryBuilder($this->qb);
-                return $this->callback->fetch(explode($this->separator, $rawLookup), $value);
+                return $this->runCallback(explode($this->separator, $rawLookup), $value);
             }
         } else if (substr_count($rawLookup, $this->separator) == 1) {
             list($column, $lookup) = explode($this->separator, $rawLookup);

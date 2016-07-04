@@ -12,6 +12,8 @@ use Exception;
 use Mindy\QueryBuilder\BaseAdapter;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
+use Mindy\QueryBuilder\Q\Q;
+use Mindy\QueryBuilder\QueryBuilder;
 
 class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 {
@@ -54,26 +56,6 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     }
 
     /**
-     * @param $tableName
-     * @param array $columns
-     * @param null $options
-     * @return string
-     */
-    public function sqlCreateTable($tableName, array $columns, $options = null)
-    {
-        $cols = [];
-        foreach ($columns as $name => $type) {
-            if (is_string($name)) {
-                $cols[] = "\t" . $this->quoteColumn($name) . ' ' . $this->getColumnType($type);
-            } else {
-                $cols[] = "\t" . $type;
-            }
-        }
-        $sql = "CREATE TABLE " . $this->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
-        return $options === null ? $sql : $sql . ' ' . $options;
-    }
-
-    /**
      * @param $oldTableName
      * @param $newTableName
      * @return string
@@ -87,9 +69,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $tableName
      * @return string
      */
-    public function sqlDropTable($tableName)
+    public function sqlDropTableIfExists($tableName)
     {
-        return "DROP TABLE " . $this->quoteTableName($tableName);
+        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
     }
 
     /**
@@ -241,15 +223,6 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     }
 
     /**
-     * @param null $value
-     * @return mixed
-     */
-    public function getTimestamp($value = null)
-    {
-        return $value instanceof \DateTime ? $value->getTimestamp() : strtotime($value);
-    }
-
-    /**
      * @param $limit
      * @param null $offset
      * @return mixed
@@ -267,7 +240,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
             // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
             $sql = 'LIMIT 9223372036854775807 OFFSET ' . $offset; // 2^63-1
         }
-        return $sql;
+        return empty($sql) ? '' : ' ' . $sql;
     }
 
     /**
@@ -278,7 +251,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlAddColumn($tableName, $column, $type)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD ' . $this->quoteColumn($column) . ' ' . $this->getColumnType($type);
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD ' . $this->quoteColumn($column) . ' ' . $type;
     }
 
     /**
@@ -294,91 +267,6 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         . $this->quoteTableName($name) . ' ON '
         . $this->quoteTableName($tableName)
         . ' (' . $this->buildColumns($columns) . ')';
-    }
-
-    /**
-     * @param array $columns
-     * @return string
-     */
-    public function sqlDistinct(array $columns)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $column) {
-            $quotedColumns[] = $this->quoteColumn($column);
-        }
-        return 'DISTINCT ' . implode(', ', $quotedColumns);
-    }
-
-    /**
-     * @param $tables
-     * @return string
-     */
-    public function sqlFrom($tables)
-    {
-        if (empty($tables)) {
-            return '';
-        }
-
-        if (!is_array($tables)) {
-            $tables = (array)$tables;
-        }
-        $quotedTableNames = [];
-        foreach ($tables as $table) {
-            $quotedTableNames[] = $this->quoteTableName($table);
-        }
-        return 'FROM ' . implode(', ', $quotedTableNames);
-    }
-
-    /**
-     * @param $joinType string
-     * @param $tableName string
-     * @param $on string|array
-     * @param $alias string
-     * @return string
-     */
-    public function sqlJoin($joinType, $tableName, $on, $alias)
-    {
-        $onSQL = [];
-        foreach ($on as $leftColumn => $rightColumn) {
-            $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
-        }
-
-        if (strpos($tableName, 'SELECT') !== false) {
-            return $joinType . ' (' . $this->quoteSql($this->tablePrefix, $tableName) . ')' . (empty($alias) ? '' : ' AS ' . $this->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
-        } else {
-            return $joinType . ' ' . $this->quoteTableName($tableName) . (empty($alias) ? '' : ' AS ' . $this->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
-        }
-    }
-
-    /**
-     * @param $where string|array
-     * @return string
-     */
-    public function sqlWhere($where)
-    {
-        // TODO: Implement sqlWhere() method.
-    }
-
-    /**
-     * @param $having
-     * @return string
-     */
-    public function sqlHaving($having)
-    {
-        // TODO: Implement sqlHaving() method.
-    }
-
-    /**
-     * @param $unions
-     * @return string
-     */
-    public function sqlUnion($unions)
-    {
-        $result = '';
-        foreach ($unions as $i => $union) {
-            $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
-        }
-        return trim($result);
     }
 
     /**
@@ -402,38 +290,20 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         return 'PRAGMA foreign_keys=' . $this->getBoolean($check);
     }
 
-    /**
-     * @param $columns
-     * @return string
-     */
-    public function sqlGroupBy($columns)
+    public function generateDeleteSQL($from, $where, $join)
     {
-        $group = [];
-        foreach ($columns as $column) {
-            $group[] = $this->quoteColumn($column);
+        if (!empty($join)) {
+            throw new Exception("SQLite doesn't support JOINs in DELETE statements.");
         }
-
-        return 'GROUP BY ' . implode(' ', $group);
+        return parent::generateDeleteSQL($from, $where, $join);
     }
 
-    /**
-     * @param $columns
-     * @return string
-     */
-    public function sqlOrderBy($columns)
+    public function generateUpdateSQL($tableName, $update, $where, $join)
     {
-        $order = [];
-        foreach ($columns as $column) {
-            if (strpos($column, '-', 0) === 0) {
-                $column = substr($column, 0, 1);
-                $direction = 'DESC';
-            } else {
-                $direction = 'ASC';
-            }
-
-            $order[] = $this->quoteColumn($column) . ' ' . $direction;
+        if (!empty($join)) {
+            throw new Exception("SQLite doesn't support JOINs in UPDATE statements.");
         }
 
-        return 'ORDER BY ' . implode(' ', $order);
+        return parent::generateUpdateSQL($tableName, $update, $where, $join);
     }
 }

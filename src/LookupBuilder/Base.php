@@ -47,10 +47,24 @@ abstract class Base implements ILookupBuilder
         return $this;
     }
 
-    public function setCallback(ICallback $callback)
+    public function setCallback($callback)
     {
         $this->callback = $callback;
         return $this;
+    }
+
+    public function getCallback()
+    {
+        return $this->callback;
+    }
+
+    public function runCallback($lookupNodes, $value)
+    {
+        if ($this->callback instanceof \Closure) {
+            return $this->callback->__invoke($this->qb, $this, $lookupNodes, $value);
+        } else {
+            return $this->callback->fetch($this->qb, $this, $lookupNodes, $value);
+        }
     }
 
     public function setQueryBuilder(QueryBuilder $qb)

@@ -10,13 +10,14 @@ namespace Mindy\QueryBuilder\Q;
 
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+use Mindy\QueryBuilder\QueryBuilder;
 
-class Q
+abstract class Q
 {
     /**
-     * @var array
+     * @var array|string|Q
      */
-    protected $where = [];
+    protected $where;
     /**
      * @var string
      */
@@ -30,10 +31,9 @@ class Q
      */
     protected $adapter;
 
-    public function __construct(array $where, $operator = 'AND')
+    public function __construct($where)
     {
-        $this->where = $where;
-        $this->operator = $operator;
+        $this->where = (array)$where;
     }
 
     public function setLookupBuilder(ILookupBuilder $lookupBuilder)
@@ -68,29 +68,34 @@ class Q
     {
         $sql = [];
         foreach ($this->where as $i => $where) {
-            if ($where instanceof Q) {
-                $where->setLookupBuilder($this->lookupBuilder);
-                $where->setAdapter($this->adapter);
-                $sql[] = '(' . $where->toSQL() . ')';
-
-            } else if (is_numeric($i)) {
-                $conditions = $this->lookupBuilder->parse($where);
+            if (is_numeric($i)) {
+                if (is_string($where)) {
+                    $sql[] = $this->adapter->quoteSql($where);
+                } else if (is_array($where)) {
+                    $conditions = $this->lookupBuilder->parse($where);
+                    $tmpSql = [];
+                    foreach ($conditions as $condition) {
+                        list($lookup, $column, $value) = $condition;
+                        $tmpSql[] = $this->adapter->runLookup($lookup, $column, $value);
+                    }
+                    $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
+                } else if ($where instanceof Q) {
+                    $where->setLookupBuilder($this->lookupBuilder);
+                    $where->setAdapter($this->adapter);
+                    $sql[] = '(' . $where->toSQL() . ')';
+                } else if ($where instanceof QueryBuilder) {
+                    $sql[] = '(' . $where->toSQL() . ')';
+                }
+            } else {
+                $conditions = $this->lookupBuilder->parse([
+                    $i => $where
+                ]);
                 $tmpSql = [];
                 foreach ($conditions as $condition) {
                     list($lookup, $column, $value) = $condition;
                     $tmpSql[] = $this->adapter->runLookup($lookup, $column, $value);
                 }
                 $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
-
-            } else if (!is_numeric($i)) {
-                $conditions = $this->lookupBuilder->parse([$i => $where]);
-                $tmpSql = [];
-                foreach ($conditions as $condition) {
-                    list($lookup, $column, $value) = $condition;
-                    $tmpSql[] = $this->adapter->runLookup($lookup, $column, $value);
-                }
-                $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
-
             }
         }
 
