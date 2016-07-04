@@ -140,16 +140,16 @@ abstract class BaseAdapter implements ISQLGenerator
     public function quoteTableName($name)
     {
         if (strpos($name, '(') !== false || strpos($name, '{{') !== false) {
-            return $name;
+            return $this->quoteSql($name);
         }
         if (strpos($name, '.') === false) {
-            return $this->quoteSimpleTableName($name);
+            return $this->quoteSql($this->quoteSimpleTableName($name));
         }
         $parts = explode('.', $name);
         foreach ($parts as $i => $part) {
             $parts[$i] = $this->quoteSimpleTableName($part);
         }
-        return implode('.', $parts);
+        return $this->quoteSql(implode('.', $parts));
     }
 
     /**
@@ -244,12 +244,6 @@ abstract class BaseAdapter implements ISQLGenerator
         return ' ' . ltrim($sql);
     }
 
-    /**
-     * Processes columns and properly quote them if necessary.
-     * It will join all columns into a string with comma as separators.
-     * @param string|array $columns the columns to be processed
-     * @return string the processing result
-     */
     public function buildColumns($columns)
     {
         if (!is_array($columns)) {
@@ -323,7 +317,10 @@ abstract class BaseAdapter implements ISQLGenerator
 
         foreach ($rows as $values) {
             $record = [];
-            foreach ((array)$values as $value) {
+            if (is_array($values) === false) {
+                $values = [$values];
+            }
+            foreach ($values as $value) {
                 if (is_string($value)) {
                     $value = $this->quoteValue($value);
                 } elseif ($value === true) {
@@ -338,14 +335,14 @@ abstract class BaseAdapter implements ISQLGenerator
             }
             $sql[] = '(' . implode(',', $record) . ')';
         }
-        return 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $sql);
+        return $this->quoteSql('INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES (' . implode(',', $sql)) . ')';
     }
 
     public function sqlUpdate($tableName, array $columns)
     {
         $updateSQL = [];
         foreach ($columns as $column => $value) {
-            $updateSQL[] = $this->quoteColumn($column) . '=' . $this->quoteValue($value);
+            $updateSQL[] = $this->quoteColumn($column) . '=' . ($value instanceof Expression ? $value->toSQL() : $this->quoteValue($value));
         }
 
         return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(' ', $updateSQL);
@@ -365,7 +362,7 @@ abstract class BaseAdapter implements ISQLGenerator
         $unionSql = $this->sqlUnion($union);
 
         return strtr('{select}{from}{where}{join}{group}{having}{order}{limit_offset}{union}', [
-            '{select}' => $this->sqlSelect((array)$select),
+            '{select}' => $this->sqlSelect($select),
             '{from}' => $this->sqlFrom($from),
             '{where}' => $where,
             '{group}' => $this->sqlGroupBy($group),
@@ -439,7 +436,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlDropTable($tableName)
     {
-        return "DROP TABLE " . $this->quoteTableName($tableName);
+        return "DROP TABLE " . $this->quoteSql($this->quoteTableName($tableName));
     }
 
     /**
@@ -756,10 +753,16 @@ abstract class BaseAdapter implements ISQLGenerator
             return 'SELECT *';
         }
 
+        if (is_array($columns) === false) {
+            $columns = [$columns];
+        }
+
         $select = [];
         foreach ($columns as $column => $subQuery) {
             if ($subQuery instanceof QueryBuilder) {
                 $subQuery = $subQuery->toSQL();
+            } else if ($subQuery instanceof Expression) {
+                $subQuery = $this->quoteSql($subQuery->toSQL());
             } else {
                 $subQuery = $this->quoteSql($subQuery);
             }
@@ -828,11 +831,11 @@ abstract class BaseAdapter implements ISQLGenerator
 
     public function generateCreateTable($tableName, $columns, $options = null)
     {
-        return $this->sqlCreateTable($tableName, $columns, $options);
+        return $this->quoteSql($this->sqlCreateTable($this->quoteTableName($tableName), $columns, $options));
     }
 
     public function generateCreateTableIfNotExists($tableName, $columns, $options = null)
     {
-        return $this->sqlCreateTableIfNotExists($tableName, $columns, $options);
+        return $this->quoteSql($this->sqlCreateTableIfNotExists($this->quoteTableName($tableName), $columns, $options));
     }
 }

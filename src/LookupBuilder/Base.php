@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder\LookupBuilder;
 
+use Closure;
 use Mindy\QueryBuilder\Interfaces\ICallback;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\QueryBuilder;
@@ -34,6 +35,10 @@ abstract class Base implements ILookupBuilder
      * @var null
      */
     protected $qb = null;
+    /**
+     * @var null|\Closure
+     */
+    protected $fetchColumnCallback = null;
 
     public function __construct(array $lookups = [], ICallback $callback = null)
     {
@@ -52,10 +57,25 @@ abstract class Base implements ILookupBuilder
         $this->callback = $callback;
         return $this;
     }
+    
+    public function setFetchColumnCallback(Closure $callback)
+    {
+        $this->fetchColumnCallback = $callback;
+        return $this;
+    }
 
     public function getCallback()
     {
         return $this->callback;
+    }
+
+    protected function fetchColumnName($column)
+    {
+        if ($this->fetchColumnCallback instanceof \Closure) {
+            return $this->fetchColumnCallback->__invoke($column);
+        } else {
+            return $column;
+        }
     }
 
     public function runCallback($lookupNodes, $value)

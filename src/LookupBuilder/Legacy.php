@@ -25,8 +25,10 @@ class Legacy extends Base
             if ($this->hasLookup($lookup) == false) {
                 throw new Exception('Unknown lookup:' . $lookup);
             }
+            $column = $this->fetchColumnName($column);
             return [$lookup, $column, $value];
         } else {
+            $rawLookup = $this->fetchColumnName($rawLookup);
             return [$this->default, $rawLookup, $value];
         }
     }

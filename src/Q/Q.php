@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder\Q;
 
+use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\QueryBuilder;

@@ -26,6 +26,7 @@ class QueryBuilder
     const TYPE_CREATE_TABLE_IF_NOT_EXISTS = 'CREATE_TABLE_IF_NOT_EXISTS';
     const TYPE_ALTER_COLUMN = 'ALTER_COLUMN';
     const TYPE_DROP_TABLE_IF_EXISTS = 'DROP_TABLE_IF_EXISTS';
+    const TYPE_CHECK_INTEGRITY = 'CHECK_INTEGRITY';
 
     protected $update = [];
     protected $insert = [];
@@ -41,6 +42,7 @@ class QueryBuilder
     protected $alterColumn = [];
     protected $having;
     protected $union;
+    protected $checkIntegrity = [];
     /**
      * @var array
      */
@@ -196,7 +198,7 @@ class QueryBuilder
     public function addWhere($where)
     {
         if (empty($this->where)) {
-            $this->setWhere($where);
+            $this->where($where);
         } else {
             if (($where instanceof Q) == false) {
                 $where = new QAnd($where);
@@ -231,6 +233,9 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\Base
+     */
     public function getLookupBuilder()
     {
         return $this->lookupBuilder;
@@ -315,13 +320,21 @@ class QueryBuilder
         return $this;
     }
 
+    public function checkIntegrity($check, $tableName = '', $schema = '')
+    {
+        $this->type = self::TYPE_CHECK_INTEGRITY;
+        $this->checkIntegrity = [$check, $tableName, $schema];
+        return $this;
+    }
+
     /**
+     * @param $tableName string
      * @param array $values columns [name => value...]
      * @return $this
      */
-    public function update(array $values)
+    public function update($tableName, array $values)
     {
-        $this->update = $values;
+        $this->update = [$tableName, $values];
         return $this;
     }
 
@@ -334,6 +347,10 @@ class QueryBuilder
 
     private function generateJoin()
     {
+        if (empty($this->join)) {
+            return '';
+        }
+
         $joinRaw = [];
         foreach ($this->join as $alias => $joinParams) {
             list($joinType, $tableName, $on, $alias) = $joinParams;
@@ -383,10 +400,15 @@ class QueryBuilder
                 return $adapter->generateInsertSQL($tableName, $columns, $rows);
 
             case self::TYPE_UPDATE:
-                return $adapter->generateUpdateSQL($this->from, $this->update, $this->where);
+                list($tableName, $update) = $this->update;
+                return $adapter->generateUpdateSQL($tableName, $update, $this->where);
 
             case self::TYPE_DELETE:
                 return $adapter->generateDeleteSQL($this->from, $this->where);
+
+            case self::TYPE_CHECK_INTEGRITY:
+                list($check, $tableName, $schema) = $this->checkIntegrity;
+                return $adapter->sqlCheckIntegrity($check, $tableName, $schema);
 
             case self::TYPE_SELECT:
             default:
@@ -394,6 +416,7 @@ class QueryBuilder
                 // Reason: Dynamic sql build in callbacks
                 $where = $adapter->sqlWhere($this->where);
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
+                var_dump($this->generateJoin());
                 return $adapter->generateSelectSQL(
                     $this->select,
                     $this->from,
