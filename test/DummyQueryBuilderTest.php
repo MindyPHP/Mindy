@@ -9,6 +9,11 @@
 namespace Mindy\QueryBuilder\Tests;
 
 use Closure;
+use Mindy\QueryBuilder\Aggregation\Avg;
+use Mindy\QueryBuilder\Aggregation\Count;
+use Mindy\QueryBuilder\Aggregation\Max;
+use Mindy\QueryBuilder\Aggregation\Min;
+use Mindy\QueryBuilder\Aggregation\Sum;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\Q\QAndNot;
 use Mindy\QueryBuilder\Q\QOr;
@@ -23,6 +28,9 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public $factory;
 
+    /**
+     * @return \Mindy\QueryBuilder\BaseAdapter
+     */
     abstract public function getAdapter();
 
     protected function setUp()
@@ -412,6 +420,24 @@ SQL;
         $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]] WHERE [[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1))';
 
         $this->assertEquals($adapter->quoteSql($sql), $qb->toSQL());
+    }
+    
+    public function testAggregation()
+    {
+        $adapter = $this->getAdapter();
+        $qb = $this->getQueryBuilder();
+        $qb->from('comment')->select(new Count('*', 'test'));
+        $this->assertEquals($adapter->quoteSql('SELECT COUNT(*) AS [[test]] FROM [[comment]]'), $qb->toSQL());
+        $qb->from('comment')->select(new Count('*'));
+        $this->assertEquals($adapter->quoteSql('SELECT COUNT(*) FROM [[comment]]'), $qb->toSQL());
+        $qb->from('comment')->select(new Avg('*'));
+        $this->assertEquals($adapter->quoteSql('SELECT AVG(*) FROM [[comment]]'), $qb->toSQL());
+        $qb->from('comment')->select(new Sum('*'));
+        $this->assertEquals($adapter->quoteSql('SELECT SUM(*) FROM [[comment]]'), $qb->toSQL());
+        $qb->from('comment')->select(new Min('*'));
+        $this->assertEquals($adapter->quoteSql('SELECT MIN(*) FROM [[comment]]'), $qb->toSQL());
+        $qb->from('comment')->select(new Max('*'));
+        $this->assertEquals($adapter->quoteSql('SELECT MAX(*) FROM [[comment]]'), $qb->toSQL());
     }
 
     public function testCreateTable()

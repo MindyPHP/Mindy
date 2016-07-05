@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder;
 
+use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
