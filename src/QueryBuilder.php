@@ -10,6 +10,7 @@ namespace Mindy\QueryBuilder;
 
 use Exception;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
 
@@ -22,7 +23,10 @@ class QueryBuilder
     const TYPE_DROP_TABLE = 'DROP_TABLE';
     const TYPE_RAW = 'RAW';
     const TYPE_CREATE_TABLE = 'CREATE_TABLE';
+    const TYPE_CREATE_TABLE_IF_NOT_EXISTS = 'CREATE_TABLE_IF_NOT_EXISTS';
     const TYPE_ALTER_COLUMN = 'ALTER_COLUMN';
+    const TYPE_DROP_TABLE_IF_EXISTS = 'DROP_TABLE_IF_EXISTS';
+    const TYPE_CHECK_INTEGRITY = 'CHECK_INTEGRITY';
 
     protected $update = [];
     protected $insert = [];
@@ -36,6 +40,9 @@ class QueryBuilder
     protected $order = [];
     protected $group = [];
     protected $alterColumn = [];
+    protected $having;
+    protected $union;
+    protected $checkIntegrity = [];
     /**
      * @var array
      */
@@ -48,11 +55,7 @@ class QueryBuilder
      * @var array|Q
      */
     protected $where;
-    /**
-     * @var array|Q
-     */
-    protected $exclude;
-    protected $join = [];
+    public $join = [];
     protected $tablePrefix = '';
     /**
      * @var BaseAdapter
@@ -77,6 +80,17 @@ class QueryBuilder
         $lookupBuilder->setQueryBuilder($this);
         $this->lookupBuilder = $lookupBuilder;
     }
+
+    /*
+    public function __clone()
+    {
+        foreach ($this as $key => $value) {
+            if (is_object($value)) {
+                $this->$key = clone $this->$key;
+            }
+        }
+    }
+    */
 
     /**
      * @return $this
@@ -146,7 +160,7 @@ class QueryBuilder
      * @param $select array|string columns
      * @return $this
      */
-    public function setSelect($select)
+    public function select($select)
     {
         $this->select = $select;
         return $this;
@@ -156,21 +170,23 @@ class QueryBuilder
      * @param $tableName string
      * @return $this
      */
-    public function setFrom($tableName)
+    public function from($tableName)
     {
         $this->from = $tableName;
         return $this;
     }
 
     /**
-     * @param array $where lookups
+     * @param array|string|Q $where lookups
      * @return $this
      */
-    public function setWhere($where)
+    public function where($where)
     {
         if (($where instanceof Q) == false) {
             $where = new QAnd($where);
         }
+        $where->setLookupBuilder($this->getLookupBuilder());
+        $where->setAdapter($this->getAdapter());
         $this->where = $where;
         return $this;
     }
@@ -182,42 +198,12 @@ class QueryBuilder
     public function addWhere($where)
     {
         if (empty($this->where)) {
-            $this->setWhere($where);
+            $this->where($where);
         } else {
             if (($where instanceof Q) == false) {
                 $where = new QAnd($where);
             }
             $this->where->addWhere($where);
-        }
-        return $this;
-    }
-
-    /**
-     * @param array $exclude lookups
-     * @return $this
-     */
-    public function setExclude($exclude)
-    {
-        if (($exclude instanceof Q) == false) {
-            $exclude = new QAnd($exclude);
-        }
-        $this->exclude = $exclude;
-        return $this;
-    }
-
-    /**
-     * @param $exclude
-     * @return $this
-     */
-    public function addExclude($exclude)
-    {
-        if (empty($this->exclude)) {
-            $this->setExclude($exclude);
-        } else {
-            if (($exclude instanceof Q) == false) {
-                $exclude = new QAnd($exclude);
-            }
-            $this->exclude->addWhere($exclude);
         }
         return $this;
     }
@@ -231,7 +217,7 @@ class QueryBuilder
         return array_key_exists($alias, $this->join);
     }
 
-    public function setLimit($limit)
+    public function limit($limit)
     {
         $this->limit = $limit;
         return $this;
@@ -241,144 +227,26 @@ class QueryBuilder
      * @param $offset
      * @return $this
      */
-    public function setOffset($offset)
+    public function offset($offset)
     {
         $this->offset = $offset;
         return $this;
     }
 
-    protected function generateLimitOffsetSQL()
-    {
-        $sql = $this->getAdapter()->generateLimitOffsetSQL($this->limit, $this->offset);
-        if (!empty($sql)) {
-            return ' ' . $sql;
-        }
-
-        return '';
-    }
-
     /**
-     * Generate SELECT SQL
-     * @return string
+     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\Base
      */
-    protected function generateSelectSQL()
-    {
-        $rawSelect = (array)$this->select;
-
-        $adapter = $this->getAdapter();
-        $alias = $this->getAlias();
-        $select = [];
-        foreach ($rawSelect as $column => $subQuery) {
-            if (is_numeric($column)) {
-                $column = $subQuery;
-                $subQuery = '';
-            }
-
-            if (empty($subQuery) === false && strpos($subQuery, 'SELECT') !== false) {
-                $value = '(' . $subQuery . ') AS ' . $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column);
-            } else if (empty($subQuery) === false) {
-                $value = $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column) . ' AS ' . $subQuery;
-            } else if (empty($subQuery) && strpos($column, '.') !== false) {
-                $newSelect = [];
-                foreach (explode(',', $column) as $item) {
-                    /*
-                    if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $item, $matches)) {
-                        list(, $rawColumn, $rawAlias) = $matches;
-                    }
-                    */
-                    if (strpos($item, 'AS') !== false) {
-                        list($rawColumn, $rawAlias) = explode('AS', $item);
-                    } else {
-                        $rawColumn = $item;
-                        $rawAlias = '';
-                    }
-
-                    $newSelect[] = empty($rawAlias) ? $adapter->quoteColumn(trim($rawColumn)) : $adapter->quoteColumn(trim($rawColumn)) . ' AS ' . $adapter->quoteColumn(trim($rawAlias));
-                }
-                $value = implode(',', $newSelect);
-            } else if (empty($subQuery) === false) {
-                $value = $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column) . ' AS ' . $subQuery;
-            } else {
-                $value = $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column);
-            }
-            $select[] = $value;
-        }
-        return 'SELECT ' . implode(',', $select);
-    }
-
-    /**
-     * Genertate FROM SQL
-     * @return string
-     */
-    protected function generateFromSQL()
-    {
-        $alias = $this->getAlias();
-        $adapter = $this->getAdapter();
-        if (strpos($this->from, 'SELECT') !== false) {
-            return ' FROM (' . $this->from . ')' . (empty($this->alias) ? '' : ' AS ' . $adapter->quoteTableName($alias));
-        } else {
-            $tableName = $adapter->getRawTableName($this->tablePrefix, $this->from);
-            return ' FROM ' . $adapter->quoteTableName($tableName) . (empty($this->alias) ? '' : ' AS ' . $adapter->quoteTableName($alias));
-        }
-    }
-
-    protected function getLookupBuilder()
+    public function getLookupBuilder()
     {
         return $this->lookupBuilder;
     }
 
     /**
-     * @return BaseAdapter
+     * @return BaseAdapter|ISQLGenerator
      */
     public function getAdapter()
     {
         return $this->adapter;
-    }
-
-    /**
-     * Generate WHERE SQL
-     * @return string
-     * @throws Exception
-     */
-    protected function generateWhereSQL()
-    {
-        if (empty($this->where) && empty($this->exclude)) {
-            return '';
-        }
-
-        $adapter = $this->getAdapter();
-        $lookupBuilder = $this->getLookupBuilder();
-        if (empty($this->where)) {
-            $whereSql = '';
-        } else {
-            $where = $this->where;
-            $where->setLookupBuilder($lookupBuilder);
-            $where->setAdapter($adapter);
-            $whereSql = $where->toSQL();
-        }
-
-        if (empty($this->exclude)) {
-            $excludeSql = '';
-        } else {
-            $exclude = $this->exclude;
-            $exclude->setLookupBuilder($lookupBuilder);
-            $exclude->setAdapter($adapter);
-            $excludeSql = $exclude->toSQL();
-        }
-
-        if (empty($whereSql) && empty($excludeSql)) {
-            return '';
-        } else {
-            $sql = ' WHERE ';
-            if (!empty($whereSql)) {
-                $sql .= $whereSql;
-            }
-
-            if (!empty($excludeSql)) {
-                $sql .= ' AND NOT (' . $excludeSql . ')';
-            }
-            return $sql;
-        }
     }
 
     /**
@@ -389,132 +257,37 @@ class QueryBuilder
      * @return $this
      * @throws Exception
      */
-    public function setJoin($joinType, $tableName, array $on, $alias = '')
+    public function join($joinType, $tableName, array $on, $alias = '')
     {
         if (empty($alias)) {
             $this->join[] = [$joinType, $tableName, $on, $alias];
+        } else if (array_key_exists($alias, $this->join)) {
+            throw new Exception('Alias already defined in $join');
         } else {
-            if (array_key_exists($alias, $this->join)) {
-                throw new Exception('Alias already defined in $join');
-            }
             $this->join[$alias] = [$joinType, $tableName, $on, $alias];
         }
         return $this;
     }
 
     /**
-     * @param $alias string table alias
-     * @return $this
-     */
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-        return $this;
-    }
-
-    /**
-     * @return string table alias
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return string join sql
-     * @throws Exception
-     */
-    protected function generateJoinSQL()
-    {
-        if (empty($this->join)) {
-            return '';
-        }
-
-        $join = [];
-        foreach ($this->join as $alias => $joinParams) {
-            list($joinType, $tableName, $on, $alias) = $joinParams;
-
-            $onSQL = [];
-            $adapter = $this->getAdapter();
-            foreach ($on as $leftColumn => $rightColumn) {
-                $onSQL[] = $adapter->quoteColumn($leftColumn) . '=' . $adapter->quoteColumn($rightColumn);
-            }
-
-            if (strpos($tableName, 'SELECT') !== false) {
-                $join[] = $joinType . ' (' . $adapter->quoteSql($this->tablePrefix, $tableName) . ')' . (empty($alias) ? '' : ' AS ' . $adapter->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
-            } else {
-                $join[] = $joinType . ' ' . $adapter->quoteTableName($tableName) . (empty($alias) ? '' : ' AS ' . $adapter->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
-            }
-        }
-
-        return ' ' . implode(' ', $join);
-    }
-
-    /**
      * @param array $columns columns
      * @return $this
      */
-    public function setGroup(array $columns)
+    public function group(array $columns)
     {
         $this->group = $columns;
         return $this;
     }
 
     /**
-     * Generate GROUP SQL
-     * @return string
-     */
-    protected function generateGroupSQL()
-    {
-        if (empty($this->group)) {
-            return '';
-        }
-
-        $alias = $this->getAlias();
-        $adapter = $this->getAdapter();
-        $group = [];
-        foreach ($this->group as $column) {
-            $group[] = $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column);
-        }
-
-        return ' GROUP BY ' . implode(' ', $group);
-    }
-
-    /**
      * @param array|string $columns columns
+     * @param null $options
      * @return $this
      */
-    public function setOrder($columns)
+    public function order($columns, $options = null)
     {
-        $this->order = (array)$columns;
+        $this->order = [(array)$columns, $options];
         return $this;
-    }
-
-    /**
-     * Generate ORDER SQL
-     * @return string
-     */
-    protected function generateOrderSQL()
-    {
-        if (empty($this->order)) {
-            return '';
-        }
-
-        $order = [];
-        $adapter = $this->getAdapter();
-        $alias = $this->getAlias();
-        foreach ($this->order as $column) {
-            if (strpos($column, '-', 0) === 0) {
-                $column = substr($column, 0, 1);
-                $direction = 'DESC';
-            } else {
-                $direction = 'ASC';
-            }
-
-            $order[] = $adapter->quoteColumn(empty($alias) ? $column : $alias . '.' . $column) . ' ' . $direction;
-        }
-
-        return ' ORDER BY ' . implode(' ', $order);
     }
 
     /**
@@ -536,61 +309,60 @@ class QueryBuilder
     }
 
     /**
-     * @param array $values rows with columns [name => value...]
+     * @param $tableName
+     * @param array $columns
+     * @param array $rows
      * @return $this
      */
-    public function setInsert($tableName, array $columns, array $rows)
+    public function insert($tableName, array $columns, array $rows)
     {
         $this->insert = [$tableName, $columns, $rows];
         return $this;
     }
 
-    /**
-     * Generate DELETE SQL
-     * @return string
-     */
-    protected function generateDeleteSQL()
+    public function checkIntegrity($check, $tableName = '', $schema = '')
     {
-        return 'DELETE';
-    }
-
-    /**
-     * @param array $values columns [name => value...]
-     * @return $this
-     */
-    public function setUpdate(array $values)
-    {
-        $this->update = $values;
+        $this->type = self::TYPE_CHECK_INTEGRITY;
+        $this->checkIntegrity = [$check, $tableName, $schema];
         return $this;
     }
 
     /**
-     * Generate UPDATE SQL
-     * @return string
+     * @param $tableName string
+     * @param array $values columns [name => value...]
+     * @return $this
      */
-    protected function generateUpdateSQL()
+    public function update($tableName, array $values)
     {
-        $updateSQL = [];
-        $adapter = $this->getAdapter();
-        foreach ($this->update as $column => $value) {
-            $updateSQL[] = $adapter->quoteColumn($column) . '=' . $adapter->quoteValue($value);
-        }
-
-        $alias = $this->getAlias();
-        $tableName = empty($alias) ? $this->from : $alias . '.' . $this->from;
-        return 'UPDATE ' . $adapter->quoteTableName($tableName) . ' SET ' . implode(' ', $updateSQL);
+        $this->update = [$tableName, $values];
+        return $this;
     }
 
-    public function setRaw($sql)
+    public function raw($sql)
     {
         $this->setTypeRaw();
         $this->sql = $sql;
         return $this;
     }
 
-    protected function generateRawSql()
+    private function generateJoin()
     {
-        return $this->getAdapter()->quoteSql($this->tablePrefix, $this->raw);
+        if (empty($this->join)) {
+            return '';
+        }
+
+        $joinRaw = [];
+        foreach ($this->join as $alias => $joinParams) {
+            list($joinType, $tableName, $on, $alias) = $joinParams;
+            $joinRaw[] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
+        }
+
+        if (empty($joinRaw)) {
+            $join = '';
+        } else {
+            $join = ' ' . implode(' ', $joinRaw);
+        }
+        return $join;
     }
 
     /**
@@ -599,58 +371,68 @@ class QueryBuilder
      */
     public function toSQL()
     {
+        $adapter = $this->getAdapter();
+
         switch ($this->getType()) {
             case self::TYPE_RAW:
-                return $this->generateRawSql();
+                return $adapter->quoteSql($this->raw);
+
             case self::TYPE_ALTER_COLUMN:
-                return strtr('{sql}', [
-                    '{sql}' => $this->generateAlterColumnSQL()
-                ]);
+                list($table, $column, $type) = $this->alterColumn;
+                return $adapter->sqlAlterColumn($table, $column, $type);
+
             case self::TYPE_DROP_TABLE:
-                return strtr('{sql}', [
-                    '{sql}' => $this->generateDropTableSql()
-                ]);
+                return $adapter->sqlDropTable($this->dropTable);
+
+            case self::TYPE_DROP_TABLE_IF_EXISTS:
+                return $adapter->sqlDropTableIfExists($this->dropTable);
+
             case self::TYPE_CREATE_TABLE:
-                return strtr('{sql}', [
-                    '{sql}' => $this->generateCreateTableSql()
-                ]);
+                list($tableName, $columns, $options) = $this->createTable;
+                return $adapter->generateCreateTable($tableName, $columns, $options);
+
+            case self::TYPE_CREATE_TABLE_IF_NOT_EXISTS:
+                list($tableName, $columns, $options) = $this->createTable;
+                return $adapter->generateCreateTableIfNotExists($tableName, $columns, $options);
+
             case self::TYPE_INSERT:
-                return strtr('{sql}', [
-                    '{sql}' => $this->generateInsertSQL(),
-                ]);
+                list($tableName, $columns, $rows) = $this->insert;
+                return $adapter->generateInsertSQL($tableName, $columns, $rows);
+
             case self::TYPE_UPDATE:
-                return strtr('{update}{where}{join}{order}{group}', [
-                    '{update}' => $this->generateUpdateSQL(),
-                    '{where}' => $this->generateWhereSQL(),
-                    '{group}' => $this->generateGroupSQL(),
-                    '{order}' => $this->generateOrderSQL(),
-                    '{join}' => $this->generateJoinSQL()
-                ]);
+                list($tableName, $update) = $this->update;
+                return $adapter->generateUpdateSQL($tableName, $update, $this->where);
+
             case self::TYPE_DELETE:
-                return strtr('{delete}{from}{where}{join}{order}{group}', [
-                    '{delete}' => $this->generateDeleteSQL(),
-                    '{from}' => $this->generateFromSQL(),
-                    '{where}' => $this->generateWhereSQL(),
-                    '{group}' => $this->generateGroupSQL(),
-                    '{order}' => $this->generateOrderSQL(),
-                    '{join}' => $this->generateJoinSQL()
-                ]);
+                return $adapter->generateDeleteSQL($this->from, $this->where);
+
+            case self::TYPE_CHECK_INTEGRITY:
+                list($check, $tableName, $schema) = $this->checkIntegrity;
+                return $adapter->sqlCheckIntegrity($check, $tableName, $schema);
+
             case self::TYPE_SELECT:
             default:
-                return strtr('{select}{from}{where}{join}{group}{order}{limit_offset}', [
-                    '{select}' => $this->generateSelectSQL(),
-                    '{from}' => $this->generateFromSQL(),
-                    '{where}' => $this->generateWhereSQL(),
-                    '{group}' => $this->generateGroupSQL(),
-                    '{order}' => $this->generateOrderSQL(),
-                    '{join}' => $this->generateJoinSQL(),
-                    '{limit_offset}' => $this->generateLimitOffsetSQL(),
-                ]);
+                // Fetch where conditions before pass it to adapter.
+                // Reason: Dynamic sql build in callbacks
+                $where = $adapter->sqlWhere($this->where);
+                // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
+                return $adapter->generateSelectSQL(
+                    $this->select,
+                    $this->from,
+                    $where,
+                    $this->order,
+                    $this->group,
+                    $this->limit,
+                    $this->offset,
+                    $this->generateJoin(),
+                    $this->having,
+                    $this->union
+                );
         }
     }
 
     /**
-     * @return \Mindy\Query\Schema\Schema|\Mindy\Query\Mysql\Schema|\Mindy\Query\Sqlite\Schema|\Mindy\Query\Pgsql\Schema
+     * @return \Mindy\Query\Schema\Schema|\Mindy\Query\Database\Mysql\Schema|\Mindy\Query\Database\Sqlite\Schema|\Mindy\Query\Database\Pgsql\Schema|\Mindy\Query\Database\Oci\Schema|\Mindy\Query\Database\Mssql\Schema
      */
     public function getSchema()
     {
@@ -670,11 +452,12 @@ class QueryBuilder
         return $this;
     }
 
-    protected function generateDropTableSql()
+    public function dropTableIfExists($tableName)
     {
-        return "DROP TABLE " . $this->getAdapter()->quoteTableName($this->dropTable);
+        $this->setTypeDropTableIfExists();
+        $this->dropTable = $tableName;
+        return $this;
     }
-
 
     public function setTypeCreateTable()
     {
@@ -682,54 +465,24 @@ class QueryBuilder
         return $this;
     }
 
-    public function createTable($tableName, array $columns = [], $options = null)
+    public function createTable($tableName, $columns, $options = null)
     {
         $this->setTypeCreateTable();
         $this->createTable = [$tableName, $columns, $options];
         return $this;
     }
 
-    /**
-     * Builds a SQL statement for creating a new DB table.
-     *
-     * The columns in the new  table should be specified as name-definition pairs (e.g. 'name' => 'string'),
-     * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
-     * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
-     *
-     * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
-     * inserted into the generated SQL.
-     *
-     * For example,
-     *
-     * ~~~
-     * $sql = $queryBuilder->createTable('user', [
-     *  'id' => 'pk',
-     *  'name' => 'string',
-     *  'age' => 'integer',
-     * ]);
-     * ~~~
-     *
-     * @param string $table the name of the table to be created. The name will be properly quoted by the method.
-     * @param array $columns the columns (name => definition) in the new table.
-     * @param string $options additional SQL fragment that will be appended to the generated SQL.
-     * @return string the SQL statement for creating a new DB table.
-     */
-    protected function generateCreateTableSql()
+    public function createTableIfNotExists($tableName, $columns, $options = null)
     {
-        $adapter = $this->getAdapter();
-        list($tableName, $columns, $options) = $this->createTable;
+        $this->setTypeCreateTableIfNotExists();
+        $this->createTable = [$tableName, $columns, $options];
+        return $this;
+    }
 
-        $cols = [];
-        foreach ($columns as $name => $type) {
-            if (is_string($name)) {
-                $cols[] = "\t" . $adapter->quoteColumn($name) . ' ' . $this->getSchema()->getColumnType($type);
-            } else {
-                $cols[] = "\t" . $type;
-            }
-        }
-        $sql = "CREATE TABLE " . $adapter->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
-        return empty($options) ? $sql : $sql . ' ' . $options;
+    public function setTypeCreateTableIfNotExists()
+    {
+        $this->type = self::TYPE_CREATE_TABLE_IF_NOT_EXISTS;
+        return $this;
     }
 
     public function alterColumn($table, $column, $type)
@@ -745,18 +498,30 @@ class QueryBuilder
         return $this;
     }
 
-    protected function generateAlterColumnSQL()
+    public function setTypeDropTableIfExists()
     {
-        list($table, $column, $type) = $this->alterColumn;
-        return $this->getAdapter()->generateAlterColumnSQL($table, $column, $type, $this->getSchema()->getColumnType($type));
+        $this->type = self::TYPE_DROP_TABLE_IF_EXISTS;
+        return $this;
     }
 
     /**
-     * @return string
+     * @param array|string|Q $where lookups
+     * @return $this
      */
-    protected function generateInsertSQL()
+    public function having($having)
     {
-        list($tableName, $columns, $rows) = $this->insert;
-        return $this->getAdapter()->generateInsertSQL($tableName, $columns, $rows);
+        if (($having instanceof Q) == false) {
+            $having = new QAnd($having);
+        }
+        $having->setLookupBuilder($this->getLookupBuilder());
+        $having->setAdapter($this->getAdapter());
+        $this->having = $having;
+        return $this;
+    }
+
+    public function union($union, $all = false)
+    {
+        $this->union[] = [$union, $all];
+        return $this;
     }
 }

@@ -14,49 +14,30 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 class Adapter extends BaseAdapter implements IAdapter
 {
     /**
-     * @var array map of query condition to builder methods.
-     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     * Quotes a string value for use in a query.
+     * Note that if the parameter is not a string, it will be returned without change.
+     *
+     * Note sqlite3:
+     * A string constant is formed by enclosing the string in single quotes (').
+     * A single quote within the string can be encoded by putting two single
+     * quotes in a row - as in Pascal. C-style escapes using the backslash
+     * character are not supported because they are not standard SQL.
+     *
+     * @param string $str string to be quoted
+     * @return string the properly quoted string
+     * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
-    protected $conditionBuilders = [
-        'NOT' => 'buildNotCondition',
-        'AND' => 'buildAndCondition',
-        'OR' => 'buildAndCondition',
-        'BETWEEN' => 'buildBetweenCondition',
-        'NOT BETWEEN' => 'buildBetweenCondition',
-        'IN' => 'buildInCondition',
-        'NOT IN' => 'buildInCondition',
-        'LIKE' => 'buildLikeCondition',
-        'ILIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'NOT ILIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR ILIKE' => 'buildLikeCondition',
-        'OR NOT LIKE' => 'buildLikeCondition',
-        'OR NOT ILIKE' => 'buildLikeCondition',
-        'EXISTS' => 'buildExistsCondition',
-        'NOT EXISTS' => 'buildExistsCondition',
-    ];
-
-    /**
-     * Builds a SQL statement for dropping an index.
-     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping an index.
-     */
-    public function dropIndex($name, $table)
+    public function quoteValue($str)
     {
-        return 'DROP INDEX ' . $this->db->quoteTableName($name);
-    }
-
-    /**
-     * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
-     */
-    public function renameTable($oldName, $newName)
-    {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($oldName) . ' RENAME TO ' . $this->db->quoteTableName($newName);
+        if ($str === true) {
+            return 'TRUE';
+        } else if ($str === false) {
+            return 'FALSE';
+        } else if ($str === null) {
+            return 'NULL';
+        } else {
+            return parent::quoteValue($str);
+        }
     }
 
     /**
@@ -127,77 +108,12 @@ class Adapter extends BaseAdapter implements IAdapter
         // https://github.com/yiisoft/yii2/issues/4492
         // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
         if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
-            $type = 'TYPE ' . $this->getColumnType($type);
+            $type = 'TYPE ' . $type;
         }
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
-        . $this->db->quoteColumnName($column) . ' ' . $type;
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ALTER COLUMN '
+        . $this->quoteColumn($column) . ' ' . $type;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function batchInsert($table, $columns, $rows)
-    {
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-        $values = [];
-        foreach ($rows as $row) {
-            $vs = [];
-            foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
-                }
-                if (is_string($value)) {
-                    $value = $schema->quoteValue($value);
-                } elseif ($value === true) {
-                    $value = 'TRUE';
-                } elseif ($value === false) {
-                    $value = 'FALSE';
-                } elseif ($value === null) {
-                    $value = 'NULL';
-                }
-                $vs[] = $value;
-            }
-            $values[] = '(' . implode(', ', $vs) . ')';
-        }
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $schema->quoteColumnName($name);
-        }
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
-    }
-
-    public function buildSelectPrepare($distinct)
-    {
-        if (!empty($distinct)) {
-            $select = 'SELECT DISTINCT ';
-            if (is_string($distinct)) {
-                return $select . $distinct;
-            } else if (is_array($distinct)) {
-                $i = 0;
-                foreach ($distinct as $key => $value) {
-                    if (is_numeric($key)) {
-                        $select .= $value;
-                    } else {
-                        $select .= 'ON (' . $key . ') ' . $value;
-                    }
-                    if (count($distinct) != $i) {
-                        $select .= ', ';
-                    }
-                    $i++;
-                }
-                return $select;
-            } else if ($distinct === true) {
-                return 'SELECT DISTINCT';
-            }
-        }
-        return 'SELECT';
-    }
-    
     /**
      * @return LookupCollection
      */
@@ -241,49 +157,203 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
-     * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
-     * @return string the SQL statement for changing the definition of a column.
+     * @param $oldTableName
+     * @param $newTableName
+     * @return string
      */
-    public function generateAlterColumnSQL($table, $column, $type, $columnType)
+    public function sqlRenameTable($oldTableName, $newTableName)
     {
-        // https://github.com/yiisoft/yii2/issues/4492
-        // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
-        if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
-            $type = 'TYPE ' . $columnType;
-        }
-        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ALTER COLUMN ' . $this->quoteColumn($column) . ' ' . $type;
+        return 'ALTER TABLE ' . $this->quoteTableName($oldTableName) . ' RENAME TO ' . $this->quoteTableName($newTableName);
     }
 
-    public function generateInsertSQL($tableName, $columns, $rows)
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function sqlDropTableIfExists($tableName)
     {
-        $row = [];
-        $columns = array_map(function ($column) {
-            return $this->quoteColumn($column);
-        }, $columns);
+        // TODO: Implement sqlDropTableIfExists() method.
+    }
 
-        foreach ($rows as $values) {
-            $record = [];
-            foreach ($values as $value) {
-                if (is_string($value)) {
-                    $value = $this->quoteValue($value);
-                } elseif ($value === true) {
-                    $value = 'TRUE';
-                } elseif ($value === false) {
-                    $value = 'FALSE';
-                } elseif ($value === null) {
-                    $value = 'NULL';
+    public function sqlDistinct(array $columns)
+    {
+        if (!empty($columns)) {
+            $select = 'SELECT DISTINCT ';
+            if (is_string($columns)) {
+                return $select . $columns;
+            } else if (is_array($columns)) {
+                $i = 0;
+                foreach ($columns as $key => $value) {
+                    if (is_numeric($key)) {
+                        $select .= $value;
+                    } else {
+                        $select .= 'ON (' . $key . ') ' . $value;
+                    }
+                    if (count($columns) != $i) {
+                        $select .= ', ';
+                    }
+                    $i++;
                 }
-                
-                $record[] = $value;
+                return $select;
             }
-            $row[] = '(' . implode(',', $record) . ')';
         }
-        return 'INSERT INTO (' . implode(',', $columns) . ') VALUES ' . implode(',', $row);
+        return 'SELECT DISTINCT';
+    }
+
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function sqlTruncateTable($tableName)
+    {
+        // TODO: Implement sqlTruncateTable() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function sqlDropIndex($tableName, $name)
+    {
+        return 'DROP INDEX ' . $this->quoteTableName($name);
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @return string
+     */
+    public function sqlDropColumn($tableName, $column)
+    {
+        // TODO: Implement sqlDropColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $oldName
+     * @param $newName
+     * @return mixed
+     */
+    public function sqlRenameColumn($tableName, $oldName, $newName)
+    {
+        // TODO: Implement sqlRenameColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return mixed
+     */
+    public function sqlDropForeignKey($tableName, $name)
+    {
+        // TODO: Implement sqlDropForeignKey() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
+     * @param $refTable
+     * @param $refColumns
+     * @param null $delete
+     * @param null $update
+     * @return string
+     */
+    public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        // TODO: Implement sqlAddForeignKey() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
+     * @return string
+     */
+    public function sqlAddPrimaryKey($tableName, $name, $columns)
+    {
+        // TODO: Implement sqlAddPrimaryKey() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function sqlDropPrimaryKey($tableName, $name)
+    {
+        // TODO: Implement sqlDropPrimaryKey() method.
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getBoolean($value = null)
+    {
+        return (bool)$value ? 'TRUE' : 'FALSE';
+    }
+
+    /**
+     * @param null $value
+     * @return string
+     */
+    public function getDateTime($value = null)
+    {
+        // TODO: Implement getDateTime() method.
+    }
+
+    /**
+     * @param null $value
+     * @return string
+     */
+    public function getDate($value = null)
+    {
+        // TODO: Implement getDate() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @param $type
+     * @return string
+     */
+    public function sqlAddColumn($tableName, $column, $type)
+    {
+        // TODO: Implement sqlAddColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param array $columns
+     * @param bool $unique
+     * @return string
+     */
+    public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
+    {
+        // TODO: Implement sqlCreateIndex() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $sequenceName
+     * @return string
+     */
+    public function sqlResetSequence($tableName, $sequenceName)
+    {
+        // TODO: Implement sqlResetSequence() method.
+    }
+
+    /**
+     * @param bool $check
+     * @param string $schema
+     * @param string $table
+     * @return string
+     */
+    public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
+    {
+        // TODO: Implement sqlCheckIntegrity() method.
     }
 }

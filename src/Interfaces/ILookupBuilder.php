@@ -27,8 +27,8 @@ interface ILookupBuilder
     public function parse(array $where);
 
     /**
-     * @param ICallback $callback
+     * @param \Closure|ICallback $callback
      * @return mixed
      */
-    public function setCallback(ICallback $callback);
+    public function setCallback($callback);
 }

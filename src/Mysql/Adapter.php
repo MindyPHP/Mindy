@@ -11,8 +11,9 @@ namespace Mindy\QueryBuilder\Mysql;
 use Exception;
 use Mindy\QueryBuilder\BaseAdapter;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 
-class Adapter extends BaseAdapter implements IAdapter
+class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 {
     /**
      * Quotes a table name for use in a query.
@@ -47,44 +48,6 @@ class Adapter extends BaseAdapter implements IAdapter
     public function getRandomOrder()
     {
         return 'RANDOM()';
-    }
-
-    public function convertToDateTime($value = null)
-    {
-        static $dateTimeFormat = "Y-m-d H:i:s";
-        if ($value === null) {
-            $value = date($dateTimeFormat);
-        } elseif (is_numeric($value)) {
-            $value = date($dateTimeFormat, $value);
-        } elseif (is_string($value)) {
-            $value = date($dateTimeFormat, strtotime($value));
-        }
-        return $value;
-    }
-
-    public function convertToBoolean($value)
-    {
-        return (bool)$value ? 1 : 0;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function generateLimitOffsetSQL($limit, $offset)
-    {
-        $sql = '';
-        if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
-            if ($this->hasOffset($offset)) {
-                $sql .= ' OFFSET ' . $offset;
-            }
-        } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in MySQL
-            // http://stackoverflow.com/a/271650/1106908
-            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
-        }
-        return $sql;
     }
 
     /**
@@ -125,66 +88,227 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
-     * Builds a SQL statement for dropping a foreign key constraint.
-     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping a foreign key constraint.
+     * @param $oldTableName
+     * @param $newTableName
+     * @return string
      */
-    public function dropForeignKey($name, $table)
+    public function sqlRenameTable($oldTableName, $newTableName)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP FOREIGN KEY ' . $this->quoteColumn($name);
+        // TODO: Implement sqlRenameTable() method.
     }
 
     /**
-     * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
-     * @return string the SQL statement for removing a primary key constraint from an existing table.
+     * @param $tableName
+     * @return string
      */
-    public function dropPrimaryKey($name, $table)
+    public function sqlDropTable($tableName)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP PRIMARY KEY';
+        return "DROP TABLE " . $this->quoteTableName($tableName);
     }
 
     /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws Exception if the table does not exist or there is no sequence associated with the table.
+     * @param $tableName
+     * @return string
      */
-    public function resetSequence($tableName, $value = null)
+    public function sqlDropTableIfExists($tableName)
     {
-        $table = $this->getTableSchema($tableName);
-        if ($table !== null && $table->sequenceName !== null) {
-            $tableName = $this->quoteTableName($tableName);
-            if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = $this->db->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
-            } else {
-                $value = (int) $value;
-            }
-            return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
-        } elseif ($table === null) {
-            throw new Exception("Table not found: $tableName");
-        } else {
-            throw new Exception("There is no sequence associated with table '$tableName'.");
+        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
+    }
+
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function sqlTruncateTable($tableName)
+    {
+        return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function sqlDropIndex($tableName, $name)
+    {
+        // TODO: Implement sqlDropIndex() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @return string
+     */
+    public function sqlDropColumn($tableName, $column)
+    {
+        // TODO: Implement sqlDropColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $oldName
+     * @param $newName
+     * @return mixed
+     */
+    public function sqlRenameColumn($tableName, $oldName, $newName)
+    {
+        // TODO: Implement sqlRenameColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return mixed
+     */
+    public function sqlDropForeignKey($tableName, $name)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP FOREIGN KEY ' . $this->quoteColumn($name);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
+     * @param $refTable
+     * @param $refColumns
+     * @param null $delete
+     * @param null $update
+     * @return string
+     */
+    public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        // TODO: Implement sqlAddForeignKey() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
+     * @return string
+     */
+    public function sqlAddPrimaryKey($tableName, $name, $columns)
+    {
+        // TODO: Implement sqlAddPrimaryKey() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function sqlDropPrimaryKey($tableName, $name)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP PRIMARY KEY';
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getBoolean($value = null)
+    {
+        return (bool)$value ? 1 : 0;
+    }
+
+    protected function formatDateTime($value, $format)
+    {
+        if ($value === null) {
+            $value = date($format);
+        } elseif (is_numeric($value)) {
+            $value = date($format, $value);
+        } elseif (is_string($value)) {
+            $value = date($format, strtotime($value));
         }
+        return $value;
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $table the table name. Meaningless for MySQL.
-     * @param string $schema the schema of the tables. Meaningless for MySQL.
-     * @return string the SQL statement for checking integrity
+     * @param null $value
+     * @return string
      */
-    public function checkIntegrity($check = true, $schema = '', $table = '')
+    public function getDateTime($value = null)
     {
-        return 'SET FOREIGN_KEY_CHECKS = ' . ($check ? 1 : 0);
+        return $this->formatDateTime($value, "Y-m-d H:i:s");
+    }
+
+    /**
+     * @param null $value
+     * @return string
+     */
+    public function getDate($value = null)
+    {
+        return $this->formatDateTime($value, "Y-m-d");
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @param $type
+     * @return string
+     */
+    public function sqlAddColumn($tableName, $column, $type)
+    {
+        // TODO: Implement sqlAddColumn() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param array $columns
+     * @param bool $unique
+     * @return string
+     */
+    public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
+    {
+        // TODO: Implement sqlCreateIndex() method.
+    }
+
+    /**
+     * @param array $columns
+     * @return string
+     */
+    public function sqlDistinct(array $columns)
+    {
+        return 'DISTINCT ';
+    }
+
+    /**
+     * @param $tableName
+     * @param $sequenceName
+     * @return string
+     */
+    public function sqlResetSequence($tableName, $sequenceName)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' AUTO_INCREMENT=' . $this->quoteColumn($sequenceName);
+    }
+
+    /**
+     * @param bool $check
+     * @param string $schema
+     * @param string $table
+     * @return string
+     */
+    public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
+    {
+        return 'SET FOREIGN_KEY_CHECKS = ' . $this->getBoolean($check);
+    }
+
+    public function sqlLimitOffset($limit = null, $offset = null)
+    {
+        $sql = '';
+        if ($this->hasLimit($limit)) {
+            $sql = 'LIMIT ' . $limit;
+            if ($this->hasOffset($offset)) {
+                $sql .= ' OFFSET ' . $offset;
+            }
+        } elseif ($this->hasOffset($offset)) {
+            // limit is not optional in MySQL
+            // http://stackoverflow.com/a/271650/1106908
+            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
+            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+        }
+
+        return empty($sql) ? '' : ' ' . $sql;
     }
 
     /**

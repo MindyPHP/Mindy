@@ -23,9 +23,7 @@ class CustomLookupTest extends \PHPUnit_Framework_TestCase
             }
         ];
         $qb = new QueryBuilder(new Adapter(null, $lookups), new Legacy($lookups));
-        $qb->setTypeSelect()->setSelect('*')->setFrom('test')->setWhere([
-            'name__foo' => 1
-        ]);
+        $qb->select('*')->from('test')->where(['name__foo' => 1]);
         $this->assertEquals($qb->toSQL(), 'SELECT * FROM `test` WHERE `name` ??? 1');
     }
 }

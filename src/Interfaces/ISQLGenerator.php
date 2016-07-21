@@ -29,7 +29,15 @@ interface ISQLGenerator
      * @param null $options
      * @return string
      */
-    public function sqlCreateTable($tableName, array $columns, $options = null);
+    public function sqlCreateTable($tableName, $columns, $options = null);
+
+    /**
+     * @param $tableName
+     * @param array $columns
+     * @param null $options
+     * @return string
+     */
+    public function sqlCreateTableIfNotExists($tableName, $columns, $options = null);
 
     /**
      * @param $oldTableName
@@ -43,6 +51,12 @@ interface ISQLGenerator
      * @return string
      */
     public function sqlDropTable($tableName);
+
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function sqlDropTableIfExists($tableName);
 
     /**
      * @param $tableName
@@ -229,7 +243,29 @@ interface ISQLGenerator
 
     /**
      * @param $columns
+     * @param null $options
      * @return string
      */
-    public function sqlOrderBy($columns);
+    public function sqlOrderBy($columns, $options = null);
+
+    /**
+     * @param $columns
+     * @return string
+     */
+    public function sqlSelect($columns);
+
+    /**
+     * @param $tableName
+     * @param array $columns
+     * @param array $rows
+     * @return string
+     */
+    public function sqlInsert($tableName, array $columns = [], array $rows = []);
+
+    /**
+     * @param $tableName
+     * @param array $columns
+     * @return string
+     */
+    public function sqlUpdate($tableName, array $columns);
 }

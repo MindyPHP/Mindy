@@ -18,48 +18,7 @@ class LookupCollection extends BaseLookupCollection
      */
     public function getLookups()
     {
-        return [
-            'exact' => function (IAdapter $adapter, $column, $value) {
-                /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
-                return $adapter->quoteColumn($column) . '=' . $adapter->quoteValue($value);
-            },
-            'gte' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);
-            },
-            'gt' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . '>' . $adapter->quoteValue($value);
-            },
-            'lte' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . '<=' . $adapter->quoteValue($value);
-            },
-            'lt' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . '<' . $adapter->quoteValue($value);
-            },
-            'range' => function (IAdapter $adapter, $column, $value) {
-                list($min, $max) = $value;
-                return $adapter->quoteColumn($column) . ' BETWEEN ' . $adapter->quoteValue($min) . ' AND ' . $adapter->quoteValue($max);
-            },
-            'isnull' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' ' . ((bool)$value ? 'IS NULL' : 'IS NOT NULL');
-            },
-            'contains' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' LIKE %' . $adapter->quoteValue($value) . '%';
-            },
-            'icontains' => function (IAdapter $adapter, $column, $value) {
-                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE %' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8')) . '%';
-            },
-            'startswith' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue($value) . '%';
-            },
-            'istartswith' => function (IAdapter $adapter, $column, $value) {
-                return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8')) . '%';
-            },
-            'in' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' IN (' . implode(',', $value) . ')';
-            },
-            'raw' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' ' . $value;
-            },
+        return array_merge(parent::getLookups(), [
             'regex' => function (IAdapter $adapter, $column, $value) {
                 return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $value;
             },
@@ -87,6 +46,6 @@ class LookupCollection extends BaseLookupCollection
             'week_day' => function (IAdapter $adapter, $column, $value) {
                 return 'EXTRACT(DAYOFWEEK FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
             },
-        ];
+        ]);
     }
 }

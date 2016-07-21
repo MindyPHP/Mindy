@@ -18,17 +18,13 @@ class Simple extends Base
         $value = array_shift($data);
 
         if (substr_count($column, $this->separator) > 1) {
-            $this->callback->setLookupBuilder($this);
-            $this->callback->setQueryBuilder($this->qb);
-            return $this->callback->fetch(explode($this->separator, $column), $value);
+            return $this->runCallback(explode($this->separator, $rawLookup), $value);
         } else {
             if ($this->hasLookup($lookup) === false) {
                 if (empty($this->callback)) {
                     throw new Exception('Unknown lookup:' . $lookup);
                 } else {
-                    $this->callback->setLookupBuilder($this);
-                    $this->callback->setQueryBuilder($this->qb);
-                    return $this->callback->fetch($column, $value, $this->separator);
+                    return $this->runCallback(explode($this->separator, $rawLookup), $value);
                 }
             }
             return [$lookup, $column, $value];
