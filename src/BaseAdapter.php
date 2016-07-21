@@ -182,7 +182,7 @@ abstract class BaseAdapter
      * @param mixed $limit the given limit
      * @return boolean whether the limit is effective
      */
-    protected function hasLimit($limit)
+    public function hasLimit($limit)
     {
         return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
     }
@@ -192,7 +192,7 @@ abstract class BaseAdapter
      * @param mixed $offset the given offset
      * @return boolean whether the offset is effective
      */
-    protected function hasOffset($offset)
+    public function hasOffset($offset)
     {
         return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
     }
