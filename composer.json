@@ -12,11 +12,13 @@
   },
   "require-dev": {
     "phpunit/phpunit": "*",
-    "phpunit/php-code-coverage": "^4"
+    "phpunit/php-code-coverage": "^4",
+    "mindy/query": "dev-master"
   },
   "autoload": {
     "psr-4": {
-      "Mindy\\QueryBuilder\\": "src/"
+      "Mindy\\QueryBuilder\\": "src/",
+      "Mindy\\Query\\": "vendor/mindy/query/src/"
     }
   },
   "autoload-dev": {

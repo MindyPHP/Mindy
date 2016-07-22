@@ -276,11 +276,11 @@ abstract class BaseAdapter implements ISQLGenerator
     /**
      * Builds a SQL statement for adding a primary key constraint to an existing table.
      * @param string $name the name of the primary key constraint.
-     * @param string $table the table that the primary key constraint will be added to.
+     * @param string $tableName the table that the primary key constraint will be added to.
      * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
      * @return string the SQL statement for adding a primary key constraint to an existing table.
      */
-    public function sqlAddPrimaryKey($name, $table, $columns)
+    public function sqlAddPrimaryKey($tableName, $name, $columns)
     {
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
@@ -288,19 +288,19 @@ abstract class BaseAdapter implements ISQLGenerator
         foreach ($columns as $i => $col) {
             $columns[$i] = $this->quoteColumn($col);
         }
-        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ADD CONSTRAINT '
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD CONSTRAINT '
         . $this->quoteColumn($name) . ' PRIMARY KEY (' . implode(', ', $columns) . ')';
     }
 
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
      * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
+     * @param string $tableName the table that the primary key constraint will be removed from.
      * @return string the SQL statement for removing a primary key constraint from an existing table.
      */
-    public function dropPrimaryKey($name, $table)
+    public function sqlDropPrimaryKey($tableName, $name)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP CONSTRAINT ' . $this->quoteColumn($name);
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP PRIMARY KEY ' . $this->quoteColumn($name);
     }
 
     public function sqlAlterColumn($tableName, $column, $type)
@@ -330,14 +330,14 @@ abstract class BaseAdapter implements ISQLGenerator
                 $values = [$values];
             }
             foreach ($values as $value) {
-                if (is_string($value)) {
-                    $value = $this->quoteValue($value);
-                } elseif ($value === true) {
+                if ($value === true || $value === 'true') {
                     $value = 'TRUE';
-                } elseif ($value === false) {
+                } elseif ($value === false || $value === 'false') {
                     $value = 'FALSE';
-                } elseif ($value === null) {
+                } elseif ($value === null || $value === 'null') {
                     $value = 'NULL';
+                } else if (is_string($value)) {
+                    $value = $this->quoteValue($value);
                 }
 
                 $record[] = $value;
@@ -445,20 +445,26 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlDropTable($tableName)
     {
-        return "DROP TABLE " . $this->quoteSql($this->quoteTableName($tableName));
+        return "DROP TABLE " . $this->quoteTableName($tableName);
     }
 
     /**
      * @param $tableName
      * @return string
      */
-    abstract public function sqlDropTableIfExists($tableName);
+    public function sqlDropTableIfExists($tableName)
+    {
+        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
+    }
 
     /**
      * @param $tableName
      * @return string
      */
-    abstract public function sqlTruncateTable($tableName);
+    public function sqlTruncateTable($tableName)
+    {
+        return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
+    }
 
     /**
      * @param $tableName
@@ -517,13 +523,6 @@ abstract class BaseAdapter implements ISQLGenerator
         }
         return $sql;
     }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    abstract public function sqlDropPrimaryKey($tableName, $name);
 
     /**
      * @return string

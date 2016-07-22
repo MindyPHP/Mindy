@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder\Database\Pgsql;
 
+use Exception;
 use Mindy\QueryBuilder\BaseAdapter;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 
@@ -44,31 +45,15 @@ class Adapter extends BaseAdapter implements IAdapter
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param string $sequenceName the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws Exception if the table does not exist or there is no sequence associated with the table.
      */
-    public function resetSequence($tableName, $value = null)
+    public function sqlResetSequence($sequenceName, $value)
     {
-        $table = $this->db->getTableSchema($tableName);
-        if ($table !== null && $table->sequenceName !== null) {
-            // c.f. http://www.postgresql.org/docs/8.1/static/functions-sequence.html
-            $sequence = $this->db->quoteTableName($table->sequenceName);
-            $tableName = $this->db->quoteTableName($tableName);
-            if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
-            } else {
-                $value = (int)$value;
-            }
-            return "SELECT SETVAL('$sequence',$value,false)";
-        } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
-        }
+        return "SELECT SETVAL('" . $sequenceName . "', " . $this->quoteValue($value) . ",false)";
     }
 
     /**
@@ -124,7 +109,7 @@ class Adapter extends BaseAdapter implements IAdapter
 
     public function getRandomOrder()
     {
-        return 'RAND()';
+        return 'RANDOM()';
     }
 
     public function convertToBoolean($value)
@@ -166,15 +151,6 @@ class Adapter extends BaseAdapter implements IAdapter
         return 'ALTER TABLE ' . $this->quoteTableName($oldTableName) . ' RENAME TO ' . $this->quoteTableName($newTableName);
     }
 
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTableIfExists($tableName)
-    {
-        // TODO: Implement sqlDropTableIfExists() method.
-    }
-
     public function sqlDistinct(array $columns)
     {
         if (!empty($columns)) {
@@ -202,21 +178,22 @@ class Adapter extends BaseAdapter implements IAdapter
 
     /**
      * @param $tableName
-     * @return string
-     */
-    public function sqlTruncateTable($tableName)
-    {
-        // TODO: Implement sqlTruncateTable() method.
-    }
-
-    /**
-     * @param $tableName
      * @param $name
      * @return string
      */
     public function sqlDropIndex($tableName, $name)
     {
-        return 'DROP INDEX ' . $this->quoteTableName($name);
+        return 'DROP INDEX ' . $this->quoteColumn($name);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $name
+     * @return string
+     */
+    public function sqlDropPrimaryKey($tableName, $name)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP CONSTRAINT ' . $this->quoteColumn($name);
     }
 
     /**
@@ -228,26 +205,6 @@ class Adapter extends BaseAdapter implements IAdapter
     public function sqlRenameColumn($tableName, $oldName, $newName)
     {
         return "ALTER TABLE {$this->quoteTableName($tableName)} RENAME COLUMN " . $this->quoteColumn($oldName) . ' TO ' . $this->quoteColumn($newName);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return mixed
-     */
-    public function sqlDropForeignKey($tableName, $name)
-    {
-        // TODO: Implement sqlDropForeignKey() method.
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    public function sqlDropPrimaryKey($tableName, $name)
-    {
-        // TODO: Implement sqlDropPrimaryKey() method.
     }
 
     /**
@@ -289,16 +246,6 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
-     * @param $tableName
-     * @param $sequenceName
-     * @return string
-     */
-    public function sqlResetSequence($tableName, $sequenceName)
-    {
-        // TODO: Implement sqlResetSequence() method.
-    }
-
-    /**
      * @param bool $check
      * @param string $schema
      * @param string $table
@@ -307,5 +254,15 @@ class Adapter extends BaseAdapter implements IAdapter
     public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
     {
         // TODO: Implement sqlCheckIntegrity() method.
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return mixed
+     */
+    public function sqlDropForeignKey($tableName, $name)
+    {
+        // TODO: Implement sqlDropForeignKey() method.
     }
 }

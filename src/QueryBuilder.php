@@ -314,6 +314,53 @@ class QueryBuilder
         return $this;
     }
 
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
+     * @param bool $unique
+     * @return string
+     */
+    public function createIndex($tableName, $name, $columns, $unique = false)
+    {
+        return $this->getAdapter()->sqlCreateIndex($tableName, $name, $columns, $unique);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return mixed
+     */
+    public function dropForeignKey($tableName, $name)
+    {
+        return $this->getAdapter()->sqlDropForeignKey($tableName, $name);
+    }
+    
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function truncate($tableName)
+    {
+        return $this->getAdapter()->sqlTruncateTable($tableName);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function dropIndex($tableName, $name)
+    {
+        return $this->getAdapter()->sqlDropIndex($tableName, $name);
+    }
+
+    /**
+     * @param $check
+     * @param string $schema
+     * @param string $tableName
+     * @return string
+     */
     public function checkIntegrity($check, $schema = '', $tableName = '')
     {
         return $this->getAdapter()->sqlCheckIntegrity($check, $schema, $tableName);
@@ -406,9 +453,22 @@ class QueryBuilder
         return $this->schema;
     }
 
+    /**
+     * @param $tableName
+     * @return string
+     */
     public function dropTable($tableName)
     {
         return $this->getAdapter()->sqlDropTable($tableName);
+    }
+
+    /**
+     * @param $tableName
+     * @return string
+     */
+    public function dropTableIfExists($tableName)
+    {
+        return $this->getAdapter()->sqlDropTableIfExists($tableName);
     }
 
     /**
@@ -478,22 +538,22 @@ class QueryBuilder
     /**
      * @param $name
      * @param $table
-     * @param $columns
      * @return string
      */
-    public function addPrimaryKey($name, $table, $columns)
+    public function dropPrimaryKey($tableName, $name)
     {
-        return $this->getAdapter()->sqlAddPrimaryKey($name, $table, $columns);
+        return $this->getAdapter()->sqlDropPrimaryKey($tableName, $name);
     }
 
     /**
+     * @param $tableName
      * @param $name
-     * @param $table
+     * @param $columns
      * @return string
      */
-    public function dropPrimaryKey($name, $table)
+    public function addPrimaryKey($tableName, $name, $columns)
     {
-        return $this->getAdapter()->dropPrimaryKey($name, $table);
+        return $this->getAdapter()->sqlAddPrimaryKey($tableName, $name, $columns);
     }
 
     /**
@@ -505,6 +565,26 @@ class QueryBuilder
     public function alterColumn($tableName, $column, $type)
     {
         return $this->getAdapter()->sqlAlterColumn($tableName, $column, $type);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function resetSequence($tableName, $name)
+    {
+        return $this->getAdapter()->sqlResetSequence($tableName, $name);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @return string
+     */
+    public function dropColumn($tableName, $name)
+    {
+        return $this->getAdapter()->sqlDropColumn($tableName, $name);
     }
 
     /**

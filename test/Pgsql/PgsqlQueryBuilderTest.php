@@ -19,9 +19,11 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
 
     public function testBoolInsert()
     {
-        $this->markTestSkipped('TODO');
         $qb = $this->getQueryBuilder();
         $qb->setTypeInsert()->insert('bool_values', ['bool_col'], [[true]]);
+        $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES ((TRUE))'), $qb->toSQL());
+
+        $qb->setTypeInsert()->insert('bool_values', ['bool_col'], [['true']]);
         $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES ((TRUE))'), $qb->toSQL());
     }
 
@@ -51,5 +53,16 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
     public function testAddColumn($resultSql = null)
     {
         parent::testAddColumn('ALTER TABLE [[test]] ADD [[name]] varchar(255)');
+    }
+
+    public function testDropPrimaryKey($resultSql = null)
+    {
+        parent::testDropPrimaryKey('ALTER TABLE [[test]] DROP CONSTRAINT [[user_id]]');
+    }
+
+    public function testDropIndex()
+    {
+        $a = $this->getAdapter();
+        $this->assertEquals($a->quoteSql('DROP INDEX [[name]]'), $a->sqlDropIndex('test', 'name'));
     }
 }

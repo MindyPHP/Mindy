@@ -47,7 +47,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 
     public function getRandomOrder()
     {
-        return 'RANDOM()';
+        return 'RAND()';
     }
 
     /**
@@ -61,30 +61,14 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     }
 
     /**
-     * @param $tableName
-     * @return string
+     * Builds a SQL statement for removing a primary key constraint to an existing table.
+     * @param string $name the name of the primary key constraint to be removed.
+     * @param string $table the table that the primary key constraint will be removed from.
+     * @return string the SQL statement for removing a primary key constraint from an existing table.
      */
-    public function sqlDropTable($tableName)
+    public function sqlDropPrimaryKey($table, $name)
     {
-        return "DROP TABLE " . $this->quoteTableName($tableName);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTableIfExists($tableName)
-    {
-        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlTruncateTable($tableName)
-    {
-        return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
+        return 'ALTER TABLE ' . $this->quoteTableName($table) . ' DROP PRIMARY KEY';
     }
 
     /**
@@ -94,7 +78,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlDropIndex($tableName, $name)
     {
-        return 'DROP INDEX ' . $this->quoteTableName($name);
+        return 'DROP INDEX ' . $this->quoteColumn($name) . ' ON ' . $this->quoteTableName($tableName);
     }
 
     /**
@@ -105,16 +89,6 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     public function sqlDropForeignKey($tableName, $name)
     {
         return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP FOREIGN KEY ' . $this->quoteColumn($name);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    public function sqlDropPrimaryKey($tableName, $name)
-    {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP PRIMARY KEY';
     }
 
     /**
@@ -181,9 +155,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $sequenceName
      * @return string
      */
-    public function sqlResetSequence($tableName, $sequenceName)
+    public function sqlResetSequence($tableName, $value)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' AUTO_INCREMENT=' . $this->quoteColumn($sequenceName);
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' AUTO_INCREMENT=' . $this->quoteValue($value);
     }
 
     /**
@@ -199,20 +173,20 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 
     public function sqlLimitOffset($limit = null, $offset = null)
     {
-        $sql = '';
         if ($this->hasLimit($limit)) {
             $sql = 'LIMIT ' . $limit;
             if ($this->hasOffset($offset)) {
                 $sql .= ' OFFSET ' . $offset;
             }
+            return ' ' . $sql;
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in MySQL
             // http://stackoverflow.com/a/271650/1106908
             // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+            return " LIMIT $offset, 18446744073709551615"; // 2^64-1
         }
 
-        return empty($sql) ? '' : ' ' . $sql;
+        return '';
     }
 
     /**

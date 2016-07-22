@@ -548,20 +548,20 @@ SQL;
         }
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
-        $sql = $qb->addPrimaryKey('user_id', 'test', ['foo']);
+        $sql = $qb->addPrimaryKey('test', 'user_id', ['foo']);
         $this->assertEquals($adapter->quoteSql($resultSql), $sql);
-        $sql = $qb->addPrimaryKey('user_id', 'test', 'foo');
+        $sql = $qb->addPrimaryKey('test', 'user_id', 'foo');
         $this->assertEquals($adapter->quoteSql($resultSql), $sql);
     }
 
     public function testDropPrimaryKey($resultSql = null)
     {
         if (empty($resultSql)) {
-            $resultSql = 'ALTER TABLE [[test]] DROP CONSTRAINT [[user_id]]';
+            $resultSql = 'ALTER TABLE [[test]] DROP PRIMARY KEY';
         }
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
-        $sql = $qb->dropPrimaryKey('user_id', 'test');
+        $sql = $qb->dropPrimaryKey('test', 'user_id');
         $this->assertEquals($adapter->quoteSql($resultSql), $sql);
     }
 
@@ -617,6 +617,6 @@ SQL;
     public function testDropIndex()
     {
         $a = $this->getAdapter();
-        $this->assertEquals($a->quoteSql('DROP INDEX [[name]]'), $a->sqlDropIndex('test', 'name'));
+        $this->assertEquals($a->quoteSql('DROP INDEX [[name]] ON [[test]]'), $a->sqlDropIndex('test', 'name'));
     }
 }

@@ -1,6 +1,0 @@
-DROP TABLE IF EXISTS "profile" CASCADE;
-
-CREATE TABLE "profile" (
-  id   SERIAL       NOT NULL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL
-);

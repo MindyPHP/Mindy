@@ -53,4 +53,15 @@ class SqliteQueryBuilderTest extends DummyQueryBuilderTest
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
         parent::testDropColumn();
     }
+
+    public function testDropIndex()
+    {
+        $a = $this->getAdapter();
+        $this->assertEquals($a->quoteSql('DROP INDEX [[test]].[[name]]'), $a->sqlDropIndex('test', 'name'));
+    }
+
+    public function testRenameTable($resultSql = null)
+    {
+        parent::testRenameTable('ALTER TABLE [[test]] RENAME TO [[foo]]');
+    }
 }

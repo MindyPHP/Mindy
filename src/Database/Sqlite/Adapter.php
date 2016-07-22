@@ -58,16 +58,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlRenameTable($oldTableName, $newTableName)
     {
-        return 'RENAME TABLE ' . $this->quoteTableName($oldTableName) . ' TO ' . $this->quoteTableName($newTableName);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTableIfExists($tableName)
-    {
-        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
+        return 'ALTER TABLE ' . $this->quoteTableName($oldTableName) . ' RENAME TO ' . $this->quoteTableName($newTableName);
     }
 
     /**
@@ -86,7 +77,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlDropIndex($tableName, $name)
     {
-        return 'DROP INDEX ' . $this->quoteTableName($name);
+        return 'DROP INDEX ' . $this->quoteTableName($tableName) . '.' . $this->quoteColumn($name);
     }
 
     /**
@@ -251,13 +242,13 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     }
 
     /**
-     * @param $tableName
      * @param $sequenceName
+     * @param $value
      * @return string
      */
-    public function sqlResetSequence($tableName, $sequenceName)
+    public function sqlResetSequence($sequenceName, $value = null)
     {
-        return 'UPDATE sqlite_sequence SET seq=' . $this->quoteValue($sequenceName) . ' WHERE name=' . $this->quoteTableName($tableName);
+        return 'UPDATE sqlite_sequence SET seq=' . $this->quoteValue($value) . ' WHERE name=' . $this->quoteValue($sequenceName);
     }
 
     /**
