@@ -171,19 +171,6 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(TableSchema::class, $tableSchema);
         $this->assertInstanceOf(ColumnSchema::class, $tableSchema->getColumn('id'));
     }
-    
-    public function testForeignKey()
-    {
-        $c = $this->connection;
-        $qb = $c->getQueryBuilder();
-        $this->assertNotNull($qb->getAdapter()->getDriver());
-
-        $schema = $this->connection->getSchema();
-        $tableSchema = $schema->getTableSchema('order_item', true);
-        $this->assertInstanceOf(TableSchema::class, $tableSchema);
-        
-        $c->createCommand($qb->dropForeignKey('order_item', 'FK_order_item_order_id'))->execute();
-    }
 
     public function testTruncate()
     {
@@ -224,8 +211,8 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(['uniq_customer_id'], array_keys($schema->findUniqueIndexes($tableSchema)));
 
-//        $c->createCommand($qb->dropIndex('profile', 'uniq_customer_id'))->execute();
-//        $this->assertEquals([], $schema->findUniqueIndexes($tableSchema));
+        $c->createCommand($qb->dropIndex('profile', 'uniq_customer_id'))->execute();
+        $this->assertEquals([], $schema->findUniqueIndexes($tableSchema));
     }
 
     public function testDropPrimaryKey()
@@ -287,7 +274,7 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
 
         $sql = $qb->from('profile')->offset(1)->toSQL();
         if ($c->driverName == 'sqlite') {
-            $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT -1 OFFSET 1'), $sql);
+            $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT 9223372036854775807 OFFSET 1'), $sql);
         } else if ($c->driverName == 'mysql') {
             $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT 1, 18446744073709551615'), $sql);
         } else {
@@ -322,6 +309,25 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $schema = $c->getSchema();
         $tableSchema = $schema->getTableSchema('composite_fk', true);
         $this->assertInstanceOf(TableSchema::class, $tableSchema);
-        $c->createCommand($qb->dropForeignKey('composite_fk', 'fk_composite_fk_order_item'))->execute();
+        // no error - test passed
+        if ($c->driverName == 'pgsql') {
+            $c->createCommand($qb->dropForeignKey('composite_fk', 'composite_fk_pkey'))->execute();
+        } else {
+            $c->createCommand($qb->dropForeignKey('composite_fk', 'fk_composite_fk_order_item'))->execute();
+        }
+    }
+
+    public function testCheckIntegrity()
+    {
+        $c = $this->connection;
+        $qb = $c->getQueryBuilder();
+        $this->assertNotNull($qb->getAdapter()->getDriver());
+
+        $schema = $c->getSchema();
+        $tableSchema = $schema->getTableSchema('composite_fk', true);
+        $this->assertInstanceOf(TableSchema::class, $tableSchema);
+
+        $c->createCommand($qb->checkIntegrity(false, 'public', 'composite_fk'))->execute();
+        $c->createCommand($qb->checkIntegrity(true, 'public', 'composite_fk'))->execute();
     }
 }

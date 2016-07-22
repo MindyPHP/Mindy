@@ -45,19 +45,13 @@ class SqliteSchemaTest extends SchemaTest
     public function testDropColumn()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testRenameColumn();
-    }
-
-    public function testForeignKey()
-    {
-        $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testRenameColumn();
+        parent::testDropColumn();
     }
 
     public function testDropPrimaryKey()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testRenameColumn();
+        parent::testDropPrimaryKey();
     }
 
     public function testDropForeignKey()

@@ -77,7 +77,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlDropIndex($tableName, $name)
     {
-        return 'DROP INDEX ' . $this->quoteTableName($tableName) . '.' . $this->quoteColumn($name);
+        return 'DROP INDEX ' . $this->quoteColumn($name);
     }
 
     /**
@@ -227,7 +227,8 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
             // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
             // If the LIMIT expression evaluates to a negative value, then there
             // is no upper bound on the number of rows returned.
-            return ' LIMIT -1 OFFSET ' . $offset; // 2^63-1
+            // -1 or 9223372036854775807 2^63-1
+            return ' LIMIT 9223372036854775807 OFFSET ' . $offset; // 2^63-1
         }
 
         return '';
@@ -263,60 +264,5 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
     {
         return 'PRAGMA foreign_keys=' . $this->getBoolean($check);
-    }
-
-    /**
-     * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
-     */
-    public function resetSequence($tableName, $value = null)
-    {
-        $db = $this->db;
-        $table = $db->getTableSchema($tableName);
-        if ($table !== null && $table->sequenceName !== null) {
-            if ($value === null) {
-                $key = reset($table->primaryKey);
-                $tableName = $db->quoteTableName($tableName);
-                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
-                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
-                });
-            } else {
-                $value = (int)$value - 1;
-            }
-            try {
-                $db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
-            } catch (Exception $e) {
-                // it's possible that sqlite_sequence does not exist
-            }
-        } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildLimit($limit, $offset)
-    {
-        $sql = '';
-        if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
-            if ($this->hasOffset($offset)) {
-                $sql .= ' OFFSET ' . $offset;
-            }
-        } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in SQLite
-            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
-            $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
-        }
-        return $sql;
     }
 }

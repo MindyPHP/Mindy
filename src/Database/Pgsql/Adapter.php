@@ -87,19 +87,17 @@ class Adapter extends BaseAdapter implements IAdapter
      * @param string $table the table name.
      * @return string the SQL statement for checking integrity
      */
-    public function checkIntegrity($check = true, $schema = '', $table = '')
+    public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
-        $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
-        $command = '';
+        $tableNames = [$table];
+        $sql = '';
         foreach ($tableNames as $tableName) {
             $tableName = '"' . $schema . '"."' . $tableName . '"';
-            $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
+            // ALL or USER
+            $sql .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
-        // enable to have ability to alter several tables
-        $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
-        return $command;
+        return $sql;
     }
 
     /**
@@ -131,27 +129,12 @@ class Adapter extends BaseAdapter implements IAdapter
         return new LookupCollection($this->lookups);
     }
 
+    /**
+     * @return string
+     */
     public function getRandomOrder()
     {
         return 'RANDOM()';
-    }
-
-    public function convertToBoolean($value)
-    {
-        return (bool)$value ? 'TRUE' : 'FALSE';
-    }
-
-    public function convertToDateTime($value = null)
-    {
-        static $dateTimeFormat = "Y-m-d H:i:s";
-        if ($value === null) {
-            $value = date($dateTimeFormat);
-        } elseif (is_numeric($value)) {
-            $value = date($dateTimeFormat, $value);
-        } elseif (is_string($value)) {
-            $value = date($dateTimeFormat, strtotime($value));
-        }
-        return $value;
     }
 
     /**
@@ -241,12 +224,29 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
+     * @param $value
+     * @param $format
+     * @return bool|string
+     */
+    protected function formatDateTime($value, $format)
+    {
+        if ($value === null) {
+            $value = date($format);
+        } elseif (is_numeric($value)) {
+            $value = date($format, $value);
+        } elseif (is_string($value)) {
+            $value = date($format, strtotime($value));
+        }
+        return $value;
+    }
+
+    /**
      * @param null $value
      * @return string
      */
     public function getDateTime($value = null)
     {
-        // TODO: Implement getDateTime() method.
+        return $this->formatDateTime($value, "Y-m-d H:i:s");
     }
 
     /**
@@ -255,7 +255,7 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     public function getDate($value = null)
     {
-        // TODO: Implement getDate() method.
+        return $this->formatDateTime($value, "Y-m-d");
     }
 
     /**
@@ -270,23 +270,12 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
-     * @param bool $check
-     * @param string $schema
-     * @param string $table
-     * @return string
-     */
-    public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
-    {
-        // TODO: Implement sqlCheckIntegrity() method.
-    }
-
-    /**
      * @param $tableName
      * @param $name
      * @return mixed
      */
     public function sqlDropForeignKey($tableName, $name)
     {
-        // TODO: Implement sqlDropForeignKey() method.
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP CONSTRAINT ' . $this->quoteColumn($name);
     }
 }

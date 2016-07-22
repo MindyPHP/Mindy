@@ -57,7 +57,7 @@ class SqliteQueryBuilderTest extends DummyQueryBuilderTest
     public function testDropIndex()
     {
         $a = $this->getAdapter();
-        $this->assertEquals($a->quoteSql('DROP INDEX [[test]].[[name]]'), $a->sqlDropIndex('test', 'name'));
+        $this->assertEquals($a->quoteSql('DROP INDEX [[name]]'), $a->sqlDropIndex('test', 'name'));
     }
 
     public function testRenameTable($resultSql = null)
