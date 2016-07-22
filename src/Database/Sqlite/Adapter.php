@@ -216,18 +216,21 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlLimitOffset($limit = null, $offset = null)
     {
-        $sql = '';
         if ($this->hasLimit($limit)) {
             $sql = 'LIMIT ' . $limit;
             if ($this->hasOffset($offset)) {
                 $sql .= ' OFFSET ' . $offset;
             }
+            return ' ' . $sql;
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in SQLite
             // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
-            $sql = 'LIMIT 9223372036854775807 OFFSET ' . $offset; // 2^63-1
+            // If the LIMIT expression evaluates to a negative value, then there
+            // is no upper bound on the number of rows returned.
+            return ' LIMIT -1 OFFSET ' . $offset; // 2^63-1
         }
-        return empty($sql) ? '' : ' ' . $sql;
+
+        return '';
     }
 
     /**

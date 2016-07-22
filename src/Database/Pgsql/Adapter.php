@@ -57,6 +57,30 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
+     * @param $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function sqlLimitOffset($limit = null, $offset = null)
+    {
+        if ($this->hasLimit($limit)) {
+            $sql = 'LIMIT ' . $limit;
+            if ($this->hasOffset($offset)) {
+                $sql .= ' OFFSET ' . $offset;
+            }
+            return ' ' . $sql;
+        } elseif ($this->hasOffset($offset)) {
+            // limit is not optional in SQLite
+            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+            // If the LIMIT expression evaluates to a negative value, then there
+            // is no upper bound on the number of rows returned.
+            return ' LIMIT ALL OFFSET ' . $offset; // 2^63-1
+        }
+
+        return '';
+    }
+    
+    /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param boolean $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables.

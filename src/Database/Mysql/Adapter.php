@@ -183,7 +183,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
             // limit is not optional in MySQL
             // http://stackoverflow.com/a/271650/1106908
             // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            return " LIMIT $offset, 18446744073709551615"; // 2^64-1
+            return " LIMIT " . $offset . ", 18446744073709551615"; // 2^64-1
         }
 
         return '';

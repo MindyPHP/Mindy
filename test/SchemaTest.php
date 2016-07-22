@@ -283,7 +283,18 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $row['id']);
 
         $rows = $c->createCommand($qb->from('profile')->limit(0)->offset(0)->toSQL())->queryAll();
-        $this->assertEquals(0, count($rows));
+        $this->assertEquals(2, count($rows));
+
+        $sql = $qb->from('profile')->offset(1)->toSQL();
+        if ($c->driverName == 'sqlite') {
+            $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT -1 OFFSET 1'), $sql);
+        } else if ($c->driverName == 'mysql') {
+            $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT 1, 18446744073709551615'), $sql);
+        } else {
+            $this->assertEquals($c->getAdapter()->quoteSql('SELECT * FROM [[profile]] LIMIT ALL OFFSET 1'), $sql);
+        }
+        $rows = $c->createCommand($sql)->queryAll();
+        $this->assertEquals(1, count($rows));
     }
 
     public function testRandomOrder()

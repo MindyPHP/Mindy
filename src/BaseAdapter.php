@@ -207,7 +207,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function hasLimit($limit)
     {
-        return is_string($limit) && ctype_digit($limit) || is_integer($limit) && $limit >= 0;
+        return (int)$limit > 0;
     }
 
     /**
@@ -217,7 +217,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function hasOffset($offset)
     {
-        return is_integer($offset) && $offset > 0 || is_string($offset) && ctype_digit($offset) && $offset !== '0';
+        return (int)$offset > 0;
     }
 
     /**
@@ -237,23 +237,12 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param integer $offset
      * @return string the LIMIT and OFFSET clauses
      */
-    public function sqlLimitOffset($limit = null, $offset = null)
-    {
-        $sql = '';
-        if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
-        }
-        if ($this->hasOffset($offset)) {
-            $sql .= ' OFFSET ' . $offset;
-        }
+    abstract public function sqlLimitOffset($limit = null, $offset = null);
 
-        if (empty($sql)) {
-            return '';
-        }
-
-        return ' ' . ltrim($sql);
-    }
-
+    /**
+     * @param $columns
+     * @return array|string
+     */
     public function buildColumns($columns)
     {
         if (!is_array($columns)) {
