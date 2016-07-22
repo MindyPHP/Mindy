@@ -13,6 +13,7 @@ use Mindy\Helper\Creator;
 use Mindy\Query\Connection;
 use Mindy\Query\Schema\ColumnSchema;
 use Mindy\Query\Schema\TableSchema;
+use Mindy\QueryBuilder\Exception\NotSupportedException;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilderFactory;
 use PDO;
@@ -355,5 +356,32 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
 
         $sql = $qb->select('description', true)->from('profile')->toSQL();
         $this->assertEquals(7, count($c->createCommand($sql)->queryAll()));
+    }
+
+    public function testAlterColumn()
+    {
+        $c = $this->connection;
+        $qb = $c->getQueryBuilder();
+        $schema = $c->getSchema();
+        $tableSchema = $schema->getTableSchema('profile', true);
+        $this->assertEquals(128, $tableSchema->getColumn('description')->size);
+        $c->createCommand($qb->alterColumn('profile', 'description', 'varchar(200)'))->execute();
+
+        $tableSchema = $schema->getTableSchema('profile', true);
+        $this->assertEquals(200, $tableSchema->getColumn('description')->size);
+    }
+
+    public function testGetDateTime()
+    {
+        $a = $this->connection->getAdapter();
+        $timestamp = strtotime('2016-07-22 13:54:09');
+        $this->assertEquals('2016-07-22', $a->getDate($timestamp));
+        $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime($timestamp));
+
+        $this->assertEquals('2016-07-22', $a->getDate((string)$timestamp));
+        $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime((string)$timestamp));
+
+        $this->assertEquals('2016-07-22', $a->getDate('2016-07-22 13:54:09'));
+        $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime('2016-07-22 13:54:09'));
     }
 }

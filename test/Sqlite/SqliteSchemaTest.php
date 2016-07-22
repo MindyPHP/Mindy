@@ -16,7 +16,6 @@ use Mindy\QueryBuilder\Exception\NotSupportedException;
  */
 class SqliteSchemaTest extends SchemaTest
 {
-
     /**
      * @return PgsqlAdapter|MysqlAdapter|SqliteAdapter
      */
@@ -58,5 +57,11 @@ class SqliteSchemaTest extends SchemaTest
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
         parent::testDropForeignKey();
+    }
+
+    public function testAlterColumn()
+    {
+        $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
+        parent::testAlterColumn();
     }
 }
