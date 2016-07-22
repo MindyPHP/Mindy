@@ -103,7 +103,7 @@ class Adapter extends BaseAdapter implements IAdapter
      * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
      * @return string the SQL statement for changing the definition of a column.
      */
-    public function alterColumn($table, $column, $type)
+    public function sqlAlterColumn($table, $column, $type)
     {
         // https://github.com/yiisoft/yii2/issues/4492
         // http://www.postgresql.org/docs/9.1/static/sql-altertable.html

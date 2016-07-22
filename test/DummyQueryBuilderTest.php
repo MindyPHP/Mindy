@@ -453,36 +453,33 @@ SQL;
         $adapter = $this->getAdapter();
 
         $qb = $this->getQueryBuilder();
-        $qb->createTable('test', [
-            'id' => 'int(11)'
-        ], '');
         $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] (
 	[[id]] int(11)
-)'), $qb->toSQL());
-
-        $qb->createTable('test', [
+)'), $qb->createTable('test', [
             'id' => 'int(11)'
-        ], 'CHARACTER SET utf8 COLLATE utf8_bin');
+        ], ''));
+
         $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] (
 	[[id]] int(11)
-) CHARACTER SET utf8 COLLATE utf8_bin'), $qb->toSQL());
+) CHARACTER SET utf8 COLLATE utf8_bin'), $qb->createTable('test', [
+            'id' => 'int(11)'
+        ], 'CHARACTER SET utf8 COLLATE utf8_bin'));
 
-        $qb->createTable('test', 'SELECT * FROM [[clone]]', '');
-        $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] SELECT * FROM [[clone]]'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] SELECT * FROM [[clone]]'),
+            $qb->createTable('test', 'SELECT * FROM [[clone]]', ''));
 
-        $qb->createTable('test', 'LIKE [[clone]]', '');
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] LIKE [[clone]]'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('CREATE TABLE [[test]] LIKE [[clone]]'),
+            $qb->createTable('test', 'LIKE [[clone]]', ''));
 
-        $qb->createTableIfNotExists('test', 'LIKE [[clone]]', '');
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] LIKE [[clone]]'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] LIKE [[clone]]'),
+            $qb->createTableIfNotExists('test', 'LIKE [[clone]]', ''));
         
-        $qb->createTableIfNotExists('test', ['id' => 'int(11)'], '');
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] (
 	[[id]] int(11)
-)'), $qb->toSQL());
+)'), $qb->createTableIfNotExists('test', ['id' => 'int(11)'], ''));
     }
 
     public function testConvertToDbValue()
@@ -497,8 +494,7 @@ SQL;
     {
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
-        $qb->dropTable('test');
-        $this->assertEquals($adapter->quoteSql('DROP TABLE [[test]]'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('DROP TABLE [[test]]'), $qb->dropTable('test'));
     }
 
     protected function createPDOInstance()
@@ -525,7 +521,7 @@ SQL;
     public function testRenameColumn($resultSql = null)
     {
         if (empty($resultSql)) {
-            $resultSql = 'ALTER TABLE [[test]] CHANGE [[name]] [[title]] varchar(255) DEFAULT NULL';
+            $resultSql = "ALTER TABLE [[test]] CHANGE [[name]] [[title]] varchar(255) NOT NULL DEFAULT ''";
         }
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();

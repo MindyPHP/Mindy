@@ -13,11 +13,6 @@ use Mindy\QueryBuilder\Exception\NotSupportedException;
 
 class SqliteQueryBuilderTest extends DummyQueryBuilderTest
 {
-    public function setUp()
-    {
-        $this->markTestSkipped('TODO');
-    }
-
     public function getAdapter()
     {
         return new Adapter();

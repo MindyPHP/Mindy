@@ -12,11 +12,6 @@ use Mindy\QueryBuilder\Database\Pgsql\Adapter;
 
 class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
 {
-    public function setUp()
-    {
-        $this->markTestSkipped('TODO');
-    }
-
     public function getAdapter()
     {
         return new Adapter();
@@ -50,7 +45,7 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
 
     public function testAlterColumn($resultSql = null)
     {
-        parent::testAlterColumn('ALTER TABLE [[test]] CHANGE [[name]] [[name]] varchar(255)');
+        parent::testAlterColumn('ALTER TABLE [[test]] ALTER COLUMN [[name]] TYPE varchar(255)');
     }
 
     public function testAddColumn($resultSql = null)

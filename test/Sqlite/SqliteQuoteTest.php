@@ -15,7 +15,6 @@ class SqliteQuoteTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->markTestSkipped('TODO');
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('pdo and pdo_sqlite extension are required.');
         }

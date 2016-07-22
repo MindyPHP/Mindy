@@ -8,7 +8,7 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Exception;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilderFactory;
 use PDO;
@@ -45,12 +45,16 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
 
         $this->factory = new QueryBuilderFactory($adapter, $lb);
 
-        $driver->exec(file_get_contents(__DIR__ . '/up.sql'));
-    }
-
-    protected function tearDown()
-    {
-        $this->createDriver()->exec(file_get_contents(__DIR__ . '/down.sql'));
+        if ($adapter instanceof MysqlAdapter) {
+            $file = 'mysql.sql';
+        } else if ($adapter instanceof PgsqlAdapter) {
+            $file = 'pgsql.sql';
+        } else if ($adapter instanceof SqliteAdapter) {
+            $file = 'sqlite.sql';
+        } else {
+            throw new Exception('Unknown adapter');
+        }
+        $driver->exec(file_get_contents(__DIR__ . '/data/' . $file));
     }
 
     protected function getQueryBuilder()

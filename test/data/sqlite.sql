@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS "test";
+
+CREATE TABLE "test" (
+  id   INTEGER      NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
