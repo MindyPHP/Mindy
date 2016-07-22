@@ -312,4 +312,16 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
                 break;
         }
     }
+    
+    public function testDropForeignKey()
+    {
+        $c = $this->connection;
+        $qb = $c->getQueryBuilder();
+        $this->assertNotNull($qb->getAdapter()->getDriver());
+
+        $schema = $c->getSchema();
+        $tableSchema = $schema->getTableSchema('composite_fk', true);
+        $this->assertInstanceOf(TableSchema::class, $tableSchema);
+        $c->createCommand($qb->dropForeignKey('composite_fk', 'fk_composite_fk_order_item'))->execute();
+    }
 }
