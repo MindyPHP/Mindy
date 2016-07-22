@@ -22,10 +22,6 @@ class QueryBuilder
     const TYPE_DELETE = 'DELETE';
     const TYPE_DROP_TABLE = 'DROP_TABLE';
     const TYPE_RAW = 'RAW';
-    const TYPE_CREATE_TABLE = 'CREATE_TABLE';
-    const TYPE_CREATE_TABLE_IF_NOT_EXISTS = 'CREATE_TABLE_IF_NOT_EXISTS';
-    const TYPE_DROP_TABLE_IF_EXISTS = 'DROP_TABLE_IF_EXISTS';
-    const TYPE_CHECK_INTEGRITY = 'CHECK_INTEGRITY';
 
     protected $update = [];
     protected $insert = [];
@@ -318,11 +314,9 @@ class QueryBuilder
         return $this;
     }
 
-    public function checkIntegrity($check, $tableName = '', $schema = '')
+    public function checkIntegrity($check, $schema = '', $tableName = '')
     {
-        $this->type = self::TYPE_CHECK_INTEGRITY;
-        $this->checkIntegrity = [$check, $tableName, $schema];
-        return $this;
+        return $this->getAdapter()->sqlCheckIntegrity($check, $schema, $tableName);
     }
 
     /**
@@ -412,56 +406,31 @@ class QueryBuilder
         return $this->schema;
     }
 
-    public function setTypeDropTable()
-    {
-        $this->type = self::TYPE_DROP_TABLE;
-        return $this;
-    }
-
     public function dropTable($tableName)
     {
-        $this->setTypeDropTable();
-        $this->dropTable = $tableName;
-        return $this;
+        return $this->getAdapter()->sqlDropTable($tableName);
     }
 
-    public function dropTableIfExists($tableName)
-    {
-        $this->setTypeDropTableIfExists();
-        $this->dropTable = $tableName;
-        return $this;
-    }
-
-    public function setTypeCreateTable()
-    {
-        $this->type = self::TYPE_CREATE_TABLE;
-        return $this;
-    }
-
+    /**
+     * @param $tableName
+     * @param $columns
+     * @param null $options
+     * @return string
+     */
     public function createTable($tableName, $columns, $options = null)
     {
-        $this->setTypeCreateTable();
-        $this->createTable = [$tableName, $columns, $options];
-        return $this;
+        return $this->getAdapter()->sqlCreateTable($tableName, $columns, $options);
     }
 
+    /**
+     * @param $tableName
+     * @param $columns
+     * @param null $options
+     * @return string
+     */
     public function createTableIfNotExists($tableName, $columns, $options = null)
     {
-        $this->setTypeCreateTableIfNotExists();
-        $this->createTable = [$tableName, $columns, $options];
-        return $this;
-    }
-
-    public function setTypeCreateTableIfNotExists()
-    {
-        $this->type = self::TYPE_CREATE_TABLE_IF_NOT_EXISTS;
-        return $this;
-    }
-
-    public function setTypeDropTableIfExists()
-    {
-        $this->type = self::TYPE_DROP_TABLE_IF_EXISTS;
-        return $this;
+        return $this->getAdapter()->sqlCreateTableIfNotExists($tableName, $columns, $options);
     }
 
     /**
