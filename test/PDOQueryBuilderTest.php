@@ -40,10 +40,7 @@ class PDOQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $pdo->query($qb->toSQL())->fetchColumn());
 
         $qb = new QueryBuilder(new Adapter($pdo), $lookupBuilder);
-        $insertSQL = $qb
-            ->setType(QueryBuilder::TYPE_INSERT)
-            ->insert('test', ['name'], ['foo'])
-            ->toSQL();
+        $insertSQL = $qb->insert('test', ['name'], ['foo']);
         $pdo->query($insertSQL)->execute();
     }
 }

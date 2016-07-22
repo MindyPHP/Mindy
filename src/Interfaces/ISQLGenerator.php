@@ -182,12 +182,6 @@ interface ISQLGenerator
     public function sqlCreateIndex($tableName, $name, array $columns, $unique = false);
 
     /**
-     * @param array $columns
-     * @return string
-     */
-    public function sqlDistinct(array $columns);
-
-    /**
      * @param $tables
      * @return string
      */
@@ -249,10 +243,11 @@ interface ISQLGenerator
     public function sqlOrderBy($columns, $options = null);
 
     /**
-     * @param $columns
+     * @param null|string|array $columns
+     * @param null|string|array $distinct
      * @return string
      */
-    public function sqlSelect($columns);
+    public function sqlSelect($columns, $distinct = null);
 
     /**
      * @param $tableName

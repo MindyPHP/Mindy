@@ -333,7 +333,7 @@ abstract class BaseAdapter implements ISQLGenerator
             }
             $sql[] = '(' . implode(',', $record) . ')';
         }
-        return $this->quoteSql('INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES (' . implode(',', $sql)) . ')';
+        return $this->quoteSql('INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $sql));
     }
 
     public function sqlUpdate($tableName, array $columns)
@@ -346,7 +346,7 @@ abstract class BaseAdapter implements ISQLGenerator
         return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(' ', $updateSQL);
     }
 
-    public function generateSelectSQL($select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union)
+    public function generateSelectSQL($select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct)
     {
         if (empty($order)) {
             $orderColumns = [];
@@ -360,7 +360,7 @@ abstract class BaseAdapter implements ISQLGenerator
         $unionSql = $this->sqlUnion($union);
 
         return strtr('{select}{from}{join}{where}{group}{having}{order}{limit_offset}{union}', [
-            '{select}' => $this->sqlSelect($select),
+            '{select}' => $this->sqlSelect($select, $distinct),
             '{from}' => $this->sqlFrom($from),
             '{where}' => $where,
             '{group}' => $this->sqlGroupBy($group),
@@ -569,19 +569,6 @@ abstract class BaseAdapter implements ISQLGenerator
     }
 
     /**
-     * @param array $columns
-     * @return string
-     */
-    public function sqlDistinct(array $columns)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $column) {
-            $quotedColumns[] = $this->quoteColumn($column);
-        }
-        return 'DISTINCT ' . implode(', ', $quotedColumns);
-    }
-
-    /**
      * @param $tables
      * @return string
      */
@@ -756,10 +743,11 @@ abstract class BaseAdapter implements ISQLGenerator
     }
 
     /**
-     * @param $columns
+     * @param array|null|string $columns
+     * @param null $distinct
      * @return string
      */
-    public function sqlSelect($columns)
+    public function sqlSelect($columns, $distinct = null)
     {
         if (empty($columns)) {
             return 'SELECT *';
@@ -816,7 +804,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $select[] = $value;
         }
 
-        return 'SELECT ' . implode(', ', $select);
+        return ($distinct ? 'SELECT DISTINCT ' : 'SELECT ') . implode(', ', $select);
     }
 
     public function generateInsertSQL($tableName, $columns, $rows)

@@ -30,11 +30,11 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     public function quoteValue($str)
     {
-        if ($str === true) {
+        if ($str === true || $str === 'true') {
             return 'TRUE';
-        } else if ($str === false) {
+        } else if ($str === false || $str === 'false') {
             return 'FALSE';
-        } else if ($str === null) {
+        } else if ($str === null || $str === 'null') {
             return 'NULL';
         } else {
             return parent::quoteValue($str);
@@ -156,31 +156,6 @@ class Adapter extends BaseAdapter implements IAdapter
     public function sqlRenameTable($oldTableName, $newTableName)
     {
         return 'ALTER TABLE ' . $this->quoteTableName($oldTableName) . ' RENAME TO ' . $this->quoteTableName($newTableName);
-    }
-
-    public function sqlDistinct(array $columns)
-    {
-        if (!empty($columns)) {
-            $select = 'SELECT DISTINCT ';
-            if (is_string($columns)) {
-                return $select . $columns;
-            } else if (is_array($columns)) {
-                $i = 0;
-                foreach ($columns as $key => $value) {
-                    if (is_numeric($key)) {
-                        $select .= $value;
-                    } else {
-                        $select .= 'ON (' . $key . ') ' . $value;
-                    }
-                    if (count($columns) != $i) {
-                        $select .= ', ';
-                    }
-                    $i++;
-                }
-                return $select;
-            }
-        }
-        return 'SELECT DISTINCT';
     }
 
     /**

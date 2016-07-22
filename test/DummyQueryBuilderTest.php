@@ -167,10 +167,12 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         $this->assertEquals(
-            $adapter->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES ((@qwe@))'),
-            $qb->setTypeInsert()->insert('test', ['name'], [
-                ['qwe']
-            ])->toSQL()
+            $adapter->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES (@qwe@)'),
+            $qb->insert('test', ['name'], [['qwe']])
+        );
+        $this->assertEquals(
+            $adapter->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES (@foo@),(@bar@)'),
+            $qb->insert('test', ['name'], [['foo'], ['bar']])
         );
     }
 

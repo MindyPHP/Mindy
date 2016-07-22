@@ -330,4 +330,30 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $c->createCommand($qb->checkIntegrity(false, 'public', 'composite_fk'))->execute();
         $c->createCommand($qb->checkIntegrity(true, 'public', 'composite_fk'))->execute();
     }
+
+    public function testDistinct()
+    {
+        $c = $this->connection;
+        $qb = $c->getQueryBuilder();
+        $this->assertNotNull($qb->getAdapter()->getDriver());
+
+        $schema = $c->getSchema();
+        $tableSchema = $schema->getTableSchema('composite_fk', true);
+        $this->assertInstanceOf(TableSchema::class, $tableSchema);
+
+        $c->createCommand($qb->insert('profile', ['description'], [
+            ['description' => 1],
+            ['description' => 1],
+            ['description' => 2],
+            ['description' => 3],
+            ['description' => 4],
+            ['description' => 5]
+        ]))->execute();
+
+        $sql = $qb->from('profile')->toSQL();
+        $this->assertEquals(8, count($c->createCommand($sql)->queryAll()));
+
+        $sql = $qb->select('description', true)->from('profile')->toSQL();
+        $this->assertEquals(7, count($c->createCommand($sql)->queryAll()));
+    }
 }

@@ -20,11 +20,11 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
     public function testBoolInsert()
     {
         $qb = $this->getQueryBuilder();
-        $qb->setTypeInsert()->insert('bool_values', ['bool_col'], [[true]]);
-        $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES ((TRUE))'), $qb->toSQL());
+        $sql = $qb->insert('bool_values', ['bool_col'], [[true], [null]]);
+        $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES (TRUE),(NULL)'), $sql);
 
-        $qb->setTypeInsert()->insert('bool_values', ['bool_col'], [['true']]);
-        $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES ((TRUE))'), $qb->toSQL());
+        $sql = $qb->insert('bool_values', ['bool_col'], [['true'], ['false']]);
+        $this->assertEquals($qb->getAdapter()->quoteSql('INSERT INTO [[bool_values]] ([[bool_col]]) VALUES (TRUE),(FALSE)'), $sql);
     }
 
     public function testRenameColumn($resultSql = null)

@@ -51,4 +51,15 @@ class PgsqlSchemaTest extends SchemaTest
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
     }
+
+    public function testQuoteValue()
+    {
+        $c = $this->connection;
+        $this->assertEquals('FALSE', $c->getAdapter()->quoteValue(false));
+        $this->assertEquals('FALSE', $c->getAdapter()->quoteValue('false'));
+        $this->assertEquals('TRUE', $c->getAdapter()->quoteValue(true));
+        $this->assertEquals('TRUE', $c->getAdapter()->quoteValue('true'));
+        $this->assertEquals('NULL', $c->getAdapter()->quoteValue('null'));
+        $this->assertEquals('NULL', $c->getAdapter()->quoteValue(null));
+    }
 }

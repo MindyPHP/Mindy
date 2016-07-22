@@ -17,7 +17,6 @@ use Mindy\QueryBuilder\Q\QAnd;
 class QueryBuilder
 {
     const TYPE_SELECT = 'SELECT';
-    const TYPE_INSERT = 'INSERT';
     const TYPE_UPDATE = 'UPDATE';
     const TYPE_DELETE = 'DELETE';
     const TYPE_DROP_TABLE = 'DROP_TABLE';
@@ -61,6 +60,10 @@ class QueryBuilder
     protected $lookupBuilder;
 
     protected $schema;
+    /**
+     * @var null|string|array
+     */
+    protected $distinct = null;
 
     /**
      * QueryBuilder constructor.
@@ -116,15 +119,6 @@ class QueryBuilder
     /**
      * @return $this
      */
-    public function setTypeInsert()
-    {
-        $this->type = self::TYPE_INSERT;
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
     public function setTypeRaw()
     {
         $this->type = self::TYPE_RAW;
@@ -152,11 +146,13 @@ class QueryBuilder
 
     /**
      * @param $select array|string columns
+     * @param $distinct array|string columns
      * @return $this
      */
-    public function select($select)
+    public function select($select, $distinct = null)
     {
         $this->select = $select;
+        $this->distinct = $distinct;
         return $this;
     }
 
@@ -235,6 +231,12 @@ class QueryBuilder
         return $this->lookupBuilder;
     }
 
+    public function distinct($columns = null)
+    {
+        $this->distinct = $columns;
+        return $this;
+    }
+
     /**
      * @return BaseAdapter|ISQLGenerator
      */
@@ -310,8 +312,7 @@ class QueryBuilder
      */
     public function insert($tableName, array $columns, array $rows)
     {
-        $this->insert = [$tableName, $columns, $rows];
-        return $this;
+        return $this->getAdapter()->generateInsertSQL($tableName, $columns, $rows);
     }
 
     /**
@@ -416,10 +417,6 @@ class QueryBuilder
             case self::TYPE_RAW:
                 return $adapter->quoteSql($this->raw);
 
-            case self::TYPE_INSERT:
-                list($tableName, $columns, $rows) = $this->insert;
-                return $adapter->generateInsertSQL($tableName, $columns, $rows);
-
             case self::TYPE_UPDATE:
                 list($tableName, $update) = $this->update;
                 return $adapter->generateUpdateSQL($tableName, $update, $this->where);
@@ -432,7 +429,7 @@ class QueryBuilder
                 // Fetch where conditions before pass it to adapter.
                 // Reason: Dynamic sql build in callbacks
                 $where = $adapter->sqlWhere($this->where);
-                // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union
+                // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct
                 return $adapter->generateSelectSQL(
                     $this->select,
                     $this->from,
@@ -443,7 +440,8 @@ class QueryBuilder
                     $this->offset,
                     $this->generateJoin(),
                     $this->having,
-                    $this->union
+                    $this->union,
+                    $this->distinct
                 );
         }
     }
