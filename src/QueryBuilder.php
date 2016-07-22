@@ -19,7 +19,6 @@ class QueryBuilder
     const TYPE_SELECT = 'SELECT';
     const TYPE_UPDATE = 'UPDATE';
     const TYPE_DELETE = 'DELETE';
-    const TYPE_DROP_TABLE = 'DROP_TABLE';
     const TYPE_RAW = 'RAW';
 
     protected $update = [];
@@ -36,14 +35,6 @@ class QueryBuilder
     protected $having;
     protected $union;
     protected $checkIntegrity = [];
-    /**
-     * @var array
-     */
-    protected $createTable = [];
-    /**
-     * @var string
-     */
-    protected $dropTable;
     /**
      * @var array|Q
      */
@@ -122,16 +113,6 @@ class QueryBuilder
     public function setTypeRaw()
     {
         $this->type = self::TYPE_RAW;
-        return $this;
-    }
-
-    /**
-     * @param $type
-     * @return $this
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
         return $this;
     }
 
@@ -319,6 +300,21 @@ class QueryBuilder
      * @param $tableName
      * @param $name
      * @param $columns
+     * @param $refTable
+     * @param $refColumns
+     * @param null $delete
+     * @param null $update
+     * @return string
+     */
+    public function addForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        return $this->getAdapter()->sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete, $update);
+    }
+
+    /**
+     * @param $tableName
+     * @param $name
+     * @param $columns
      * @param bool $unique
      * @return string
      */
@@ -341,7 +337,7 @@ class QueryBuilder
      * @param $tableName
      * @return string
      */
-    public function truncate($tableName)
+    public function truncateTable($tableName)
     {
         return $this->getAdapter()->sqlTruncateTable($tableName);
     }
@@ -453,42 +449,24 @@ class QueryBuilder
 
     /**
      * @param $tableName
+     * @param bool $isExists
      * @return string
      */
-    public function dropTable($tableName)
+    public function dropTable($tableName, $isExists = false)
     {
-        return $this->getAdapter()->sqlDropTable($tableName);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function dropTableIfExists($tableName)
-    {
-        return $this->getAdapter()->sqlDropTableIfExists($tableName);
+        return $this->getAdapter()->sqlDropTable($tableName, $isExists);
     }
 
     /**
      * @param $tableName
      * @param $columns
      * @param null $options
+     * @param bool $ifNotExists
      * @return string
      */
-    public function createTable($tableName, $columns, $options = null)
+    public function createTable($tableName, $columns, $options = null, $ifNotExists = false)
     {
-        return $this->getAdapter()->sqlCreateTable($tableName, $columns, $options);
-    }
-
-    /**
-     * @param $tableName
-     * @param $columns
-     * @param null $options
-     * @return string
-     */
-    public function createTableIfNotExists($tableName, $columns, $options = null)
-    {
-        return $this->getAdapter()->sqlCreateTableIfNotExists($tableName, $columns, $options);
+        return $this->getAdapter()->sqlCreateTable($tableName, $columns, $options, $ifNotExists);
     }
 
     /**

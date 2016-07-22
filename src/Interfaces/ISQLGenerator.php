@@ -27,17 +27,10 @@ interface ISQLGenerator
      * @param $tableName
      * @param array $columns
      * @param null $options
+     * @param bool $ifNotExists
      * @return string
      */
-    public function sqlCreateTable($tableName, $columns, $options = null);
-
-    /**
-     * @param $tableName
-     * @param array $columns
-     * @param null $options
-     * @return string
-     */
-    public function sqlCreateTableIfNotExists($tableName, $columns, $options = null);
+    public function sqlCreateTable($tableName, $columns, $options = null, $ifNotExists = false);
 
     /**
      * @param $oldTableName
@@ -50,13 +43,7 @@ interface ISQLGenerator
      * @param $tableName
      * @return string
      */
-    public function sqlDropTable($tableName);
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTableIfExists($tableName);
+    public function sqlDropTable($tableName, $ifExists);
 
     /**
      * @param $tableName

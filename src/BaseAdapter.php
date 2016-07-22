@@ -376,9 +376,10 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName
      * @param array $columns
      * @param null $options
+     * @param bool $ifNotExists
      * @return string
      */
-    public function sqlCreateTable($tableName, $columns, $options = null)
+    public function sqlCreateTable($tableName, $columns, $options = null, $ifNotExists = false)
     {
         if (is_array($columns)) {
             $cols = [];
@@ -389,33 +390,9 @@ abstract class BaseAdapter implements ISQLGenerator
                     $cols[] = "\t" . $type;
                 }
             }
-            $sql = "CREATE TABLE " . $this->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
+            $sql = ($ifNotExists ? "CREATE TABLE IF NOT EXISTS " : "CREATE TABLE ") . $this->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
         } else {
-            $sql = "CREATE TABLE " . $this->quoteTableName($tableName) . " " . $this->quoteSql($columns);
-        }
-        return empty($options) ? $sql : $sql . ' ' . $options;
-    }
-
-    /**
-     * @param $tableName
-     * @param array $columns
-     * @param null $options
-     * @return string
-     */
-    public function sqlCreateTableIfNotExists($tableName, $columns, $options = null)
-    {
-        if (is_array($columns)) {
-            $cols = [];
-            foreach ($columns as $name => $type) {
-                if (is_string($name)) {
-                    $cols[] = "\t" . $this->quoteColumn($name) . ' ' . $type;
-                } else {
-                    $cols[] = "\t" . $type;
-                }
-            }
-            $sql = "CREATE TABLE IF NOT EXISTS " . $this->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
-        } else {
-            $sql = "CREATE TABLE IF NOT EXISTS " . $this->quoteTableName($tableName) . " " . $this->quoteSql($columns);
+            $sql = ($ifNotExists ? "CREATE TABLE IF NOT EXISTS " : "CREATE TABLE ") . $this->quoteTableName($tableName) . " " . $this->quoteSql($columns);
         }
         return empty($options) ? $sql : $sql . ' ' . $options;
     }
@@ -431,18 +408,9 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName
      * @return string
      */
-    public function sqlDropTable($tableName)
+    public function sqlDropTable($tableName, $ifExists)
     {
-        return "DROP TABLE " . $this->quoteTableName($tableName);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTableIfExists($tableName)
-    {
-        return "DROP TABLE IF EXISTS " . $this->quoteTableName($tableName);
+        return ($ifExists ? "DROP TABLE IF EXISTS " : "DROP TABLE ") . $this->quoteTableName($tableName);
     }
 
     /**

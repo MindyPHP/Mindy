@@ -11,7 +11,6 @@ namespace Mindy\QueryBuilder\Tests;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
-use Mindy\QueryBuilder\Tests\SchemaTest;
 use PDO;
 
 class PgsqlSchemaTest extends SchemaTest

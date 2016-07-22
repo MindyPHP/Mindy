@@ -476,12 +476,12 @@ SQL;
 
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] LIKE [[clone]]'),
-            $qb->createTableIfNotExists('test', 'LIKE [[clone]]', ''));
+            $qb->createTable('test', 'LIKE [[clone]]', '', true));
         
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] (
 	[[id]] int(11)
-)'), $qb->createTableIfNotExists('test', ['id' => 'int(11)'], ''));
+)'), $qb->createTable('test', ['id' => 'int(11)'], '', true));
     }
 
     public function testConvertToDbValue()
@@ -523,12 +523,12 @@ SQL;
     public function testRenameColumn($resultSql = null)
     {
         if (empty($resultSql)) {
-            $resultSql = "ALTER TABLE [[test]] CHANGE [[name]] [[title]] varchar(255) NOT NULL DEFAULT ''";
+            $resultSql = "ALTER TABLE [[profile]] CHANGE [[description]] [[title]] varchar(200) DEFAULT NULL";
         }
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         $adapter->setDriver($this->createPDOInstance());
-        $sql = $qb->renameColumn('test', 'name', 'title');
+        $sql = $qb->renameColumn('profile', 'description', 'title');
         $this->assertEquals($adapter->quoteSql($resultSql), $sql);
     }
     

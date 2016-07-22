@@ -29,7 +29,7 @@ class PgsqlQueryBuilderTest extends DummyQueryBuilderTest
 
     public function testRenameColumn($resultSql = null)
     {
-        parent::testRenameColumn('ALTER TABLE [[test]] RENAME COLUMN [[name]] TO [[title]]');
+        parent::testRenameColumn('ALTER TABLE [[profile]] RENAME COLUMN [[description]] TO [[title]]');
     }
 
     public function testRenameTable($resultSql = null)

@@ -72,6 +72,16 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         return $this->factory->getQueryBuilder();
     }
 
+    public function testAddForeignKey()
+    {
+        $c = $this->connection;
+        $qb = $c->getQueryBuilder();
+        $this->assertNotNull($qb->getAdapter()->getDriver());
+
+        $c->createCommand($qb->addForeignKey('drop_primary_test', 'fk_order_id', ['order_id'], 'order', 'id', null, null))->execute();
+        $c->createCommand($qb->dropForeignKey('drop_primary_test', 'fk_order_id'))->execute();
+    }
+
     public function testAddColumn()
     {
         $c = $this->connection;
@@ -160,7 +170,7 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($qb->getAdapter()->getDriver());
 
         $schema = $c->getSchema();
-        $c->createCommand($qb->dropTableIfExists('foo'))->execute();
+        $c->createCommand($qb->dropTable('foo', true))->execute();
 
         $tableSchema = $schema->getTableSchema('foo', true);
         $this->assertNull($tableSchema);
@@ -186,7 +196,7 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $rows = $c->createCommand($qb->select('COUNT(*)')->from('profile')->toSQL())->queryScalar();
         $this->assertEquals(2, $rows);
 
-        $c->createCommand($qb->truncate('profile'))->execute();
+        $c->createCommand($qb->truncateTable('profile'))->execute();
 
         $rows = $c->createCommand($qb->select('COUNT(*)')->from('profile')->toSQL())->queryScalar();
         $this->assertEquals(0, $rows);
