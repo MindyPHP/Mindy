@@ -8,11 +8,10 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Adapter;
+use Mindy\QueryBuilder\Database\Mysql\Adapter;
 use Mindy\QueryBuilder\LookupBuilder;
 use Mindy\QueryBuilder\LookupBuilder\Simple;
-use Mindy\QueryBuilder\QueryBuilder;
-use Mindy\QueryBuilder\Sqlite\LookupCollection;
+use Mindy\QueryBuilder\Database\Sqlite\LookupCollection;
 
 class LookupBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,7 +49,7 @@ class LookupBuilderTest extends \PHPUnit_Framework_TestCase
         $collection = new LookupCollection();
         $builder = new Simple($collection->getLookups());
         list($lookup, $column, $value) = current($builder->parse($where));
-        $adapter = new \Mindy\QueryBuilder\Mysql\Adapter;
+        $adapter = new Adapter;
         $this->assertEquals(str_replace('@', "'", $adapter->quoteSql($whereSql)), $collection->run($adapter, $lookup, $column, $value));
     }
 }

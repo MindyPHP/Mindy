@@ -6,10 +6,10 @@
  * Time: 11:08
  */
 
-namespace Mindy\QueryBuilder\Pgsql;
+namespace Mindy\QueryBuilder\Database\Pgsql;
 
 use Mindy\QueryBuilder\BaseLookupCollection;
-use Mindy\QueryBuilder\IAdapter;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class LookupCollection extends BaseLookupCollection
 {

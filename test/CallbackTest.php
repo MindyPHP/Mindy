@@ -7,7 +7,7 @@ use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilder;
 use Mindy\QueryBuilder\QueryBuilderFactory;
-use Mindy\QueryBuilder\Sqlite\Adapter;
+use Mindy\QueryBuilder\Database\Sqlite\Adapter;
 
 /**
  * Created by PhpStorm.

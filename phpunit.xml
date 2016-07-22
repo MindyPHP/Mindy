@@ -1,5 +1,5 @@
 <phpunit colors="true" strict="true" backupGlobals="false"
-         bootstrap="test/bootstrap.php">
+         bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="All">
             <directory>test</directory>
@@ -8,4 +8,13 @@
     <php>
         <ini name="error_reporting" value="32767"/>
     </php>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./coverage" charset="UTF-8"
+             yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"/>
+    </logging>
 </phpunit>

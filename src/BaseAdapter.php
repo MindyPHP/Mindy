@@ -78,12 +78,12 @@ abstract class BaseAdapter implements ISQLGenerator
      * Returns the actual name of a given table name.
      * This method will strip off curly brackets from the given table name
      * and replace the percentage character '%' with [[Connection::tablePrefix]].
-     * @param string $tablePrefix the table prefix
      * @param string $name the table name to be converted
      * @return string the real name of the given table name
      */
-    public function getRawTableName($tablePrefix, $name)
+    public function getRawTableName($name)
     {
+        $tablePrefix = $this->tablePrefix;
         if (strpos($name, '{{') !== false) {
             $name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
             return str_replace('%', $tablePrefix, $name);
@@ -98,6 +98,16 @@ abstract class BaseAdapter implements ISQLGenerator
     public function getDriver()
     {
         return $this->driver;
+    }
+
+    /**
+     * @param $pdo
+     * @return $this
+     */
+    public function setDriver($pdo)
+    {
+        $this->driver = $pdo;
+        return $this;
     }
 
     /**
@@ -182,10 +192,9 @@ abstract class BaseAdapter implements ISQLGenerator
 
     public function convertToDbValue($rawValue)
     {
-        $str = mb_strtolower((string)$rawValue, 'UTF-8');
-        if ($str === 'true' || $str === 'false') {
+        if ($rawValue === true || $rawValue === false || $rawValue === 'true' || $rawValue === 'false') {
             return $this->getBoolean($rawValue);
-        } else if ($str === 'null') {
+        } else if ($rawValue === 'null' || $rawValue === null) {
             return 'NULL';
         }
         return $rawValue;
@@ -256,7 +265,7 @@ abstract class BaseAdapter implements ISQLGenerator
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
-                $columns[$i] = $column->expression;
+                $columns[$i] = $column->toSQL();
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->quoteColumn($column);
             }
@@ -271,7 +280,7 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
      * @return string the SQL statement for adding a primary key constraint to an existing table.
      */
-    public function addPrimaryKey($name, $table, $columns)
+    public function sqlAddPrimaryKey($name, $table, $columns)
     {
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
@@ -280,8 +289,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $columns[$i] = $this->quoteColumn($col);
         }
         return 'ALTER TABLE ' . $this->quoteTableName($table) . ' ADD CONSTRAINT '
-        . $this->quoteColumn($name) . '  PRIMARY KEY ('
-        . implode(', ', $columns) . ' )';
+        . $this->quoteColumn($name) . ' PRIMARY KEY (' . implode(', ', $columns) . ')';
     }
 
     /**
@@ -464,7 +472,10 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $column
      * @return string
      */
-    abstract public function sqlDropColumn($tableName, $column);
+    public function sqlDropColumn($tableName, $column)
+    {
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP COLUMN ' . $this->quoteColumn($column);
+    }
 
     /**
      * @param $tableName
@@ -491,15 +502,21 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param null $update
      * @return string
      */
-    abstract public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null);
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param $columns
-     * @return string
-     */
-    abstract public function sqlAddPrimaryKey($tableName, $name, $columns);
+    public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
+    {
+        $sql = 'ALTER TABLE ' . $this->quoteTableName($tableName)
+            . ' ADD CONSTRAINT ' . $this->quoteColumn($name)
+            . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
+            . ' REFERENCES ' . $this->quoteTableName($refTable)
+            . ' (' . $this->buildColumns($refColumns) . ')';
+        if ($delete !== null) {
+            $sql .= ' ON DELETE ' . $delete;
+        }
+        if ($update !== null) {
+            $sql .= ' ON UPDATE ' . $update;
+        }
+        return $sql;
+    }
 
     /**
      * @param $tableName
@@ -555,7 +572,13 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param bool $unique
      * @return string
      */
-    abstract public function sqlCreateIndex($tableName, $name, array $columns, $unique = false);
+    public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
+    {
+        return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
+        . $this->quoteTableName($name) . ' ON '
+        . $this->quoteTableName($tableName)
+        . ' (' . $this->buildColumns($columns) . ')';
+    }
 
     /**
      * @param array $columns

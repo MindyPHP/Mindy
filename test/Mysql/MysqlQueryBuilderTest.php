@@ -8,12 +8,17 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Mysql\Adapter;
+use Mindy\QueryBuilder\Database\Mysql\Adapter;
 
 class MysqlQueryBuilderTest extends DummyQueryBuilderTest
 {
     public function getAdapter()
     {
-        return new Adapter;
+        return new Adapter();
+    }
+
+    public function testAddColumn($resultSql = null)
+    {
+        parent::testAddColumn('ALTER TABLE [[test]] ADD [[name]] varchar(255)');
     }
 }

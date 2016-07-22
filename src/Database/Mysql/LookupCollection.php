@@ -6,7 +6,7 @@
  * Time: 15:04
  */
 
-namespace Mindy\QueryBuilder\Mysql;
+namespace Mindy\QueryBuilder\Database\Mysql;
 
 use Mindy\QueryBuilder\BaseLookupCollection;
 use Mindy\QueryBuilder\Interfaces\IAdapter;

@@ -9,8 +9,8 @@
 namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
-use Mindy\QueryBuilder\Mysql\Adapter;
-use Mindy\QueryBuilder\Mysql\LookupCollection;
+use Mindy\QueryBuilder\Database\Mysql\Adapter;
+use Mindy\QueryBuilder\Database\Mysql\LookupCollection;
 use Mindy\QueryBuilder\QueryBuilder;
 use PDO;
 

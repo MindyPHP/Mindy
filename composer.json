@@ -8,9 +8,11 @@
       "email": "max@studio107.ru"
     }
   ],
-  "require": {},
+  "require": {
+  },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "*",
+    "phpunit/php-code-coverage": "^4"
   },
   "autoload": {
     "psr-4": {
@@ -19,7 +21,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Mindy\\QueryBuilder\\Test\\": "test/"
+      "Mindy\\QueryBuilder\\Tests\\": "test/"
     }
   }
 }

@@ -6,7 +6,7 @@
  * Time: 11:08
  */
 
-namespace Mindy\QueryBuilder\Pgsql;
+namespace Mindy\QueryBuilder\Database\Pgsql;
 
 use Mindy\QueryBuilder\BaseAdapter;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
@@ -221,23 +221,13 @@ class Adapter extends BaseAdapter implements IAdapter
 
     /**
      * @param $tableName
-     * @param $column
-     * @return string
-     */
-    public function sqlDropColumn($tableName, $column)
-    {
-        // TODO: Implement sqlDropColumn() method.
-    }
-
-    /**
-     * @param $tableName
      * @param $oldName
      * @param $newName
      * @return mixed
      */
     public function sqlRenameColumn($tableName, $oldName, $newName)
     {
-        // TODO: Implement sqlRenameColumn() method.
+        return "ALTER TABLE {$this->quoteTableName($tableName)} RENAME COLUMN " . $this->quoteColumn($oldName) . ' TO ' . $this->quoteColumn($newName);
     }
 
     /**
@@ -248,32 +238,6 @@ class Adapter extends BaseAdapter implements IAdapter
     public function sqlDropForeignKey($tableName, $name)
     {
         // TODO: Implement sqlDropForeignKey() method.
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param $columns
-     * @param $refTable
-     * @param $refColumns
-     * @param null $delete
-     * @param null $update
-     * @return string
-     */
-    public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
-    {
-        // TODO: Implement sqlAddForeignKey() method.
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param $columns
-     * @return string
-     */
-    public function sqlAddPrimaryKey($tableName, $name, $columns)
-    {
-        // TODO: Implement sqlAddPrimaryKey() method.
     }
 
     /**
@@ -321,19 +285,7 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     public function sqlAddColumn($tableName, $column, $type)
     {
-        // TODO: Implement sqlAddColumn() method.
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param array $columns
-     * @param bool $unique
-     * @return string
-     */
-    public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
-    {
-        // TODO: Implement sqlCreateIndex() method.
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD ' . $this->quoteColumn($column) . ' ' . $type;
     }
 
     /**

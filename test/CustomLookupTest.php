@@ -10,7 +10,7 @@ namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
-use Mindy\QueryBuilder\Mysql\Adapter;
+use Mindy\QueryBuilder\Database\Mysql\Adapter;
 use Mindy\QueryBuilder\QueryBuilder;
 
 class CustomLookupTest extends \PHPUnit_Framework_TestCase

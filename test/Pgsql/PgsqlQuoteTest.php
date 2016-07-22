@@ -8,13 +8,14 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Pgsql\Adapter;
+use Mindy\QueryBuilder\Database\Pgsql\Adapter;
 use PDO;
 
 class PgsqlQuoteTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
+        $this->markTestSkipped('TODO');
         if (!extension_loaded('pdo') || !extension_loaded('pdo_pgsql')) {
             $this->markTestSkipped('pdo and pdo_pgsql extension are required.');
         }

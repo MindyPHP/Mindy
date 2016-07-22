@@ -6,7 +6,7 @@
  * Time: 15:04
  */
 
-namespace Mindy\QueryBuilder\Sqlite;
+namespace Mindy\QueryBuilder\Database\Sqlite;
 
 use Mindy\QueryBuilder\BaseLookupCollection;
 use Mindy\QueryBuilder\Interfaces\IAdapter;

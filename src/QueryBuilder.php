@@ -24,7 +24,6 @@ class QueryBuilder
     const TYPE_RAW = 'RAW';
     const TYPE_CREATE_TABLE = 'CREATE_TABLE';
     const TYPE_CREATE_TABLE_IF_NOT_EXISTS = 'CREATE_TABLE_IF_NOT_EXISTS';
-    const TYPE_ALTER_COLUMN = 'ALTER_COLUMN';
     const TYPE_DROP_TABLE_IF_EXISTS = 'DROP_TABLE_IF_EXISTS';
     const TYPE_CHECK_INTEGRITY = 'CHECK_INTEGRITY';
 
@@ -39,7 +38,6 @@ class QueryBuilder
     protected $offset = '';
     protected $order = [];
     protected $group = [];
-    protected $alterColumn = [];
     protected $having;
     protected $union;
     protected $checkIntegrity = [];
@@ -377,24 +375,6 @@ class QueryBuilder
             case self::TYPE_RAW:
                 return $adapter->quoteSql($this->raw);
 
-            case self::TYPE_ALTER_COLUMN:
-                list($table, $column, $type) = $this->alterColumn;
-                return $adapter->sqlAlterColumn($table, $column, $type);
-
-            case self::TYPE_DROP_TABLE:
-                return $adapter->sqlDropTable($this->dropTable);
-
-            case self::TYPE_DROP_TABLE_IF_EXISTS:
-                return $adapter->sqlDropTableIfExists($this->dropTable);
-
-            case self::TYPE_CREATE_TABLE:
-                list($tableName, $columns, $options) = $this->createTable;
-                return $adapter->generateCreateTable($tableName, $columns, $options);
-
-            case self::TYPE_CREATE_TABLE_IF_NOT_EXISTS:
-                list($tableName, $columns, $options) = $this->createTable;
-                return $adapter->generateCreateTableIfNotExists($tableName, $columns, $options);
-
             case self::TYPE_INSERT:
                 list($tableName, $columns, $rows) = $this->insert;
                 return $adapter->generateInsertSQL($tableName, $columns, $rows);
@@ -405,10 +385,6 @@ class QueryBuilder
 
             case self::TYPE_DELETE:
                 return $adapter->generateDeleteSQL($this->from, $this->where);
-
-            case self::TYPE_CHECK_INTEGRITY:
-                list($check, $tableName, $schema) = $this->checkIntegrity;
-                return $adapter->sqlCheckIntegrity($check, $tableName, $schema);
 
             case self::TYPE_SELECT:
             default:
@@ -431,9 +407,6 @@ class QueryBuilder
         }
     }
 
-    /**
-     * @return \Mindy\Query\Schema\Schema|\Mindy\Query\Database\Mysql\Schema|\Mindy\Query\Database\Sqlite\Schema|\Mindy\Query\Database\Pgsql\Schema|\Mindy\Query\Database\Oci\Schema|\Mindy\Query\Database\Mssql\Schema
-     */
     public function getSchema()
     {
         return $this->schema;
@@ -485,19 +458,6 @@ class QueryBuilder
         return $this;
     }
 
-    public function alterColumn($table, $column, $type)
-    {
-        $this->setTypeAlterColumn();
-        $this->alterColumn = [$table, $column, $type];
-        return $this;
-    }
-
-    public function setTypeAlterColumn()
-    {
-        $this->type = self::TYPE_ALTER_COLUMN;
-        return $this;
-    }
-
     public function setTypeDropTableIfExists()
     {
         $this->type = self::TYPE_DROP_TABLE_IF_EXISTS;
@@ -523,5 +483,69 @@ class QueryBuilder
     {
         $this->union[] = [$union, $all];
         return $this;
+    }
+
+    /**
+     * @param $tableName
+     * @param $oldName
+     * @param $newName
+     * @return mixed
+     */
+    public function renameColumn($tableName, $oldName, $newName)
+    {
+        return $this->getAdapter()->sqlRenameColumn($tableName, $oldName, $newName);
+    }
+
+    /**
+     * @param $oldTableName
+     * @param $newTableName
+     * @return mixed
+     */
+    public function renameTable($oldTableName, $newTableName)
+    {
+        return $this->getAdapter()->sqlRenameTable($oldTableName, $newTableName);
+    }
+
+    /**
+     * @param $name
+     * @param $table
+     * @param $columns
+     * @return string
+     */
+    public function addPrimaryKey($name, $table, $columns)
+    {
+        return $this->getAdapter()->sqlAddPrimaryKey($name, $table, $columns);
+    }
+
+    /**
+     * @param $name
+     * @param $table
+     * @return string
+     */
+    public function dropPrimaryKey($name, $table)
+    {
+        return $this->getAdapter()->dropPrimaryKey($name, $table);
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @param $type
+     * @return string
+     */
+    public function alterColumn($tableName, $column, $type)
+    {
+        return $this->getAdapter()->sqlAlterColumn($tableName, $column, $type);
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @param $type
+     * @return string
+     */
+    public function addColumn($tableName, $column, $type)
+    {
+        return $this->getAdapter()->sqlAddColumn($tableName, $column, $type);
     }
 }

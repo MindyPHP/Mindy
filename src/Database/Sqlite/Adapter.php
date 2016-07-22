@@ -3,13 +3,14 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 13:06
+ * Time: 17:17
  */
 
-namespace Mindy\QueryBuilder\Mysql;
+namespace Mindy\QueryBuilder\Database\Sqlite;
 
 use Exception;
 use Mindy\QueryBuilder\BaseAdapter;
+use Mindy\QueryBuilder\Exception\NotSupportedException;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 
@@ -37,54 +38,17 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
     }
 
-    /**
-     * @return array
-     */
     public function getLookupCollection()
     {
         return new LookupCollection($this->lookups);
     }
 
+    /**
+     * @return string
+     */
     public function getRandomOrder()
     {
         return 'RANDOM()';
-    }
-
-    /**
-     * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
-     * @throws Exception
-     */
-    public function renameColumn($table, $oldName, $newName)
-    {
-        $quotedTable = $this->quoteTableName($table);
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
-        if ($row === false) {
-            throw new Exception("Unable to find column '$oldName' in table '$table'.");
-        }
-        if (isset($row['Create Table'])) {
-            $sql = $row['Create Table'];
-        } else {
-            $row = array_values($row);
-            $sql = $row[1];
-        }
-        if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
-            foreach ($matches[1] as $i => $c) {
-                if ($c === $oldName) {
-                    return "ALTER TABLE $quotedTable CHANGE "
-                    . $this->quoteColumn($oldName) . ' '
-                    . $this->quoteColumn($newName) . ' '
-                    . $matches[2][$i];
-                }
-            }
-        }
-        // try to give back a SQL anyway
-        return "ALTER TABLE $quotedTable CHANGE "
-        . $this->quoteColumn($oldName) . ' '
-        . $this->quoteColumn($newName);
     }
 
     /**
@@ -94,16 +58,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlRenameTable($oldTableName, $newTableName)
     {
-        // TODO: Implement sqlRenameTable() method.
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function sqlDropTable($tableName)
-    {
-        return "DROP TABLE " . $this->quoteTableName($tableName);
+        return 'RENAME TABLE ' . $this->quoteTableName($oldTableName) . ' TO ' . $this->quoteTableName($newTableName);
     }
 
     /**
@@ -121,7 +76,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlTruncateTable($tableName)
     {
-        return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
+        return "DELETE FROM " . $this->quoteTableName($tableName);
     }
 
     /**
@@ -131,38 +86,41 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlDropIndex($tableName, $name)
     {
-        // TODO: Implement sqlDropIndex() method.
+        return 'DROP INDEX ' . $this->quoteTableName($name);
     }
 
     /**
      * @param $tableName
      * @param $column
      * @return string
+     * @throws Exception
      */
     public function sqlDropColumn($tableName, $column)
     {
-        // TODO: Implement sqlDropColumn() method.
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
      * @param $tableName
      * @param $oldName
      * @param $newName
-     * @return mixed
+     * @return string
+     * @throws Exception
      */
     public function sqlRenameColumn($tableName, $oldName, $newName)
     {
-        // TODO: Implement sqlRenameColumn() method.
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
      * @param $tableName
      * @param $name
-     * @return mixed
+     * @return string
+     * @throws Exception
      */
     public function sqlDropForeignKey($tableName, $name)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP FOREIGN KEY ' . $this->quoteColumn($name);
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
@@ -174,10 +132,23 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param null $delete
      * @param null $update
      * @return string
+     * @throws Exception
      */
     public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
-        // TODO: Implement sqlAddForeignKey() method.
+        throw new NotSupportedException('not supported by SQLite');
+    }
+
+    /**
+     * @param $tableName
+     * @param $column
+     * @param $type
+     * @return string
+     * @throws Exception
+     */
+    public function sqlAlterColumn($tableName, $column, $type)
+    {
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
@@ -185,20 +156,22 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $name
      * @param $columns
      * @return string
+     * @throws Exception
      */
     public function sqlAddPrimaryKey($tableName, $name, $columns)
     {
-        // TODO: Implement sqlAddPrimaryKey() method.
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
      * @param $tableName
      * @param $name
      * @return string
+     * @throws Exception
      */
     public function sqlDropPrimaryKey($tableName, $name)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP PRIMARY KEY';
+        throw new NotSupportedException('not supported by SQLite');
     }
 
     /**
@@ -210,6 +183,11 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         return (bool)$value ? 1 : 0;
     }
 
+    /**
+     * @param $value string|\DateTime
+     * @param $format string
+     * @return string
+     */
     protected function formatDateTime($value, $format)
     {
         if ($value === null) {
@@ -219,7 +197,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         } elseif (is_string($value)) {
             $value = date($format, strtotime($value));
         }
-        return $value;
+        return (string)$value;
     }
 
     /**
@@ -241,6 +219,27 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     }
 
     /**
+     * @param $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function sqlLimitOffset($limit = null, $offset = null)
+    {
+        $sql = '';
+        if ($this->hasLimit($limit)) {
+            $sql = 'LIMIT ' . $limit;
+            if ($this->hasOffset($offset)) {
+                $sql .= ' OFFSET ' . $offset;
+            }
+        } elseif ($this->hasOffset($offset)) {
+            // limit is not optional in SQLite
+            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+            $sql = 'LIMIT 9223372036854775807 OFFSET ' . $offset; // 2^63-1
+        }
+        return empty($sql) ? '' : ' ' . $sql;
+    }
+
+    /**
      * @param $tableName
      * @param $column
      * @param $type
@@ -248,28 +247,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlAddColumn($tableName, $column, $type)
     {
-        // TODO: Implement sqlAddColumn() method.
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param array $columns
-     * @param bool $unique
-     * @return string
-     */
-    public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
-    {
-        // TODO: Implement sqlCreateIndex() method.
-    }
-
-    /**
-     * @param array $columns
-     * @return string
-     */
-    public function sqlDistinct(array $columns)
-    {
-        return 'DISTINCT ';
+        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD COLUMN ' . $this->quoteColumn($column) . ' ' . $type;
     }
 
     /**
@@ -279,7 +257,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlResetSequence($tableName, $sequenceName)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' AUTO_INCREMENT=' . $this->quoteColumn($sequenceName);
+        return 'UPDATE sqlite_sequence SET seq=' . $this->quoteValue($sequenceName) . ' WHERE name=' . $this->quoteTableName($tableName);
     }
 
     /**
@@ -290,25 +268,43 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function sqlCheckIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'SET FOREIGN_KEY_CHECKS = ' . $this->getBoolean($check);
+        return 'PRAGMA foreign_keys=' . $this->getBoolean($check);
     }
 
-    public function sqlLimitOffset($limit = null, $offset = null)
+    /**
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
+     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     */
+    public function resetSequence($tableName, $value = null)
     {
-        $sql = '';
-        if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
-            if ($this->hasOffset($offset)) {
-                $sql .= ' OFFSET ' . $offset;
+        $db = $this->db;
+        $table = $db->getTableSchema($tableName);
+        if ($table !== null && $table->sequenceName !== null) {
+            if ($value === null) {
+                $key = reset($table->primaryKey);
+                $tableName = $db->quoteTableName($tableName);
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
+                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                });
+            } else {
+                $value = (int)$value - 1;
             }
-        } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in MySQL
-            // http://stackoverflow.com/a/271650/1106908
-            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+            try {
+                $db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
+            } catch (Exception $e) {
+                // it's possible that sqlite_sequence does not exist
+            }
+        } elseif ($table === null) {
+            throw new InvalidParamException("Table not found: $tableName");
+        } else {
+            throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
         }
-
-        return empty($sql) ? '' : ' ' . $sql;
     }
 
     /**
@@ -323,10 +319,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
                 $sql .= ' OFFSET ' . $offset;
             }
         } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in MySQL
-            // http://stackoverflow.com/a/271650/1106908
-            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+            // limit is not optional in SQLite
+            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+            $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
         }
         return $sql;
     }

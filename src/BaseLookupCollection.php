@@ -12,7 +12,7 @@ use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 
-abstract class BaseLookupCollection implements ILookupCollection
+class BaseLookupCollection implements ILookupCollection
 {
     /**
      * @var array

@@ -8,11 +8,8 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Adapter;
-use Mindy\QueryBuilder\LegacyLookupBuilder;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
-use Mindy\QueryBuilder\QueryBuilder;
-use Mindy\QueryBuilder\Sqlite\LookupCollection;
+use Mindy\QueryBuilder\Database\Sqlite\LookupCollection;
 
 class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,7 +47,7 @@ class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
         $collection = new LookupCollection();
         $builder = new Legacy($collection->getLookups());
         list($lookup, $column, $value) = current($builder->parse($where));
-        $adapter = new \Mindy\QueryBuilder\Mysql\Adapter;
+        $adapter = new \Mindy\QueryBuilder\Database\Mysql\Adapter;
         $this->assertEquals(str_replace('@', "'", $adapter->quoteSql($whereSql)), $collection->run($adapter, $lookup, $column, $value));
     }
 }
