@@ -83,7 +83,12 @@ abstract class Q
                 } else if ($where instanceof Q) {
                     $where->setLookupBuilder($this->lookupBuilder);
                     $where->setAdapter($this->adapter);
-                    $sql[] = '(' . $where->toSQL() . ')';
+//                    if (count($where->getWhere()) == 1) {
+                        $rawSql = implode(' ' . $this->operator . ' ', $sql) . ' ' . $where->operator . ' (' . $where->toSQL() . ')';
+                        $sql = [$rawSql];
+//                    } else {
+//                        $sql[] = '(' . $where->toSQL() . ')';
+//                    }
                 } else if ($where instanceof QueryBuilder) {
                     $sql[] = '(' . $where->toSQL() . ')';
                 }
@@ -98,6 +103,12 @@ abstract class Q
             }
         }
 
-        return implode(' ' . $this->operator . ' ', $sql);
+        return implode(' ' . $this->operator . ' ', array_map(function($part) {
+            if (strpos($part, 'AND') !== false || strpos($part, 'OR') !== false) {
+                return '(' . $part . ')';
+            } else {
+                return $part;
+            }
+        }, $sql));
     }
 }

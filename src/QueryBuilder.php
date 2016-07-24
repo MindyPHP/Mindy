@@ -446,7 +446,7 @@ class QueryBuilder
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct
                 return $adapter->generateSelectSQL(
                     $this->select,
-                    [$this->alias => $this->from],
+                    empty($this->alias) ? $this->from : [$this->alias => $this->from],
                     $where,
                     $this->order,
                     $this->group,

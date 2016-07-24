@@ -254,16 +254,25 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
+//        $this->assertEquals(
+//            $adapter->quoteSql('SELECT * FROM [[test]] WHERE [[id]]=1 AND ([[username]]=@foo@ OR [[username]]=@bar@)'),
+//            $qb->setTypeSelect()
+//                ->from('test')
+//                ->where([
+//                    'id' => 1,
+//                    new QOr([['username' => 'foo'], ['username' => 'bar']])
+//                ])
+//                ->toSQL()
+//        );
+
+        $qb->clear();
         $this->assertEquals(
-            $adapter->quoteSql('SELECT * FROM [[test]] WHERE [[id]]=1 AND ([[username]]=@foo@ OR [[username]]=@bar@)'),
-            $qb->setTypeSelect()->from('test')
-                ->where([
-                    'id' => 1,
-                    new QOr([
-                        ['username' => 'foo'],
-                        ['username' => 'bar']
-                    ])
-                ])->toSQL()
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[username]]=@foo@ OR ([[username]]=@bar@))'),
+            $qb->setTypeSelect()
+                ->from('test')
+                ->addWhere(['username' => 'foo'])
+                ->addWhere(new QOr(['username' => 'bar']))
+                ->toSQL()
         );
     }
 
@@ -272,9 +281,9 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         if ($adapter instanceof \Mindy\QueryBuilder\Database\Pgsql\Adapter) {
-            $sql = 'SELECT * FROM [[test]] WHERE [[is_published]]=TRUE AND (NOT ([[id]]=2)) AND (NOT ([[username]]=@foo@ OR [[username]]=@bar@))';
+            $sql = 'SELECT * FROM [[test]] WHERE ([[is_published]]=TRUE AND (NOT ([[id]]=2)) OR (NOT ([[username]]=@foo@ OR [[username]]=@bar@)))';
         } else {
-            $sql = 'SELECT * FROM [[test]] WHERE [[is_published]]=1 AND (NOT ([[id]]=2)) AND (NOT ([[username]]=@foo@ OR [[username]]=@bar@))';
+            $sql = 'SELECT * FROM [[test]] WHERE ([[is_published]]=1 AND (NOT ([[id]]=2)) OR (NOT ([[username]]=@foo@ OR [[username]]=@bar@)))';
         }
         $this->assertEquals(
             $adapter->quoteSql($sql),
@@ -311,7 +320,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             'id__in' => [1, 2, 3]
         ]);
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE [[a]] != 1 AND ([[id]] IN (1, 2, 3))'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE ([[a]] != 1 AND ([[id]] IN (1, 2, 3)))'), $qb->toSQL());
 
         $subQb = $this->getQueryBuilder();
         $subQb->from('users')->where(['id' => 5]);
@@ -320,7 +329,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             'username__in' => $subQb
         ]);
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE [[a]] != 1 AND ([[id]] IN (1, 2, 3)) AND ([[username]] IN (SELECT * FROM [[users]] WHERE [[id]]=5))'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE ([[a]] != 1 AND ([[id]] IN (1, 2, 3)) AND ([[username]] IN (SELECT * FROM [[users]] WHERE [[id]]=5)))'), $qb->toSQL());
     }
 
     public function testWhereNot()
@@ -377,8 +386,8 @@ SELECT COUNT(*)
 FROM [[test]]
 INNER JOIN [[test2]] ON [[test]].[[fkey]]=[[test2]].[[id]]
 LEFT JOIN [[test3]] ON [[test2]].[[fkey]]=[[test3]].[[id]]
-WHERE [[test]].[[name]]=@username@ AND [[test2]].[[amount]] IS NOT NULL AND
-([[test3]].[[id]] IS NULL OR [[test3]].[[status]] IN (@passed@, @active@, @registered@))
+WHERE ([[test]].[[name]]=@username@ AND [[test2]].[[amount]] IS NOT NULL OR
+([[test3]].[[id]] IS NULL OR [[test3]].[[status]] IN (@passed@, @active@, @registered@)))
 GROUP BY [[test]].[[user_id]]
 HAVING [[test3]].[[age]]>10
 ORDER BY [[test]].[[created]] DESC NULLS LAST
@@ -421,7 +430,7 @@ SQL;
             ->join('LEFT JOIN', 'users', ['c.user_id' => 'u.id'], 'u');
         $adapter = $qb->getAdapter();
 
-        $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]] WHERE [[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1))';
+        $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]] WHERE ([[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1)))';
 
         $this->assertEquals($adapter->quoteSql($sql), $qb->toSQL());
     }
