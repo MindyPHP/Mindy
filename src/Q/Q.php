@@ -88,9 +88,7 @@ abstract class Q
                     $sql[] = '(' . $where->toSQL() . ')';
                 }
             } else {
-                $conditions = $this->lookupBuilder->parse([
-                    $i => $where
-                ]);
+                $conditions = $this->lookupBuilder->parse([$i => $where]);
                 $tmpSql = [];
                 foreach ($conditions as $condition) {
                     list($lookup, $column, $value) = $condition;

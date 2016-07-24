@@ -26,7 +26,7 @@ class QueryBuilder
     protected $type = null;
     protected $alias = '';
     protected $select = ['*'];
-    protected $from = '';
+    protected $from = [];
     protected $raw = '';
     protected $limit = '';
     protected $offset = '';
@@ -49,12 +49,19 @@ class QueryBuilder
      * @var ILookupBuilder
      */
     protected $lookupBuilder;
-
+    /**
+     * @var null
+     */
     protected $schema;
     /**
      * @var null|string|array
      */
     protected $distinct = null;
+    /**
+     * Counter of joined tables aliases
+     * @var int
+     */
+    private $_aliasesCount = 0;
 
     /**
      * QueryBuilder constructor.
@@ -381,6 +388,17 @@ class QueryBuilder
         return $this;
     }
 
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+
     private function generateJoin()
     {
         if (empty($this->join)) {
@@ -428,7 +446,7 @@ class QueryBuilder
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct
                 return $adapter->generateSelectSQL(
                     $this->select,
-                    $this->from,
+                    [$this->alias => $this->from],
                     $where,
                     $this->order,
                     $this->group,
@@ -572,5 +590,22 @@ class QueryBuilder
     public function addColumn($tableName, $column, $type)
     {
         return $this->getAdapter()->sqlAddColumn($tableName, $column, $type);
+    }
+
+    /**
+     * Makes alias for joined table
+     * @param $table
+     * @param bool $increment
+     * @return string
+     */
+    public function makeAliasKey($table, $increment = true)
+    {
+        if ($increment) {
+            $this->_aliasesCount += 1;
+        }
+        return strtr('{table}_{count}', [
+            '{table}' => $this->getAdapter()->getRawTableName($table),
+            '{count}' => $this->_aliasesCount
+        ]);
     }
 }

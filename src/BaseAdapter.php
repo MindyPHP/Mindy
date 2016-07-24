@@ -34,6 +34,14 @@ abstract class BaseAdapter implements ISQLGenerator
     }
 
     /**
+     * @return string
+     */
+    public function getTablePrefix()
+    {
+        return $this->tablePrefix;
+    }
+
+    /**
      * @return BaseLookupCollection|ILookupCollection
      */
     abstract public function getLookupCollection();
@@ -82,10 +90,9 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function getRawTableName($name)
     {
-        $tablePrefix = $this->tablePrefix;
         if (strpos($name, '{{') !== false) {
             $name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
-            return str_replace('%', $tablePrefix, $name);
+            return str_replace('%', $this->getTablePrefix(), $name);
         } else {
             return $name;
         }
@@ -345,6 +352,20 @@ abstract class BaseAdapter implements ISQLGenerator
         return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(' ', $updateSQL);
     }
 
+    /**
+     * @param $select
+     * @param $from
+     * @param $where
+     * @param $order
+     * @param $group
+     * @param $limit
+     * @param $offset
+     * @param $join
+     * @param $having
+     * @param $union
+     * @param $distinct
+     * @return string
+     */
     public function generateSelectSQL($select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct)
     {
         if (empty($order)) {
@@ -381,6 +402,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlCreateTable($tableName, $columns, $options = null, $ifNotExists = false)
     {
+        $tableName = $this->getRawTableName($tableName);
         if (is_array($columns)) {
             $cols = [];
             foreach ($columns as $name => $type) {
@@ -410,6 +432,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlDropTable($tableName, $ifExists)
     {
+        $tableName = $this->getRawTableName($tableName);
         return ($ifExists ? "DROP TABLE IF EXISTS " : "DROP TABLE ") . $this->quoteTableName($tableName);
     }
 
@@ -550,10 +573,11 @@ abstract class BaseAdapter implements ISQLGenerator
         }
         $quotedTableNames = [];
         foreach ($tables as $tableAlias => $table) {
+            $tableRaw = $this->getRawTableName($table);
             if (strpos($table, 'SELECT') !== false) {
-                $quotedTableNames[] = '(' . $table . ')' . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
+                $quotedTableNames[] = '(' . $tableRaw . ')' . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
             } else {
-                $quotedTableNames[] = $this->quoteTableName($table) . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
+                $quotedTableNames[] = $this->quoteTableName($tableRaw) . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
             }
         }
 
@@ -569,6 +593,7 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlJoin($joinType, $tableName, $on, $alias)
     {
+        $tableName = $this->getRawTableName($tableName);
         $onSQL = [];
         foreach ($on as $leftColumn => $rightColumn) {
             $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);

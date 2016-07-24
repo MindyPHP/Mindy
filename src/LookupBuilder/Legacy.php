@@ -20,16 +20,23 @@ class Legacy extends Base
             } else {
                 return $this->runCallback(explode($this->separator, $rawLookup), $value);
             }
-        } else if (substr_count($rawLookup, $this->separator) == 1) {
-            list($column, $lookup) = explode($this->separator, $rawLookup);
-            if ($this->hasLookup($lookup) == false) {
-                throw new Exception('Unknown lookup:' . $lookup);
-            }
-            $column = $this->fetchColumnName($column);
-            return [$lookup, $column, $value];
-        } else {
+        }
+
+        if (substr_count($rawLookup, $this->separator) == 0) {
             $rawLookup = $this->fetchColumnName($rawLookup);
             return [$this->default, $rawLookup, $value];
+        } else {
+            $lookupNodes = explode($this->separator, $rawLookup);
+            if ($this->hasLookup(end($lookupNodes)) && substr_count($rawLookup, $this->separator) == 1) {
+                list($column, $lookup) = explode($this->separator, $rawLookup);
+                if ($this->hasLookup($lookup) == false) {
+                    throw new Exception('Unknown lookup:' . $lookup);
+                }
+                $column = $this->fetchColumnName($column);
+                return [$lookup, $column, $value];
+            } else {
+                return $this->runCallback($lookupNodes, $value);
+            }
         }
     }
 

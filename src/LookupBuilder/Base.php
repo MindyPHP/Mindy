@@ -89,6 +89,11 @@ abstract class Base implements ILookupBuilder
         return $this;
     }
 
+    public function getSeparator()
+    {
+        return $this->separator;
+    }
+
     public function getDefault()
     {
         return $this->default;
