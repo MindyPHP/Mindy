@@ -12,7 +12,7 @@ use Exception;
 
 class Legacy extends Base
 {
-    protected function parseLookup($rawLookup, $value)
+    public function parseLookup($rawLookup, $value)
     {
         if (substr_count($rawLookup, $this->separator) > 1) {
             if (empty($this->callback)) {
@@ -44,7 +44,10 @@ class Legacy extends Base
     {
         $conditions = [];
         foreach ($where as $lookup => $value) {
-            if (is_numeric($lookup)) {
+            /**
+             * Parse new QOr([[username => 1], [username => 2]])
+             */
+            if (is_numeric($lookup) && is_array($value)) {
                 $lookup = key($value);
                 $value = array_shift($value);
             }

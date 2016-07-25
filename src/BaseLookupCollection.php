@@ -11,6 +11,7 @@ namespace Mindy\QueryBuilder;
 use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
+use Mindy\QueryBuilder\Q\Q;
 
 class BaseLookupCollection implements ILookupCollection
 {
@@ -42,7 +43,7 @@ class BaseLookupCollection implements ILookupCollection
         return [
             'exact' => function (IAdapter $adapter, $column, $value) {
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
-                if ($value instanceof QueryBuilder) {
+                if ($value instanceof QueryBuilder || $value instanceof Q) {
                     $sqlValue = '(' . $value->toSQL() . ')';
                 } else if (strpos($value, 'SELECT') !== false) {
                     $sqlValue = '(' . $value . ')';
@@ -50,11 +51,7 @@ class BaseLookupCollection implements ILookupCollection
                     $sqlValue = $adapter->quoteValue($value);
                 }
 
-                if (in_array($adapter->getSqlType($value), ['TRUE', 'FALSE', 'NULL'])) {
-                    return $adapter->quoteColumn($column) . ' IS ' . $adapter->getSqlType($value);
-                } else {
-                    return $adapter->quoteColumn($column) . '=' . $sqlValue;
-                }
+                return $adapter->quoteColumn($column) . '=' . $sqlValue;
             },
             'gte' => function (IAdapter $adapter, $column, $value) {
                 return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);

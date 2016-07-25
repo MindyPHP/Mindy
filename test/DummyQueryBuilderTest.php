@@ -17,7 +17,9 @@ use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
+use Mindy\QueryBuilder\Q\QAndNot;
 use Mindy\QueryBuilder\Q\QOr;
+use Mindy\QueryBuilder\Q\QOrNot;
 use Mindy\QueryBuilder\QueryBuilderFactory;
 use PDO;
 
@@ -65,12 +67,12 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $qb
             ->from('test')
-            ->orWhere(['col1' => null, 'col2__isnt' => true])
-            ->orWhere(['col3' => null, 'col4' => false])
+            ->orWhere(['col1' => 1, 'col2' => 2])
+            ->orWhere(['col3' => 3, 'col4' => 4])
             ->where(['id' => 1]);
         $this->assertEquals(
             $qb->getAdapter()->quoteSql(
-                'SELECT * FROM [[test]] WHERE (([[col1]] IS NULL AND [[col2]] IS NOT TRUE) OR ([[col3]] IS NULL AND [[col4]] IS FALSE)) AND ([[id]]=1)'
+                'SELECT * FROM [[test]] WHERE ((([[col1]]=1 AND [[col2]]=2) OR ([[col3]]=3 AND [[col4]]=4)) AND ([[id]]=1))'
             ), $qb->toSQL());
 
         $qb = $this->getQueryBuilder();
@@ -81,7 +83,17 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->where(['id__isnt' => 3]);
         $this->assertEquals(
             $qb->getAdapter()->quoteSql(
-                'SELECT * FROM [[test]] WHERE (([[id]]=2) OR ([[id]]=1)) AND ([[id]]!=3)'
+                'SELECT * FROM [[test]] WHERE ((([[id]]=2) OR ([[id]]=1)) AND ([[id]]!=3))'
+            ), $qb->toSQL());
+
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->from('test')
+            ->where(['id' => 2])
+            ->orWhere(new QAndNot(['id' => 1]));
+        $this->assertEquals(
+            $qb->getAdapter()->quoteSql(
+                'SELECT * FROM [[test]] WHERE (([[id]]=2) OR (NOT ([[id]]=1)))'
             ), $qb->toSQL());
     }
 
@@ -204,7 +216,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         $this->assertEquals(
-            $adapter->quoteSql('UPDATE [[test]] SET [[name]]=@bar@ WHERE [[name]]=@foo@'),
+            $adapter->quoteSql('UPDATE [[test]] SET [[name]]=@bar@ WHERE ([[name]]=@foo@)'),
             $qb->setTypeUpdate()->update('test', ['name' => 'bar'])->where(['name' => 'foo'])->toSQL()
         );
     }
@@ -214,7 +226,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         $this->assertEquals(
-            $adapter->quoteSql('DELETE FROM [[test]] WHERE [[name]]=@qwe@'),
+            $adapter->quoteSql('DELETE FROM [[test]] WHERE ([[name]]=@qwe@)'),
             $qb->setTypeDelete()->where(['name' => 'qwe'])->from('test')->toSQL()
         );
     }
@@ -227,11 +239,11 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qbSub
             ->setTypeSelect()->from('comment')
             ->where(['is_published' => true]);
+        $bool = '1';
         if ($adapter instanceof \Mindy\QueryBuilder\Database\Pgsql\Adapter) {
-            $sql = 'SELECT (SELECT * FROM [[comment]] WHERE [[is_published]]=TRUE) AS [[id]] FROM [[test]]';
-        } else {
-            $sql = 'SELECT (SELECT * FROM [[comment]] WHERE [[is_published]]=1) AS [[id]] FROM [[test]]';
+            $bool = 'TRUE';
         }
+        $sql = 'SELECT (SELECT * FROM [[comment]] WHERE ([[is_published]]=' . $bool . ')) AS [[id]] FROM [[test]]';
         $this->assertEquals(
             $adapter->quoteSql($sql),
             $qb->setTypeSelect()->select([
@@ -248,11 +260,11 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qbSub
             ->setTypeSelect()->from(['comment'])->select('user_id')
             ->where(['is_published' => true]);
+        $bool = '1';
         if ($adapter instanceof \Mindy\QueryBuilder\Database\Pgsql\Adapter) {
-            $sql = 'SELECT [[t]].[[user_id]] FROM (SELECT [[user_id]] FROM [[comment]] WHERE [[is_published]]=TRUE) AS [[t]]';
-        } else {
-            $sql = 'SELECT [[t]].[[user_id]] FROM (SELECT [[user_id]] FROM [[comment]] WHERE [[is_published]]=1) AS [[t]]';
+            $bool = 'TRUE';
         }
+        $sql = 'SELECT [[t]].[[user_id]] FROM (SELECT [[user_id]] FROM [[comment]] WHERE ([[is_published]]=' . $bool . ')) AS [[t]]';
         $this->assertEquals(
             $adapter->quoteSql($sql),
             $qb->setTypeSelect()->select(['t.user_id'])->from(['t' => $qbSub->toSQL()])->toSQL()
@@ -273,38 +285,43 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testQOr()
+    public function testQOrInOneCondition()
     {
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
         $this->assertEquals(
-            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[id]]=1 OR ([[username]]=@foo@ OR [[username]]=@bar@))'),
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[id]]=1 AND ([[username]]=@foo@ OR [[username]]=@bar@))'),
+            $qb->from('test')->where([
+                'id' => 1, new QOr([['username' => 'foo'], ['username' => 'bar']])
+            ])->toSQL()
+        );
+    }
+
+    public function testOrWhere()
+    {
+        $qb = $this->getQueryBuilder();
+        $adapter = $qb->getAdapter();
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE (([[id]]=1 AND [[username]]=@foo@) OR ([[username]]=@bar@))'),
             $qb->setTypeSelect()
                 ->from('test')
-                ->where([
-                    'id' => 1,
-                    new QOr([['username' => 'foo'], ['username' => 'bar']])
-                ])
+                ->where(['id' => 1, 'username' => 'foo'])
+                ->orWhere(['username' => 'bar'])
                 ->toSQL()
         );
 
-        $qb->clear();
-        $this->assertEquals(
-            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[username]]=@foo@ OR ([[username]]=@bar@))'),
-            $qb->setTypeSelect()
-                ->from('test')
-                ->addWhere(['username' => 'foo'])
-                ->addWhere(new QOr(['username' => 'bar']))
-                ->toSQL()
-        );
+    }
 
+    public function testQOr()
+    {
+        $qb = $this->getQueryBuilder();
+        $adapter = $qb->getAdapter();
         $qb->clear();
         $this->assertEquals(
-            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[username]]=@foo@ OR ([[username]]=@bar@))'),
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[username]]=@foo@ OR [[username]]=@bar@)'),
             $qb->setTypeSelect()
                 ->from('test')
-                ->addWhere(new QOr(['username' => 'bar']))
-                ->addWhere(['username' => 'foo'])
+                ->where(new QOr([['username' => 'foo'], ['username' => 'bar']]))
                 ->toSQL()
         );
     }
@@ -313,19 +330,19 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
+        $bool = '1';
         if ($adapter instanceof \Mindy\QueryBuilder\Database\Pgsql\Adapter) {
-            $sql = 'SELECT * FROM [[test]] WHERE ([[is_published]]=TRUE AND (NOT ([[id]]=2)) OR (NOT ([[username]]=@foo@ OR [[username]]=@bar@)))';
-        } else {
-            $sql = 'SELECT * FROM [[test]] WHERE ([[is_published]]=1 AND (NOT ([[id]]=2)) OR (NOT ([[username]]=@foo@ OR [[username]]=@bar@)))';
+            $bool = 'TRUE';
         }
+        $sql = 'SELECT * FROM [[test]] WHERE ((([[is_published]]=' . $bool . ') OR (NOT ([[id]]=2))) AND (NOT ([[username]]=@foo@ OR [[username]]=@bar@)))';
         $this->assertEquals(
             $adapter->quoteSql($sql),
             $qb
                 ->setTypeSelect()
                 ->from('test')
                 ->where(['is_published' => true])
-                ->addWhere(new QAndNot(['id' => 2]))
-                ->addWhere(new QOrNot([
+                ->orWhere(new QAndNot(['id' => 2]))
+                ->where(new QOrNot([
                     ['username' => 'foo'],
                     ['username' => 'bar']
                 ]))->toSQL()
@@ -342,27 +359,31 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testWhere()
+    public function testWhereRaw()
     {
         $qb = $this->getQueryBuilder();
         $qb->where('[[a]] != 1');
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE [[a]] != 1'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE ([[a]] != 1)'), $qb->toSQL());
+    }
 
-        $qb->addWhere([
-            'id__in' => [1, 2, 3]
-        ]);
+    public function testWhere()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->where('[[a]] != 1')
+            ->where(['id__in' => [1, 2, 3]]);
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE ([[a]] != 1 AND ([[id]] IN (1, 2, 3)))'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE (([[a]] != 1) AND ([[id]] IN (1, 2, 3)))'), $qb->toSQL());
 
         $subQb = $this->getQueryBuilder();
         $subQb->from('users')->where(['id' => 5]);
 
-        $qb->addWhere([
-            'username__in' => $subQb
-        ]);
+        $qb->where(['username__in' => $subQb]);
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE ([[a]] != 1 AND ([[id]] IN (1, 2, 3)) AND ([[username]] IN (SELECT * FROM [[users]] WHERE [[id]]=5)))'), $qb->toSQL());
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT * WHERE ((([[a]] != 1) AND ([[id]] IN (1, 2, 3))) AND ([[username]] IN (SELECT * FROM [[users]] WHERE ([[id]]=5))))'),
+            $qb->toSQL());
     }
 
     public function testWhereNot()
@@ -370,7 +391,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb = $this->getQueryBuilder();
         $qb->where(new QAndNot('[[a]] != 1'));
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE NOT ([[a]] != 1)'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE (NOT ([[a]] != 1))'), $qb->toSQL());
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QAndNot([
@@ -378,7 +399,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             'price__gte' => 100
         ]));
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE NOT ([[id]] IN (1, 2, 3) AND [[price]]>=100)'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE (NOT ([[id]] IN (1, 2, 3) AND [[price]]>=100))'), $qb->toSQL());
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOrNot([
@@ -386,7 +407,7 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             'price__gte' => 100
         ]));
         $adapter = $qb->getAdapter();
-        $this->assertEquals($adapter->quoteSql('SELECT * WHERE NOT ([[id]] IN (1, 2, 3) OR [[price]]>=100)'), $qb->toSQL());
+        $this->assertEquals($adapter->quoteSql('SELECT * WHERE (NOT ([[id]] IN (1, 2, 3) OR [[price]]>=100))'), $qb->toSQL());
     }
 
     public function testClone()
@@ -410,62 +431,6 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
         $qb->union($newQb, true);
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('SELECT [[a]], [[b]], [[c]] FROM [[test]] UNION ALL (SELECT [[a]], [[b]], [[c]] FROM [[test]])'), $qb->toSQL());
-    }
-
-    public function testCrazyTwo()
-    {
-        $sql = <<<SQL
-SELECT COUNT(*)
-FROM [[test]]
-INNER JOIN [[test2]] ON [[test]].[[fkey]]=[[test2]].[[id]]
-LEFT JOIN [[test3]] ON [[test2]].[[fkey]]=[[test3]].[[id]]
-WHERE ([[test]].[[name]]=@username@ AND [[test2]].[[amount]] IS NOT NULL OR
-([[test3]].[[id]] IS NULL OR [[test3]].[[status]] IN (@passed@, @active@, @registered@)))
-GROUP BY [[test]].[[user_id]]
-HAVING [[test3]].[[age]]>10
-ORDER BY [[test]].[[created]] DESC NULLS LAST
-SQL;
-        $qb = $this->getQueryBuilder();
-        $qb
-            ->select('COUNT(*)')
-            ->from('test')
-            ->join('INNER JOIN', 'test2', ['test.fkey' => 'test2.id'])
-            ->join('LEFT JOIN', 'test3', ['test2.fkey' => 'test3.id'])
-            ->where([
-                'test.name' => 'username',
-                'test2.amount__isnull' => false,
-                new QOr([
-                    ['test3.id__isnull' => true],
-                    ['test3.status__in' => ['passed', 'active', 'registered']]
-                ])
-            ])
-            ->group(['test.user_id'])
-            ->having(['test3.age__gt' => 10])
-            ->order(['-test.created'], 'NULLS LAST');
-        $adapter = $qb->getAdapter();
-        $sqlRaw = str_replace(["\n"], ' ', str_replace('  ', '', $sql));
-        $this->assertEquals($adapter->quoteSql($sqlRaw), $qb->toSQL());
-    }
-
-    public function testCrazyOne()
-    {
-        $qb = $this->getQueryBuilder();
-        $qb
-            ->select(['u.*', 'count' => 'SELECT 1+1'])
-            ->from(['c' => 'comment'])
-            ->where([
-                'u.is_published' => true,
-                'u.group_id' => $this->getQueryBuilder()->select('id')->from('group')->where(['is_published' => true])->toSQL()
-            ])
-            ->addWhere(new QAndNot([
-                'u.id__gte' => 1
-            ]))
-            ->join('LEFT JOIN', 'users', ['c.user_id' => 'u.id'], 'u');
-        $adapter = $qb->getAdapter();
-
-        $sql = 'SELECT [[u]].*, (SELECT 1+1) AS [[count]] FROM [[comment]] AS [[c]] LEFT JOIN [[users]] AS [[u]] ON [[c]].[[user_id]]=[[u]].[[id]] WHERE ([[u]].[[is_published]]=' . $adapter->getBoolean(1) . ' AND [[u]].[[group_id]]=(SELECT [[id]] FROM [[group]] WHERE [[is_published]]=' . $adapter->getBoolean(1) . ') AND (NOT ([[u]].[[id]]>=1)))';
-
-        $this->assertEquals($adapter->quoteSql($sql), $qb->toSQL());
     }
 
     public function testAggregation()

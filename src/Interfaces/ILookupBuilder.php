@@ -21,6 +21,13 @@ interface ILookupBuilder
     public function setLookups(array $lookups);
 
     /**
+     * @param $lookup
+     * @param $value
+     * @return array
+     */
+    public function parseLookup($lookup, $value);
+
+    /**
      * @param array $where
      * @return mixed
      */

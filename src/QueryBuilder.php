@@ -162,19 +162,30 @@ class QueryBuilder
     public function where($where)
     {
         if (empty($this->where)) {
-            $this->where = ['AND', $where, null];
+            $this->where = $this->generateWhere('AND', $where, null);
         } else {
-            $this->where = ['AND', $this->where, $where];
+            $this->where = $this->generateWhere('AND', $this->where, $where);
         }
         return $this;
+    }
+
+    /**
+     * @param $operator
+     * @param $where
+     * @param $condition
+     * @return array
+     */
+    private function generateWhere($operator, $where, $condition)
+    {
+        return ['___operator' => $operator, '___where' => $where, '___condition' => $condition];
     }
 
     public function orWhere($where)
     {
         if (empty($this->where)) {
-            $this->where = ['OR', $where, null];
+            $this->where = $this->generateWhere('OR', $where, null);
         } else {
-            $this->where = ['OR', $this->where, $where];
+            $this->where = $this->generateWhere('OR', $this->where, $where);
         }
         return $this;
     }
@@ -186,9 +197,9 @@ class QueryBuilder
     public function andWhere($where)
     {
         if (empty($this->where)) {
-            $this->where = ['AND', $where, null];
+            $this->where = $this->generateWhere('AND', $where, null);
         } else {
-            $this->where = ['AND', $this->where, $where];
+            $this->where = $this->generateWhere('AND', $this->where, $where);
         }
         return $this;
     }
@@ -439,11 +450,25 @@ class QueryBuilder
                 return $adapter->quoteSql($this->raw);
 
             case self::TYPE_UPDATE:
+                $where = $this->where;
+                if (($where instanceof Q) === false) {
+                    $where = new QAnd($where);
+                }
+                $where->setAdapter($this->getAdapter());
+                $where->setLookupBuilder($this->getLookupBuilder());
+
                 list($tableName, $update) = $this->update;
-                return $adapter->generateUpdateSQL($tableName, $update, $this->where);
+                return $adapter->generateUpdateSQL($tableName, $update, $where);
 
             case self::TYPE_DELETE:
-                return $adapter->generateDeleteSQL($this->from, $this->where);
+                $where = $this->where;
+                if (($where instanceof Q) === false) {
+                    $where = new QAnd($where);
+                }
+                $where->setAdapter($this->getAdapter());
+                $where->setLookupBuilder($this->getLookupBuilder());
+
+                return $adapter->generateDeleteSQL($this->from, $where);
 
             case self::TYPE_SELECT:
             default:
@@ -457,11 +482,13 @@ class QueryBuilder
                 $where->setAdapter($this->getAdapter());
                 $where->setLookupBuilder($this->getLookupBuilder());
 
+                $sqlWhere = $adapter->sqlWhere($where);
+
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct
                 return $adapter->generateSelectSQL(
                     $this->select,
                     empty($this->alias) ? $this->from : [$this->alias => $this->from],
-                    $adapter->sqlWhere($where),
+                    $sqlWhere,
                     $this->order,
                     $this->group,
                     $this->limit,

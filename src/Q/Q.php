@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder\Q;
 
+use Exception;
 use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
@@ -34,7 +35,7 @@ abstract class Q
 
     public function __construct($where)
     {
-        $this->where = (array)$where;
+        $this->where = $where;
     }
 
     public function setLookupBuilder(ILookupBuilder $lookupBuilder)
@@ -60,56 +61,100 @@ abstract class Q
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getOperator()
     {
         return $this->operator;
     }
 
+    /**
+     * @return string
+     */
     public function toSQL()
     {
         return $this->parseWhere();
     }
 
+    /**
+     * @return string
+     */
     protected function parseWhere()
     {
         return $this->parseConditions($this->where);
+    }
+
+    private function isWherePart($where)
+    {
+        return is_array($where) &&
+        array_key_exists('___operator', $where) &&
+        array_key_exists('___where', $where) &&
+        array_key_exists('___condition', $where);
     }
 
     /**
      * @param array $where
      * @return string
      */
-    protected function parseConditions(array $where)
+    protected function parseConditions($where)
     {
-        $sql = '';
-        list($operator, $childWhere, $condition) = $where;
-        if (is_array($childWhere) && count($childWhere) === 3) {
-            $whereSql = $this->parseConditions($childWhere);
-            $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition) . ')';
-        } else {
-            $sql .= $this->parsePart($childWhere);
+        if (empty($where)) {
+            return '';
         }
+
+        $sql = '';
+        if ($this->isWherePart($where)) {
+            $operator = $where['___operator'];
+            $childWhere = $where['___where'];
+            $condition = $where['___condition'];
+            if ($this->isWherePart($childWhere)) {
+                $whereSql = $this->parseConditions($childWhere);
+                $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition) . ')';
+            } else {
+                $sql .= $this->parsePart($childWhere);
+            }
+        } else {
+            $sql .= $this->parsePart($where);
+        }
+
+        if (empty($sql)) {
+            return '';
+        }
+
         return $sql;
     }
 
+    /**
+     * @param $part
+     * @return string
+     * @throws Exception
+     */
     protected function parsePart($part)
     {
         if (is_string($part)) {
             return $part;
         } else if (is_array($part)) {
-            $conditions = $this->lookupBuilder->parse($part);
             $sql = [];
-            foreach ($conditions as $condition) {
-                list($lookup, $column, $value) = $condition;
-                $sql[] = $this->adapter->runLookup($lookup, $column, $value);
+            foreach ($part as $key => $value) {
+                if ($value instanceof Q) {
+                    $sql[] = '(' . $this->parsePart($value) . ')';
+                } else if (is_numeric($key) && is_array($value)) {
+                    $sql[] = $this->parsePart($value);
+                } else {
+                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
+                    $sql[] = $this->adapter->runLookup($lookup, $column, $lookupValue);
+                }
             }
-            return implode(' AND ', $sql);
+            return implode(' ' . $this->getOperator() . ' ', $sql);
         } else if ($part instanceof Q) {
             $part->setLookupBuilder($this->lookupBuilder);
             $part->setAdapter($this->adapter);
             return $part->toSQL();
         } else if ($part instanceof QueryBuilder) {
             return $part->toSQL();
+        } else {
+            throw new Exception("Unknown sql part type");
         }
     }
 }

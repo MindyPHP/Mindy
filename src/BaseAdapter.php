@@ -638,9 +638,12 @@ abstract class BaseAdapter implements ISQLGenerator
             return $this->quoteSql($where);
         }
 
-        $sql = $where->toSQL();
-        
-        return empty($sql) ? '' : ' WHERE ' . $sql;
+        /** @var \Mindy\QueryBuilder\Q\Q $where */
+        if (($sql = $where->toSQL()) && empty($sql) === false) {
+            return ' WHERE (' . $sql . ')';
+        } else {
+            return '';
+        }
     }
 
     /**
