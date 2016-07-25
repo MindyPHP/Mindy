@@ -16,6 +16,9 @@
     "mindy/query": "dev-master"
   },
   "autoload": {
+    "files": [
+      "src/Conditions.php"
+    ],
     "psr-4": {
       "Mindy\\QueryBuilder\\": "src/",
       "Mindy\\Query\\": "vendor/mindy/query/src/"

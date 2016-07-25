@@ -13,6 +13,7 @@ use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
+use Mindy\QueryBuilder\Q\QOr;
 
 class QueryBuilder
 {
@@ -160,12 +161,21 @@ class QueryBuilder
      */
     public function where($where)
     {
-        if (($where instanceof Q) == false) {
-            $where = new QAnd($where);
+        if (empty($this->where)) {
+            $this->where = ['AND', $where, null];
+        } else {
+            $this->where = ['AND', $this->where, $where];
         }
-        $where->setLookupBuilder($this->getLookupBuilder());
-        $where->setAdapter($this->getAdapter());
-        $this->where = $where;
+        return $this;
+    }
+
+    public function orWhere($where)
+    {
+        if (empty($this->where)) {
+            $this->where = ['OR', $where, null];
+        } else {
+            $this->where = ['OR', $this->where, $where];
+        }
         return $this;
     }
 
@@ -173,15 +183,12 @@ class QueryBuilder
      * @param $where
      * @return $this
      */
-    public function addWhere($where)
+    public function andWhere($where)
     {
         if (empty($this->where)) {
-            $this->where($where);
+            $this->where = ['AND', $where, null];
         } else {
-            if (($where instanceof Q) == false) {
-                $where = new QAnd($where);
-            }
-            $this->where->addWhere($where);
+            $this->where = ['AND', $this->where, $where];
         }
         return $this;
     }
@@ -339,7 +346,7 @@ class QueryBuilder
     {
         return $this->getAdapter()->sqlDropForeignKey($tableName, $name);
     }
-    
+
     /**
      * @param $tableName
      * @return string
@@ -442,12 +449,19 @@ class QueryBuilder
             default:
                 // Fetch where conditions before pass it to adapter.
                 // Reason: Dynamic sql build in callbacks
-                $where = $adapter->sqlWhere($this->where);
+
+                $where = $this->where;
+                if (($where instanceof Q) === false) {
+                    $where = new QAnd($where);
+                }
+                $where->setAdapter($this->getAdapter());
+                $where->setLookupBuilder($this->getLookupBuilder());
+
                 // $select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct
                 return $adapter->generateSelectSQL(
                     $this->select,
                     empty($this->alias) ? $this->from : [$this->alias => $this->from],
-                    $where,
+                    $adapter->sqlWhere($where),
                     $this->order,
                     $this->group,
                     $this->limit,

@@ -67,48 +67,49 @@ abstract class Q
 
     public function toSQL()
     {
-        $sql = [];
-        foreach ($this->where as $i => $where) {
-            if (is_numeric($i)) {
-                if (is_string($where)) {
-                    $sql[] = $this->adapter->quoteSql($where);
-                } else if (is_array($where)) {
-                    $conditions = $this->lookupBuilder->parse($where);
-                    $tmpSql = [];
-                    foreach ($conditions as $condition) {
-                        list($lookup, $column, $value) = $condition;
-                        $tmpSql[] = $this->adapter->runLookup($lookup, $column, $value);
-                    }
-                    $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
-                } else if ($where instanceof Q) {
-                    $where->setLookupBuilder($this->lookupBuilder);
-                    $where->setAdapter($this->adapter);
-//                    if (count($where->getWhere()) == 1) {
-                        $rawSql = implode(' ' . $this->operator . ' ', $sql) . ' ' . $where->operator . ' (' . $where->toSQL() . ')';
-                        $sql = [$rawSql];
-//                    } else {
-//                        $sql[] = '(' . $where->toSQL() . ')';
-//                    }
-                } else if ($where instanceof QueryBuilder) {
-                    $sql[] = '(' . $where->toSQL() . ')';
-                }
-            } else {
-                $conditions = $this->lookupBuilder->parse([$i => $where]);
-                $tmpSql = [];
-                foreach ($conditions as $condition) {
-                    list($lookup, $column, $value) = $condition;
-                    $tmpSql[] = $this->adapter->runLookup($lookup, $column, $value);
-                }
-                $sql[] = implode(' ' . $this->operator . ' ', $tmpSql);
-            }
-        }
+        return $this->parseWhere();
+    }
 
-        return implode(' ' . $this->operator . ' ', array_map(function($part) {
-            if (strpos($part, 'AND') !== false || strpos($part, 'OR') !== false) {
-                return '(' . $part . ')';
-            } else {
-                return $part;
+    protected function parseWhere()
+    {
+        return $this->parseConditions($this->where);
+    }
+
+    /**
+     * @param array $where
+     * @return string
+     */
+    protected function parseConditions(array $where)
+    {
+        $sql = '';
+        list($operator, $childWhere, $condition) = $where;
+        if (is_array($childWhere) && count($childWhere) === 3) {
+            $whereSql = $this->parseConditions($childWhere);
+            $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition) . ')';
+        } else {
+            $sql .= $this->parsePart($childWhere);
+        }
+        return $sql;
+    }
+
+    protected function parsePart($part)
+    {
+        if (is_string($part)) {
+            return $part;
+        } else if (is_array($part)) {
+            $conditions = $this->lookupBuilder->parse($part);
+            $sql = [];
+            foreach ($conditions as $condition) {
+                list($lookup, $column, $value) = $condition;
+                $sql[] = $this->adapter->runLookup($lookup, $column, $value);
             }
-        }, $sql));
+            return implode(' AND ', $sql);
+        } else if ($part instanceof Q) {
+            $part->setLookupBuilder($this->lookupBuilder);
+            $part->setAdapter($this->adapter);
+            return $part->toSQL();
+        } else if ($part instanceof QueryBuilder) {
+            return $part->toSQL();
+        }
     }
 }

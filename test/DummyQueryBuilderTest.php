@@ -17,9 +17,7 @@ use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
-use Mindy\QueryBuilder\Q\QAndNot;
 use Mindy\QueryBuilder\Q\QOr;
-use Mindy\QueryBuilder\Q\QOrNot;
 use Mindy\QueryBuilder\QueryBuilderFactory;
 use PDO;
 
@@ -60,6 +58,31 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
             $adapter->quoteSql('SELECT * FROM [[tests]]'),
             $qb->from('tests')->toSQL()
         );
+    }
+
+    public function testWhereAndOr()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->from('test')
+            ->orWhere(['col1' => null, 'col2__isnt' => true])
+            ->orWhere(['col3' => null, 'col4' => false])
+            ->where(['id' => 1]);
+        $this->assertEquals(
+            $qb->getAdapter()->quoteSql(
+                'SELECT * FROM [[test]] WHERE (([[col1]] IS NULL AND [[col2]] IS NOT TRUE) OR ([[col3]] IS NULL AND [[col4]] IS FALSE)) AND ([[id]]=1)'
+            ), $qb->toSQL());
+
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->from('test')
+            ->where(['id' => 2])
+            ->orWhere(['id' => 1])
+            ->where(['id__isnt' => 3]);
+        $this->assertEquals(
+            $qb->getAdapter()->quoteSql(
+                'SELECT * FROM [[test]] WHERE (([[id]]=2) OR ([[id]]=1)) AND ([[id]]!=3)'
+            ), $qb->toSQL());
     }
 
     public function testGroupOrder()
@@ -254,16 +277,16 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $qb = $this->getQueryBuilder();
         $adapter = $qb->getAdapter();
-//        $this->assertEquals(
-//            $adapter->quoteSql('SELECT * FROM [[test]] WHERE [[id]]=1 AND ([[username]]=@foo@ OR [[username]]=@bar@)'),
-//            $qb->setTypeSelect()
-//                ->from('test')
-//                ->where([
-//                    'id' => 1,
-//                    new QOr([['username' => 'foo'], ['username' => 'bar']])
-//                ])
-//                ->toSQL()
-//        );
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[id]]=1 OR ([[username]]=@foo@ OR [[username]]=@bar@))'),
+            $qb->setTypeSelect()
+                ->from('test')
+                ->where([
+                    'id' => 1,
+                    new QOr([['username' => 'foo'], ['username' => 'bar']])
+                ])
+                ->toSQL()
+        );
 
         $qb->clear();
         $this->assertEquals(
@@ -272,6 +295,16 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
                 ->from('test')
                 ->addWhere(['username' => 'foo'])
                 ->addWhere(new QOr(['username' => 'bar']))
+                ->toSQL()
+        );
+
+        $qb->clear();
+        $this->assertEquals(
+            $adapter->quoteSql('SELECT * FROM [[test]] WHERE ([[username]]=@foo@ OR ([[username]]=@bar@))'),
+            $qb->setTypeSelect()
+                ->from('test')
+                ->addWhere(new QOr(['username' => 'bar']))
+                ->addWhere(['username' => 'foo'])
                 ->toSQL()
         );
     }
@@ -486,7 +519,7 @@ SQL;
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] LIKE [[clone]]'),
             $qb->createTable('test', 'LIKE [[clone]]', '', true));
-        
+
         $adapter = $qb->getAdapter();
         $this->assertEquals($adapter->quoteSql('CREATE TABLE IF NOT EXISTS [[test]] (
 	[[id]] int(11)
@@ -540,7 +573,7 @@ SQL;
         $sql = $qb->renameColumn('profile', 'description', 'title');
         $this->assertEquals($adapter->quoteSql($resultSql), $sql);
     }
-    
+
     public function testRenameTable($resultSql = null)
     {
         if (empty($resultSql)) {

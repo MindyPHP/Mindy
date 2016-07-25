@@ -49,7 +49,12 @@ class BaseLookupCollection implements ILookupCollection
                 } else {
                     $sqlValue = $adapter->quoteValue($value);
                 }
-                return $adapter->quoteColumn($column) . '=' . $sqlValue;
+
+                if (in_array($adapter->getSqlType($value), ['TRUE', 'FALSE', 'NULL'])) {
+                    return $adapter->quoteColumn($column) . ' IS ' . $adapter->getSqlType($value);
+                } else {
+                    return $adapter->quoteColumn($column) . '=' . $sqlValue;
+                }
             },
             'gte' => function (IAdapter $adapter, $column, $value) {
                 return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);
@@ -66,6 +71,14 @@ class BaseLookupCollection implements ILookupCollection
             'range' => function (IAdapter $adapter, $column, $value) {
                 list($min, $max) = $value;
                 return $adapter->quoteColumn($column) . ' BETWEEN ' . $adapter->quoteValue($min) . ' AND ' . $adapter->quoteValue($max);
+            },
+            'isnt' => function (IAdapter $adapter, $column, $value) {
+                /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
+                if (in_array($adapter->getSqlType($value), ['TRUE', 'FALSE', 'NULL'])) {
+                    return $adapter->quoteColumn($column) . ' IS NOT ' . $adapter->getSqlType($value);
+                } else {
+                    return $adapter->quoteColumn($column) . '!=' . $adapter->quoteValue($value);
+                }
             },
             'isnull' => function (IAdapter $adapter, $column, $value) {
                 return $adapter->quoteColumn($column) . ' ' . ((bool)$value ? 'IS NULL' : 'IS NOT NULL');

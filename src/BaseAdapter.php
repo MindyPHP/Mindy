@@ -11,6 +11,7 @@ namespace Mindy\QueryBuilder;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
+use Mindy\QueryBuilder\Q\QAnd;
 
 abstract class BaseAdapter implements ISQLGenerator
 {
@@ -453,6 +454,23 @@ abstract class BaseAdapter implements ISQLGenerator
     abstract public function sqlDropIndex($tableName, $name);
 
     /**
+     * @param $value
+     * @return string
+     */
+    public function getSqlType($value)
+    {
+        if ($value === 'true' || $value === true) {
+            return 'TRUE';
+        } else if ($value === null || $value === 'null') {
+            return 'NULL';
+        } else if ($value === false || $value === 'false') {
+            return 'FALSE';
+        } else {
+            return $value;
+        }
+    }
+
+    /**
      * @param $tableName
      * @param $column
      * @return string
@@ -612,20 +630,16 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlWhere($where)
     {
-        if (is_string($where)) {
-            return $where;
-        }
-
         if (empty($where)) {
             return '';
         }
 
-        if ($where instanceof Q) {
-            $sql = $where->toSQL();
-        } else {
-            $sql = $this->quoteSql($where);
+        if (is_string($where)) {
+            return $this->quoteSql($where);
         }
 
+        $sql = $where->toSQL();
+        
         return empty($sql) ? '' : ' WHERE ' . $sql;
     }
 
