@@ -11,7 +11,6 @@ namespace Mindy\QueryBuilder\Tests;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
-use PDO;
 
 class PgsqlSchemaTest extends SchemaTest
 {
@@ -38,17 +37,6 @@ class PgsqlSchemaTest extends SchemaTest
     protected function getAdapter()
     {
         return new PgsqlAdapter();
-    }
-
-    /**
-     * @return \PDO
-     */
-    protected function createDriver()
-    {
-        return new PDO('pgsql:dbname=test;host=localhost', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
     }
 
     public function testQuoteValue()

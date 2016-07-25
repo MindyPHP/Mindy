@@ -24,17 +24,6 @@ class SqliteSchemaTest extends SchemaTest
         return new SqliteAdapter;
     }
 
-    /**
-     * @return \PDO
-     */
-    protected function createDriver()
-    {
-        return new PDO('sqlite::memory:', '', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-    }
-
     public function testAddForeignKey()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');

@@ -69,12 +69,8 @@ class Adapter extends BaseAdapter implements IAdapter
                 $sql .= ' OFFSET ' . $offset;
             }
             return ' ' . $sql;
-        } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in SQLite
-            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
-            // If the LIMIT expression evaluates to a negative value, then there
-            // is no upper bound on the number of rows returned.
-            return ' LIMIT ALL OFFSET ' . $offset; // 2^63-1
+        } else if ($this->hasOffset($offset)) {
+            return ' LIMIT ALL OFFSET ' . $offset;
         }
 
         return '';

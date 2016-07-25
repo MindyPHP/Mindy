@@ -11,7 +11,7 @@ namespace Mindy\QueryBuilder\Tests;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter;
 use Mindy\QueryBuilder\Exception\NotSupportedException;
 
-class SqliteQueryBuilderTest extends DummyQueryBuilderTest
+class SqliteBuildSchemaTest extends BuildSchemaTest
 {
     public function getAdapter()
     {
@@ -21,47 +21,50 @@ class SqliteQueryBuilderTest extends DummyQueryBuilderTest
     public function testRenameColumn($resultSql = null)
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testRenameColumn();
+        $this->getQueryBuilder()->renameColumn('profile', 'description', 'title');
     }
 
     public function testAddPrimaryKey($resultSql = null)
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testAddPrimaryKey($resultSql);
+        $this->getQueryBuilder()->addPrimaryKey('test', 'user_id', ['foo']);
     }
 
     public function testDropPrimaryKey($resultSql = null)
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testAddPrimaryKey($resultSql);
+        $this->getQueryBuilder()->dropPrimaryKey('test', 'foo');
     }
 
     public function testAlterColumn($resultSql = null)
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testAddPrimaryKey($resultSql);
+        $this->getQueryBuilder()->alterColumn('test', 'name', 'varchar(255)');
     }
 
     public function testAddForeignKey()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testAddForeignKey();
+        $this->getQueryBuilder()->addForeignKey('test', 'foo', ['id'], 'user', 'bar', null, null);
     }
 
     public function testDropColumn()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
-        parent::testDropColumn();
-    }
-
-    public function testDropIndex()
-    {
-        $a = $this->getAdapter();
-        $this->assertEquals($a->quoteSql('DROP INDEX [[name]]'), $a->sqlDropIndex('test', 'name'));
+        $this->getQueryBuilder()->dropColumn('test', 'foo');
     }
 
     public function testRenameTable($resultSql = null)
     {
-        parent::testRenameTable('ALTER TABLE [[test]] RENAME TO [[foo]]');
+        $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');
+        $this->getQueryBuilder()->renameColumn('profile', 'description', 'title');
+    }
+
+    public function testAddColumn()
+    {
+        $this->assertSql(
+            'ALTER TABLE [[test]] ADD COLUMN [[name]] varchar(255)',
+            $this->getQueryBuilder()->addColumn('test', 'name', 'varchar(255)')
+        );
     }
 }

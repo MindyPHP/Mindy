@@ -7,9 +7,13 @@ php:
 
 install: composer install
 
+env:
+  - CONFIG=config_travis.php
+
 before_script:
   - mysql -u root -e 'CREATE DATABASE test;'
-  - mysql -u root test < test/dump.sql
+  - psql -c 'create database test;' -U postgres
 
 services:
   - mysql
+  - postgresql

@@ -110,9 +110,9 @@ abstract class Q
             $condition = $where['___condition'];
             if ($this->isWherePart($childWhere)) {
                 $whereSql = $this->parseConditions($childWhere);
-                $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition) . ')';
+                $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition, $operator) . ')';
             } else {
-                $sql .= $this->parsePart($childWhere);
+                $sql .= $this->parsePart($childWhere, $operator);
             }
         } else {
             $sql .= $this->parsePart($where);
@@ -130,8 +130,11 @@ abstract class Q
      * @return string
      * @throws Exception
      */
-    protected function parsePart($part)
+    protected function parsePart($part, $operator = null)
     {
+        if ($operator === null) {
+            $operator = $this->getOperator();
+        }
         if (is_string($part)) {
             return $part;
         } else if (is_array($part)) {
@@ -146,7 +149,7 @@ abstract class Q
                     $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
                 }
             }
-            return implode(' ' . $this->getOperator() . ' ', $sql);
+            return implode(' ' . $operator . ' ', $sql);
         } else if ($part instanceof Q) {
             $part->setLookupBuilder($this->lookupBuilder);
             $part->setAdapter($this->adapter);

@@ -9,6 +9,7 @@
 namespace Mindy\QueryBuilder;
 
 use Exception;
+use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
@@ -237,16 +238,23 @@ abstract class BaseAdapter implements ISQLGenerator
     public function buildColumns($columns)
     {
         if (!is_array($columns)) {
-            if (strpos($columns, '(') !== false) {
-                return $columns;
+            if ($columns instanceof Aggregation) {
+                return $this->quoteSql($columns->toSQL());
+            } else if (strpos($columns, '(') !== false) {
+                return $this->quoteSql($columns);
             } else {
                 $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
             }
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
-                $columns[$i] = $column->toSQL();
-            } elseif (strpos($column, '(') === false) {
+                $columns[$i] = $this->quoteSql($column->toSQL());
+            } else if (strpos($column, 'AS') !== false) {
+                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
+                     list(, $rawColumn, $rawAlias) = $matches;
+                     $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
+                 }
+            } else if (strpos($column, '(') === false) {
                 $columns[$i] = $this->quoteColumn($column);
             }
         }
@@ -575,15 +583,19 @@ abstract class BaseAdapter implements ISQLGenerator
         }
         $quotedTableNames = [];
         foreach ($tables as $tableAlias => $table) {
-            $tableRaw = $this->getRawTableName($table);
-            if (strpos($table, 'SELECT') !== false) {
+            if ($table instanceof QueryBuilder) {
+                $tableRaw = $table->toSQL();
+            } else {
+                $tableRaw = $this->getRawTableName($table);
+            }
+            if (strpos($tableRaw, 'SELECT') !== false) {
                 $quotedTableNames[] = '(' . $tableRaw . ')' . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
             } else {
                 $quotedTableNames[] = $this->quoteTableName($tableRaw) . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
             }
         }
 
-        return ' FROM ' . implode(', ', $quotedTableNames);
+        return implode(', ', $quotedTableNames);
     }
 
     /**
@@ -595,10 +607,19 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlJoin($joinType, $tableName, $on, $alias)
     {
-        $tableName = $this->getRawTableName($tableName);
+        if (is_string($tableName)) {
+            $tableName = $this->getRawTableName($tableName);
+        } else if ($tableName instanceof QueryBuilder) {
+            $tableName = $tableName->toSQL();
+        }
+
         $onSQL = [];
         foreach ($on as $leftColumn => $rightColumn) {
-            $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
+            if ($rightColumn instanceof Expression) {
+                $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteSql($rightColumn->toSQL());
+            } else {
+                $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
+            }
         }
 
         if (strpos($tableName, 'SELECT') !== false) {
@@ -618,16 +639,7 @@ abstract class BaseAdapter implements ISQLGenerator
             return '';
         }
 
-        if (is_string($where)) {
-            return $this->quoteSql($where);
-        }
-
-        /** @var \Mindy\QueryBuilder\Q\Q $where */
-        if (($sql = $where->toSQL()) && empty($sql) === false) {
-            return ' WHERE (' . $sql . ')';
-        } else {
-            return '';
-        }
+        return ' WHERE ' . $this->quoteSql($where);
     }
 
     /**
@@ -653,27 +665,18 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $unions
      * @return string
      */
-    public function sqlUnion($unions)
+    public function sqlUnion($union, $all = false)
     {
-        if (empty($unions)) {
+        if (empty($union)) {
             return '';
         }
 
-        if (is_string($unions)) {
-            return trim($unions);
+        if ($union instanceof QueryBuilder) {
+            $unionSQL = $union->order(null)->toSQL();
+        } else {
+            $unionSQL = $this->quoteSql($union);
         }
-
-        $sql = [];
-        foreach ($unions as $unionEntry) {
-            list($union, $all) = $unionEntry;
-            if ($union instanceof QueryBuilder) {
-                $unionSQL = $union->toSQL();
-            } else {
-                $unionSQL = $union;
-            }
-            $sql[] = ($all ? 'UNION ALL' : 'UNION') . ' (' . $unionSQL . ')';
-        }
-        return ' ' . implode(' ', $sql);
+        return ($all ? 'UNION ALL' : 'UNION') . ' (' . $unionSQL . ')';
     }
 
     /**
@@ -701,12 +704,20 @@ abstract class BaseAdapter implements ISQLGenerator
             return '';
         }
 
+        if (is_string($columns)) {
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            $quotedColumns = array_map(function($column) {
+                return $this->quoteColumn($column);
+            }, $columns);
+            return implode(', ', $quotedColumns);
+        }
+
         $group = [];
         foreach ($columns as $column) {
             $group[] = $this->quoteColumn($column);
         }
 
-        return ' GROUP BY ' . implode(' ', $group);
+        return implode(', ', $group);
     }
 
     /**
@@ -718,6 +729,19 @@ abstract class BaseAdapter implements ISQLGenerator
     {
         if (empty($columns)) {
             return '';
+        }
+
+        if (is_string($columns)) {
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            $quotedColumns = array_map(function($column) {
+                $temp = explode(' ', $column);
+                if (count($temp) == 2) {
+                    return $this->quoteColumn($temp[0]) . ' ' . $temp[1];
+                } else {
+                    return $this->quoteColumn($column);
+                }
+            }, $columns);
+            return implode(', ', $quotedColumns);
         }
 
         $order = [];
@@ -732,7 +756,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $order[] = $this->quoteColumn($column) . ' ' . $direction;
         }
 
-        return ' ORDER BY ' . implode(' ', $order) . (empty($options) ? '' : ' ' . $options);
+        return implode(', ', $order) . (empty($options) ? '' : ' ' . $options);
     }
 
     /**
@@ -742,8 +766,9 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlSelect($columns, $distinct = null)
     {
+        $selectSql = $distinct ? 'SELECT DISTINCT ' : 'SELECT ';
         if (empty($columns)) {
-            return 'SELECT *';
+            return $selectSql . '*';
         }
 
         if (is_array($columns) === false) {
@@ -797,7 +822,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $select[] = $value;
         }
 
-        return ($distinct ? 'SELECT DISTINCT ' : 'SELECT ') . implode(', ', $select);
+        return $selectSql . implode(', ', $select);
     }
 
     public function generateInsertSQL($tableName, $columns, $rows)
@@ -807,11 +832,7 @@ abstract class BaseAdapter implements ISQLGenerator
 
     public function generateDeleteSQL($from, $where)
     {
-        return strtr('{delete}{from}{where}', [
-            '{delete}' => 'DELETE',
-            '{from}' => $this->sqlFrom($from),
-            '{where}' => $this->sqlWhere($where)
-        ]);
+        return '';
     }
 
     public function generateUpdateSQL($tableName, $update, $where)

@@ -20,14 +20,18 @@ use PDO;
 use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
+use ReflectionClass;
 
 abstract class SchemaTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var array
+     */
+    public $config;
+    /**
      * @var QueryBuilderFactory
      */
     public $factory;
-
     /**
      * @var Connection
      */
@@ -41,30 +45,29 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @return \PDO
      */
-    abstract protected function createDriver();
+    protected function createDriver()
+    {
+        return new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
+    }
 
     protected function setUp()
     {
         parent::setUp();
+        $reflector = new ReflectionClass(get_class($this));
+        $dir = dirname($reflector->getFileName());
+        $configFile = @getenv('TRAVIS') ? 'config_travis.php' : 'config.php';
+        $this->config =  require($dir . '/' . $configFile);
+        
         $driver = $this->createDriver();
-
         $adapter = $this->getAdapter();
         $adapter->setDriver($driver);
-
-        $lb = new Legacy($this->getAdapter()->getLookupCollection()->getLookups());
-
-        $this->factory = new QueryBuilderFactory($adapter, $lb);
-
-        if ($adapter instanceof MysqlAdapter) {
-            $file = 'Mysql/config.php';
-        } else if ($adapter instanceof PgsqlAdapter) {
-            $file = 'Pgsql/config.php';
-        } else if ($adapter instanceof SqliteAdapter) {
-            $file = 'Sqlite/config.php';
-        } else {
-            throw new Exception('Unknown adapter');
-        }
-        $this->connection = Creator::createObject(require(__DIR__ . '/' . $file));
+        $builder = new Legacy();
+        $builder->addLookupCollection($adapter->getLookupCollection());
+        $this->factory = new QueryBuilderFactory($adapter, $builder);
+        $this->connection = Creator::createObject($this->config);
     }
 
     protected function getQueryBuilder()

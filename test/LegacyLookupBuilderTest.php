@@ -25,6 +25,7 @@ class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
             [['id__lte' => 1], '[[id]]<=1'],
             [['id__gt' => 1], '[[id]]>1'],
             [['id__lt' => 1], '[[id]]<1'],
+            [['id__isnt' => 1], '[[id]]!=1'],
             [['id__range' => [1, 2]], '[[id]] BETWEEN 1 AND 2'],
             [['id__isnull' => true], '[[id]] IS NULL'],
             [['id__isnull' => false], '[[id]] IS NOT NULL'],
