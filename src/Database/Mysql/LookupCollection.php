@@ -13,39 +13,57 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class LookupCollection extends BaseLookupCollection
 {
-    /**
-     * @return array
-     */
-    public function getLookups()
+    public function has($lookup)
     {
-        return array_merge(parent::getLookups(), [
-            'regex' => function (IAdapter $adapter, $column, $value) {
+        $lookups = [
+            'regex', 'iregex', 'second', 'year', 'minute',
+            'hour', 'day', 'month', 'week_day'
+        ];
+        if (in_array($lookup, $lookups)) {
+            return true;
+        } else {
+            return parent::has($lookup);
+        }
+    }
+
+    /**
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     */
+    public function process(IAdapter $adapter, $lookup, $column, $value)
+    {
+        switch ($lookup) {
+            case 'regex':
                 return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $value;
-            },
-            'iregex' => function (IAdapter $adapter, $column, $value) {
+
+            case 'iregex':
                 return $adapter->quoteColumn($column) . ' REGEXP ' . $value;
-            },
-            'second' => function (IAdapter $adapter, $column, $value) {
+
+            case 'second':
                 return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'year' => function (IAdapter $adapter, $column, $value) {
+
+            case 'year':
                 return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'minute' => function (IAdapter $adapter, $column, $value) {
+
+            case 'minute':
                 return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'hour' => function (IAdapter $adapter, $column, $value) {
+
+            case 'hour':
                 return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'day':
                 return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'month' => function (IAdapter $adapter, $column, $value) {
+
+            case 'month':
                 return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'week_day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'week_day':
                 return 'EXTRACT(DAYOFWEEK FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-        ]);
+        }
+
+        return parent::process($adapter, $lookup, $column, $value);
     }
 }

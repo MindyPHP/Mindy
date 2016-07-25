@@ -9,8 +9,10 @@
 namespace Mindy\QueryBuilder\LookupBuilder;
 
 use Closure;
-use Mindy\QueryBuilder\Interfaces\ICallback;
+use Exception;
+use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\QueryBuilder;
 
 abstract class Base implements ILookupBuilder
@@ -24,10 +26,6 @@ abstract class Base implements ILookupBuilder
      */
     protected $separator = '__';
     /**
-     * @var array
-     */
-    protected $lookups = [];
-    /**
      * @var callable|null
      */
     protected $callback = null;
@@ -39,19 +37,25 @@ abstract class Base implements ILookupBuilder
      * @var null|\Closure
      */
     protected $fetchColumnCallback = null;
+    /**
+     * @var ILookupCollection[]
+     */
+    private $_lookupCollections = [];
 
-    public function __construct(array $lookups = [], ICallback $callback = null)
+    /**
+     * @param ILookupCollection $lookupCollection
+     * @return $this
+     */
+    public function addLookupCollection(ILookupCollection $lookupCollection)
     {
-        $this->lookups = $lookups;
-        $this->callback = $callback;
-    }
-
-    public function setLookups(array $lookups)
-    {
-        $this->lookups = $lookups;
+        $this->_lookupCollections[] = $lookupCollection;
         return $this;
     }
 
+    /**
+     * @param Closure $callback
+     * @return $this
+     */
     public function setCallback($callback)
     {
         $this->callback = $callback;
@@ -103,9 +107,37 @@ abstract class Base implements ILookupBuilder
         return $this->default;
     }
 
+    /**
+     * @param $lookup
+     * @return bool
+     */
     public function hasLookup($lookup)
     {
-        return array_key_exists($lookup, $this->lookups);
+        foreach ($this->_lookupCollections as $collection) {
+            if ($collection->has($lookup)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     * @throws Exception
+     * @exception \Exception
+     */
+    public function runLookup(IAdapter $adapter, $lookup, $column, $value)
+    {
+        foreach ($this->_lookupCollections as $collection) {
+            if ($collection->has($lookup)) {
+                return $collection->process($adapter, $lookup, $column, $value);
+            }
+        }
+        throw new Exception('Unknown lookup: ' . $lookup . ', column: ' . $column . ', value: ' . (is_array($value) ? print_r($value, true) : $value));
     }
 
     abstract public function parse(array $where);

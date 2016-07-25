@@ -38,7 +38,10 @@ abstract class DummyQueryBuilderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->factory = new QueryBuilderFactory($this->getAdapter(), new Legacy($this->getAdapter()->getLookupCollection()->getLookups()));
+        $adapter = $this->getAdapter();
+        $builder = new Legacy();
+        $builder->addLookupCollection($adapter->getLookupCollection());
+        $this->factory = new QueryBuilderFactory($adapter, $builder);
     }
 
     protected function tearDown()

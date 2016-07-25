@@ -8,6 +8,7 @@
 
 namespace Mindy\QueryBuilder;
 
+use Exception;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
@@ -23,15 +24,10 @@ abstract class BaseAdapter implements ISQLGenerator
      * @var null|\PDO
      */
     protected $driver = null;
-    /**
-     * @var array of lookups Closure
-     */
-    protected $lookups = [];
 
-    public function __construct($driver = null, array $lookups = [])
+    public function __construct($driver = null)
     {
         $this->driver = $driver;
-        $this->lookups = $lookups;
     }
 
     /**
@@ -225,18 +221,6 @@ abstract class BaseAdapter implements ISQLGenerator
     public function hasOffset($offset)
     {
         return (int)$offset > 0;
-    }
-
-    /**
-     * @param $lookup
-     * @param $column
-     * @param $value
-     * @return string
-     * @exception \Exception
-     */
-    public function runLookup($lookup, $column, $value)
-    {
-        return $this->getLookupCollection()->run($this, $lookup, $column, $value);
     }
 
     /**

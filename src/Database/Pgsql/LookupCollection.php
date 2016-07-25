@@ -13,30 +13,51 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class LookupCollection extends BaseLookupCollection
 {
-    public function getLookups()
+    public function has($lookup)
     {
-        return array_merge(parent::getLookups(), [
-            'second' => function (IAdapter $adapter, $column, $value) {
+        $lookups = [
+            'regex', 'iregex', 'second', 'year', 'minute',
+            'hour', 'day', 'month', 'week_day'
+        ];
+        if (in_array($lookup, $lookups)) {
+            return true;
+        } else {
+            return parent::has($lookup);
+        }
+    }
+    
+    /**
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     */
+    public function process(IAdapter $adapter, $lookup, $column, $value)
+    {
+        switch ($lookup) {
+            case 'second':
                 return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'year' => function (IAdapter $adapter, $column, $value) {
+
+            case 'year':
                 return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'minute' => function (IAdapter $adapter, $column, $value) {
+
+            case 'minute':
                 return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'hour' => function (IAdapter $adapter, $column, $value) {
+
+            case 'hour':
                 return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'day':
                 return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'month' => function (IAdapter $adapter, $column, $value) {
+
+            case 'month':
                 return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-            'week_day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'week_day':
                 return 'EXTRACT(DOW FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
-            },
-        ]);
+        }
+
+        return parent::process($adapter, $lookup, $column, $value);
     }
 }

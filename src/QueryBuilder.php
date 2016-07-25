@@ -10,6 +10,7 @@ namespace Mindy\QueryBuilder;
 
 use Exception;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
+use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
@@ -77,16 +78,15 @@ class QueryBuilder
         $this->lookupBuilder = $lookupBuilder;
     }
 
-    /*
-    public function __clone()
+    /**
+     * @param ILookupCollection $lookupCollection
+     * @return $this
+     */
+    public function addLookupCollection(ILookupCollection $lookupCollection)
     {
-        foreach ($this as $key => $value) {
-            if (is_object($value)) {
-                $this->$key = clone $this->$key;
-            }
-        }
+        $this->lookupBuilder->addLookupCollection($lookupCollection);
+        return $this;
     }
-    */
 
     /**
      * @return $this

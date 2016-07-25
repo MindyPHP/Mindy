@@ -143,7 +143,7 @@ abstract class Q
                     $sql[] = $this->parsePart($value);
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
-                    $sql[] = $this->adapter->runLookup($lookup, $column, $lookupValue);
+                    $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
                 }
             }
             return implode(' ' . $this->getOperator() . ' ', $sql);

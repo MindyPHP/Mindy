@@ -8,22 +8,52 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
+use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
+use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\Database\Mysql\Adapter;
 use Mindy\QueryBuilder\QueryBuilder;
+
+class LookupLibrary implements ILookupCollection
+{
+    /**
+     * @param $lookup
+     * @return bool
+     */
+    public function has($lookup)
+    {
+        return $lookup === 'foo';
+    }
+
+    /**
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     * @throws Exception
+     */
+    public function process(IAdapter $adapter, $lookup, $column, $value)
+    {
+        switch ($lookup) {
+            case 'foo':
+                return $adapter->quoteColumn($column) . ' ??? ' . $adapter->quoteValue($value);
+
+            default:
+                throw new Exception('Unknown lookup: ' . $lookup);
+        }
+    }
+}
 
 class CustomLookupTest extends \PHPUnit_Framework_TestCase
 {
     public function testCustom()
     {
-        $lookups = [
-            'foo' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' ??? ' . $adapter->quoteValue($value);
-            }
-        ];
-        $qb = new QueryBuilder(new Adapter(null, $lookups), new Legacy($lookups));
-        $qb->select('*')->from('test')->where(['name__foo' => 1]);
-        $this->assertEquals($qb->toSQL(), 'SELECT * FROM `test` WHERE (`name` ??? 1)');
+        $qb = new QueryBuilder(new Adapter(), new Legacy());
+        $qb->addLookupCollection(new LookupLibrary());
+        list($lookup, $column, $value) = $qb->getLookupBuilder()->parseLookup('name__foo', 1);
+        $sql = $qb->getLookupBuilder()->runLookup($qb->getAdapter(), $lookup, $column, $value);
+        $this->assertEquals($sql, '`name` ??? 1');
     }
 }

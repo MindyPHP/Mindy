@@ -16,32 +16,30 @@ use Mindy\QueryBuilder\Q\Q;
 class BaseLookupCollection implements ILookupCollection
 {
     /**
-     * @var array
+     * @param $lookup
+     * @return bool
      */
-    protected $lookups = [];
-
-    public function __construct(array $lookups = [])
+    public function has($lookup)
     {
-        $this->lookups = $lookups;
+        return in_array($lookup, [
+            'exact', 'gte', 'gt', 'lte', 'lt',
+            'range', 'isnt', 'isnull', 'contains',
+            'icontains', 'startswith', 'istartswith',
+            'endswith', 'iendswith', 'in', 'raw'
+        ]);
     }
 
     /**
-     * @param array $collection
-     * @return $this
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
      */
-    public function addCollection(array $collection)
+    public function process(IAdapter $adapter, $lookup, $column, $value)
     {
-        $this->lookups = array_merge($this->lookups, $collection);
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLookups()
-    {
-        return [
-            'exact' => function (IAdapter $adapter, $column, $value) {
+        switch ($lookup) {
+            case 'exact':
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
                 if ($value instanceof QueryBuilder || $value instanceof Q) {
                     $sqlValue = '(' . $value->toSQL() . ')';
@@ -50,55 +48,54 @@ class BaseLookupCollection implements ILookupCollection
                 } else {
                     $sqlValue = $adapter->quoteValue($value);
                 }
-
                 return $adapter->quoteColumn($column) . '=' . $sqlValue;
-            },
-            'gte' => function (IAdapter $adapter, $column, $value) {
+
+            case 'gte':
                 return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);
-            },
-            'gt' => function (IAdapter $adapter, $column, $value) {
+
+            case 'gt':
                 return $adapter->quoteColumn($column) . '>' . $adapter->quoteValue($value);
-            },
-            'lte' => function (IAdapter $adapter, $column, $value) {
+
+            case 'lte':
                 return $adapter->quoteColumn($column) . '<=' . $adapter->quoteValue($value);
-            },
-            'lt' => function (IAdapter $adapter, $column, $value) {
+
+            case 'lt':
                 return $adapter->quoteColumn($column) . '<' . $adapter->quoteValue($value);
-            },
-            'range' => function (IAdapter $adapter, $column, $value) {
+
+            case 'range':
                 list($min, $max) = $value;
                 return $adapter->quoteColumn($column) . ' BETWEEN ' . $adapter->quoteValue($min) . ' AND ' . $adapter->quoteValue($max);
-            },
-            'isnt' => function (IAdapter $adapter, $column, $value) {
+
+            case 'isnt':
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
                 if (in_array($adapter->getSqlType($value), ['TRUE', 'FALSE', 'NULL'])) {
                     return $adapter->quoteColumn($column) . ' IS NOT ' . $adapter->getSqlType($value);
                 } else {
                     return $adapter->quoteColumn($column) . '!=' . $adapter->quoteValue($value);
                 }
-            },
-            'isnull' => function (IAdapter $adapter, $column, $value) {
+
+            case 'isnull':
                 return $adapter->quoteColumn($column) . ' ' . ((bool)$value ? 'IS NULL' : 'IS NOT NULL');
-            },
-            'contains' => function (IAdapter $adapter, $column, $value) {
+
+            case 'contains':
                 return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue('%' . $value . '%');
-            },
-            'icontains' => function (IAdapter $adapter, $column, $value) {
+
+            case 'icontains':
                 return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8') . '%');
-            },
-            'startswith' => function (IAdapter $adapter, $column, $value) {
+
+            case 'startswith':
                 return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue($value . '%');
-            },
-            'istartswith' => function (IAdapter $adapter, $column, $value) {
+
+            case 'istartswith':
                 return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8') . '%');
-            },
-            'endswith' => function (IAdapter $adapter, $column, $value) {
+
+            case 'endswith':
                 return $adapter->quoteColumn($column) . ' LIKE ' . $adapter->quoteValue('%' . $value);
-            },
-            'iendswith' => function (IAdapter $adapter, $column, $value) {
+
+            case 'iendswith':
                 return 'LOWER(' . $adapter->quoteColumn($column) . ') LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8'));
-            },
-            'in' => function (IAdapter $adapter, $column, $value) {
+
+            case 'in':
                 if (is_array($value)) {
                     $quotedValues = array_map(function ($item) use ($adapter) {
                         return $adapter->quoteValue($item);
@@ -110,66 +107,12 @@ class BaseLookupCollection implements ILookupCollection
                     $sqlValue = $adapter->quoteSql($value);
                 }
                 return $adapter->quoteColumn($column) . ' IN (' . $sqlValue . ')';
-            },
-            'raw' => function (IAdapter $adapter, $column, $value) {
+
+            case 'raw':
                 return $adapter->quoteColumn($column) . ' ' . $adapter->quoteSql($value);
-            },
-            'regex' => function (IAdapter $adapter, $column, $value) {
-                return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $value;
-            },
-            'iregex' => function (IAdapter $adapter, $column, $value) {
-                return $adapter->quoteColumn($column) . ' REGEXP ' . $value;
-            },
-            'second' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'year' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'minute' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'hour' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'day' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'month' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'week_day' => function (IAdapter $adapter, $column, $value) {
-                return 'EXTRACT(DAYOFWEEK FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-        ];
-    }
 
-    /**
-     * @param $lookup
-     * @return bool
-     */
-    public function has($lookup)
-    {
-        return array_key_exists($lookup, array_merge($this->getLookups(), $this->lookups));
-    }
-
-    /**
-     * @param $adapter
-     * @param $lookup
-     * @param $column
-     * @param $value
-     * @return mixed
-     * @throws Exception
-     */
-    public function run($adapter, $lookup, $column, $value)
-    {
-        $lookups = array_merge($this->getLookups(), $this->lookups);
-        /** @var \Closure $closure */
-        if ($this->has($lookup)) {
-            $closure = $lookups[$lookup];
-            return $closure->__invoke($adapter, $column, $value);
-        } else {
-            throw new Exception("Unknown lookup: " . $lookup);
+            default:
+                return null;
         }
     }
 }

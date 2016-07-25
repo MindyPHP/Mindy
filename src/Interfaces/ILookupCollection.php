@@ -22,5 +22,5 @@ interface ILookupCollection
      * @param $value
      * @return mixed
      */
-    public function run($adapter, $lookup, $column, $value);
+    public function process(IAdapter $adapter, $lookup, $column, $value);
 }

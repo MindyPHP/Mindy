@@ -15,12 +15,6 @@ namespace Mindy\QueryBuilder\Interfaces;
 interface ILookupBuilder
 {
     /**
-     * @param array $lookups
-     * @return mixed
-     */
-    public function setLookups(array $lookups);
-
-    /**
      * @param $lookup
      * @param $value
      * @return array
@@ -34,8 +28,23 @@ interface ILookupBuilder
     public function parse(array $where);
 
     /**
-     * @param \Closure|ICallback $callback
+     * @param \Closure $callback
      * @return mixed
      */
     public function setCallback($callback);
+
+    /**
+     * @param ILookupCollection $lookupCollection
+     * @return $this
+     */
+    public function addLookupCollection(ILookupCollection $lookupCollection);
+
+    /**
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return mixed
+     */
+    public function runLookup(IAdapter $adapter, $lookup, $column, $value);
 }

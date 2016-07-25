@@ -44,10 +44,10 @@ class LegacyLookupBuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLookups($where, $whereSql)
     {
-        $collection = new LookupCollection();
-        $builder = new Legacy($collection->getLookups());
+        $builder = new Legacy();
+        $builder->addLookupCollection(new LookupCollection());
         list($lookup, $column, $value) = current($builder->parse($where));
         $adapter = new \Mindy\QueryBuilder\Database\Mysql\Adapter;
-        $this->assertEquals(str_replace('@', "'", $adapter->quoteSql($whereSql)), $collection->run($adapter, $lookup, $column, $value));
+        $this->assertEquals(str_replace('@', "'", $adapter->quoteSql($whereSql)), $builder->runLookup($adapter, $lookup, $column, $value));
     }
 }

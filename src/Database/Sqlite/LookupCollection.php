@@ -13,43 +13,61 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 
 class LookupCollection extends BaseLookupCollection
 {
-    /**
-     * @return array
-     */
-    public function getLookups()
+    public function has($lookup)
     {
-        return array_merge(parent::getLookups(), [
-            'regex' => function (IAdapter $adapter, $column, $value) {
+        $lookups = [
+            'regex', 'iregex', 'second', 'year', 'minute',
+            'hour', 'day', 'month', 'week_day'
+        ];
+        if (in_array($lookup, $lookups)) {
+            return true;
+        } else {
+            return parent::has($lookup);
+        }
+    }
+    
+    /**
+     * @param IAdapter $adapter
+     * @param $lookup
+     * @param $column
+     * @param $value
+     * @return string
+     */
+    public function process(IAdapter $adapter, $lookup, $column, $value)
+    {
+        switch ($lookup) {
+            case 'regex':
                 return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP /' . $value . '/';
-            },
-            'iregex' => function (IAdapter $adapter, $column, $value) {
+
+            case 'iregex':
                 return $adapter->quoteColumn($column) . ' REGEXP /' . $value . '/i';
-            },
-            'second' => function (IAdapter $adapter, $column, $value) {
+
+            case 'second':
                 return "strftime('%S', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'year' => function (IAdapter $adapter, $column, $value) {
+
+            case 'year':
                 return "strftime('%Y', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'minute' => function (IAdapter $adapter, $column, $value) {
+
+            case 'minute':
                 return "strftime('%M', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'hour' => function (IAdapter $adapter, $column, $value) {
+
+            case 'hour':
                 return "strftime('%H', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'day':
                 return "strftime('%d', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'month' => function (IAdapter $adapter, $column, $value) {
+
+            case 'month':
                 return "strftime('%m', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-            'week_day' => function (IAdapter $adapter, $column, $value) {
+
+            case 'week_day':
                 $value = (int)$value + 1;
                 if (strlen($value) == 1) {
                     $value = "0" . (string)$value;
                 }
                 return "strftime('%w', " . $adapter->quoteColumn($column) . ')=' . $value;
-            },
-        ]);
+        }
+
+        return parent::process($adapter, $lookup, $column, $value);
     }
 }

@@ -25,8 +25,9 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $adapter = new Adapter(null, []);
-        $lookupBuilder = new Legacy($adapter->getLookupCollection()->getLookups());
+        $adapter = new Adapter();
+        $lookupBuilder = new Legacy();
+        $lookupBuilder->addLookupCollection($adapter->getLookupCollection());
         $this->factory = new QueryBuilderFactory($adapter, $lookupBuilder);
     }
 
