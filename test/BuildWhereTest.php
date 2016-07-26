@@ -38,9 +38,9 @@ class BuildWhereTest extends BaseTest
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOr([
-            ['id' => 1], ['id' => 2]
+            ['id' => 1, 'name' => 'username'], ['id' => 2, 'name' => 'foobar']
         ]));
-        $this->assertSql('WHERE ([[id]]=1 OR [[id]]=2)', $qb->buildWhere());
+        $this->assertSql('WHERE (([[id]]=1 OR [[name]]=@username@) OR ([[id]]=2 OR [[name]]=@foobar@))', $qb->buildWhere());
     }
 
     public function testQAndNot()
@@ -66,7 +66,7 @@ class BuildWhereTest extends BaseTest
         $qb->where(new QOrNot([
             ['id' => 1], ['id' => 2]
         ]));
-        $this->assertSql('WHERE (NOT ([[id]]=1 OR [[id]]=2))', $qb->buildWhere());
+        $this->assertSql('WHERE (NOT (([[id]]=1) OR ([[id]]=2)))', $qb->buildWhere());
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOrNot([
@@ -147,7 +147,7 @@ class BuildWhereTest extends BaseTest
             ['id' => 2],
             ['id' => 1]
         ]));
-        $this->assertSql('WHERE (`id`=2 OR `id`=1)', $qb->buildWhere());
+        $this->assertSql('WHERE ((`id`=2) OR (`id`=1))', $qb->buildWhere());
 
         $qb = $this->getQueryBuilder();
         $qb
@@ -156,7 +156,7 @@ class BuildWhereTest extends BaseTest
                 ['id' => 1]
             ]))
             ->where(['id' => 3]);
-        $this->assertSql('WHERE ((`id`=2 OR `id`=1)) AND ((`id`=3))', $qb->buildWhere());
+        $this->assertSql('WHERE (((`id`=2) OR (`id`=1))) AND ((`id`=3))', $qb->buildWhere());
 
         $qb = $this->getQueryBuilder();
         $qb

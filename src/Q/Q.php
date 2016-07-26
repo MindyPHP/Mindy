@@ -152,7 +152,7 @@ abstract class Q
                 if ($value instanceof Q) {
                     $sql[] = '(' . $this->parsePart($value) . ')';
                 } else if (is_numeric($key) && is_array($value)) {
-                    $sql[] = $this->parsePart($value);
+                    $sql[] = '(' . $this->parsePart($value) . ')';
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
                     if (empty($this->_tableAlias) === false) {
