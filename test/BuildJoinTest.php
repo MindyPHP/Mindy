@@ -8,10 +8,43 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
+use Mindy\QueryBuilder\Aggregation\Max;
+use Mindy\QueryBuilder\Aggregation\Min;
 use Mindy\QueryBuilder\Expression;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
+use Mindy\QueryBuilder\QueryBuilder;
 
 class BuildJoinTest extends BaseTest
 {
+    protected $joinCallback;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $this->joinCallback = function(QueryBuilder $queryBuilder, Legacy $lookupBuilder, array $lookupNodes) {
+            $column = '';
+            $alias = '';
+            foreach ($lookupNodes as $i => $nodeName) {
+                if ($i + 1 == count($lookupNodes)) {
+                    $column = $nodeName;
+                } else {
+                    switch ($nodeName) {
+                        case 'user':
+                            $alias = 'user_1';
+                            $queryBuilder->join('LEFT JOIN', $nodeName, ['user_1.id' => 'customer.user_id'], $alias);
+                            break;
+                    }
+                }
+            }
+
+            if (empty($alias) || empty($column)) {
+                return false;
+            }
+
+            return [$alias, $column];
+        };
+    }
+
     public function testAlias()
     {
         $qb = $this->getQueryBuilder();
@@ -82,5 +115,25 @@ class BuildJoinTest extends BaseTest
             $qb->select(['c.*'])->from(['c' => 'comment'])
                 ->join('INNER JOIN', $qbSub, ['u.id' => 'c.user_id'], 'u')->toSQL()
         );
+    }
+
+    public function testSelectAutoJoin()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->getLookupBuilder()->setJoinCallback($this->joinCallback);
+        $qb->from('customer')->select(['user__id']);
+        $this->assertSql('LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->buildJoin());
+    }
+
+    public function testSelectAutoJoinAggregation()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->getLookupBuilder()->setJoinCallback($this->joinCallback);
+        $qb->from('customer')->select([
+            'id_min' => new Min('user__id'),
+            'id_max' => new Max('user__id')
+        ]);
+        $this->assertSql('LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->buildJoin());
+        $this->assertSql('SELECT MIN([[user_1]].[[id]]) AS [[id_min]], MAX([[user_1]].[[id]]) AS [[id_max]] FROM [[customer]] LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->toSQL());
     }
 }

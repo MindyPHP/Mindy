@@ -49,7 +49,7 @@ class QueryBuilder
     /**
      * @var array|string|\Mindy\QueryBuilder\Aggregation\Aggregation
      */
-    private $_select = ['*'];
+    private $_select = [];
     /**
      * @var null|string|array
      */
@@ -165,6 +165,38 @@ class QueryBuilder
         return empty($this->_type) ? self::TYPE_SELECT : $this->_type;
     }
 
+    public function distinct($distinct)
+    {
+        $this->_distinct = $distinct;
+        return $this;
+    }
+
+    /**
+     * @param Aggregation $aggregation
+     * @param string $columnAlias
+     * @return string
+     */
+    protected function buildSelectFromAggregation(Aggregation $aggregation, $columnAlias = '')
+    {
+        $rawColumns = $aggregation->getFields();
+        $newSelect = $this->getLookupBuilder()->buildJoin($rawColumns);
+        if ($newSelect === false) {
+            if (empty($tableAlias)) {
+                $columns = $rawColumns;
+            } else {
+                $columns = $tableAlias . '.' . $rawColumns;
+            }
+        } else {
+            list($alias, $joinColumn) = $newSelect;
+            $columns = $alias . '.' . $joinColumn;
+        }
+        $fieldsSql = $this->getAdapter()->buildColumns($columns);
+        $aggregation->setFieldsSql($fieldsSql);
+
+        $sql = $this->getAdapter()->quoteSql($aggregation->toSQL());
+        return empty($columnAlias) ? $sql : $sql . ' AS ' . $columnAlias;
+    }
+
     /**
      * @param $select array|string columns
      * @param $distinct array|string columns
@@ -172,8 +204,39 @@ class QueryBuilder
      */
     public function select($select, $distinct = null)
     {
-        $this->_select = $select;
-        $this->_distinct = $distinct;
+        if ($distinct !== null) {
+            $this->distinct($distinct);
+        }
+
+        $tableAlias = $this->getAlias();
+        $columns = [];
+        $builder = $this->getLookupBuilder();
+        if (is_array($select)) {
+            foreach ($select as $columnAlias => $partSelect) {
+                if ($partSelect instanceof Aggregation) {
+                    $columns[$columnAlias] = $this->buildSelectFromAggregation($partSelect, $columnAlias);
+                } else if (strpos($partSelect, 'SELECT') !== false) {
+                    $columns[$columnAlias] = $partSelect;
+                } else {
+                    $newSelect = $builder->buildJoin($partSelect);
+                    if ($newSelect === false) {
+                        if (empty($tableAlias)) {
+                            $columns[$columnAlias] = $partSelect;
+                        } else {
+                            $columns[$columnAlias] = $tableAlias . '.' . $partSelect;
+                        }
+                    } else {
+                        list($alias, $joinColumn) = $newSelect;
+                        $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $partSelect;
+                    }
+                }
+            }
+        } else if ($select instanceof Aggregation) {
+            $columns = $this->buildSelectFromAggregation($select);
+        } else {
+            $columns = $select;
+        }
+        $this->_select[] = $this->getAdapter()->buildColumns($columns);
         return $this;
     }
 
@@ -230,12 +293,6 @@ class QueryBuilder
     public function getLookupBuilder()
     {
         return $this->lookupBuilder;
-    }
-
-    public function distinct($columns = null)
-    {
-        $this->distinct = $columns;
-        return $this;
     }
 
     /**
@@ -814,50 +871,7 @@ class QueryBuilder
      */
     public function buildSelect()
     {
-        $tableAlias = $this->getAlias();
-        $columns = [];
-        $builder = $this->getLookupBuilder();
-        if (is_array($this->_select)) {
-            foreach ($this->_select as $columnAlias => $select) {
-                if ($select instanceof Aggregation) {
-                    $columns[$columnAlias] = $select->setTableAlias($tableAlias)->toSQL();
-                } else if (strpos($select, 'SELECT') !== false) {
-                    $columns[$columnAlias] = $select;
-                } else {
-                    $newSelect = $builder->buildJoin($select);
-                    if ($newSelect === false) {
-                        if (empty($tableAlias)) {
-                            $columns[$columnAlias] = $select;
-                        } else {
-                            $columns[$columnAlias] = $tableAlias . '.' . $select;
-                        }
-                    } else {
-                        list($alias, $joinColumn) = $newSelect;
-                        $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $select;
-                    }
-                }
-            }
-        } else if ($this->_select instanceof Aggregation) {
-            $rawColumns = $this->_select->getFields();
-            $newSelect = $builder->buildJoin($rawColumns);
-            if ($newSelect === false) {
-                if (empty($tableAlias)) {
-                    $columns = $rawColumns;
-                } else {
-                    $columns = $tableAlias . '.' . $rawColumns;
-                }
-            } else {
-                list($alias, $joinColumn) = $newSelect;
-                var_dump($alias);
-                $columns = $alias . '.' . $joinColumn;
-            }
-            $fieldsSql = $this->getAdapter()->buildColumns($columns);
-            $this->_select->setFieldsSql($fieldsSql);
-            $columns = $this->getAdapter()->quoteSql($this->_select->toSQL());
-        } else {
-            $columns = $this->_select;
-        }
-        return $this->getAdapter()->sqlSelect($columns, $this->_distinct);
+        return $this->getAdapter()->sqlSelect($this->_select, $this->_distinct);
     }
 
     /**
