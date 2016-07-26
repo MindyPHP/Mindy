@@ -182,7 +182,7 @@ abstract class BaseAdapter implements ISQLGenerator
     public function quoteSql($sql)
     {
         $tablePrefix = $this->tablePrefix;
-        return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])|\\@([\w\-\. ]+)\\@/',
+        return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])|\\@([\w\-\. \/]+)\\@/',
             function ($matches) use ($tablePrefix) {
                 if (isset($matches[4])) {
                     return $this->quoteValue($this->convertToDbValue($matches[4]));
@@ -338,12 +338,13 @@ abstract class BaseAdapter implements ISQLGenerator
     public function sqlUpdate($tableName, array $columns)
     {
         $tableName = $this->getRawTableName($tableName);
-        $updateSQL = [];
+        $parts = [];
         foreach ($columns as $column => $value) {
-            $updateSQL[] = $this->quoteColumn($column) . '=' . ($value instanceof Expression ? $value->toSQL() : $this->quoteValue($value));
+            $val = ($value instanceof Expression ? $this->quoteSql($value->toSQL()) : $this->quoteValue($value));
+            $parts[] = $this->quoteColumn($column) . '=' . $val;
         }
 
-        return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(' ', $updateSQL);
+        return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(', ', $parts);
     }
 
     /**

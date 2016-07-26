@@ -9,6 +9,7 @@
 namespace Mindy\QueryBuilder;
 
 use Exception;
+use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
@@ -256,11 +257,11 @@ class QueryBuilder
     public function join($joinType, $tableName = '', array $on = [], $alias = '')
     {
         if (empty($alias)) {
-            $this->_join[] = [$joinType, $tableName, $on, $alias];
+            $this->_join[$tableName] = [$joinType, $tableName, $on, $alias];
         } else if (array_key_exists($alias, $this->_join)) {
             throw new Exception('Alias already defined in $join');
         } else {
-            $this->_join[$alias] = [$joinType, $tableName, $on, $alias];
+            $this->_join[$tableName] = [$joinType, $tableName, $on, $alias];
         }
         return $this;
     }
@@ -462,7 +463,7 @@ class QueryBuilder
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
                     $column = $this->getLookupBuilder()->fetchColumnName($column);
-                    if (empty($tableAlias) === false) {
+                    if (empty($tableAlias) === false && strpos($column, '.') === false) {
                         $column = $tableAlias . '.' . $column;
                     }
                     $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
@@ -557,6 +558,11 @@ class QueryBuilder
         return $where;
     }
 
+    public function getSelect()
+    {
+        return $this->_select;
+    }
+
     public function buildWhere()
     {
         $params = [];
@@ -572,15 +578,21 @@ class QueryBuilder
         $where = $this->buildWhere();
         $order = $this->buildOrder();
         $union = $this->buildUnion();
+        $select = $this->buildSelect();
+        $from = $this->buildFrom();
+        $join = $this->buildJoin();
+        $group = $this->buildGroup();
+        $having = $this->buildHaving();
+        $limitOffset = $this->buildLimitOffset();
         return strtr('{select}{from}{join}{where}{group}{having}{order}{limit_offset}{union}', [
-            '{select}' => $this->buildSelect(),
-            '{from}' => $this->buildFrom(),
+            '{select}' => $select,
+            '{from}' => $from,
             '{where}' => $where,
-            '{group}' => $this->buildGroup(),
+            '{group}' => $group,
             '{order}' => empty($union) ? $order : '',
-            '{having}' => $this->buildHaving(),
-            '{join}' => $this->buildJoin(),
-            '{limit_offset}' => $this->buildLimitOffset(),
+            '{having}' => $having,
+            '{join}' => $join,
+            '{limit_offset}' => $limitOffset,
             '{union}' => empty($union) ? '' : $union . $order
         ]);
     }
@@ -792,6 +804,11 @@ class QueryBuilder
         ]);
     }
 
+    public function getJoin($tableName)
+    {
+        return $this->_join[$tableName];
+    }
+
     /**
      * @return string
      */
@@ -799,10 +816,12 @@ class QueryBuilder
     {
         $tableAlias = $this->getAlias();
         $columns = [];
+        $builder = $this->getLookupBuilder();
         if (is_array($this->_select)) {
-            $builder = $this->getLookupBuilder();
             foreach ($this->_select as $columnAlias => $select) {
-                if (strpos($select, 'SELECT') !== false) {
+                if ($select instanceof Aggregation) {
+                    $columns[$columnAlias] = $select->setTableAlias($tableAlias)->toSQL();
+                } else if (strpos($select, 'SELECT') !== false) {
                     $columns[$columnAlias] = $select;
                 } else {
                     $newSelect = $builder->buildJoin($select);
@@ -818,6 +837,23 @@ class QueryBuilder
                     }
                 }
             }
+        } else if ($this->_select instanceof Aggregation) {
+            $rawColumns = $this->_select->getFields();
+            $newSelect = $builder->buildJoin($rawColumns);
+            if ($newSelect === false) {
+                if (empty($tableAlias)) {
+                    $columns = $rawColumns;
+                } else {
+                    $columns = $tableAlias . '.' . $rawColumns;
+                }
+            } else {
+                list($alias, $joinColumn) = $newSelect;
+                var_dump($alias);
+                $columns = $alias . '.' . $joinColumn;
+            }
+            $fieldsSql = $this->getAdapter()->buildColumns($columns);
+            $this->_select->setFieldsSql($fieldsSql);
+            $columns = $this->getAdapter()->quoteSql($this->_select->toSQL());
         } else {
             $columns = $this->_select;
         }
