@@ -46,6 +46,15 @@ abstract class Base implements ILookupBuilder
      */
     private $_lookupCollections = [];
 
+    public function __clone()
+    {
+        foreach ($this as $key => $val) {
+            if (is_object($val) || is_array($val)) {
+                $this->{$key} = unserialize(serialize($val));
+            }
+        }
+    }
+
     /**
      * @param ILookupCollection $lookupCollection
      * @return $this
@@ -57,7 +66,7 @@ abstract class Base implements ILookupBuilder
     }
 
     /**
-     * @param Closure $callback
+     * @param mixed $callback
      * @return $this
      */
     public function setCallback($callback)
@@ -76,7 +85,7 @@ abstract class Base implements ILookupBuilder
         return $this;
     }
     
-    public function setFetchColumnCallback(Closure $callback)
+    public function setFetchColumnCallback($callback)
     {
         $this->fetchColumnCallback = $callback;
         return $this;
@@ -94,29 +103,27 @@ abstract class Base implements ILookupBuilder
 
     public function fetchColumnName($column)
     {
-        if ($this->fetchColumnCallback instanceof \Closure) {
-            return $this->fetchColumnCallback->__invoke($column);
-        } else {
+        if ($this->fetchColumnCallback === null) {
             return $column;
         }
+
+        return $this->fetchColumnCallback->run($column);
     }
 
     public function runCallback($lookupNodes, $value)
     {
-        if ($this->callback instanceof Closure) {
-            return $this->callback->__invoke($this->qb, $this, $lookupNodes, $value);
-        } else {
+        if ($this->callback === null) {
             return null;
         }
+        return $this->callback->run($this->qb, $this, $lookupNodes, $value);
     }
 
     public function runJoinCallback($lookupNodes)
     {
-        if ($this->joinCallback instanceof Closure) {
-            return $this->joinCallback->__invoke($this->qb, $this, $lookupNodes);
-        } else {
+        if ($this->joinCallback === null) {
             return null;
         }
+        return $this->joinCallback->run($this->qb, $this, $lookupNodes);
     }
 
     public function setQueryBuilder(QueryBuilder $qb)

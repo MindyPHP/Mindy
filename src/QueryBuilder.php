@@ -13,6 +13,7 @@ use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
 
@@ -112,13 +113,20 @@ class QueryBuilder
      * QueryBuilder constructor.
      * @param BaseAdapter $adapter
      */
-    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder, $schema = null)
+    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
     {
         $this->adapter = $adapter;
-        $this->schema = $schema;
-
         $lookupBuilder->setQueryBuilder($this);
         $this->lookupBuilder = $lookupBuilder;
+    }
+
+    public function __clone()
+    {
+        foreach ($this as $key => $val) {
+            if (is_object($val) || is_array($val)) {
+                $this->{$key} = unserialize(serialize($val));
+            }
+        }
     }
 
     /**
@@ -180,10 +188,11 @@ class QueryBuilder
      */
     protected function buildSelectFromAggregation(Aggregation $aggregation, $columnAlias = '')
     {
+        $tableAlias = $this->getAlias();
         $rawColumns = $aggregation->getFields();
         $newSelect = $this->getLookupBuilder()->buildJoin($rawColumns);
         if ($newSelect === false) {
-            if (empty($tableAlias)) {
+            if (empty($tableAlias) || $rawColumns === '*') {
                 $columns = $rawColumns;
             } else {
                 $columns = $tableAlias . '.' . $rawColumns;
@@ -211,6 +220,7 @@ class QueryBuilder
         }
 
         if (empty($select)) {
+            $this->_select = [];
             return $this;
         }
 
@@ -638,10 +648,36 @@ class QueryBuilder
         return empty($sql) ? '' : ' WHERE ' . $sql;
     }
 
+//    protected function prepareJoin()
+//    {
+//        $builder = $this->getLookupBuilder();
+//        if (is_array($this->_select)) {
+//            foreach ($this->_select as $select) {
+//                if (strpos($select, '__') > 0) {
+//                    $builder->buildJoin($select);
+//                }
+//            }
+//        } else {
+//            if (strpos($this->_select, '__') > 0) {
+//                $builder->buildJoin($this->_select);
+//            }
+//        }
+//
+//        foreach ($this->_order as $order) {
+//            $builder->buildJoin($order);
+//        }
+//
+//        foreach ($this->_group as $group) {
+//            $builder->buildJoin($group);
+//        }
+//    }
+
     private function generateSelectSql()
     {
         // Fetch where conditions before pass it to adapter.
         // Reason: Dynamic sql build in callbacks
+
+        // $this->prepareJoin();
 
         $where = $this->buildWhere();
         $order = $this->buildOrder();
@@ -863,9 +899,9 @@ class QueryBuilder
      */
     public function makeAliasKey($table, $increment = true)
     {
-        if ($increment) {
-            $this->_aliasesCount += 1;
-        }
+//        if ($increment) {
+//            $this->_aliasesCount += 1;
+//        }
         return strtr('{table}_{count}', [
             '{table}' => $this->getAdapter()->getRawTableName($table),
             '{count}' => $this->_aliasesCount
@@ -913,6 +949,9 @@ class QueryBuilder
         } else {
             $select = [];
             if (is_array($this->_select)) {
+                if (empty($this->_select)) {
+                    $this->_select = ['*'];
+                }
                 foreach ($this->_select as $alias => $column) {
                     $select[$alias] = $this->addColumnAlias($column);
                 }
