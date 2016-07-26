@@ -241,7 +241,7 @@ class QueryBuilder
         } else {
             $columns = $select;
         }
-        $this->_select[] = $this->getAdapter()->buildColumns($columns);
+        $this->_select = $this->getAdapter()->buildColumns($columns);
         return $this;
     }
 
@@ -878,6 +878,27 @@ class QueryBuilder
     }
 
     /**
+     * @param $column
+     * @return string
+     */
+    protected function addColumnAlias($column)
+    {
+        $tableAlias = $this->getAlias();
+        if (empty($tableAlias)) {
+            return $column;
+        }
+
+        if (strpos($column, '.') === false &&
+            strpos($column, '(') === false &&
+            strpos($column, 'SELECT') === false
+        ) {
+            return $tableAlias . '.' . $column;
+        } else {
+            return $column;
+        }
+    }
+
+    /**
      * @return string
      */
     public function buildSelect()
@@ -887,23 +908,17 @@ class QueryBuilder
          * select(?)->setAlias('test')
          */
         $tableAlias = $this->getAlias();
-        if (!empty($tableAlias)) {
+        if (empty($tableAlias)) {
+            $select = $this->_select;
+        } else {
             $select = [];
             if (is_array($this->_select)) {
                 foreach ($this->_select as $alias => $column) {
-                    if (
-                        strpos($column, '.') === false &&
-                        strpos($column, '(') === false &&
-                        strpos($column, 'SELECT') === false
-                    ) {
-                        $select[$alias] = $tableAlias . '.' . $column;
-                    } else {
-                        $select[$alias] = $column;
-                    }
+                    $select[$alias] = $this->addColumnAlias($column);
                 }
+            } else if (is_string($this->_select)) {
+                $select = $this->addColumnAlias($this->_select);
             }
-        } else {
-            $select = $this->_select;
         }
         return $this->getAdapter()->sqlSelect($select, $this->_distinct);
     }

@@ -29,7 +29,16 @@ class BuildSelectTest extends BaseTest
     {
         $qb = $this->getQueryBuilder();
         $qb->select('id, name');
-        $this->assertEquals($this->quoteSql('[[id]], [[name]]'), $qb->buildColumns());
+        $this->assertSql('[[id]], [[name]]', $qb->buildColumns());
+    }
+
+    public function testMultiple()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->select('id');
+        $this->assertSql('[[id]]', $qb->buildColumns());
+        $qb->select('name');
+        $this->assertSql('[[name]]', $qb->buildColumns());
     }
 
     public function testStringWithAlias()
