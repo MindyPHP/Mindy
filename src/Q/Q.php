@@ -32,10 +32,19 @@ abstract class Q
      * @var IAdapter
      */
     protected $adapter;
+    /**
+     * @var string|null
+     */
+    private $_tableAlias;
 
     public function __construct($where)
     {
         $this->where = $where;
+    }
+
+    public function setTableAlias($tableAlias)
+    {
+        $this->_tableAlias = $tableAlias;
     }
 
     public function setLookupBuilder(ILookupBuilder $lookupBuilder)
@@ -146,6 +155,9 @@ abstract class Q
                     $sql[] = '(' . $this->parsePart($value) . ')';
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
+                    if (empty($this->_tableAlias) === false) {
+                        $column  = $this->_tableAlias . '.' . $column;
+                    }
                     $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
                 }
             }
@@ -153,6 +165,7 @@ abstract class Q
         } else if ($part instanceof Q) {
             $part->setLookupBuilder($this->lookupBuilder);
             $part->setAdapter($this->adapter);
+            $part->setTableAlias($this->_tableAlias);
             return $part->toSQL();
         } else if ($part instanceof QueryBuilder) {
             return $part->toSQL();

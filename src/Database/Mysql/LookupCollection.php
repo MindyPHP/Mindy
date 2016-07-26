@@ -37,31 +37,31 @@ class LookupCollection extends BaseLookupCollection
     {
         switch ($lookup) {
             case 'regex':
-                return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $value;
+                return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue($value);
 
             case 'iregex':
-                return $adapter->quoteColumn($column) . ' REGEXP ' . $value;
+                return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue($value);
 
             case 'second':
-                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'year':
-                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'minute':
-                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'hour':
-                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'day':
-                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'month':
-                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
 
             case 'week_day':
-                return 'EXTRACT(DAYOFWEEK FROM ' . $adapter->quoteColumn($column) . ')=' . $value;
+                return 'DAYOFWEEK(' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
         }
 
         return parent::process($adapter, $lookup, $column, $value);
