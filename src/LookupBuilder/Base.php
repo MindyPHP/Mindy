@@ -30,6 +30,10 @@ abstract class Base implements ILookupBuilder
      */
     protected $callback = null;
     /**
+     * @var callable|null
+     */
+    protected $joinCallback = null;
+    /**
      * @var null
      */
     protected $qb = null;
@@ -61,6 +65,16 @@ abstract class Base implements ILookupBuilder
         $this->callback = $callback;
         return $this;
     }
+
+    /**
+     * @param Closure $callback
+     * @return $this
+     */
+    public function setJoinCallback($callback)
+    {
+        $this->joinCallback = $callback;
+        return $this;
+    }
     
     public function setFetchColumnCallback(Closure $callback)
     {
@@ -71,6 +85,11 @@ abstract class Base implements ILookupBuilder
     public function getCallback()
     {
         return $this->callback;
+    }
+
+    public function getJoinCallback()
+    {
+        return $this->joinCallback;
     }
 
     protected function fetchColumnName($column)
@@ -86,6 +105,15 @@ abstract class Base implements ILookupBuilder
     {
         if ($this->callback instanceof Closure) {
             return $this->callback->__invoke($this->qb, $this, $lookupNodes, $value);
+        } else {
+            return null;
+        }
+    }
+
+    public function runJoinCallback($lookupNodes)
+    {
+        if ($this->joinCallback instanceof Closure) {
+            return $this->joinCallback->__invoke($this->qb, $this, $lookupNodes);
         } else {
             return null;
         }

@@ -40,6 +40,15 @@ class Legacy extends Base
         }
     }
 
+    public function buildJoin($lookup)
+    {
+        if (substr_count($lookup, $this->getSeparator()) > 0) {
+            return $this->runJoinCallback(explode($this->getSeparator(), $lookup));
+        }
+
+        return false;
+    }
+
     public function parse(array $where)
     {
         $conditions = [];

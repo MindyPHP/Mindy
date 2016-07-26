@@ -224,7 +224,7 @@ class QueryBuilder
     }
 
     /**
-     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\Base
+     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\Legacy
      */
     public function getLookupBuilder()
     {
@@ -774,7 +774,23 @@ class QueryBuilder
      */
     public function buildSelect()
     {
-        return $this->getAdapter()->sqlSelect($this->_select, $this->_distinct);
+        $columns = [];
+        if (is_array($this->_select)) {
+            $builder = $this->getLookupBuilder();
+            foreach ($this->_select as $select) {
+                $newSelect = $builder->buildJoin($select);
+                if ($newSelect === false) {
+                    $columns[] = $select;
+                } else {
+                    list($alias, $joinColumn) = $newSelect;
+                    var_dump($alias, $joinColumn);
+                    $columns[] = $alias . '.' . $joinColumn;
+                }
+            }
+        } else {
+            $columns = $this->_select;
+        }
+        return $this->getAdapter()->sqlSelect($columns, $this->_distinct);
     }
 
     /**

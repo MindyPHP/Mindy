@@ -13,6 +13,8 @@ use Mindy\QueryBuilder\Aggregation\Count;
 use Mindy\QueryBuilder\Aggregation\Max;
 use Mindy\QueryBuilder\Aggregation\Min;
 use Mindy\QueryBuilder\Aggregation\Sum;
+use Mindy\QueryBuilder\LookupBuilder\Legacy;
+use Mindy\QueryBuilder\QueryBuilder;
 
 class BuildSelectTest extends BaseTest
 {
@@ -51,7 +53,44 @@ class BuildSelectTest extends BaseTest
 
         $qb = $this->getQueryBuilder();
         $qb->select(['id_list' => $qbSub->toSQL()]);
-        $this->assertEquals($this->quoteSql('SELECT (SELECT [[id]] FROM [[test]]) AS [[id_list]]'), $qb->buildSelect());
+        $this->assertSql(
+            'SELECT (SELECT [[id]] FROM [[test]]) AS [[id_list]]',
+            $qb->buildSelect()
+        );
+    }
+
+    public function testSelectAutoJoin()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->select(['user__username'])->from('customer');
+
+        $qb->getLookupBuilder()->setJoinCallback(function (QueryBuilder $qb, Legacy $lookupBuilder, array $lookupNodes) {
+            $column = '';
+            $alias = '';
+            foreach ($lookupNodes as $i => $nodeName) {
+                if ($i + 1 == count($lookupNodes)) {
+                    $column = $nodeName;
+                } else {
+                    switch ($nodeName) {
+                        case 'user':
+                            $alias = 'user1';
+                            $qb->join('LEFT JOIN', $nodeName, ['user1.id' => 'customer.user_id'], $alias);
+                            break;
+                    }
+                }
+            }
+
+            if (empty($alias) || empty($column)) {
+                return false;
+            }
+
+            return [$alias, $column];
+        });
+
+        $this->assertSql(
+            'SELECT [[user1]].[[username]] FROM [[customer]] LEFT JOIN [[user]] AS [[user1]] ON [[user1]].[[id]]=[[customer]].[[user_id]]',
+            $qb->toSQL()
+        );
     }
 
     public function testCount()
