@@ -34,10 +34,6 @@ abstract class Base implements ILookupBuilder
      */
     protected $joinCallback = null;
     /**
-     * @var null
-     */
-    protected $qb = null;
-    /**
      * @var null|\Closure
      */
     protected $fetchColumnCallback = null;
@@ -101,28 +97,22 @@ abstract class Base implements ILookupBuilder
         }
     }
 
-    public function runCallback($lookupNodes, $value)
+    public function runCallback(QueryBuilder $queryBuilder, $lookupNodes, $value)
     {
         if ($this->callback instanceof Closure) {
-            return $this->callback->__invoke($this->qb, $this, $lookupNodes, $value);
+            return $this->callback->__invoke($queryBuilder, $this, $lookupNodes, $value);
         } else {
             return null;
         }
     }
 
-    public function runJoinCallback($lookupNodes)
+    public function runJoinCallback(QueryBuilder $queryBuilder, $lookupNodes)
     {
         if ($this->joinCallback instanceof Closure) {
-            return $this->joinCallback->__invoke($this->qb, $this, $lookupNodes);
+            return $this->joinCallback->__invoke($queryBuilder, $this, $lookupNodes);
         } else {
             return null;
         }
-    }
-
-    public function setQueryBuilder(QueryBuilder $qb)
-    {
-        $this->qb = $qb;
-        return $this;
     }
 
     public function getSeparator()

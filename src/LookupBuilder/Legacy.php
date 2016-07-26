@@ -9,16 +9,17 @@
 namespace Mindy\QueryBuilder\LookupBuilder;
 
 use Exception;
+use Mindy\QueryBuilder\QueryBuilder;
 
 class Legacy extends Base
 {
-    public function parseLookup($rawLookup, $value)
+    public function parseLookup(QueryBuilder $queryBuilder, $rawLookup, $value)
     {
         if (substr_count($rawLookup, $this->separator) > 1) {
             if (empty($this->callback)) {
                 throw new Exception('Unknown lookup: ' . $rawLookup);
             } else {
-                return $this->runCallback(explode($this->separator, $rawLookup), $value);
+                return $this->runCallback($queryBuilder, explode($this->separator, $rawLookup), $value);
             }
         }
 
@@ -35,15 +36,15 @@ class Legacy extends Base
                 $column = $this->fetchColumnName($column);
                 return [$lookup, $column, $value];
             } else {
-                return $this->runCallback($lookupNodes, $value);
+                return $this->runCallback($queryBuilder, $lookupNodes, $value);
             }
         }
     }
 
-    public function buildJoin($lookup)
+    public function buildJoin(QueryBuilder $queryBuilder, $lookup)
     {
         if (substr_count($lookup, $this->getSeparator()) > 0) {
-            return $this->runJoinCallback(explode($this->getSeparator(), $lookup));
+            return $this->runJoinCallback($queryBuilder, explode($this->getSeparator(), $lookup));
         }
 
         return false;

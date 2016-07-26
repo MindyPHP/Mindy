@@ -7,6 +7,7 @@
  */
 
 namespace Mindy\QueryBuilder\Interfaces;
+use Mindy\QueryBuilder\QueryBuilder;
 
 /**
  * Interface ILookupBuilder
@@ -19,7 +20,7 @@ interface ILookupBuilder
      * @param $value
      * @return array
      */
-    public function parseLookup($lookup, $value);
+    public function parseLookup(QueryBuilder $queryBuilder, $lookup, $value);
 
     /**
      * @param array $where
