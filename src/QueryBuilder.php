@@ -255,12 +255,12 @@ class QueryBuilder
      */
     public function join($joinType, $tableName = '', array $on = [], $alias = '')
     {
-        if (empty($alias)) {
-            $this->_join[] = [$joinType, $tableName, $on, $alias];
-        } else if (array_key_exists($alias, $this->_join)) {
-            throw new Exception('Alias already defined in $join');
+        if (is_string($joinType) && empty($tableName)) {
+            $this->_join[] = $this->getAdapter()->quoteSql($joinType);
+        } else if ($tableName instanceof QueryBuilder) {
+            $this->_join[] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
         } else {
-            $this->_join[$alias] = [$joinType, $tableName, $on, $alias];
+            $this->_join[$tableName] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
         }
         return $this;
     }
@@ -272,7 +272,7 @@ class QueryBuilder
      */
     public function joinRaw($sql)
     {
-        $this->_join[] = $sql;
+        $this->_join[] = $this->getAdapter()->quoteSql($sql);
         return $this;
     }
 
@@ -811,16 +811,14 @@ class QueryBuilder
 
     public function buildJoin()
     {
-        $sql = '';
-        foreach ($this->_join as $join) {
-            if (count($join) === 1) {
-                $sql .= $this->getAdapter()->quoteSql($join);
-            } else {
-                list($joinType, $tableName, $on, $alias) = $join;
-                $sql .= ' ' . $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
-            }
+        if (empty($this->_join)) {
+            return '';
         }
-        return empty($sql) ? '' : $sql;
+        $join = [];
+        foreach ($this->_join as $part) {
+            $join[] = $part;
+        }
+        return ' ' . implode(' ', $join);
     }
 
     public function buildOrder()

@@ -17,7 +17,7 @@ class BuildJoinTest extends BaseTest
         $qb = $this->getQueryBuilder();
         $qb->join('LEFT JOIN', 'test', ['main.user_id' => 'test_user.id'], 'test_user');
         $this->assertSql('LEFT JOIN [[test]] AS [[test_user]] ON [[main]].[[user_id]]=[[test_user]].[[id]]', $qb->buildJoin());
-        $this->assertTrue($qb->hasJoin('test_user'));
+        $this->assertTrue($qb->hasJoin('test'));
     }
 
     public function testSimple()
@@ -25,6 +25,15 @@ class BuildJoinTest extends BaseTest
         $qb = $this->getQueryBuilder();
         $qb->join('LEFT JOIN', 'test', ['id' => 'user_id']);
         $this->assertSql('LEFT JOIN [[test]] ON [[id]]=[[user_id]]', $qb->buildJoin());
+    }
+
+    public function testSimpleClone()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->join('LEFT JOIN', 'test', ['id' => 'user_id']);
+
+        $clone = clone $qb;
+        $this->assertSql('LEFT JOIN [[test]] ON [[id]]=[[user_id]]', $clone->buildJoin());
     }
 
     public function testMultiple()

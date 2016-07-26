@@ -47,10 +47,14 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
      */
     protected function createDriver()
     {
-        return new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
+        try {
+            return new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (\Exception $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
     }
 
     protected function setUp()
