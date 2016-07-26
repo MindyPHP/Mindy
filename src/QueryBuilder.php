@@ -208,7 +208,10 @@ class QueryBuilder
             $this->distinct($distinct);
         }
 
-        $tableAlias = $this->getAlias();
+        if (empty($select)) {
+            return $this;
+        }
+
         $columns = [];
         $builder = $this->getLookupBuilder();
         if (is_array($select)) {
@@ -216,15 +219,15 @@ class QueryBuilder
                 if ($partSelect instanceof Aggregation) {
                     $columns[$columnAlias] = $this->buildSelectFromAggregation($partSelect, $columnAlias);
                 } else if (strpos($partSelect, 'SELECT') !== false) {
-                    $columns[$columnAlias] = $partSelect;
+                    if (empty($columnAlias)) {
+                        $columns[$columnAlias] = '(' . $partSelect . ')';
+                    } else {
+                        $columns[$columnAlias] = '(' . $partSelect . ') AS ' . $columnAlias;
+                    }
                 } else {
                     $newSelect = $builder->buildJoin($partSelect);
                     if ($newSelect === false) {
-                        if (empty($tableAlias)) {
-                            $columns[$columnAlias] = $partSelect;
-                        } else {
-                            $columns[$columnAlias] = $tableAlias . '.' . $partSelect;
-                        }
+                        $columns[$columnAlias] = $partSelect;
                     } else {
                         list($alias, $joinColumn) = $newSelect;
                         $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $partSelect;
@@ -871,7 +874,26 @@ class QueryBuilder
      */
     public function buildSelect()
     {
-        return $this->getAdapter()->sqlSelect($this->_select, $this->_distinct);
+        /**
+         * Повторная обработка для setAlias() в конце вызовов, пример:
+         * select(?)->setAlias('test')
+         */
+        $tableAlias = $this->getAlias();
+        if (!empty($tableAlias)) {
+            $select = [];
+            if (is_array($this->_select)) {
+                foreach ($this->_select as $alias => $column) {
+                    if (strpos($column, '.') === false) {
+                        $select[$alias] = $tableAlias . '.' . $column;
+                    } else {
+                        $select[$alias] = $column;
+                    }
+                }
+            }
+        } else {
+            $select = $this->_select;
+        }
+        return $this->getAdapter()->sqlSelect($select, $this->_distinct);
     }
 
     /**
