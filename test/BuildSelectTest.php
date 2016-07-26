@@ -46,6 +46,20 @@ class BuildSelectTest extends BaseTest
         $this->assertEquals($this->quoteSql('(SELECT [[id]] FROM [[test]]) AS [[id_list]]'), $qb->buildColumns());
     }
 
+    public function testAlias()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->select(['id'])->from('test')->setAlias('test1');
+        $this->assertSql('SELECT [[test1]].[[id]]', $qb->buildSelect());
+    }
+
+    public function testAliasFromStringNotWorking()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->select('id')->from('test')->setAlias('test1');
+        $this->assertSql('SELECT [[id]]', $qb->buildSelect());
+    }
+
     public function testSubSelect()
     {
         $qbSub = $this->getQueryBuilder();

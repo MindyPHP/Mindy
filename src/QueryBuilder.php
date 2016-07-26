@@ -580,7 +580,7 @@ class QueryBuilder
             '{where}' => $this->buildWhere(),
         ]);
     }
-    
+
     /**
      * @return string
      * @throws Exception
@@ -608,7 +608,7 @@ class QueryBuilder
     {
         return $this->getAdapter()->sqlLimitOffset($this->_limit, $this->_offset);
     }
-    
+
     public function buildUnion()
     {
         $sql = '';
@@ -774,16 +774,25 @@ class QueryBuilder
      */
     public function buildSelect()
     {
+        $tableAlias = $this->getAlias();
         $columns = [];
         if (is_array($this->_select)) {
             $builder = $this->getLookupBuilder();
-            foreach ($this->_select as $select) {
-                $newSelect = $builder->buildJoin($select);
-                if ($newSelect === false) {
-                    $columns[] = $select;
+            foreach ($this->_select as $columnAlias => $select) {
+                if (strpos($select, 'SELECT') !== false) {
+                    $columns[$columnAlias] = $select;
                 } else {
-                    list($alias, $joinColumn) = $newSelect;
-                    $columns[] = $alias . '.' . $joinColumn . ' AS ' . $select;
+                    $newSelect = $builder->buildJoin($select);
+                    if ($newSelect === false) {
+                        if (empty($tableAlias)) {
+                            $columns[$columnAlias] = $select;
+                        } else {
+                            $columns[$columnAlias] = $tableAlias . '.' . $select;
+                        }
+                    } else {
+                        list($alias, $joinColumn) = $newSelect;
+                        $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $select;
+                    }
                 }
             }
         } else {
