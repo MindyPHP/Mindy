@@ -116,7 +116,6 @@ class QueryBuilder
     public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
     {
         $this->adapter = $adapter;
-        $lookupBuilder->setQueryBuilder($this);
         $this->lookupBuilder = $lookupBuilder;
     }
 
@@ -539,7 +538,7 @@ class QueryBuilder
                 if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
-                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
+                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);
                     $column = $this->getLookupBuilder()->fetchColumnName($column);
                     if (empty($tableAlias) === false && strpos($column, '.') === false) {
                         $column = $tableAlias . '.' . $column;
