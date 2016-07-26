@@ -431,8 +431,9 @@ class QueryBuilder
             return '';
         }
 
-        if (isset($condition[0])) {
-            $operator = strtoupper(array_shift($condition));
+        if (isset($condition[0]) && is_string($condition[0])) {
+            $operatorRaw = array_shift($condition);
+            $operator = strtoupper($operatorRaw);
             return $this->buildAndCondition($operator, $condition, $params);
         } else {
             return $this->parseCondition($condition);
@@ -455,6 +456,20 @@ class QueryBuilder
         } else if ($condition instanceof QueryBuilder) {
             $parts[] = $condition->toSQL();
         } else if (is_array($condition)) {
+            foreach ($condition as $key => $value) {
+                if ($value instanceof Q) {
+                    $parts[] = $this->parseCondition($value);
+                } else {
+                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
+                    $column = $this->getLookupBuilder()->fetchColumnName($column);
+                    if (empty($tableAlias) === false) {
+                        $column = $tableAlias . '.' . $column;
+                    }
+                    $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
+                }
+            }
+
+            /*
             $conditions = $this->lookupBuilder->parse($condition);
             foreach ($conditions as $key => $value) {
                 list($lookup, $column, $lookupValue) = $value;
@@ -464,6 +479,7 @@ class QueryBuilder
                 }
                 $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
             }
+            */
         } else if (is_string($condition)) {
             $parts[] = $condition;
         } else if ($condition instanceof Expression) {
@@ -581,6 +597,7 @@ class QueryBuilder
     public function generateUpdateSql()
     {
         list($tableName, $values) = $this->_update;
+        $this->setAlias(null);
         return strtr('{update}{where}', [
             '{update}' => $this->getAdapter()->sqlUpdate($tableName, $values),
             '{where}' => $this->buildWhere(),
