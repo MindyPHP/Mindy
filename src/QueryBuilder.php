@@ -192,11 +192,7 @@ class QueryBuilder
             list($alias, $joinColumn) = $newSelect;
             $columns = $alias . '.' . $joinColumn;
         }
-        if (strpos($columns, '.') === false) {
-            $fieldsSql = $this->getAdapter()->buildColumns($this->getAlias() . '.' . $columns);
-        } else {
-            $fieldsSql = $this->getAdapter()->buildColumns($columns);
-        }
+        $fieldsSql = $this->getAdapter()->buildColumns($columns);
         $aggregation->setFieldsSql($fieldsSql);
 
         $sql = $this->getAdapter()->quoteSql($aggregation->toSQL());
