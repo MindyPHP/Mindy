@@ -239,6 +239,7 @@ abstract class BaseAdapter implements ISQLGenerator
     {
         if (!is_array($columns)) {
             if ($columns instanceof Aggregation) {
+                $columns->setFieldsSql($this->buildColumns($columns->getFields()));
                 return $this->quoteSql($columns->toSQL());
             } else if (strpos($columns, '(') !== false) {
                 return $this->quoteSql($columns);
