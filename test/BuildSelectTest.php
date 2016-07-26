@@ -62,8 +62,6 @@ class BuildSelectTest extends BaseTest
     public function testSelectAutoJoin()
     {
         $qb = $this->getQueryBuilder();
-        $qb->select(['user__username'])->from('customer');
-
         $qb->getLookupBuilder()->setJoinCallback(function (QueryBuilder $qb, Legacy $lookupBuilder, array $lookupNodes) {
             $column = '';
             $alias = '';
@@ -86,9 +84,10 @@ class BuildSelectTest extends BaseTest
 
             return [$alias, $column];
         });
+        $qb->select(['user__username'])->from('customer');
 
         $this->assertSql(
-            'SELECT [[user1]].[[username]] FROM [[customer]] LEFT JOIN [[user]] AS [[user1]] ON [[user1]].[[id]]=[[customer]].[[user_id]]',
+            'SELECT [[user1]].[[username]] AS [[user__username]] FROM [[customer]] LEFT JOIN [[user]] AS [[user1]] ON [[user1]].[[id]]=[[customer]].[[user_id]]',
             $qb->toSQL()
         );
     }

@@ -783,8 +783,7 @@ class QueryBuilder
                     $columns[] = $select;
                 } else {
                     list($alias, $joinColumn) = $newSelect;
-                    var_dump($alias, $joinColumn);
-                    $columns[] = $alias . '.' . $joinColumn;
+                    $columns[] = $alias . '.' . $joinColumn . ' AS ' . $select;
                 }
             }
         } else {

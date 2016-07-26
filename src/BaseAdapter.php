@@ -798,7 +798,16 @@ abstract class BaseAdapter implements ISQLGenerator
                     $value = $this->quoteColumn($column) . ' AS ' . $subQuery;
                 }
             } else {
-                if (strpos($column, ',') !== false) {
+                if (strpos($column, ',') === false && strpos($column, 'AS') !== false) {
+                    if (strpos($column, 'AS') !== false) {
+                        list($rawColumn, $rawAlias) = explode('AS', $column);
+                    } else {
+                        $rawColumn = $column;
+                        $rawAlias = '';
+                    }
+
+                    $value = empty($rawAlias) ? $this->quoteColumn(trim($rawColumn)) : $this->quoteColumn(trim($rawColumn)) . ' AS ' . $this->quoteColumn(trim($rawAlias));
+                } else if (strpos($column, ',') !== false) {
                     $newSelect = [];
                     foreach (explode(',', $column) as $item) {
                         // if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $item, $matches)) {
