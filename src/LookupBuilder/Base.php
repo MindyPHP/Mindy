@@ -92,7 +92,7 @@ abstract class Base implements ILookupBuilder
         return $this->joinCallback;
     }
 
-    protected function fetchColumnName($column)
+    public function fetchColumnName($column)
     {
         if ($this->fetchColumnCallback instanceof \Closure) {
             return $this->fetchColumnCallback->__invoke($column);

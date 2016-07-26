@@ -445,6 +445,7 @@ class QueryBuilder
      */
     protected function parseCondition($condition)
     {
+        $alias = $this->getAlias();
         $parts = [];
         if ($condition instanceof Q) {
             $condition->setLookupBuilder($this->getLookupBuilder());
@@ -456,6 +457,10 @@ class QueryBuilder
             $conditions = $this->lookupBuilder->parse($condition);
             foreach ($conditions as $key => $value) {
                 list($lookup, $column, $lookupValue) = $value;
+                $column = $this->getLookupBuilder()->fetchColumnName($column);
+                if (empty($alias) === false) {
+                    $column = $alias . '.' . $column;
+                }
                 $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
             }
         } else if (is_string($condition)) {
