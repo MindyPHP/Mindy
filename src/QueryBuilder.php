@@ -106,6 +106,8 @@ class QueryBuilder
      */
     private $_aliasesCount = 0;
 
+    private $_joinAlias = [];
+
     /**
      * QueryBuilder constructor.
      * @param BaseAdapter $adapter
@@ -190,7 +192,11 @@ class QueryBuilder
             list($alias, $joinColumn) = $newSelect;
             $columns = $alias . '.' . $joinColumn;
         }
-        $fieldsSql = $this->getAdapter()->buildColumns($columns);
+        if (strpos($columns, '.') === false) {
+            $fieldsSql = $this->getAdapter()->buildColumns($this->getAlias() . '.' . $columns);
+        } else {
+            $fieldsSql = $this->getAdapter()->buildColumns($columns);
+        }
         $aggregation->setFieldsSql($fieldsSql);
 
         $sql = $this->getAdapter()->quoteSql($aggregation->toSQL());
@@ -322,6 +328,7 @@ class QueryBuilder
             $this->_join[] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
         } else {
             $this->_join[$tableName] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
+            $this->_joinAlias[$tableName] = $alias;
         }
         return $this;
     }
@@ -499,6 +506,11 @@ class QueryBuilder
         } else {
             return $this->parseCondition($condition);
         }
+    }
+
+    public function getJoinAlias($tableName)
+    {
+        return $this->_joinAlias[$tableName];
     }
 
     /**
@@ -883,7 +895,11 @@ class QueryBuilder
             $select = [];
             if (is_array($this->_select)) {
                 foreach ($this->_select as $alias => $column) {
-                    if (strpos($column, '.') === false) {
+                    if (
+                        strpos($column, '.') === false &&
+                        strpos($column, '(') === false &&
+                        strpos($column, 'SELECT') === false
+                    ) {
                         $select[$alias] = $tableAlias . '.' . $column;
                     } else {
                         $select[$alias] = $column;
