@@ -337,6 +337,7 @@ abstract class BaseAdapter implements ISQLGenerator
 
     public function sqlUpdate($tableName, array $columns)
     {
+        $tableName = $this->getRawTableName($tableName);
         $updateSQL = [];
         foreach ($columns as $column => $value) {
             $updateSQL[] = $this->quoteColumn($column) . '=' . ($value instanceof Expression ? $value->toSQL() : $this->quoteValue($value));
