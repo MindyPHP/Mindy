@@ -528,7 +528,15 @@ class QueryBuilder
             $parts[] = $condition->toSQL();
         } else if (is_array($condition)) {
             foreach ($condition as $key => $value) {
-                if ($value instanceof Q) {
+                if ($value instanceof Expression) {
+                    $expr = $this->getAdapter()->quoteSql($value->toSQL());
+                    if (empty($tableAlias) === false && strpos($expr, '.') === false) {
+                        $expr = $tableAlias . '.' . $expr;
+                    }
+                    $parts[] = $expr;
+                } else if ($value instanceof QueryBuilder) {
+                    $parts[] = $value->toSQL();
+                } else if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);

@@ -16,6 +16,28 @@ use Mindy\QueryBuilder\Q\QOrNot;
 
 class BuildWhereTest extends BaseTest
 {
+    public function testHard()
+    {
+        $subQuery = clone $this->getQueryBuilder();
+        $subQuery->setTypeSelect()->select(['parent_id'])->from('test')->where([
+            'parent_id' => new Expression('[[id]]')
+        ]);
+
+        $query = clone $this->getQueryBuilder();
+        $query->setTypeSelect()
+            ->select([
+                'id', 'root', 'lft', 'rgt',
+                new Expression('[[rgt]]-[[lft]]-1 AS [[move]]')
+            ])
+            ->from('test')
+            ->where(new QAndNot([
+                'lft' => new Expression('[[rgt]]-1'),
+                'id__in' => $subQuery
+            ]))
+            ->order(['rgt']);
+        $this->assertSql('', $query->toSQL());
+    }
+
     public function testQAnd()
     {
         $qb = $this->getQueryBuilder();
