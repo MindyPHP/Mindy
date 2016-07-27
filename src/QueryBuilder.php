@@ -220,6 +220,8 @@ class QueryBuilder
             foreach ($select as $columnAlias => $partSelect) {
                 if ($partSelect instanceof Aggregation) {
                     $columns[$columnAlias] = $this->buildSelectFromAggregation($partSelect, $columnAlias);
+                } else if ($partSelect instanceof Expression) {
+                    $columns[$columnAlias] = $this->getAdapter()->quoteSql($partSelect->toSQL());
                 } else if (strpos($partSelect, 'SELECT') !== false) {
                     if (empty($columnAlias)) {
                         $columns[$columnAlias] = '(' . $partSelect . ')';

@@ -26,7 +26,7 @@ class BuildSelectTest extends BaseTest
             'id', 'root', 'lft', 'rgt',
             new Expression('[[rgt]]-[[lft]]-1 AS [[move]]')
         ]);
-        $this->assertSql('[[id]], [[name]]', $qb->buildColumns());
+        $this->assertSql('[[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]]', $qb->buildColumns());
     }
 
     public function testArray()
