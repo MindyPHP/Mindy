@@ -37,25 +37,49 @@ class LookupCollection extends BaseLookupCollection
     {
         switch ($lookup) {
             case 'second':
-                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'year':
-                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'minute':
-                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'hour':
-                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'day':
-                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'month':
-                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
 
             case 'week_day':
-                return 'EXTRACT(DOW FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $value;
+                return 'EXTRACT(DOW FROM ' . $adapter->quoteColumn($column) . '::timestamp)=' . $adapter->quoteValue((string)$value);
+
+            case 'regex':
+                return $adapter->quoteColumn($column) . "~" . $adapter->quoteValue($value);
+
+            case 'iregex':
+                return $adapter->quoteColumn($column) . "~*" . $adapter->quoteValue($value);
+
+            case 'contains':
+                return $adapter->quoteColumn($column) . '::text LIKE ' . $adapter->quoteValue('%' . $value . '%');
+
+            case 'icontains':
+                return 'LOWER(' . $adapter->quoteColumn($column) . '::text) LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8') . '%');
+
+            case 'startswith':
+                return $adapter->quoteColumn($column) . '::text LIKE ' . $adapter->quoteValue($value . '%');
+
+            case 'istartswith':
+                return 'LOWER(' . $adapter->quoteColumn($column) . '::text) LIKE ' . $adapter->quoteValue(mb_strtolower($value, 'UTF-8') . '%');
+
+            case 'endswith':
+                return $adapter->quoteColumn($column) . '::text LIKE ' . $adapter->quoteValue('%' . $value);
+
+            case 'iendswith':
+                return 'LOWER(' . $adapter->quoteColumn($column) . '::text) LIKE ' . $adapter->quoteValue('%' . mb_strtolower($value, 'UTF-8'));
         }
 
         return parent::process($adapter, $lookup, $column, $value);

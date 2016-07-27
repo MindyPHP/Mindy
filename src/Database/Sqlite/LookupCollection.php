@@ -25,7 +25,7 @@ class LookupCollection extends BaseLookupCollection
             return parent::has($lookup);
         }
     }
-    
+
     /**
      * @param IAdapter $adapter
      * @param $lookup
@@ -37,35 +37,43 @@ class LookupCollection extends BaseLookupCollection
     {
         switch ($lookup) {
             case 'regex':
-                return 'BINARY ' . $adapter->quoteColumn($column) . ' REGEXP /' . $value . '/';
+                return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue('/' . $value . '/');
 
             case 'iregex':
-                return $adapter->quoteColumn($column) . ' REGEXP /' . $value . '/i';
+                return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue('/' . $value . '/i');
 
             case 'second':
-                return "strftime('%S', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%S', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'year':
-                return "strftime('%Y', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%Y', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'minute':
-                return "strftime('%M', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%M', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'hour':
-                return "strftime('%H', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%H', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'day':
-                return "strftime('%d', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%d', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'month':
-                return "strftime('%m', " . $adapter->quoteColumn($column) . ')=' . $value;
-
-            case 'week_day':
-                $value = (int)$value + 1;
+                $value = (int)$value;
                 if (strlen($value) == 1) {
                     $value = "0" . (string)$value;
                 }
-                return "strftime('%w', " . $adapter->quoteColumn($column) . ')=' . $value;
+                return "strftime('%m', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+
+            case 'week_day':
+                $value = (int)$value + 1;
+                if ($value == 7) {
+                    $value = 1;
+                }
+                return "strftime('%w', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+
+            case 'range':
+                list($min, $max) = $value;
+                return $adapter->quoteColumn($column) . ' BETWEEN ' . (int)$min . ' AND ' . (int)$max;
         }
 
         return parent::process($adapter, $lookup, $column, $value);

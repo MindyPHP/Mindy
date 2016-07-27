@@ -43,25 +43,25 @@ class LookupCollection extends BaseLookupCollection
                 return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue($value);
 
             case 'second':
-                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(SECOND FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'year':
-                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(YEAR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'minute':
-                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(MINUTE FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'hour':
-                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(HOUR FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'day':
-                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(DAY FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'month':
-                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'EXTRACT(MONTH FROM ' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
 
             case 'week_day':
-                return 'DAYOFWEEK(' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue($value);
+                return 'DAYOFWEEK(' . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
         }
 
         return parent::process($adapter, $lookup, $column, $value);

@@ -182,7 +182,7 @@ abstract class BaseAdapter implements ISQLGenerator
     public function quoteSql($sql)
     {
         $tablePrefix = $this->tablePrefix;
-        return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])|\\@([\w\-\. \/]+)\\@/',
+        return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])|\\@([\w\-\. \/\%\:]+)\\@/',
             function ($matches) use ($tablePrefix) {
                 if (isset($matches[4])) {
                     return $this->quoteValue($this->convertToDbValue($matches[4]));
@@ -748,12 +748,17 @@ abstract class BaseAdapter implements ISQLGenerator
         }
 
         $order = [];
-        foreach ($columns as $column) {
-            if (strpos($column, '-', 0) === 0) {
-                $column = substr($column, 1);
-                $direction = 'DESC';
+        foreach ($columns as $key => $column) {
+            if (is_numeric($key)) {
+                if (strpos($column, '-', 0) === 0) {
+                    $column = substr($column, 1);
+                    $direction = 'DESC';
+                } else {
+                    $direction = 'ASC';
+                }
             } else {
-                $direction = 'ASC';
+                $direction = $column;
+                $column = $key;
             }
 
             $order[] = $this->quoteColumn($column) . ' ' . $direction;
