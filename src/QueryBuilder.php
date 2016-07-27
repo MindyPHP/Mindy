@@ -536,8 +536,9 @@ class QueryBuilder
                         $expr = $tableAlias . '.' . $expr;
                     }
                     $parts[] = $expr;
-                } else if ($value instanceof QueryBuilder) {
-                    $parts[] = $value->toSQL();
+//                    TODO fix it если раскоментировать то тесты qubQuery не проходят, отсутствуют join'ы
+//                } else if ($value instanceof QueryBuilder) {
+//                    $parts[] = $value->toSQL();
                 } else if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
