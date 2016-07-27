@@ -519,7 +519,9 @@ class QueryBuilder
     {
         $tableAlias = $this->getAlias();
         $parts = [];
-        if ($condition instanceof Q) {
+        if ($condition instanceof Expression) {
+            $parts[] = $this->getAdapter()->quoteSql($condition->toSQL());
+        } else if ($condition instanceof Q) {
             $condition->setLookupBuilder($this->getLookupBuilder());
             $condition->setAdapter($this->getAdapter());
             $condition->setTableAlias($tableAlias);
