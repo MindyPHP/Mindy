@@ -119,15 +119,6 @@ class QueryBuilder
         $this->lookupBuilder = $lookupBuilder;
     }
 
-    public function __clone()
-    {
-        foreach ($this as $key => $val) {
-            if (is_object($val) || is_array($val)) {
-                $this->{$key} = unserialize(serialize($val));
-            }
-        }
-    }
-
     /**
      * @param ILookupCollection $lookupCollection
      * @return $this
@@ -189,7 +180,7 @@ class QueryBuilder
     {
         $tableAlias = $this->getAlias();
         $rawColumns = $aggregation->getFields();
-        $newSelect = $this->getLookupBuilder()->buildJoin($rawColumns);
+        $newSelect = $this->getLookupBuilder()->buildJoin($this, $rawColumns);
         if ($newSelect === false) {
             if (empty($tableAlias) || $rawColumns === '*') {
                 $columns = $rawColumns;
@@ -236,7 +227,7 @@ class QueryBuilder
                         $columns[$columnAlias] = '(' . $partSelect . ') AS ' . $columnAlias;
                     }
                 } else {
-                    $newSelect = $builder->buildJoin($partSelect);
+                    $newSelect = $builder->buildJoin($this, $partSelect);
                     if ($newSelect === false) {
                         $columns[$columnAlias] = $partSelect;
                     } else {
@@ -530,7 +521,7 @@ class QueryBuilder
             $condition->setLookupBuilder($this->getLookupBuilder());
             $condition->setAdapter($this->getAdapter());
             $condition->setTableAlias($tableAlias);
-            $parts[] = $condition->toSQL();
+            $parts[] = $condition->toSQL($this);
         } else if ($condition instanceof QueryBuilder) {
             $parts[] = $condition->toSQL();
         } else if (is_array($condition)) {
@@ -903,7 +894,7 @@ class QueryBuilder
 //        }
         return strtr('{table}_{count}', [
             '{table}' => $this->getAdapter()->getRawTableName($table),
-            '{count}' => $this->_aliasesCount
+            '{count}' => $this->_aliasesCount + 1
         ]);
     }
 
@@ -981,9 +972,42 @@ class QueryBuilder
         return ' ' . implode(' ', $join);
     }
 
+
+
+    /**
+     * @param Aggregation $aggregation
+     * @param string $columnAlias
+     * @return string
+     */
+    protected function buildOrderJoin($order)
+    {
+        if (strpos($order, '-', 0) === false) {
+            $direction = 'ASC';
+        } else {
+            $direction = 'DESC';
+            $order = substr($order, 1);
+        }
+        $newOrder = $this->getLookupBuilder()->buildJoin($this, $order);
+        if ($newOrder === false) {
+            return [$order, $direction];
+        } else {
+            list($alias, $column) = $newOrder;
+            return [$alias . '.' . $column, $direction];
+        }
+    }
+
     public function buildOrder()
     {
-        $sql = $this->getAdapter()->sqlOrderBy($this->_order, $this->_orderOptions);
+        $order = [];
+        if (is_array($this->_order)) {
+            foreach ($this->_order as $column) {
+                list($newColumn, $direction) = $this->buildOrderJoin($column);
+                $order[$newColumn] = $direction;
+            }
+        } else {
+            $order = $this->buildOrderJoin($this->_order);
+        }
+        $sql = $this->getAdapter()->sqlOrderBy($order, $this->_orderOptions);
         return empty($sql) ? '' : ' ORDER BY ' . $sql;
     }
 

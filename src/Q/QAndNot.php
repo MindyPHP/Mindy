@@ -8,10 +8,12 @@
 
 namespace Mindy\QueryBuilder\Q;
 
+use Mindy\QueryBuilder\QueryBuilder;
+
 class QAndNot extends QAnd
 {
-    public function toSQL()
+    public function toSQL(QueryBuilder $queryBuilder)
     {
-        return 'NOT (' . parent::toSQL() . ')';
+        return 'NOT (' . parent::toSQL($queryBuilder) . ')';
     }
 }

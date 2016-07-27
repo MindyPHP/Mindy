@@ -81,17 +81,17 @@ abstract class Q
     /**
      * @return string
      */
-    public function toSQL()
+    public function toSQL(QueryBuilder $queryBuilder)
     {
-        return $this->parseWhere();
+        return $this->parseWhere($queryBuilder);
     }
 
     /**
      * @return string
      */
-    protected function parseWhere()
+    protected function parseWhere(QueryBuilder $queryBuilder)
     {
-        return $this->parseConditions($this->where);
+        return $this->parseConditions($queryBuilder, $this->where);
     }
 
     private function isWherePart($where)
@@ -106,7 +106,7 @@ abstract class Q
      * @param array $where
      * @return string
      */
-    protected function parseConditions($where)
+    protected function parseConditions(QueryBuilder $queryBuilder, $where)
     {
         if (empty($where)) {
             return '';
@@ -118,13 +118,13 @@ abstract class Q
             $childWhere = $where['___where'];
             $condition = $where['___condition'];
             if ($this->isWherePart($childWhere)) {
-                $whereSql = $this->parseConditions($childWhere);
+                $whereSql = $this->parseConditions($queryBuilder, $childWhere);
                 $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition, $operator) . ')';
             } else {
-                $sql .= $this->parsePart($childWhere, $operator);
+                $sql .= $this->parsePart($queryBuilder, $childWhere, $operator);
             }
         } else {
-            $sql .= $this->parsePart($where);
+            $sql .= $this->parsePart($queryBuilder, $where);
         }
 
         if (empty($sql)) {
@@ -139,7 +139,7 @@ abstract class Q
      * @return string
      * @throws Exception
      */
-    protected function parsePart($part, $operator = null)
+    protected function parsePart(QueryBuilder $queryBuilder, $part, $operator = null)
     {
         if ($operator === null) {
             $operator = $this->getOperator();
@@ -150,11 +150,11 @@ abstract class Q
             $sql = [];
             foreach ($part as $key => $value) {
                 if ($value instanceof Q) {
-                    $sql[] = '(' . $this->parsePart($value) . ')';
+                    $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';
                 } else if (is_numeric($key) && is_array($value)) {
-                    $sql[] = '(' . $this->parsePart($value) . ')';
+                    $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';
                 } else {
-                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($key, $value);
+                    list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($queryBuilder, $key, $value);
                     if (empty($this->_tableAlias) === false) {
                         $column  = $this->_tableAlias . '.' . $column;
                     }
