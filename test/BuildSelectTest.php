@@ -13,16 +13,27 @@ use Mindy\QueryBuilder\Aggregation\Count;
 use Mindy\QueryBuilder\Aggregation\Max;
 use Mindy\QueryBuilder\Aggregation\Min;
 use Mindy\QueryBuilder\Aggregation\Sum;
+use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilder;
 
 class BuildSelectTest extends BaseTest
 {
+    public function testSelectExpression()
+    {
+        $qb = $this->getQueryBuilder();
+        $qb->select([
+            'id', 'root', 'lft', 'rgt',
+            new Expression('[[rgt]]-[[lft]]-1 AS [[move]]')
+        ]);
+        $this->assertSql('[[id]], [[name]]', $qb->buildColumns());
+    }
+
     public function testArray()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(['id', 'name']);
-        $this->assertEquals($this->quoteSql('[[id]], [[name]]'), $qb->buildColumns());
+        $this->assertSql($this->quoteSql('[[id]], [[name]]'), $qb->buildColumns());
     }
 
     public function testString()
@@ -45,14 +56,14 @@ class BuildSelectTest extends BaseTest
     {
         $qb = $this->getQueryBuilder();
         $qb->select('id AS foo, name AS bar');
-        $this->assertEquals($this->quoteSql('[[id]] AS [[foo]], [[name]] AS [[bar]]'), $qb->buildColumns());
+        $this->assertSql('[[id]] AS [[foo]], [[name]] AS [[bar]]', $qb->buildColumns());
     }
 
     public function testSubSelectString()
     {
         $qb = $this->getQueryBuilder();
         $qb->select('(SELECT [[id]] FROM [[test]]) AS [[id_list]]');
-        $this->assertEquals($this->quoteSql('(SELECT [[id]] FROM [[test]]) AS [[id_list]]'), $qb->buildColumns());
+        $this->assertSql('(SELECT [[id]] FROM [[test]]) AS [[id_list]]', $qb->buildColumns());
     }
 
     public function testAlias()
@@ -139,7 +150,7 @@ class BuildSelectTest extends BaseTest
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Count('*', 'test'));
-        $this->assertEquals($this->quoteSql('COUNT(*) AS [[test]]'), $qb->buildColumns());
+        $this->assertSql('COUNT(*) AS [[test]]', $qb->buildColumns());
 
         $qb = $this->getQueryBuilder();
         $qb->select(new Count('*'));
