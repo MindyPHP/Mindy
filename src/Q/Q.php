@@ -156,12 +156,14 @@ abstract class Q
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($queryBuilder, $key, $value);
                     if (empty($this->_tableAlias) === false) {
-                        $column  = $this->_tableAlias . '.' . $column;
+                        $column = $this->_tableAlias . '.' . $column;
                     }
                     $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
                 }
             }
             return implode(' ' . $operator . ' ', $sql);
+        } else if ($part instanceof Expression) {
+            return $this->adapter->quoteSql($part->toSQL());
         } else if ($part instanceof Q) {
             $part->setLookupBuilder($this->lookupBuilder);
             $part->setAdapter($this->adapter);
