@@ -341,7 +341,20 @@ abstract class BaseAdapter implements ISQLGenerator
         $tableName = $this->getRawTableName($tableName);
         $parts = [];
         foreach ($columns as $column => $value) {
-            $val = ($value instanceof Expression ? $this->quoteSql($value->toSQL()) : $this->quoteValue($value));
+            if ($value instanceof Expression) {
+                $val = $this->quoteSql($value->toSQL());
+            } else {
+                // TODO refact, use getSqlType
+                if ($value === 'true' || $value === true) {
+                    $val = 'TRUE';
+                } else if ($value === null || $value === 'null') {
+                    $val = 'NULL';
+                } else if ($value === false || $value === 'false') {
+                    $val = 'FALSE';
+                } else {
+                    $val = $this->quoteValue($value);
+                }
+            }
             $parts[] = $this->quoteColumn($column) . '=' . $val;
         }
 
