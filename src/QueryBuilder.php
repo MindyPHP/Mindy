@@ -176,7 +176,7 @@ class QueryBuilder
      * @param string $columnAlias
      * @return string
      */
-    protected function buildSelectFromAggregation(Aggregation $aggregation, $columnAlias = '')
+    protected function buildSelectFromAggregation(Aggregation $aggregation)
     {
         $tableAlias = $this->getAlias();
         $rawColumns = $aggregation->getFields();
@@ -194,15 +194,70 @@ class QueryBuilder
         $fieldsSql = $this->getAdapter()->buildColumns($columns);
         $aggregation->setFieldsSql($fieldsSql);
 
-        $sql = $this->getAdapter()->quoteSql($aggregation->toSQL());
-        return empty($columnAlias) ? $sql : $sql . ' AS ' . $columnAlias;
+        return $this->getAdapter()->quoteSql($aggregation->toSQL());
     }
 
     /**
-     * @param $select array|string columns
-     * @param $distinct array|string columns
-     * @return $this
+     * @param $columns
+     * @return array|string
      */
+    public function buildColumnsqwe($columns)
+    {
+        if (!is_array($columns)) {
+            if ($columns instanceof Aggregation) {
+                $columns->setFieldsSql($this->buildColumns($columns->getFields()));
+                return $this->quoteSql($columns->toSQL());
+            } else if (strpos($columns, '(') !== false) {
+                return $this->quoteSql($columns);
+            } else {
+                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            }
+        }
+        foreach ($columns as $i => $column) {
+            if ($column instanceof Expression) {
+                $columns[$i] = $this->quoteSql($column->toSQL());
+            } else if (strpos($column, 'AS') !== false) {
+                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
+                    list(, $rawColumn, $rawAlias) = $matches;
+                    $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
+                }
+            } else if (strpos($column, '(') === false) {
+                $columns[$i] = $this->quoteColumn($column);
+            }
+        }
+        return is_array($columns) ? implode(', ', $columns) : $columns;
+    }
+
+    /**
+     * @return string
+     */
+    public function buildSelect()
+    {
+        if (empty($this->_select)) {
+            $this->_select = ['*'];
+        }
+
+        if (is_array($this->_select)) {
+            $select = [];
+            foreach ($this->_select as $alias => $column) {
+                if ($column instanceof Aggregation) {
+                    $select[$this->buildSelectFromAggregation($column)] = $alias;
+                } else if (is_string($column)) {
+                    if (strpos($column, 'SELECT') !== false) {
+                        $select[$alias] = $column;
+                    } else {
+                        $select[$alias] = $this->addColumnAlias($column);
+                    }
+                } else {
+                    $select[$alias] = $column;
+                }
+            }
+        } else if (is_string($this->_select)) {
+            $select = $this->addColumnAlias($this->_select);
+        }
+        return $this->getAdapter()->sqlSelect($select, $this->_distinct);
+    }
+
     public function select($select, $distinct = null)
     {
         if ($distinct !== null) {
@@ -214,6 +269,54 @@ class QueryBuilder
             return $this;
         }
 
+        $builder = $this->getLookupBuilder();
+        $parts = [];
+        if (is_array($select)) {
+            foreach ($select as $key => $part) {
+                if (is_string($part)) {
+                    $newSelect = $builder->buildJoin($this, $part);
+                    if ($newSelect) {
+                        list($alias, $column) = $newSelect;
+                        $parts[$key] = $alias . '.' . $column;
+                    } else {
+                        $parts[$key] = $part;
+                    }
+                } else {
+                    $parts[$key] = $part;
+                }
+            }
+        } else if (is_string($select)) {
+            $newSelect = $builder->buildJoin($this, $select);
+            if ($newSelect) {
+                list($alias, $column) = $newSelect;
+                $parts[$alias] = $column;
+            } else {
+                $parts[] = $select;
+            }
+        } else {
+            $parts[] = $select;
+        }
+        $this->_select = $parts;
+        return $this;
+    }
+
+    /**
+     * @param $select array|string columns
+     * @param $distinct array|string columns
+     * @return $this
+     */
+    public function selectOld($select, $distinct = null)
+    {
+        if ($distinct !== null) {
+            $this->distinct($distinct);
+        }
+
+        if (empty($select)) {
+            $this->_select = [];
+            return $this;
+        }
+
+        $tableAlias = $this->getAlias();
         $columns = [];
         $builder = $this->getLookupBuilder();
         if (is_array($select)) {
@@ -231,7 +334,8 @@ class QueryBuilder
                 } else {
                     $newSelect = $builder->buildJoin($this, $partSelect);
                     if ($newSelect === false) {
-                        $columns[$columnAlias] = $partSelect;
+                        $columns[$columnAlias] = empty($tableAlias) ? $partSelect : $tableAlias . '.' . $partSelect;
+                        var_dump(empty($tableAlias) ? $partSelect : $tableAlias . '.' . $partSelect);
                     } else {
                         list($alias, $joinColumn) = $newSelect;
                         $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $partSelect;
@@ -530,16 +634,7 @@ class QueryBuilder
             $parts[] = $condition->toSQL();
         } else if (is_array($condition)) {
             foreach ($condition as $key => $value) {
-                if ($value instanceof Expression) {
-                    $expr = $this->getAdapter()->quoteSql($value->toSQL());
-                    if (empty($tableAlias) === false && strpos($expr, '.') === false) {
-                        $expr = $tableAlias . '.' . $expr;
-                    }
-                    $parts[] = $expr;
-//                    TODO fix it если раскоментировать то тесты qubQuery не проходят, отсутствуют join'ы
-//                } else if ($value instanceof QueryBuilder) {
-//                    $parts[] = $value->toSQL();
-                } else if ($value instanceof Q) {
+                if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);
@@ -951,40 +1046,10 @@ class QueryBuilder
         }
     }
 
-    /**
-     * @return string
-     */
-    public function buildSelect()
+    protected function applyTableAlias($column)
     {
-        /**
-         * Повторная обработка для setAlias() в конце вызовов, пример:
-         * select(?)->setAlias('test')
-         */
         $tableAlias = $this->getAlias();
-        if (empty($tableAlias)) {
-            $select = $this->_select;
-        } else {
-            $select = [];
-            if (is_array($this->_select)) {
-                if (empty($this->_select)) {
-                    $this->_select = ['*'];
-                }
-                foreach ($this->_select as $alias => $column) {
-                    $select[$alias] = $this->addColumnAlias($column);
-                }
-            } else if (is_string($this->_select)) {
-                $select = $this->addColumnAlias($this->_select);
-            }
-        }
-        return $this->getAdapter()->sqlSelect($select, $this->_distinct);
-    }
-
-    /**
-     * @return string
-     */
-    public function buildColumns()
-    {
-        return $this->getAdapter()->buildColumns($this->_select);
+        return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
     }
 
     public function buildJoin()
@@ -1041,8 +1106,19 @@ class QueryBuilder
         if (is_array($this->_order)) {
             foreach ($this->_order as $column) {
                 list($newColumn, $direction) = $this->buildOrderJoin($column);
-                $order[$newColumn] = $direction;
+                $order[$this->applyTableAlias($newColumn)] = $direction;
             }
+        } else if (is_string($this->_order)) {
+            $columns = preg_split('/\s*,\s*/', $this->_order, -1, PREG_SPLIT_NO_EMPTY);
+            $order = array_map(function ($column) {
+                $temp = explode(' ', $column);
+                if (count($temp) == 2) {
+                    return $this->getAdapter()->quoteColumn($temp[0]) . ' ' . $temp[1];
+                } else {
+                    return $this->getAdapter()->quoteColumn($column);
+                }
+            }, $columns);
+            $order = implode(', ', $order);
         } else {
             $order = $this->buildOrderJoin($this->_order);
         }

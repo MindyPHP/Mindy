@@ -14,6 +14,33 @@ use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilder;
 
+class BuildJoinCallback
+{
+    public function run(QueryBuilder $queryBuilder, Legacy $lookupBuilder, array $lookupNodes)
+    {
+        $column = '';
+        $alias = '';
+        foreach ($lookupNodes as $i => $nodeName) {
+            if ($i + 1 == count($lookupNodes)) {
+                $column = $nodeName;
+            } else {
+                switch ($nodeName) {
+                    case 'user':
+                        $alias = 'user_1';
+                        $queryBuilder->join('LEFT JOIN', $nodeName, ['user_1.id' => 'customer.user_id'], $alias);
+                        break;
+                }
+            }
+        }
+
+        if (empty($alias) || empty($column)) {
+            return false;
+        }
+
+        return [$alias, $column];
+    }
+}
+
 class BuildJoinTest extends BaseTest
 {
     protected $joinCallback;
@@ -21,28 +48,7 @@ class BuildJoinTest extends BaseTest
     public function setUp()
     {
         parent::setUp();
-        $this->joinCallback = function(QueryBuilder $queryBuilder, Legacy $lookupBuilder, array $lookupNodes) {
-            $column = '';
-            $alias = '';
-            foreach ($lookupNodes as $i => $nodeName) {
-                if ($i + 1 == count($lookupNodes)) {
-                    $column = $nodeName;
-                } else {
-                    switch ($nodeName) {
-                        case 'user':
-                            $alias = 'user_1';
-                            $queryBuilder->join('LEFT JOIN', $nodeName, ['user_1.id' => 'customer.user_id'], $alias);
-                            break;
-                    }
-                }
-            }
-
-            if (empty($alias) || empty($column)) {
-                return false;
-            }
-
-            return [$alias, $column];
-        };
+        $this->joinCallback = new BuildJoinCallback();
     }
 
     public function testAlias()
@@ -133,7 +139,8 @@ class BuildJoinTest extends BaseTest
             'id_min' => new Min('user__id'),
             'id_max' => new Max('user__id')
         ]);
-        $this->assertSql('LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->buildJoin());
+        $this->assertSql('', $qb->buildJoin());
         $this->assertSql('SELECT MIN([[user_1]].[[id]]) AS [[id_min]], MAX([[user_1]].[[id]]) AS [[id_max]] FROM [[customer]] LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->toSQL());
+        $this->assertSql('LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->buildJoin());
     }
 }

@@ -26,7 +26,7 @@ interface ILookupBuilder
      * @param array $where
      * @return mixed
      */
-    public function parse(array $where);
+    public function parse(QueryBuilder $queryBuilder, array $where);
 
     /**
      * @param \Closure $callback

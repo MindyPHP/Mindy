@@ -149,9 +149,7 @@ abstract class Q
         } else if (is_array($part)) {
             $sql = [];
             foreach ($part as $key => $value) {
-                if ($value instanceof Expression) {
-                    $sql[] = $value->toSQL();
-                } else if ($part instanceof QueryBuilder) {
+                if ($part instanceof QueryBuilder) {
                     $sql[] = $part->toSQL();
                 } else if ($value instanceof Q) {
                     $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';

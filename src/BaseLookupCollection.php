@@ -41,7 +41,9 @@ class BaseLookupCollection implements ILookupCollection
         switch ($lookup) {
             case 'exact':
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
-                if ($value instanceof QueryBuilder) {
+                if ($value instanceof Expression) {
+                    $sqlValue = $value->toSQL();
+                } else if ($value instanceof QueryBuilder) {
                     $sqlValue = '(' . $value->toSQL() . ')';
                 } else if (strpos($value, 'SELECT') !== false) {
                     $sqlValue = '(' . $value . ')';

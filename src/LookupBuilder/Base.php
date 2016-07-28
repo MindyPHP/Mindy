@@ -72,7 +72,7 @@ abstract class Base implements ILookupBuilder
     }
 
     /**
-     * @param Closure $callback
+     * @param $callback
      * @return $this
      */
     public function setJoinCallback($callback)
@@ -165,5 +165,5 @@ abstract class Base implements ILookupBuilder
         throw new Exception('Unknown lookup: ' . $lookup . ', column: ' . $column . ', value: ' . (is_array($value) ? print_r($value, true) : $value));
     }
 
-    abstract public function parse(array $where);
+    abstract public function parse(QueryBuilder $queryBuilder, array $where);
 }

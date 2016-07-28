@@ -9,6 +9,67 @@ use Mindy\QueryBuilder\QueryBuilder;
 use Mindy\QueryBuilder\QueryBuilderFactory;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter;
 
+class CallbackTestCallback
+{
+    public function run(QueryBuilder $qb, ILookupBuilder $lookupBuilder, array $lookupNodes, $value)
+    {
+        $column = '?';
+        $lookup = '?';
+        foreach ($lookupNodes as $nodeName) {
+            switch ($nodeName) {
+                case 'products':
+                    $qb->join('LEFT JOIN', $nodeName, ['t.product_id' => 'products.id'], 'products');
+                    break;
+                case 'categories':
+                    $qb->join('LEFT JOIN', $nodeName, ['products.category_id' => 'categories.id'], 'categories');
+                    break;
+                case 'name':
+                    $column = 'categories.' . $nodeName;
+                    $lookup = $lookupBuilder->getDefault();
+                    break;
+                default:
+                    $lookup = $nodeName;
+                    break;
+            }
+        }
+        return [$lookup, $column, $value];
+    }
+}
+
+class CallbackTestTwoCallback
+{
+    public function run(QueryBuilder $qb, ILookupBuilder $lookupBuilder, array $lookupNodes, $value)
+    {
+        $lookup = $lookupBuilder->getDefault();
+        foreach ($lookupNodes as $nodeName) {
+            switch ($nodeName) {
+                case 'products':
+                    $qb->join('LEFT JOIN', $nodeName, ['product_id' => 'id'], 'products');
+                    break;
+                case 'categories':
+                    $qb->join('LEFT JOIN', $nodeName, ['category.id' => 'product.category_id'], 'categories');
+                    break;
+                case 'statuses':
+                    $qb->join('LEFT JOIN', $nodeName, ['status.id' => 'product.status_id'], 'statuses');
+                    break;
+                case 'name':
+                    $column = $nodeName;
+                    $lookup = $lookupBuilder->getDefault();
+                    break;
+                default:
+                    $lookup = $nodeName;
+                    break;
+            }
+        }
+
+        if (isset($column)) {
+            return [$lookup, $column, $value];
+        } else {
+            throw new Exception('Unknown column');
+        }
+    }
+}
+
 /**
  * Created by PhpStorm.
  * User: max
@@ -39,29 +100,8 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     public function testSimple()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setCallback(function(QueryBuilder $qb, ILookupBuilder $lookupBuilder, array $lookupNodes, $value) {
-            $column = '?';
-            $lookup = '?';
-            foreach ($lookupNodes as $nodeName) {
-                switch ($nodeName) {
-                    case 'products':
-                        $qb->join('LEFT JOIN', $nodeName, ['t.product_id' => 'products.id'], 'products');
-                        break;
-                    case 'categories':
-                        $qb->join('LEFT JOIN', $nodeName, ['products.category_id' => 'categories.id'], 'categories');
-                        break;
-                    case 'name':
-                        $column = 'categories.' . $nodeName;
-                        $lookup = $lookupBuilder->getDefault();
-                        break;
-                    default:
-                        $lookup = $nodeName;
-                        break;
-                }
-            }
-            return [$lookup, $column, $value];
-        });
-        $this->assertTrue($qb->getLookupBuilder()->getCallback() instanceof \Closure);
+        $qb->getLookupBuilder()->setCallback(new CallbackTestCallback);
+        $this->assertTrue($qb->getLookupBuilder()->getCallback() instanceof CallbackTestCallback);
         $qb->from(['t' => 'test'])->where([
             'products__categories__name__in' => ['foo', 'bar']
         ]);
@@ -74,36 +114,8 @@ class CallbackTest extends \PHPUnit_Framework_TestCase
     public function testHard()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setCallback(function(QueryBuilder $qb, ILookupBuilder $lookupBuilder, array $lookupNodes, $value) {
-            $lookup = $lookupBuilder->getDefault();
-            foreach ($lookupNodes as $nodeName) {
-                switch ($nodeName) {
-                    case 'products':
-                        $qb->join('LEFT JOIN', $nodeName, ['product_id' => 'id'], 'products');
-                        break;
-                    case 'categories':
-                        $qb->join('LEFT JOIN', $nodeName, ['category.id' => 'product.category_id'], 'categories');
-                        break;
-                    case 'statuses':
-                        $qb->join('LEFT JOIN', $nodeName, ['status.id' => 'product.status_id'], 'statuses');
-                        break;
-                    case 'name':
-                        $column = $nodeName;
-                        $lookup = $lookupBuilder->getDefault();
-                        break;
-                    default:
-                        $lookup = $nodeName;
-                        break;
-                }
-            }
-
-            if (isset($column)) {
-                return [$lookup, $column, $value];
-            } else {
-                throw new Exception('Unknown column');
-            }
-        });
-        $this->assertTrue($qb->getLookupBuilder()->getCallback() instanceof \Closure);
+        $qb->getLookupBuilder()->setCallback(new CallbackTestTwoCallback);
+        $this->assertTrue($qb->getLookupBuilder()->getCallback() instanceof CallbackTestTwoCallback);
         $qb->from('test')->where([
             'products__categories__statuses__name__in' => ['foo', 'bar']
         ]);

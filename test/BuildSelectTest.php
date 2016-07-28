@@ -17,6 +17,33 @@ use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilder;
 
+class BuildSelectJoinCallback
+{
+    public function run(QueryBuilder $qb, Legacy $lookupBuilder, array $lookupNodes)
+    {
+        $column = '';
+        $alias = '';
+        foreach ($lookupNodes as $i => $nodeName) {
+            if ($i + 1 == count($lookupNodes)) {
+                $column = $nodeName;
+            } else {
+                switch ($nodeName) {
+                    case 'user':
+                        $alias = 'user1';
+                        $qb->join('LEFT JOIN', $nodeName, ['user1.id' => 'customer.user_id'], $alias);
+                        break;
+                }
+            }
+        }
+
+        if (empty($alias) || empty($column)) {
+            return false;
+        }
+
+        return [$alias, $column];
+    }
+}
+
 class BuildSelectTest extends BaseTest
 {
     public function testSelectExpression()
@@ -26,44 +53,44 @@ class BuildSelectTest extends BaseTest
             'id', 'root', 'lft', 'rgt',
             new Expression('[[rgt]]-[[lft]]-1 AS [[move]]')
         ]);
-        $this->assertSql('[[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]]', $qb->buildColumns());
+        $this->assertSql('SELECT [[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]]', $qb->buildSelect());
     }
 
     public function testArray()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(['id', 'name']);
-        $this->assertSql($this->quoteSql('[[id]], [[name]]'), $qb->buildColumns());
+        $this->assertSql($this->quoteSql('SELECT [[id]], [[name]]'), $qb->buildSelect());
     }
 
     public function testString()
     {
         $qb = $this->getQueryBuilder();
         $qb->select('id, name');
-        $this->assertSql('[[id]], [[name]]', $qb->buildColumns());
+        $this->assertSql('SELECT [[id]], [[name]]', $qb->buildSelect());
     }
 
     public function testMultiple()
     {
         $qb = $this->getQueryBuilder();
         $qb->select('id');
-        $this->assertSql('[[id]]', $qb->buildColumns());
+        $this->assertSql('SELECT [[id]]', $qb->buildSelect());
         $qb->select('name');
-        $this->assertSql('[[name]]', $qb->buildColumns());
+        $this->assertSql('SELECT [[name]]', $qb->buildSelect());
     }
 
     public function testStringWithAlias()
     {
         $qb = $this->getQueryBuilder();
         $qb->select('id AS foo, name AS bar');
-        $this->assertSql('[[id]] AS [[foo]], [[name]] AS [[bar]]', $qb->buildColumns());
+        $this->assertSql('SELECT [[id]] AS [[foo]], [[name]] AS [[bar]]', $qb->buildSelect());
     }
 
     public function testSubSelectString()
     {
         $qb = $this->getQueryBuilder();
         $qb->select('(SELECT [[id]] FROM [[test]]) AS [[id_list]]');
-        $this->assertSql('(SELECT [[id]] FROM [[test]]) AS [[id_list]]', $qb->buildColumns());
+        $this->assertSql('SELECT (SELECT [[id]] FROM [[test]]) AS [[id_list]]', $qb->buildSelect());
     }
 
     public function testAlias()
@@ -93,9 +120,9 @@ class BuildSelectTest extends BaseTest
         $qbSub->select('id')->from('test');
 
         $qb = $this->getQueryBuilder();
-        $qb->select([$qbSub->toSQL()]);
+        $qb->select(['test' => $qbSub->toSQL()]);
         $this->assertSql(
-            'SELECT (SELECT [[id]] FROM [[test]])',
+            'SELECT (SELECT [[id]] FROM [[test]]) AS [[test]]',
             $qb->buildSelect()
         );
     }
@@ -116,32 +143,11 @@ class BuildSelectTest extends BaseTest
     public function testSelectAutoJoin()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setJoinCallback(function (QueryBuilder $qb, Legacy $lookupBuilder, array $lookupNodes) {
-            $column = '';
-            $alias = '';
-            foreach ($lookupNodes as $i => $nodeName) {
-                if ($i + 1 == count($lookupNodes)) {
-                    $column = $nodeName;
-                } else {
-                    switch ($nodeName) {
-                        case 'user':
-                            $alias = 'user1';
-                            $qb->join('LEFT JOIN', $nodeName, ['user1.id' => 'customer.user_id'], $alias);
-                            break;
-                    }
-                }
-            }
-
-            if (empty($alias) || empty($column)) {
-                return false;
-            }
-
-            return [$alias, $column];
-        });
+        $qb->getLookupBuilder()->setJoinCallback(new BuildSelectJoinCallback);
         $qb->select(['user__username'])->from('customer');
 
         $this->assertSql(
-            'SELECT [[user1]].[[username]] AS [[user__username]] FROM [[customer]] LEFT JOIN [[user]] AS [[user1]] ON [[user1]].[[id]]=[[customer]].[[user_id]]',
+            'SELECT [[user1]].[[username]] FROM [[customer]] LEFT JOIN [[user]] AS [[user1]] ON [[user1]].[[id]]=[[customer]].[[user_id]]',
             $qb->toSQL()
         );
     }
@@ -150,39 +156,39 @@ class BuildSelectTest extends BaseTest
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Count('*', 'test'));
-        $this->assertSql('COUNT(*) AS [[test]]', $qb->buildColumns());
+        $this->assertSql('SELECT COUNT(*) AS [[test]]', $qb->buildSelect());
 
         $qb = $this->getQueryBuilder();
         $qb->select(new Count('*'));
-        $this->assertEquals('COUNT(*)', $qb->buildColumns());
+        $this->assertEquals('SELECT COUNT(*)', $qb->buildSelect());
     }
 
     public function testAvg()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Avg('*'));
-        $this->assertEquals('AVG(*)', $qb->buildColumns());
+        $this->assertEquals('SELECT AVG(*)', $qb->buildSelect());
     }
 
     public function testSum()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Sum('*'));
-        $this->assertEquals('SUM(*)', $qb->buildColumns());
+        $this->assertEquals('SELECT SUM(*)', $qb->buildSelect());
     }
 
     public function testMin()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Min('*'));
-        $this->assertEquals('MIN(*)', $qb->buildColumns());
+        $this->assertEquals('SELECT MIN(*)', $qb->buildSelect());
     }
 
     public function testMax()
     {
         $qb = $this->getQueryBuilder();
         $qb->select(new Max('*'));
-        $this->assertEquals('MAX(*)', $qb->buildColumns());
+        $this->assertEquals('SELECT MAX(*)', $qb->buildSelect());
     }
 
     public function testSelect()

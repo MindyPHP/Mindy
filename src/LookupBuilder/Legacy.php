@@ -50,7 +50,7 @@ class Legacy extends Base
         return false;
     }
 
-    public function parse(array $where)
+    public function parse(QueryBuilder $queryBuilder, array $where)
     {
         $conditions = [];
         foreach ($where as $lookup => $value) {
@@ -61,7 +61,7 @@ class Legacy extends Base
                 $lookup = key($value);
                 $value = array_shift($value);
             }
-            $conditions[] = $this->parseLookup($lookup, $value);
+            $conditions[] = $this->parseLookup($queryBuilder, $lookup, $value);
         }
         return $conditions;
     }

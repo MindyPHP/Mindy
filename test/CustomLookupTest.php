@@ -52,7 +52,7 @@ class CustomLookupTest extends \PHPUnit_Framework_TestCase
     {
         $qb = new QueryBuilder(new Adapter(), new Legacy());
         $qb->addLookupCollection(new LookupLibrary());
-        list($lookup, $column, $value) = $qb->getLookupBuilder()->parseLookup('name__foo', 1);
+        list($lookup, $column, $value) = $qb->getLookupBuilder()->parseLookup($qb, 'name__foo', 1);
         $sql = $qb->getLookupBuilder()->runLookup($qb->getAdapter(), $lookup, $column, $value);
         $this->assertEquals($sql, '`name` ??? 1');
     }
