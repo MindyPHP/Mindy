@@ -319,11 +319,13 @@ abstract class BaseAdapter implements ISQLGenerator
                 $values = [$values];
             }
             foreach ($values as $value) {
-                if ($value === true || $value === 'true') {
+                if ($value instanceof Expression) {
+                    $value = $value->toSQL();
+                } else if ($value === true || $value === 'true') {
                     $value = 'TRUE';
-                } elseif ($value === false || $value === 'false') {
+                } else if ($value === false || $value === 'false') {
                     $value = 'FALSE';
-                } elseif ($value === null || $value === 'null') {
+                } else if ($value === null || $value === 'null') {
                     $value = 'NULL';
                 } else if (is_string($value)) {
                     $value = $this->quoteValue($value);

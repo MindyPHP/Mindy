@@ -685,6 +685,20 @@ class QueryBuilder
         $where = $this->buildWhere();
         $order = $this->buildOrder();
         $union = $this->buildUnion();
+
+        /*
+        $hasAggregation = false;
+        if (is_array($this->_select)) {
+            foreach ($this->_select as $key => $value) {
+                if ($value instanceof Aggregation) {
+
+                }
+            }
+        } else {
+            $hasAggregation = $this->_select instanceof Aggregation;
+        }
+        */
+
         $select = $this->buildSelect();
         $from = $this->buildFrom();
         $join = $this->buildJoin();
@@ -986,7 +1000,6 @@ class QueryBuilder
     }
 
 
-
     /**
      * @param Aggregation $aggregation
      * @param string $columnAlias
@@ -1009,8 +1022,21 @@ class QueryBuilder
         }
     }
 
+    public function getOrder()
+    {
+        return [$this->_order, $this->_orderOptions];
+    }
+
     public function buildOrder()
     {
+        /**
+         * не делать проверку по empty(), проваливается половина тестов с ORDER BY
+         * и проваливается тест с построением JOIN по lookup
+         */
+        if ($this->_order === null) {
+            return '';
+        }
+
         $order = [];
         if (is_array($this->_order)) {
             foreach ($this->_order as $column) {
@@ -1020,6 +1046,7 @@ class QueryBuilder
         } else {
             $order = $this->buildOrderJoin($this->_order);
         }
+
         $sql = $this->getAdapter()->sqlOrderBy($order, $this->_orderOptions);
         return empty($sql) ? '' : ' ORDER BY ' . $sql;
     }
