@@ -10,6 +10,15 @@ namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\QueryBuilder;
 
+class CloneCallback
+{
+    public function run(QueryBuilder $queryBuilder, $lookupBuilder, $lookupNodes, $value)
+    {
+        $queryBuilder->join('LEFT JOIN', 'test', ['test_1.id' => 'user_1.user_id'], 'test_1');
+        return ['exact', 'id', $value];
+    }
+}
+
 class CloneTest extends BaseTest
 {
     public function testClone()
@@ -54,14 +63,7 @@ class CloneTest extends BaseTest
     public function testCloneCallback()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setCallback(new class
-        {
-            public function run(QueryBuilder $queryBuilder, $lookupBuilder, $lookupNodes, $value)
-            {
-                $queryBuilder->join('LEFT JOIN', 'test', ['test_1.id' => 'user_1.user_id'], 'test_1');
-                return ['exact', 'id', $value];
-            }
-        });
+        $qb->getLookupBuilder()->setCallback(new CloneCallback);
         $qb->from('user')->where(['test__id' => 1])->setAlias('user_1');
         $sql = 'SELECT [[user_1]].* FROM [[user]] AS [[user_1]] LEFT JOIN [[test]] AS [[test_1]] ON [[test_1]].[[id]]=[[user_1]].[[user_id]] WHERE ([[user_1]].[[id]]=1)';
 
