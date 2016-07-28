@@ -1048,8 +1048,13 @@ class QueryBuilder
 
     protected function applyTableAlias($column)
     {
-        $tableAlias = $this->getAlias();
-        return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+        // If column already has alias - skip
+        if (strpos($column, '.') === false) {
+            $tableAlias = $this->getAlias();
+            return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+        } else {
+            return $column;
+        }
     }
 
     public function buildJoin()
