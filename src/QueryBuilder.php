@@ -1110,8 +1110,12 @@ class QueryBuilder
         $order = [];
         if (is_array($this->_order)) {
             foreach ($this->_order as $column) {
-                list($newColumn, $direction) = $this->buildOrderJoin($column);
-                $order[$this->applyTableAlias($newColumn)] = $direction;
+                if ($column === '?') {
+                    $order[] = $this->getAdapter()->getRandomOrder();
+                } else {
+                    list($newColumn, $direction) = $this->buildOrderJoin($column);
+                    $order[$this->applyTableAlias($newColumn)] = $direction;
+                }
             }
         } else if (is_string($this->_order)) {
             $columns = preg_split('/\s*,\s*/', $this->_order, -1, PREG_SPLIT_NO_EMPTY);
