@@ -157,7 +157,7 @@ abstract class Q
                     $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($queryBuilder, $key, $value);
-                    if (empty($this->_tableAlias) === false) {
+                    if (empty($this->_tableAlias) === false && strpos($column, '.') === false) {
                         $column = $this->_tableAlias . '.' . $column;
                     }
                     $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
