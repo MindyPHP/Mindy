@@ -882,6 +882,16 @@ abstract class BaseAdapter implements ISQLGenerator
 
     public function generateCreateTableIfNotExists($tableName, $columns, $options = null)
     {
-        return $this->quoteSql($this->sqlCreateTableIfNotExists($this->quoteTableName($tableName), $columns, $options));
+        return $this->quoteSql($this->sqlCreateTable($this->quoteTableName($tableName), $columns, $options, true));
+    }
+
+    /**
+     * Prepare value for db
+     * @param $value
+     * @return int
+     */
+    public function prepareValue($value)
+    {
+        return $value;
     }
 }

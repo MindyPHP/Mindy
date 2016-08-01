@@ -144,6 +144,7 @@ abstract class Q
         if ($operator === null) {
             $operator = $this->getOperator();
         }
+        
         if (is_string($part)) {
             return $part;
         } else if (is_array($part)) {

@@ -637,6 +637,8 @@ class QueryBuilder
                 if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
+                    $value = $this->getAdapter()->prepareValue($value);
+
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);
                     $column = $this->getLookupBuilder()->fetchColumnName($column);
                     if (empty($tableAlias) === false && strpos($column, '.') === false) {
