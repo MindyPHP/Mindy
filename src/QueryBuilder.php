@@ -237,6 +237,7 @@ class QueryBuilder
             $this->_select = ['*'];
         }
 
+        $builder = $this->getLookupBuilder();
         if (is_array($this->_select)) {
             $select = [];
             foreach ($this->_select as $alias => $column) {
@@ -246,7 +247,7 @@ class QueryBuilder
                     if (strpos($column, 'SELECT') !== false) {
                         $select[$alias] = $column;
                     } else {
-                        $select[$alias] = $this->addColumnAlias($column);
+                        $select[$alias] = $this->addColumnAlias($builder->fetchColumnName($column));
                     }
                 } else {
                     $select[$alias] = $column;
