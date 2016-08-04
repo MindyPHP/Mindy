@@ -14,3 +14,10 @@ before_script:
 services:
   - mysql
   - postgresql
+
+matrix:
+  allow_failures:
+    - php: hhvm
+  exclude:
+    - php: hhvm
+      env: DB=pgsql  # PDO driver for pgsql is unsupported by HHVM (3rd party install for support)
