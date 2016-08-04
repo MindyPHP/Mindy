@@ -242,7 +242,7 @@ class QueryBuilder
             $select = [];
             foreach ($this->_select as $alias => $column) {
                 if ($column instanceof Aggregation) {
-                    $select[$this->buildSelectFromAggregation($column)] = $alias;
+                    $select[$alias] = $this->buildSelectFromAggregation($column);
                 } else if (is_string($column)) {
                     if (strpos($column, 'SELECT') !== false) {
                         $select[$alias] = $column;
