@@ -13,7 +13,7 @@
   "require-dev": {
     "phpunit/phpunit": "*",
     "phpunit/php-code-coverage": "^4",
-    "mindy/query": "dev-master"
+    "mindy/query": "2.*"
   },
   "autoload": {
     "files": [
