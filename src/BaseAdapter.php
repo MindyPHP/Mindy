@@ -817,7 +817,7 @@ abstract class BaseAdapter implements ISQLGenerator
                 if (strpos($subQuery, 'SELECT') !== false) {
                     $value = '(' . $subQuery . ') AS ' . $this->quoteColumn($column);
                 } else {
-                    $value = $this->quoteColumn($column) . ' AS ' . $this->quoteColumn($subQuery);
+                    $value = $this->quoteColumn($subQuery) . ' AS ' . $this->quoteColumn($column);
                 }
             } else {
                 if (strpos($column, ',') === false && strpos($column, 'AS') !== false) {
