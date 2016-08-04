@@ -97,7 +97,11 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      */
     public function getBoolean($value = null)
     {
-        return (bool)$value ? 1 : 0;
+        if (gettype($value) === 'boolean') {
+            return (int)$value;
+        } else {
+            return $value ? 1 : 0;
+        }
     }
 
     protected function formatDateTime($value, $format)
@@ -212,5 +216,18 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
         }
 
         return "ALTER TABLE {$quotedTable} CHANGE " . $this->quoteColumn($oldName) . ' ' . $this->quoteColumn($newName);
+    }
+
+    /**
+     * Prepare value for db
+     * @param $value
+     * @return int
+     */
+    public function prepareValue($value)
+    {
+        if (gettype($value) === 'boolean') {
+            return (int)$value;
+        }
+        return parent::prepareValue($value);
     }
 }

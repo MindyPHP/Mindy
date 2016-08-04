@@ -237,6 +237,7 @@ class QueryBuilder
             $this->_select = ['*'];
         }
 
+        $builder = $this->getLookupBuilder();
         if (is_array($this->_select)) {
             $select = [];
             foreach ($this->_select as $alias => $column) {
@@ -246,7 +247,7 @@ class QueryBuilder
                     if (strpos($column, 'SELECT') !== false) {
                         $select[$alias] = $column;
                     } else {
-                        $select[$alias] = $this->addColumnAlias($column);
+                        $select[$alias] = $this->addColumnAlias($builder->fetchColumnName($column));
                     }
                 } else {
                     $select[$alias] = $column;
@@ -637,6 +638,8 @@ class QueryBuilder
                 if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
                 } else {
+                    $value = $this->getAdapter()->prepareValue($value);
+
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);
                     $column = $this->getLookupBuilder()->fetchColumnName($column);
                     if (empty($tableAlias) === false && strpos($column, '.') === false) {
@@ -1048,8 +1051,13 @@ class QueryBuilder
 
     protected function applyTableAlias($column)
     {
-        $tableAlias = $this->getAlias();
-        return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+        // If column already has alias - skip
+        if (strpos($column, '.') === false) {
+            $tableAlias = $this->getAlias();
+            return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+        } else {
+            return $column;
+        }
     }
 
     public function buildJoin()
@@ -1105,8 +1113,12 @@ class QueryBuilder
         $order = [];
         if (is_array($this->_order)) {
             foreach ($this->_order as $column) {
-                list($newColumn, $direction) = $this->buildOrderJoin($column);
-                $order[$this->applyTableAlias($newColumn)] = $direction;
+                if ($column === '?') {
+                    $order[] = $this->getAdapter()->getRandomOrder();
+                } else {
+                    list($newColumn, $direction) = $this->buildOrderJoin($column);
+                    $order[$this->applyTableAlias($newColumn)] = $direction;
+                }
             }
         } else if (is_string($this->_order)) {
             $columns = preg_split('/\s*,\s*/', $this->_order, -1, PREG_SPLIT_NO_EMPTY);
