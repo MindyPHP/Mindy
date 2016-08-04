@@ -439,9 +439,11 @@ abstract class BaseAdapter implements ISQLGenerator
 
     /**
      * @param $tableName
+     * @param bool $ifExists
+     * @param bool $cascade
      * @return string
      */
-    public function sqlDropTable($tableName, $ifExists)
+    public function sqlDropTable($tableName, $ifExists = false, $cascade = false)
     {
         $tableName = $this->getRawTableName($tableName);
         return ($ifExists ? "DROP TABLE IF EXISTS " : "DROP TABLE ") . $this->quoteTableName($tableName);
@@ -449,9 +451,10 @@ abstract class BaseAdapter implements ISQLGenerator
 
     /**
      * @param $tableName
+     * @param bool $cascade
      * @return string
      */
-    public function sqlTruncateTable($tableName)
+    public function sqlTruncateTable($tableName, $cascade = false)
     {
         return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
     }

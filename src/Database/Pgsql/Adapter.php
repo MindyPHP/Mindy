@@ -42,6 +42,27 @@ class Adapter extends BaseAdapter implements IAdapter
     }
 
     /**
+     * @param $tableName
+     * @param bool $ifExists
+     * @param bool $cascade
+     * @return string
+     */
+    public function sqlDropTable($tableName, $ifExists = false, $cascade = false)
+    {
+        return parent::sqlDropTable($tableName, $ifExists, $cascade) . ($cascade ? ' CASCADE' : '');
+    }
+
+    /**
+     * @param $tableName
+     * @param bool $cascade
+     * @return string
+     */
+    public function sqlTruncateTable($tableName, $cascade = false)
+    {
+        return parent::sqlTruncateTable($tableName, $cascade) . ($cascade ? ' CASCADE' : '');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.

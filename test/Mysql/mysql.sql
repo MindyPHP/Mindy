@@ -2,6 +2,7 @@
  * This is the database schema for testing MySQL support of Yii DAO and Active Record.
  * The database setup in config.php is required to perform then relevant tests:
  */
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `composite_fk` CASCADE;
 DROP TABLE IF EXISTS `order_item` CASCADE;
 DROP TABLE IF EXISTS `order_item_with_null_fk` CASCADE;
@@ -14,6 +15,8 @@ DROP TABLE IF EXISTS `profile` CASCADE;
 DROP TABLE IF EXISTS `null_values` CASCADE;
 DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
+DROP TABLE IF EXISTS `drop_primary_test` CASCADE;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE `constraints`
 (
@@ -79,7 +82,6 @@ CREATE TABLE `order_item` (
   CONSTRAINT `FK_order_item_order_id` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_order_item_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `order_item_with_null_fk` (
   `order_id` int(11),
@@ -194,10 +196,11 @@ INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
 INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_4', 4);
 INSERT INTO `validator_ref` (a_field, ref) VALUES ('ref_to_5', 5);
 
-DROP TABLE IF EXISTS `drop_primary_test` CASCADE;
-
 CREATE TABLE `drop_primary_test` (
   `order_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
-  PRIMARY KEY (`order_id`,`item_id`)
+  `profile_id` int(11) NOT NULL,
+  PRIMARY KEY (`order_id`,`item_id`),
+  KEY `profile_id` (`profile_id`),
+  CONSTRAINT `fk_profile_id` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

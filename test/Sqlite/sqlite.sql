@@ -2,6 +2,7 @@
  * This is the database schema for testing Sqlite support of Yii DAO and Active Record.
  * The database setup in config.php is required to perform then relevant tests:
  */
+PRAGMA integrity_check(N);
 DROP TABLE IF EXISTS "composite_fk";
 DROP TABLE IF EXISTS "order_item";
 DROP TABLE IF EXISTS "order_item_with_null_fk";
@@ -13,6 +14,8 @@ DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "drop_primary_test";
+PRAGMA integrity_check(Y);
 
 CREATE TABLE "profile" (
   id INTEGER NOT NULL,
@@ -174,10 +177,10 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
 
-DROP TABLE IF EXISTS "drop_primary_test";
-
-CREATE TABLE "drop_primary_test" (
+CREATE TABLE `drop_primary_test` (
   order_id INTEGER NOT NULL,
   item_id INTEGER NOT NULL,
-  PRIMARY KEY (order_id, item_id)
+  profile_id INTEGER NOT NULL,
+  PRIMARY KEY (order_id, item_id),
+  CONSTRAINT fk_profile_id FOREIGN KEY (profile_id) REFERENCES profile (id)
 );

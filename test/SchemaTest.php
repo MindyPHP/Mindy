@@ -155,7 +155,10 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $tableSchema = $schema->getTableSchema('profile', true);
         $this->assertInstanceOf(TableSchema::class, $tableSchema);
 
-        $c->createCommand($qb->dropTable('profile'))->execute();
+        if ($c->driverName == 'mysql') {
+            $c->createCommand($qb->dropForeignKey('drop_primary_test', 'fk_profile_id'))->execute();
+        }
+        $c->createCommand($qb->dropTable('profile', false, true))->execute();
         $tableSchema = $schema->getTableSchema('profile', true);
         $this->assertNull($tableSchema);
     }
@@ -193,7 +196,10 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $rows = $c->createCommand($qb->select('COUNT(*)')->from('profile')->toSQL())->queryScalar();
         $this->assertEquals(2, $rows);
 
-        $c->createCommand($qb->truncateTable('profile'))->execute();
+        if ($c->driverName == 'mysql') {
+            $c->createCommand($qb->dropForeignKey('drop_primary_test', 'fk_profile_id'))->execute();
+        }
+        $c->createCommand($qb->truncateTable('profile', true))->execute();
 
         $rows = $c->createCommand($qb->select('COUNT(*)')->from('profile')->toSQL())->queryScalar();
         $this->assertEquals(0, $rows);
@@ -315,14 +321,10 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($qb->getAdapter()->getDriver());
 
         $schema = $c->getSchema();
-        $tableSchema = $schema->getTableSchema('composite_fk', true);
+        $tableSchema = $schema->getTableSchema('drop_primary_test', true);
         $this->assertInstanceOf(TableSchema::class, $tableSchema);
         // no error - test passed
-        if ($c->driverName == 'pgsql') {
-            $c->createCommand($qb->dropForeignKey('composite_fk', 'composite_fk_pkey'))->execute();
-        } else {
-            $c->createCommand($qb->dropForeignKey('composite_fk', 'fk_composite_fk_order_item'))->execute();
-        }
+        $c->createCommand($qb->dropForeignKey('drop_primary_test', 'fk_profile_id'))->execute();
     }
 
     public function testCheckIntegrity()

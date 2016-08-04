@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
+DROP TABLE IF EXISTS "drop_primary_test" CASCADE;
 
 CREATE TABLE "constraints"
 (
@@ -192,10 +193,9 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
 
-DROP TABLE IF EXISTS "drop_primary_test" CASCADE;
-
 CREATE TABLE "drop_primary_test" (
   order_id INTEGER        NOT NULL REFERENCES "order" (id) ON UPDATE CASCADE ON DELETE CASCADE,
   item_id  INTEGER        NOT NULL REFERENCES "item" (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  profile_id INTEGER NOT NULL CONSTRAINT "fk_profile_id" REFERENCES "profile" (id),
   PRIMARY KEY (order_id, item_id)
 );

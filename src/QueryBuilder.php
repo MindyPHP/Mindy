@@ -541,9 +541,9 @@ class QueryBuilder
      * @param $tableName
      * @return string
      */
-    public function truncateTable($tableName)
+    public function truncateTable($tableName, $cascade = false)
     {
-        return $this->getAdapter()->sqlTruncateTable($tableName);
+        return $this->getAdapter()->sqlTruncateTable($tableName, $cascade);
     }
 
     /**
@@ -882,11 +882,12 @@ class QueryBuilder
     /**
      * @param $tableName
      * @param bool $isExists
+     * @param bool $cascade
      * @return string
      */
-    public function dropTable($tableName, $isExists = false)
+    public function dropTable($tableName, $isExists = false, $cascade = false)
     {
-        return $this->getAdapter()->sqlDropTable($tableName, $isExists);
+        return $this->getAdapter()->sqlDropTable($tableName, $isExists, $cascade);
     }
 
     /**
