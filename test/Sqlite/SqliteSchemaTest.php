@@ -2,10 +2,6 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\Query\Database\Sqlite\PDO;
-use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
-use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
-use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
 use Mindy\QueryBuilder\Exception\NotSupportedException;
 
 /**
@@ -16,14 +12,6 @@ use Mindy\QueryBuilder\Exception\NotSupportedException;
  */
 class SqliteSchemaTest extends SchemaTest
 {
-    /**
-     * @return PgsqlAdapter|MysqlAdapter|SqliteAdapter
-     */
-    protected function getAdapter()
-    {
-        return new SqliteAdapter;
-    }
-
     public function testAddForeignKey()
     {
         $this->setExpectedException(NotSupportedException::class, 'not supported by SQLite');

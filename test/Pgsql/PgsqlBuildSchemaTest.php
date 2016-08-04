@@ -8,15 +8,8 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Database\Pgsql\Adapter;
-
 class PgsqlBuildSchemaTest extends BuildSchemaTest
 {
-    public function getAdapter()
-    {
-        return new Adapter();
-    }
-
     public function testBoolInsert()
     {
         $qb = $this->getQueryBuilder();

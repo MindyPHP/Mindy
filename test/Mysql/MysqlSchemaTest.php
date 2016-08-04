@@ -8,12 +8,6 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Database\Mysql\Adapter;
-
 class MysqlSchemaTest extends SchemaTest
 {
-    protected function getAdapter()
-    {
-        return new Adapter($this->createDriver());
-    }
 }

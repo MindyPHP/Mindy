@@ -8,8 +8,55 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
+use Mindy\Helper\Creator;
+use Mindy\Query\Connection;
+use Mindy\Query\PDO;
+use ReflectionClass;
+
 abstract class BuildSchemaTest extends BaseTest
 {
+    protected $config = [];
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $reflector = new ReflectionClass(get_class($this));
+        $dir = dirname($reflector->getFileName());
+        $configFile = @getenv('TRAVIS') ? 'config_travis.php' : 'config.php';
+        $this->config =  require($dir . '/' . $configFile);
+
+        try {
+            new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (\Exception $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
+
+        $this->connection = Creator::createObject($this->config);
+    }
+
+    /**
+     * @return \Mindy\QueryBuilder\BaseAdapter
+     */
+    protected function getAdapter()
+    {
+        return $this->connection->getAdapter();
+    }
+
+    /**
+     * @return \Mindy\QueryBuilder\QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        return $this->connection->getQueryBuilder();
+    }
+
     abstract public function testRenameTable();
 
     abstract public function testAlterColumn();

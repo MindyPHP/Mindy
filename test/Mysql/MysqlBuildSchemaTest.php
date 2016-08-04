@@ -18,20 +18,10 @@ class MysqlBuildSchemaTest extends BuildSchemaTest
         return new Adapter();
     }
 
-    public function createPDOInstance()
-    {
-        $config = require(__DIR__ . '/config.php');
-        return new PDO($config['dsn'], $config['username'], $config['password'], [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-    }
-
     public function testRenameColumn()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getAdapter()->setDriver($this->createPDOInstance());
-        $this->assertSql("ALTER TABLE [[profile]] CHANGE [[description]] [[title]] varchar(200) DEFAULT NULL",
+        $this->assertSql("ALTER TABLE [[profile]] CHANGE [[description]] [[title]] varchar(128) NOT NULL",
             $qb->renameColumn('profile', 'description', 'title'));
     }
 

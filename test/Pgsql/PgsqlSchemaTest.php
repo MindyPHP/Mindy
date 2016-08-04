@@ -8,10 +8,6 @@
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
-use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
-use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
-
 class PgsqlSchemaTest extends SchemaTest
 {
     public function testAlterColumn()
@@ -29,14 +25,6 @@ class PgsqlSchemaTest extends SchemaTest
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" reset xyz';
         $sql = $qb->alterColumn('foo1', 'bar', 'reset xyz');
         $this->assertEquals($expected, $sql);
-    }
-
-    /**
-     * @return PgsqlAdapter|MysqlAdapter|SqliteAdapter
-     */
-    protected function getAdapter()
-    {
-        return new PgsqlAdapter();
     }
 
     public function testQuoteValue()

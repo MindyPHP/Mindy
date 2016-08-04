@@ -13,10 +13,8 @@ use Mindy\Helper\Creator;
 use Mindy\Query\Connection;
 use Mindy\Query\Schema\ColumnSchema;
 use Mindy\Query\Schema\TableSchema;
-use Mindy\QueryBuilder\Exception\NotSupportedException;
-use Mindy\QueryBuilder\LookupBuilder\Legacy;
 use Mindy\QueryBuilder\QueryBuilderFactory;
-use PDO;
+use Mindy\Query\PDO;
 use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
@@ -40,43 +38,35 @@ abstract class SchemaTest extends \PHPUnit_Framework_TestCase
     /**
      * @return PgsqlAdapter|MysqlAdapter|SqliteAdapter
      */
-    abstract protected function getAdapter();
-
-    /**
-     * @return \PDO
-     */
-    protected function createDriver()
+    protected function getAdapter()
     {
+        return $this->connection->getAdapter();
+    }
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $reflector = new ReflectionClass(get_class($this));
+        $dir = dirname($reflector->getFileName());
+        $configFile = @getenv('TRAVIS') ? 'config_travis.php' : 'config.php';
+        $this->config =  require($dir . '/' . $configFile);
+
         try {
-            return new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
+            new PDO($this->config['dsn'], $this->config['username'], $this->config['password'], [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
         } catch (\Exception $e) {
             $this->markTestSkipped($e->getMessage());
         }
-    }
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $reflector = new ReflectionClass(get_class($this));
-        $dir = dirname($reflector->getFileName());
-        $configFile = @getenv('TRAVIS') ? 'config_travis.php' : 'config.php';
-        $this->config =  require($dir . '/' . $configFile);
         
-        $driver = $this->createDriver();
-        $adapter = $this->getAdapter();
-        $adapter->setDriver($driver);
-        $builder = new Legacy();
-        $builder->addLookupCollection($adapter->getLookupCollection());
-        $this->factory = new QueryBuilderFactory($adapter, $builder);
         $this->connection = Creator::createObject($this->config);
     }
 
     protected function getQueryBuilder()
     {
-        return $this->factory->getQueryBuilder();
+        return $this->connection->getQueryBuilder();
     }
 
     public function testAddForeignKey()

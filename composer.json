@@ -11,9 +11,9 @@
   "require": {
   },
   "require-dev": {
+    "mindy/query": "2.*",
     "phpunit/phpunit": "*",
-    "phpunit/php-code-coverage": "^4",
-    "mindy/query": "2.*"
+    "phpunit/php-code-coverage": "^4"
   },
   "autoload": {
     "files": [
