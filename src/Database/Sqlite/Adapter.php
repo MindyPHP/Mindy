@@ -40,7 +40,7 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 
     public function getLookupCollection()
     {
-        return new LookupCollection($this->lookups);
+        return new LookupCollection();
     }
 
     /**
