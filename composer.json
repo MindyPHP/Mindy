@@ -11,7 +11,7 @@
   "require": {
   },
   "require-dev": {
-    "mindy/query": "2.*",
+    "mindy/query": "dev-master",
     "phpunit/phpunit": "*",
     "phpunit/php-code-coverage": "^4"
   },
