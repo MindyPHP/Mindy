@@ -1,7 +1,8 @@
 <?php
 
-namespace Mindy\Query;
+namespace Mindy\QueryBuilder;
 
+use function Mindy\app;
 use Mindy\Helper\Traits\Accessors;
 use Mindy\Helper\Traits\Configurator;
 
@@ -10,21 +11,9 @@ class Migration
     use Accessors, Configurator;
 
     /**
-     * @var Connection
+     * @var string
      */
-    private $_db;
-
-    /**
-     * @var Connection the database connection that this migration should work with.
-     * If not set, it will be initialized as the 'db' application component.
-     *
-     * Initializes the migration.
-     * This method will set [[db]] to be the 'db' application component, if it is null.
-     */
-    public function init()
-    {
-        $this->_db = ConnectionManager::getDb();
-    }
+    protected $db = 'default';
 
     /**
      * This method contains the logic to be executed when applying this migration.
@@ -34,7 +23,7 @@ class Migration
      */
     public function up()
     {
-        $transaction = $this->_db->beginTransaction();
+        $transaction = $this->getDb()->beginTransaction();
         try {
             if ($this->safeUp() === false) {
                 $transaction->rollback();
@@ -59,7 +48,7 @@ class Migration
      */
     public function down()
     {
-        $transaction = $this->_db->beginTransaction();
+        $transaction = $this->getDb()->beginTransaction();
         try {
             if ($this->safeDown() === false) {
                 $transaction->rollback();
@@ -112,7 +101,7 @@ class Migration
     {
         echo "    > execute SQL: $sql ...";
         $time = microtime(true);
-        $this->_db->createCommand($sql, $params)->execute();
+        $this->getDb()->createCommand($sql, $params)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -126,7 +115,7 @@ class Migration
     {
         echo "    > insert into $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->insert($table, $columns, $rows))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->insert($table, $columns, $rows))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -144,7 +133,7 @@ class Migration
         echo "    > update $table ...";
         $time = microtime(true);
         $sql = $this->getQueryBuilder()->setTypeUpdate()->where($condition)->update($table, $columns);
-        $this->_db->createCommand($sql, $params)->execute();
+        $this->getDb()->createCommand($sql, $params)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -160,7 +149,7 @@ class Migration
         echo "    > delete from $table ...";
         $time = microtime(true);
         $sql = $this->getQueryBuilder()->setTypeDelete()->from($table)->where($condition)->toSQL();
-        $this->_db->createCommand($sql,  $params)->execute();
+        $this->getDb()->createCommand($sql,  $params)->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -185,7 +174,7 @@ class Migration
     {
         echo "    > create table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->createTable($table, $columns, $options, $ifNotExists))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->createTable($table, $columns, $options, $ifNotExists))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -198,7 +187,7 @@ class Migration
     {
         echo "    > rename table $table to $newName ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->renameTable($table, $newName))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->renameTable($table, $newName))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -210,7 +199,7 @@ class Migration
     {
         echo "    > drop table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->dropTable($table))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->dropTable($table))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -222,7 +211,7 @@ class Migration
     {
         echo "    > truncate table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->truncateTable($table))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->truncateTable($table))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -238,7 +227,7 @@ class Migration
     {
         echo "    > add column $column $type to table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->addColumn($table, $column, $type))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->addColumn($table, $column, $type))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -251,7 +240,7 @@ class Migration
     {
         echo "    > drop column $column from table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->dropColumn($table, $column))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->dropColumn($table, $column))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -265,7 +254,7 @@ class Migration
     {
         echo "    > rename column $name in table $table to $newName ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->renameColumn($table, $name, $newName))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->renameColumn($table, $name, $newName))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -281,7 +270,7 @@ class Migration
     {
         echo "    > alter column $column in table $table to $type ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->alterColumn($table, $column, $type))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->alterColumn($table, $column, $type))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -296,7 +285,7 @@ class Migration
     {
         echo "    > add primary key $name on $table (" . (is_array($columns) ? implode(',', $columns) : $columns) . ") ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->addPrimaryKey($name, $table, $columns))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->addPrimaryKey($name, $table, $columns))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -310,7 +299,7 @@ class Migration
     {
         echo "    > drop primary key $name ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->dropPrimaryKey($name, $table))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->dropPrimaryKey($name, $table))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -329,7 +318,7 @@ class Migration
     {
         echo "    > add foreign key $name: $table ($columns) references $refTable ($refColumns) ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -342,7 +331,7 @@ class Migration
     {
         echo "    > drop foreign key $name from table $table ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->dropForeignKey($name, $table))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->dropForeignKey($name, $table))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -358,7 +347,7 @@ class Migration
     {
         echo "    > create" . ($unique ? ' unique' : '') . " index $name on $table ($column) ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->createIndex($name, $table, $column, $unique))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->createIndex($name, $table, $column, $unique))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -371,7 +360,7 @@ class Migration
     {
         echo "    > drop index $name ...";
         $time = microtime(true);
-        $this->_db->createCommand($this->getQueryBuilder()->dropIndex($name, $table))->execute();
+        $this->getDb()->createCommand($this->getQueryBuilder()->dropIndex($name, $table))->execute();
         echo " done (time: " . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -380,6 +369,14 @@ class Migration
      */
     protected function getQueryBuilder()
     {
-        return $this->_db->getQueryBuilder();
+        return $this->getDb()->getQueryBuilder();
+    }
+
+    /**
+     * @return \Mindy\Query\Connection
+     */
+    protected function getDb()
+    {
+        return app()->db->getDb($this->db);
     }
 }
