@@ -63,9 +63,10 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 
     /**
      * @param $tableName
+     * @param bool $cascade
      * @return string
      */
-    public function sqlTruncateTable($tableName)
+    public function sqlTruncateTable($tableName, $cascade = false)
     {
         return "DELETE FROM " . $this->quoteTableName($tableName);
     }

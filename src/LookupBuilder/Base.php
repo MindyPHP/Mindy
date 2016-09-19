@@ -8,7 +8,6 @@
 
 namespace Mindy\QueryBuilder\LookupBuilder;
 
-use Closure;
 use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;

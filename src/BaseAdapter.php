@@ -134,13 +134,7 @@ abstract class BaseAdapter implements ISQLGenerator
             return $str;
         }
 
-        $driver = $this->getDriver();
-        if ($driver && ($value = $driver->quote($str)) !== false) {
-            return $value;
-        } else {
-            // the driver doesn't support quote (e.g. oci)
-            return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
-        }
+        return $this->getDriver()->quote($str);
     }
 
     /**
@@ -302,16 +296,15 @@ abstract class BaseAdapter implements ISQLGenerator
 
     /**
      * @param $tableName
-     * @param array $columns
      * @param array $rows
      * @return string
      */
-    public function sqlInsert($tableName, array $columns = [], array $rows = [])
+    public function sqlInsert($tableName, array $rows)
     {
         $sql = [];
         $columns = array_map(function ($column) {
             return $this->quoteColumn($column);
-        }, $columns);
+        }, array_keys($rows[0]));
 
         foreach ($rows as $values) {
             $record = [];
@@ -860,9 +853,9 @@ abstract class BaseAdapter implements ISQLGenerator
         return $selectSql . implode(', ', $select);
     }
 
-    public function generateInsertSQL($tableName, $columns, $rows)
+    public function generateInsertSQL($tableName, $values)
     {
-        return $this->sqlInsert($tableName, $columns, $rows);
+        return $this->sqlInsert($tableName, $values);
     }
 
     public function generateDeleteSQL($from, $where)

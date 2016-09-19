@@ -147,8 +147,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
 
     /**
      * @param $tableName
-     * @param $sequenceName
+     * @param $value
      * @return string
+     * @internal param $sequenceName
      */
     public function sqlResetSequence($tableName, $value)
     {

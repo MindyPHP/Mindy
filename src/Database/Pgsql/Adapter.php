@@ -15,18 +15,8 @@ use Mindy\QueryBuilder\Interfaces\IAdapter;
 class Adapter extends BaseAdapter implements IAdapter
 {
     /**
-     * Quotes a string value for use in a query.
-     * Note that if the parameter is not a string, it will be returned without change.
-     *
-     * Note sqlite3:
-     * A string constant is formed by enclosing the string in single quotes (').
-     * A single quote within the string can be encoded by putting two single
-     * quotes in a row - as in Pascal. C-style escapes using the backslash
-     * character are not supported because they are not standard SQL.
-     *
-     * @param string $str string to be quoted
-     * @return string the properly quoted string
-     * @see http://www.php.net/manual/en/function.PDO-quote.php
+     * @param string $str
+     * @return string
      */
     public function quoteValue($str)
     {

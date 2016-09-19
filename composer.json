@@ -9,9 +9,9 @@
     }
   ],
   "require": {
+    "doctrine/dbal": "*"
   },
   "require-dev": {
-    "mindy/query": "dev-master",
     "phpunit/phpunit": "*",
     "phpunit/php-code-coverage": "^4"
   },
@@ -20,13 +20,12 @@
       "src/Conditions.php"
     ],
     "psr-4": {
-      "Mindy\\QueryBuilder\\": "src/",
-      "Mindy\\Query\\": "vendor/mindy/query/src/"
+      "Mindy\\QueryBuilder\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Mindy\\QueryBuilder\\Tests\\": "test/"
+      "Mindy\\Tests\\": "test/"
     }
   }
 }

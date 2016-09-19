@@ -8,14 +8,19 @@
 
 namespace Mindy\QueryBuilder;
 
+use Doctrine\DBAL\Connection;
 use Exception;
 use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
-use Mindy\QueryBuilder\LookupBuilder\Legacy;
+use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
+
+use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
+use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
+use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 
 class QueryBuilder
 {
@@ -108,13 +113,59 @@ class QueryBuilder
     private $_aliasesCount = 0;
 
     private $_joinAlias = [];
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    public function getConnection()
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @return \Doctrine\DBAL\Platforms\AbstractPlatform
+     */
+    public function getDatabasePlatform()
+    {
+        return $this->getConnection()->getDatabasePlatform();
+    }
+
+    /**
+     * @param Connection $connection
+     * @return QueryBuilder
+     * @throws Exception
+     */
+    public static function getInstance(Connection $connection)
+    {
+        $driver = $connection->getDriver();
+        switch ($driver->getName()) {
+            case 'pdo_mysql':
+                $adapter = new MysqlAdapter($connection);
+                break;
+            case 'pdo_sqlite':
+                $adapter = new SqliteAdapter($connection);
+                break;
+            case 'pdo_pgsql':
+                $adapter = new PgsqlAdapter($connection);
+                break;
+            default:
+                throw new Exception('Unknown driver');
+        }
+        $lookupBuilder = new LookupBuilder();
+        $lookupBuilder->addLookupCollection($adapter->getLookupCollection());
+        return new QueryBuilder($connection, $adapter, $lookupBuilder);
+    }
 
     /**
      * QueryBuilder constructor.
+     * @param Connection $connection
      * @param BaseAdapter $adapter
+     * @param ILookupBuilder $lookupBuilder
      */
-    public function __construct(BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
+    public function __construct(Connection $connection, BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
     {
+        $this->connection = $connection;
         $this->adapter = $adapter;
         $this->lookupBuilder = $lookupBuilder;
     }
@@ -400,7 +451,7 @@ class QueryBuilder
     }
 
     /**
-     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\Legacy
+     * @return ILookupBuilder|\Mindy\QueryBuilder\LookupBuilder\LookupBuilder
      */
     public function getLookupBuilder()
     {
@@ -491,80 +542,12 @@ class QueryBuilder
 
     /**
      * @param $tableName
-     * @param array $columns
      * @param array $rows
      * @return $this
      */
-    public function insert($tableName, array $columns, array $rows)
+    public function insert($tableName, $rows)
     {
-        return $this->getAdapter()->generateInsertSQL($tableName, $columns, $rows);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param $columns
-     * @param $refTable
-     * @param $refColumns
-     * @param null $delete
-     * @param null $update
-     * @return string
-     */
-    public function addForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
-    {
-        return $this->getAdapter()->sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete, $update);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @param $columns
-     * @param bool $unique
-     * @return string
-     */
-    public function createIndex($tableName, $name, $columns, $unique = false)
-    {
-        return $this->getAdapter()->sqlCreateIndex($tableName, $name, $columns, $unique);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return mixed
-     */
-    public function dropForeignKey($tableName, $name)
-    {
-        return $this->getAdapter()->sqlDropForeignKey($tableName, $name);
-    }
-
-    /**
-     * @param $tableName
-     * @return string
-     */
-    public function truncateTable($tableName, $cascade = false)
-    {
-        return $this->getAdapter()->sqlTruncateTable($tableName, $cascade);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    public function dropIndex($tableName, $name)
-    {
-        return $this->getAdapter()->sqlDropIndex($tableName, $name);
-    }
-
-    /**
-     * @param $check
-     * @param string $schema
-     * @param string $tableName
-     * @return string
-     */
-    public function checkIntegrity($check, $schema = '', $tableName = '')
-    {
-        return $this->getAdapter()->sqlCheckIntegrity($check, $schema, $tableName);
+        return $this->getAdapter()->generateInsertSQL($tableName, $rows);
     }
 
     /**
@@ -881,17 +864,6 @@ class QueryBuilder
 
     /**
      * @param $tableName
-     * @param bool $isExists
-     * @param bool $cascade
-     * @return string
-     */
-    public function dropTable($tableName, $isExists = false, $cascade = false)
-    {
-        return $this->getAdapter()->sqlDropTable($tableName, $isExists, $cascade);
-    }
-
-    /**
-     * @param $tableName
      * @param $columns
      * @param null $options
      * @param bool $ifNotExists
@@ -925,37 +897,6 @@ class QueryBuilder
 
     /**
      * @param $tableName
-     * @param $oldName
-     * @param $newName
-     * @return mixed
-     */
-    public function renameColumn($tableName, $oldName, $newName)
-    {
-        return $this->getAdapter()->sqlRenameColumn($tableName, $oldName, $newName);
-    }
-
-    /**
-     * @param $oldTableName
-     * @param $newTableName
-     * @return mixed
-     */
-    public function renameTable($oldTableName, $newTableName)
-    {
-        return $this->getAdapter()->sqlRenameTable($oldTableName, $newTableName);
-    }
-
-    /**
-     * @param $name
-     * @param $table
-     * @return string
-     */
-    public function dropPrimaryKey($tableName, $name)
-    {
-        return $this->getAdapter()->sqlDropPrimaryKey($tableName, $name);
-    }
-
-    /**
-     * @param $tableName
      * @param $name
      * @param $columns
      * @return string
@@ -974,37 +915,6 @@ class QueryBuilder
     public function alterColumn($tableName, $column, $type)
     {
         return $this->getAdapter()->sqlAlterColumn($tableName, $column, $type);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    public function resetSequence($tableName, $name)
-    {
-        return $this->getAdapter()->sqlResetSequence($tableName, $name);
-    }
-
-    /**
-     * @param $tableName
-     * @param $name
-     * @return string
-     */
-    public function dropColumn($tableName, $name)
-    {
-        return $this->getAdapter()->sqlDropColumn($tableName, $name);
-    }
-
-    /**
-     * @param $tableName
-     * @param $column
-     * @param $type
-     * @return string
-     */
-    public function addColumn($tableName, $column, $type)
-    {
-        return $this->getAdapter()->sqlAddColumn($tableName, $column, $type);
     }
 
     /**
