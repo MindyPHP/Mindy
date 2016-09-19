@@ -2,24 +2,18 @@
 
 return [
     'mysql' => [
-        'class' => '\Mindy\Query\Connection',
-        'dsn' => 'mysql:host=127.0.0.1;dbname=test',
-        'username' => 'root',
-        'password' => '',
-        'fixture' => __DIR__ . '/mysql.sql',
+        'url' => 'mysql://root@127.0.0.1/test?charset=utf8',
+        'driver' => 'pdo_mysql',
+        'fixture' => __DIR__ . '/../fixtures/mysql.sql',
     ],
     'pgsql' => [
-        'class' => '\Mindy\Query\Connection',
-        'dsn' => 'pgsql:host=localhost;dbname=test;port=5432;',
-        'username' => 'postgres',
-        'password' => '',
-        'fixture' => __DIR__ . '/pgsql.sql',
+        'dsn' => 'pgsql://postgres@127.0.0.1:5432/test',
+        'driver' => 'pdo_pgsql',
+        'fixture' => __DIR__ . '/../fixtures/pgsql.sql',
     ],
     'sqlite' => [
-        'class' => '\Mindy\Query\Connection',
-        'dsn' => 'sqlite:' . __DIR__ . '/../sqlite.db',
-        'fixture' => __DIR__ . '/sqlite.sql',
-        'username' => '',
-        'password' => ''
+        'url' => 'sqlite:///:memory:',
+        'driver' => 'pdo_sqlite',
+        'fixture' => __DIR__ . '/../fixtures/sqlite.sql',
     ]
 ];
