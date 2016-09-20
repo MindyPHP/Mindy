@@ -245,10 +245,10 @@ abstract class BaseAdapter implements ISQLGenerator
             if ($column instanceof Expression) {
                 $columns[$i] = $this->quoteSql($column->toSQL());
             } else if (strpos($column, 'AS') !== false) {
-                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
-                     list(, $rawColumn, $rawAlias) = $matches;
-                     $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
-                 }
+                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
+                    list(, $rawColumn, $rawAlias) = $matches;
+                    $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
+                }
             } else if (strpos($column, '(') === false) {
                 $columns[$i] = $this->quoteColumn($column);
             }
@@ -301,17 +301,42 @@ abstract class BaseAdapter implements ISQLGenerator
      */
     public function sqlInsert($tableName, array $rows)
     {
-        $sql = [];
-        $columns = array_map(function ($column) {
-            return $this->quoteColumn($column);
-        }, array_keys($rows[0]));
+        if (isset($rows[0]) && is_array($rows)) {
+            $columns = array_map(function ($column) {
+                return $this->quoteColumn($column);
+            }, array_keys($rows[0]));
 
-        foreach ($rows as $values) {
-            $record = [];
-            if (is_array($values) === false) {
-                $values = [$values];
+            $values = [];
+
+            foreach ($rows as $row) {
+                $record = [];
+                foreach ($row as $value) {
+                    if ($value instanceof Expression) {
+                        $value = $value->toSQL();
+                    } else if ($value === true || $value === 'true') {
+                        $value = 'TRUE';
+                    } else if ($value === false || $value === 'false') {
+                        $value = 'FALSE';
+                    } else if ($value === null || $value === 'null') {
+                        $value = 'NULL';
+                    } else if (is_string($value)) {
+                        $value = $this->quoteValue($value);
+                    }
+
+                    $record[] = $value;
+                }
+                $values[] = '(' . implode(', ', $record) . ')';
             }
-            foreach ($values as $value) {
+
+            $sql = 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+
+            return $this->quoteSql($sql);
+        } else {
+            $columns = array_map(function ($column) {
+                return $this->quoteColumn($column);
+            }, array_keys($rows));
+
+            $values = array_map(function ($value) {
                 if ($value instanceof Expression) {
                     $value = $value->toSQL();
                 } else if ($value === true || $value === 'true') {
@@ -324,11 +349,13 @@ abstract class BaseAdapter implements ISQLGenerator
                     $value = $this->quoteValue($value);
                 }
 
-                $record[] = $value;
-            }
-            $sql[] = '(' . implode(',', $record) . ')';
+                return $value;
+            }, $rows);
+
+            $sql = 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $values) . ')';
+
+            return $this->quoteSql($sql);
         }
-        return $this->quoteSql('INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(',', $columns) . ') VALUES ' . implode(',', $sql));
     }
 
     public function sqlUpdate($tableName, array $columns)
@@ -720,7 +747,7 @@ abstract class BaseAdapter implements ISQLGenerator
 
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
-            $quotedColumns = array_map(function($column) {
+            $quotedColumns = array_map(function ($column) {
                 return $this->quoteColumn($column);
             }, $columns);
             return implode(', ', $quotedColumns);
@@ -747,7 +774,7 @@ abstract class BaseAdapter implements ISQLGenerator
 
         if (is_string($columns)) {
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
-            $quotedColumns = array_map(function($column) {
+            $quotedColumns = array_map(function ($column) {
                 $temp = explode(' ', $column);
                 if (count($temp) == 2) {
                     return $this->quoteColumn($temp[0]) . ' ' . $temp[1];

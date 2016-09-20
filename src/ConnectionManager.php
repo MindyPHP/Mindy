@@ -32,17 +32,23 @@ class ConnectionManager
      * @param $defaultConnection
      * @param null $configuration
      * @param null $eventManager
-     * @throws \Exception
      */
-    public function __construct(array $connections, $defaultConnection, $configuration = null, $eventManager = null)
+    public function __construct(array $connections, $defaultConnection = 'default', $configuration = null, $eventManager = null)
     {
-        if (array_key_exists($defaultConnection, $connections) === false) {
-            throw new \Exception('Please set connection with "default" key');
-        }
         $this->defaultConnection = $defaultConnection;
         foreach ($connections as $name => $config) {
             $this->connections[$name] = DriverManager::getConnection($config, $configuration, $eventManager);
         }
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setDefaultConnection(string $name)
+    {
+        $this->defaultConnection = $name;
+        return $this;
     }
 
     /**
