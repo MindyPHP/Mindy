@@ -19,25 +19,51 @@ class ConnectionManager
     /**
      * @var string
      */
-    protected $defaultConnection;
+    protected $defaultConnection = 'default';
 
     /**
      * @var array|\Doctrine\DBAL\Connection[]
      */
     protected $connections = [];
+    /**
+     * @var null
+     */
+    protected $configuration = null;
+    /**
+     * @var null
+     */
+    protected $eventManager = null;
 
     /**
      * ConnectionManager constructor.
-     * @param array $connections
-     * @param $defaultConnection
-     * @param null $configuration
-     * @param null $eventManager
+     * @param array $config
      */
-    public function __construct(array $connections, $defaultConnection = 'default', $configuration = null, $eventManager = null)
+    public function __construct(array $config = [])
     {
-        $this->defaultConnection = $defaultConnection;
+        $this->configure($config);
+    }
+
+    /**
+     * @param array $connections
+     */
+    protected function setConnections(array $connections)
+    {
         foreach ($connections as $name => $config) {
-            $this->connections[$name] = DriverManager::getConnection($config, $configuration, $eventManager);
+            $this->connections[$name] = DriverManager::getConnection($config, $this->configuration, $this->eventManager);
+        }
+    }
+
+    /**
+     * @param array $config
+     */
+    protected function configure(array $config)
+    {
+        foreach ($config as $key => $value) {
+            if (method_exists($this, 'set' . ucfirst($key))) {
+                $this->{'set' . ucfirst($key)}($value);
+            } else {
+                $this->{$key} = $value;
+            }
         }
     }
 

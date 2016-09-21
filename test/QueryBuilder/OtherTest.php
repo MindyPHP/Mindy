@@ -55,7 +55,7 @@ class OtherTest extends BaseTest
             $qb->insert('test', [['name' => 'qwe']])
         );
         $this->assertEquals(
-            $this->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES (@foo@),(@bar@)'),
+            $this->quoteSql('INSERT INTO [[test]] ([[name]]) VALUES (@foo@), (@bar@)'),
             $qb->insert('test', [['name' => 'foo'], ['name' => 'bar']])
         );
     }
