@@ -985,8 +985,7 @@ class QueryBuilder
 
 
     /**
-     * @param Aggregation $aggregation
-     * @param string $columnAlias
+     * @param $order
      * @return string
      */
     protected function buildOrderJoin($order)
@@ -997,6 +996,7 @@ class QueryBuilder
             $direction = 'DESC';
             $order = substr($order, 1);
         }
+        $order = $this->getLookupBuilder()->fetchColumnName($order);
         $newOrder = $this->getLookupBuilder()->buildJoin($this, $order);
         if ($newOrder === false) {
             return [$order, $direction];
