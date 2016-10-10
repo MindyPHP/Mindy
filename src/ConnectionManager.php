@@ -46,7 +46,7 @@ class ConnectionManager
     /**
      * @param array $connections
      */
-    protected function setConnections(array $connections)
+    public function setConnections(array $connections)
     {
         foreach ($connections as $name => $config) {
             $this->connections[$name] = DriverManager::getConnection($config, $this->configuration, $this->eventManager);
