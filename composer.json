@@ -9,7 +9,7 @@
     }
   ],
   "require": {
-    "doctrine/dbal": "*"
+    "doctrine/dbal": "^2.5"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
