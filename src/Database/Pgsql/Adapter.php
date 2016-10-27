@@ -212,7 +212,9 @@ class Adapter extends BaseAdapter implements IAdapter
      */
     protected function formatDateTime($value, $format)
     {
-        if ($value === null) {
+        if ($value instanceof \DateTime) {
+            $value = $value->format($format);
+        } elseif ($value === null) {
             $value = date($format);
         } elseif (is_numeric($value)) {
             $value = date($format, $value);
