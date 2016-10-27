@@ -41,6 +41,10 @@ class BaseLookupCollection implements ILookupCollection
         switch ($lookup) {
             case 'exact':
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
+                if ($value instanceof \DateTime) {
+                    $value = $adapter->getDateTime($value);
+                }
+
                 if ($value instanceof Expression) {
                     $sqlValue = $value->toSQL();
                 } else if ($value instanceof QueryBuilder) {
@@ -53,15 +57,27 @@ class BaseLookupCollection implements ILookupCollection
                 return $adapter->quoteColumn($column) . '=' . $sqlValue;
 
             case 'gte':
+                if ($value instanceof \DateTime) {
+                    $value = $adapter->getDateTime($value);
+                }
                 return $adapter->quoteColumn($column) . '>=' . $adapter->quoteValue($value);
 
             case 'gt':
+                if ($value instanceof \DateTime) {
+                    $value = $adapter->getDateTime($value);
+                }
                 return $adapter->quoteColumn($column) . '>' . $adapter->quoteValue($value);
 
             case 'lte':
+                if ($value instanceof \DateTime) {
+                    $value = $adapter->getDateTime($value);
+                }
                 return $adapter->quoteColumn($column) . '<=' . $adapter->quoteValue($value);
 
             case 'lt':
+                if ($value instanceof \DateTime) {
+                    $value = $adapter->getDateTime($value);
+                }
                 return $adapter->quoteColumn($column) . '<' . $adapter->quoteValue($value);
 
             case 'range':
