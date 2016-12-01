@@ -655,11 +655,15 @@ abstract class BaseAdapter implements ISQLGenerator
         }
 
         $onSQL = [];
-        foreach ($on as $leftColumn => $rightColumn) {
-            if ($rightColumn instanceof Expression) {
-                $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteSql($rightColumn->toSQL());
-            } else {
-                $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
+        if (is_string($on)) {
+            $onSQL[] = $this->quoteSql($on);
+        } else {
+            foreach ($on as $leftColumn => $rightColumn) {
+                if ($rightColumn instanceof Expression) {
+                    $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteSql($rightColumn->toSQL());
+                } else {
+                    $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
+                }
             }
         }
 

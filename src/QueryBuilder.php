@@ -474,7 +474,7 @@ class QueryBuilder
      * @return $this
      * @throws Exception
      */
-    public function join($joinType, $tableName = '', array $on = [], $alias = '')
+    public function join($joinType, $tableName = '', $on = [], $alias = '')
     {
         if (is_string($joinType) && empty($tableName)) {
             $this->_join[] = $this->getAdapter()->quoteSql($joinType);
