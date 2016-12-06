@@ -6,7 +6,7 @@
  * Time: 20:34
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Expression;
 

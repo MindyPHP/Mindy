@@ -6,7 +6,7 @@
  * Time: 15:00
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
 use Mindy\QueryBuilder\Database\Sqlite\LookupCollection;

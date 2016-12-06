@@ -6,7 +6,7 @@
  * Time: 17:26
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class BuildFromTest extends BaseTest
 {

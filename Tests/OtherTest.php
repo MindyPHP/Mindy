@@ -6,7 +6,7 @@
  * Time: 18:06
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class OtherTest extends BaseTest
 {

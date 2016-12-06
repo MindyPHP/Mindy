@@ -6,7 +6,7 @@
  * Time: 16:40
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Aggregation\Avg;
 use Mindy\QueryBuilder\Aggregation\Count;

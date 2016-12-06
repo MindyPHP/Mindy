@@ -6,7 +6,7 @@
  * Time: 20:38
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Database\Pgsql\Adapter;
 use PDO;

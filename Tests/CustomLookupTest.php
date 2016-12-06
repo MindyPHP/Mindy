@@ -6,7 +6,7 @@
  * Time: 12:46
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;

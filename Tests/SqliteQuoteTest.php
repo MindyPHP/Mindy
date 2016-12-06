@@ -6,7 +6,7 @@
  * Time: 20:36
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Database\Sqlite\Adapter;
 use PDO;

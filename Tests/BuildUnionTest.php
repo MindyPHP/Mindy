@@ -6,7 +6,7 @@
  * Time: 17:38
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class BuildUnionTest extends BaseTest
 {

@@ -6,7 +6,7 @@
  * Time: 17:34
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;

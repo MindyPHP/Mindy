@@ -6,7 +6,7 @@
  * Time: 13:17
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class MysqlSchemaTest extends SchemaTest
 {

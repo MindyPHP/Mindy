@@ -6,7 +6,7 @@
  * Time: 16:53
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;

@@ -6,7 +6,7 @@
  * Time: 13:20
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class SqliteSchemaTest extends SchemaTest
 {

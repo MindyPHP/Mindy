@@ -6,7 +6,7 @@
  * Time: 17:56
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class BuildLimitOffsetTest extends BaseTest
 {

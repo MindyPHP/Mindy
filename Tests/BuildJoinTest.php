@@ -6,7 +6,7 @@
  * Time: 16:56
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\Aggregation\Max;
 use Mindy\QueryBuilder\Aggregation\Min;

@@ -6,7 +6,7 @@
  * Time: 10:07
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 abstract class SchemaTest extends BaseTest
 {

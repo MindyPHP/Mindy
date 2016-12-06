@@ -6,7 +6,7 @@
  * Time: 13:50
  */
 
-namespace Mindy\Tests\QueryBuilder;
+namespace Mindy\QueryBuilder\Tests;
 
 class DbalTest extends BaseTest
 {
