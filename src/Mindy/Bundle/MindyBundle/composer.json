@@ -2,7 +2,7 @@
   "name": "mindy/mindy-bundle",
   "type": "mindy-bundle",
   "description": "Mindy base bundle",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "Falaleev Maxim",
@@ -10,12 +10,12 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
-    "symfony/framework-bundle": "^3.1",
-    "symfony/swiftmailer-bundle": "^2.3",
-    "mindy/template-bundle": "^1.3",
-    "symfony/asset": "^3.1",
-    "mindy/orm-bundle": "^1.1"
+    "php": ">=5.5.9",
+    "symfony/framework-bundle": "~3.0",
+    "symfony/swiftmailer-bundle": "~2.4",
+    "mindy/template-bundle": "~3.0",
+    "symfony/asset": "~3.0",
+    "mindy/orm-bundle": "~3.0"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
