@@ -11,8 +11,8 @@ namespace Mindy\Bundle\MindyBundle\Library;
 
 use Mindy\Template\Expression\ArrayExpression;
 use Mindy\Template\Expression\AttributeExpression;
-use Mindy\Component\Template\Library;
-use Mindy\Component\Template\Token;
+use Mindy\Template\Library;
+use Mindy\Template\Token;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;

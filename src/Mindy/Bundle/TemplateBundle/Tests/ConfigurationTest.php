@@ -12,7 +12,7 @@
 namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\TemplateBundle\DependencyInjection\Configuration;
-use Mindy\Component\Template\Renderer;
+use Mindy\Template\Renderer;
 use Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase

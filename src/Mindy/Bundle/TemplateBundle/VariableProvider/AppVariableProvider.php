@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\TemplateBundle\VariableProvider;
 
-use Mindy\Component\Template\VariableProviderInterface;
+use Mindy\Template\VariableProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 

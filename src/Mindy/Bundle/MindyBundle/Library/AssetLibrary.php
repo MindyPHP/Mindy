@@ -9,7 +9,7 @@
 namespace Mindy\Bundle\MindyBundle\Library;
 
 use Symfony\Component\Asset\Packages;
-use Mindy\Component\Template\Library;
+use Mindy\Template\Library;
 
 class AssetLibrary extends Library
 {

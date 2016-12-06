@@ -8,9 +8,9 @@
 
 namespace Mindy\Bundle\PaginationBundle\Library;
 
-use Mindy\Component\Pagination\PaginationView;
-use Mindy\Component\Template\Library;
-use Mindy\Component\Template\Renderer;
+use Mindy\Pagination\PaginationView;
+use Mindy\Template\Library;
+use Mindy\Template\Renderer;
 
 class PaginationLibrary extends Library
 {

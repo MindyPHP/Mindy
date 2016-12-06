@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\TemplateBundle\Tests;
 
-use Mindy\Component\Template\Library;
+use Mindy\Template\Library;
 
 class TestLibrary extends Library
 {

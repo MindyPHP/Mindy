@@ -9,8 +9,8 @@
 namespace Mindy\Bundle\MindyBundle\Library;
 
 use Mindy\Bundle\MindyBundle\Admin\AdminMenu;
-use Mindy\Component\Template\Library;
-use Mindy\Component\Template\Renderer;
+use Mindy\Template\Library;
+use Mindy\Template\Renderer;
 
 class AdminLibrary extends Library
 {

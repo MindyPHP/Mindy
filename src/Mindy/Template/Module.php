@@ -33,7 +33,7 @@ class Module
             '// ' . md5($moduleName) . ' ' . gmdate('Y-m-d H:i:s T', time()) .
             "\n", $indent
         );
-        $compiler->raw("\nuse \\Mindy\\Component\\Template\\Template;\n\n");
+        $compiler->raw("\nuse \\Mindy\\Template\\Template;\n\n");
         $compiler->raw("class $class extends Template\n", $indent);
         $compiler->raw("{\n", $indent);
 
