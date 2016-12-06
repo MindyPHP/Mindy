@@ -1,0 +1,37 @@
+[
+  {
+    "name": "MindyBundle",
+    "subtree": "src/Mindy/Bundle/MindyBundle",
+    "git": "git@github.com:MindyPHP/MindyBundle.git"
+  },
+  {
+    "name": "OrmBundle",
+    "subtree": "src/Mindy/Bundle/OrmBundle",
+    "git": "git@github.com:MindyPHP/OrmBundle.git"
+  },
+  {
+    "name": "PaginationBundle",
+    "subtree": "src/Mindy/Bundle/PaginationBundle",
+    "git": "git@github.com:MindyPHP/PaginationBundle.git"
+  },
+  {
+    "name": "TemplateBundle",
+    "subtree": "src/Mindy/Bundle/TemplateBundle",
+    "git": "git@github.com:MindyPHP/TemplateBundle.git"
+  },
+  {
+    "name": "Template",
+    "subtree": "src/Mindy/Component/Template",
+    "git": "git@github.com:MindyPHP/Template.git"
+  },
+  {
+    "name": "Pagination",
+    "subtree": "src/Mindy/Component/Pagination",
+    "git": "git@github.com:MindyPHP/Pagination.git"
+  },
+  {
+    "name": "Application",
+    "subtree": "src/Mindy/Component/Application",
+    "git": "git@github.com:MindyPHP/Application.git"
+  }
+]
