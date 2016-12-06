@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\MindyBundle\Library;
 
-use Mindy\Component\Template\Library;
+use Mindy\Template\Library;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 

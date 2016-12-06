@@ -12,7 +12,7 @@ use Exception;
 use Imagine\Image\ImageInterface;
 use Mindy\Orm\Image\ImageProcess;
 use Mindy\Orm\Traits\FilesystemAwareTrait;
-use Mindy\Component\Template\Library;
+use Mindy\Template\Library;
 
 class ImageLibrary extends Library
 {
