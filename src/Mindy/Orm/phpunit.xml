@@ -1,0 +1,22 @@
+<phpunit colors="true" strict="true" stopOnError="false" backupGlobals="false"
+         bootstrap="test/bootstrap.php">
+    <php>
+        <ini name="error_reporting" value="32767"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="all">
+            <directory>test/</directory>
+        </testsuite>
+    </testsuites>
+
+    <!--<filter>-->
+        <!--<whitelist>-->
+            <!--<directory suffix=".php">./src/</directory>-->
+        <!--</whitelist>-->
+    <!--</filter>-->
+    <!--<logging>-->
+        <!--<log type="coverage-html" target="./coverage" charset="UTF-8"-->
+             <!--yui="true" highlight="true" lowUpperBound="50" highLowerBound="80"/>-->
+    <!--</logging>-->
+</phpunit>
