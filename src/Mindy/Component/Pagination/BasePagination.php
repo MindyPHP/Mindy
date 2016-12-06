@@ -57,6 +57,11 @@ abstract class BasePagination
     protected $source;
 
     /**
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * @var int autoincrement pagination classes on the page
      */
     private static $_id = 0;
@@ -190,11 +195,12 @@ abstract class BasePagination
             $this->handler->wrongPageCallback();
         }
 
-        return $this->dataSource->applyLimit(
+        $this->data = $this->dataSource->applyLimit(
             $this->source,
             $this->getPage(),
             $this->getPageSize()
         );
+        return $this->data;
     }
 
     /**
