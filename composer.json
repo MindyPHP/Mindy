@@ -15,13 +15,17 @@
   "autoload": {
     "psr-4": {
       "Mindy\\Bundle\\": "src/Mindy/Bundle/",
-      "Mindy\\Component\\": "src/Mindy/Component/"
+      "Mindy\\": "src/Mindy/"
     },
     "exclude-from-classmap": [
       "**/Tests/"
     ]
   },
   "replace": {
+    "mindy/mindy-bundle": "self.version",
+    "mindy/orm-bundle": "self.version",
+    "mindy/pagination-bundle": "self.version",
+    "mindy/template-bundle": "self.version",
     "mindy/application": "self.version",
     "mindy/orm": "self.version",
     "mindy/pagination": "self.version",

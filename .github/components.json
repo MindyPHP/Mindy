@@ -21,17 +21,27 @@
   },
   {
     "name": "Template",
-    "subtree": "src/Mindy/Component/Template",
+    "subtree": "src/Mindy/Template",
     "git": "git@github.com:MindyPHP/Template.git"
   },
   {
     "name": "Pagination",
-    "subtree": "src/Mindy/Component/Pagination",
+    "subtree": "src/Mindy/Pagination",
     "git": "git@github.com:MindyPHP/Pagination.git"
   },
   {
     "name": "Application",
-    "subtree": "src/Mindy/Component/Application",
+    "subtree": "src/Mindy/Application",
     "git": "git@github.com:MindyPHP/Application.git"
+  },
+  {
+    "name": "QueryBuilder",
+    "subtree": "src/Mindy/QueryBuilder",
+    "git": "git@github.com:MindyPHP/QueryBuilder.git"
+  },
+  {
+    "name": "Orm",
+    "subtree": "src/Mindy/Orm",
+    "git": "git@github.com:MindyPHP/Orm.git"
   }
 ]
