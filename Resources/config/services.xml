@@ -12,11 +12,11 @@
             <argument type="service" id="router"/>
         </service>
 
-        <service id="pagination.data_source.array" class="Mindy\Component\Pagination\DataSource\ArrayDataSource">
+        <service id="pagination.data_source.array" class="Mindy\Pagination\DataSource\ArrayDataSource">
             <tag name="pagination.data_source"/>
         </service>
 
-        <service id="pagination.data_source.query_set" class="Mindy\Component\Pagination\DataSource\QuerySetDataSource">
+        <service id="pagination.data_source.query_set" class="Mindy\Pagination\DataSource\QuerySetDataSource">
             <tag name="pagination.data_source"/>
         </service>
 
