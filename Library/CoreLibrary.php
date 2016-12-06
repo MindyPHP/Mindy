@@ -9,11 +9,10 @@
 
 namespace Mindy\Bundle\MindyBundle\Library;
 
-use Mindy\Bundle\MindyBundle\MindyBundle;
 use Mindy\Template\Expression\ArrayExpression;
 use Mindy\Template\Expression\AttributeExpression;
-use Mindy\Template\Library;
-use Mindy\Template\Token;
+use Mindy\Component\Template\Library;
+use Mindy\Component\Template\Token;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;

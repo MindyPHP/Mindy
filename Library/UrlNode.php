@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types = 1);
-
 namespace Mindy\Bundle\MindyBundle\Library;
 
-use Mindy\Template\Compiler;
-use Mindy\Template\Expression\ArrayExpression;
-use Mindy\Template\Expression\AttributeExpression;
-use Mindy\Template\Node;
+use Mindy\Component\Template\Compiler;
+use Mindy\Component\Template\Expression\ArrayExpression;
+use Mindy\Component\Template\Expression\AttributeExpression;
+use Mindy\Component\Template\Node;
 
 /**
  * Class UrlNode

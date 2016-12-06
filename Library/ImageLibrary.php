@@ -12,7 +12,7 @@ use Exception;
 use Imagine\Image\ImageInterface;
 use Mindy\Orm\Image\ImageProcess;
 use Mindy\Orm\Traits\FilesystemAwareTrait;
-use Mindy\Template\Library;
+use Mindy\Component\Template\Library;
 
 class ImageLibrary extends Library
 {
@@ -93,7 +93,7 @@ class ImageLibrary extends Library
      * @param array $options
      * @return string
      */
-    public function generateFilename(string $path, array $options = []) : string
+    public function generateFilename($path, array $options = [])
     {
         $hash = md5(json_encode($options));
         $newFilename = implode('_', [pathinfo($path, PATHINFO_FILENAME), $hash]) . '.' . pathinfo($path, PATHINFO_EXTENSION);

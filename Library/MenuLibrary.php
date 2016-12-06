@@ -9,8 +9,8 @@
 namespace Mindy\Bundle\MindyBundle\Library;
 
 use Mindy\Bundle\MindyBundle\Model\Menu;
-use Mindy\Template\Library;
-use Mindy\Template\Renderer;
+use Mindy\Component\Template\Library;
+use Mindy\Component\Template\Renderer;
 
 class MenuLibrary extends Library
 {

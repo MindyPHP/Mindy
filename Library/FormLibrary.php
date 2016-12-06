@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\MindyBundle\Library;
 
-use Mindy\Template\Library;
+use Mindy\Component\Template\Library;
 use Symfony\Bundle\FrameworkBundle\Templating\Helper\FormHelper;
 
 class FormLibrary extends Library
