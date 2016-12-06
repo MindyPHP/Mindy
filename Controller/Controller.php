@@ -17,6 +17,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 abstract class Controller extends BaseController
 {
+    protected function createPagination($source, array $parameters = array())
+    {
+        if ($this->container->has('pagination.factory')) {
+            return $this->container->get('pagination.factory')->createPagination($source, $parameters);
+        }
+        throw new \LogicException('You can not use the "createPagination" method if the Pagination Component are not available.');
+    }
+
     /**
      * Returns a rendered view.
      *
