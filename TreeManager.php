@@ -8,21 +8,21 @@ namespace Mindy\Orm;
  */
 class TreeManager extends Manager
 {
-    private $_qs;
+    private $qs;
 
     /**
      * @return \Mindy\Orm\TreeQuerySet
      */
     public function getQuerySet()
     {
-        if ($this->_qs === null) {
-            $this->_qs = new TreeQuerySet([
+        if ($this->qs === null) {
+            $this->qs = new TreeQuerySet([
                 'model' => $this->getModel(),
                 'modelClass' => get_class($this->getModel())
             ]);
-            $this->_qs->order(['lft']);
+            $this->qs->order(['lft']);
         }
-        return $this->_qs;
+        return $this->qs;
     }
 
     /**
