@@ -6,7 +6,7 @@
  * Time: 14:20
  */
 
-namespace Mindy\Orm\Validation;
+namespace Mindy\Validation;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
