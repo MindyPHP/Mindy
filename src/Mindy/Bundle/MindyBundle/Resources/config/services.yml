@@ -20,18 +20,9 @@ services:
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\CheckboxType }
 
-    storage.local:
-        class: League\Flysystem\Adapter\Local
-        arguments: [ "%storage.media_dir%" ]
-
-    storage:
-        class: Mindy\Storage\Storage
-        arguments:
-            -
-                filesystems: { default: "@storage.local" }
-
     template.core_image.library:
         class: Mindy\Bundle\MindyBundle\Library\ImageLibrary
+        arguments: [ '@oneup_flysystem.default_filesystem' ]
         tags:
             - { name: template.library }
 
