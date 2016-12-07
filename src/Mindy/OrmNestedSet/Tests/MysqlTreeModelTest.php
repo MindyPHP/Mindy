@@ -11,9 +11,7 @@
  * @date 06/02/15 18:48
  */
 
-namespace Mindy\Orm\Tests\Databases\Mysql;
-
-use Mindy\Orm\Tests\Tree\TreeModelTest;
+namespace Mindy\OrmNestedSet\Tests;
 
 class MysqlTreeModelTest extends TreeModelTest
 {

@@ -32,7 +32,6 @@ class ImageFieldTest extends OrmDatabaseTestCase
     {
         parent::setUp();
 
-        $this->app = app();
         $this->media = realpath(__DIR__ . '/../app/media');
         $this->mock = realpath(__DIR__ . '/../app/mock');
     }

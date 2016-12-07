@@ -11,9 +11,7 @@
  * @date 06/02/15 18:47
  */
 
-namespace Mindy\Orm\Tests\Databases\Sqlite;
-
-use Mindy\Orm\Tests\Tree\TreeModelTest;
+namespace Mindy\OrmNestedSet\Tests;
 
 class SqliteTreeModelTest extends TreeModelTest
 {

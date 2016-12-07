@@ -15,7 +15,15 @@
   "autoload": {
     "psr-4": {
       "Mindy\\Bundle\\": "src/Mindy/Bundle/",
-      "Mindy\\": "src/Mindy/"
+      "Mindy\\": "src/Mindy/",
+      "Mindy\\Orm\\": [
+        "src/Mindy/OrmNestedSet"
+      ],
+      "Mindy\\Orm\\Fields\\": [
+        "src/Mindy/OrmSlugField",
+        "src/Mindy/OrmFileField",
+        "src/Mindy/OrmFields"
+      ]
     },
     "exclude-from-classmap": [
       "**/Tests/"
@@ -43,6 +51,9 @@
     "symfony/http-kernel": "~3.0",
     "symfony/expression-language": "^3.2",
     "doctrine/dbal": "^2.5",
-    "symfony/validator": "^3.2"
+    "symfony/validator": "^3.2",
+    "cocur/slugify": "^2.3",
+    "league/flysystem": "^1.0",
+    "imagine/imagine": "^0.6.3"
   }
 }

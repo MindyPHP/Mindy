@@ -6,11 +6,10 @@
  * Time: 14:03
  */
 
-namespace Mindy\Orm\Image;
+namespace Mindy\Thumb;
 
 use Exception;
 use Imagine\Image\ImageInterface;
-use SplFileInfo;
 
 /**
  * Class ImageProcessor
@@ -96,7 +95,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
     /**
      * @return array
      */
-    public function getSizes() : array
+    public function getSizes()
     {
         return $this->sizes;
     }
@@ -106,7 +105,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      * @return array
      * @throws Exception
      */
-    protected function findOptionsByConfigPart(array $options) : array
+    protected function findOptionsByConfigPart(array $options)
     {
         $sizes = $this->getSizes();
 
@@ -118,10 +117,14 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
             }
         } else {
             foreach ($sizes as $config) {
-                if (
-                    sprintf("%sx%s", $config['width'] ? $config['width'] : '', $config['height'] ? $config['height'] : '') ==
-                    sprintf("%sx%s", $options['width'] ? $options['width'] : '', $options['height'] ? $options['height'] : '')
-                ) {
+                $configWidth = isset($config['width']) ? $config['width'] : '';
+                $configHeight = isset($config['height']) ? $config['height'] : '';
+                $optionsWidth = isset($options['width']) ? $options['width'] : '';
+                $optionsHeight = isset($options['height']) ? $options['height'] : '';
+
+                $configSize = sprintf("%sx%s", $configWidth, $configHeight);
+                $optionsSize = sprintf("%sx%s", $optionsWidth, $optionsHeight);
+                if ($configSize == $optionsSize) {
                     return $config;
                 }
             }
@@ -136,11 +139,13 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      * @return string
      * @throws Exception
      */
-    public function path(string $value, array $config = []) : string
+    public function path($value, array $config = [])
     {
         $options = $this->findOptionsByConfigPart($config);
 
-        if ($options['force'] ?? false || ($options['checkMissing'] ?? false && !$this->has($value))) {
+        $force = isset($options['force']) ? $options['force'] : false;
+        $checkMissing = isset($options['checkMissing']) ? $options['checkMissing'] : false;
+        if ($force || ($checkMissing && !$this->has($value))) {
             $this->process($value);
         }
 
@@ -166,7 +171,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
         }
 
         $fileName = $this->generateFilename($value, $options);
-        return $this->getFilesystem()->url($fileName, $config);
+        return ltrim($fileName, '/');
     }
 
     /**
@@ -196,10 +201,10 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
                 continue;
             }
 
-            $width = $config['width'] ? $config['width'] : null;
-            $height = $config['height'] ? $config['height'] : null;
-            $method = $config['method'] ? $config['method'] : $this->defaultResize;
-            $extSize = $config['format'] ? $config['format'] : pathinfo($path, PATHINFO_EXTENSION);
+            $width = isset($config['width']) ? $config['width'] : null;
+            $height = isset($config['height']) ? $config['height'] : null;
+            $method = isset($config['method']) ? $config['method'] : $this->defaultResize;
+            $extSize = isset($config['format']) ? $config['format'] : pathinfo($path, PATHINFO_EXTENSION);
 
             if (!in_array($method, $this->availableResizeMethods)) {
                 throw new Exception('Unknown resize method: ' . $method);
@@ -217,7 +222,10 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
                 }
 
                 $watermark = self::getImagine()->open($watermarkConfig['file']);
-                $newSource = $this->applyWatermark($newSource, $watermark, $watermarkConfig['position'] ?? 'center');
+                $newSource = $this->applyWatermark(
+                    $newSource, $watermark,
+                    isset($watermarkConfig['position']) ? $watermarkConfig['position'] : 'center'
+                );
             }
 
             $sizePath = $this->generateFilename($path, $config);

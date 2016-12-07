@@ -6,7 +6,7 @@
  * Time: 15:02
  */
 
-namespace Mindy\Orm\Image;
+namespace Mindy\Thumb;
 
 interface ImageProcessorInterface
 {

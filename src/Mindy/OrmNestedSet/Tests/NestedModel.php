@@ -12,10 +12,8 @@
  * @date 05/05/14.05.2014 18:53
  */
 
-namespace Mindy\Orm\Tests\Models;
+namespace Mindy\OrmNestedSet\Tests;
 
-
-use Mindy\Orm\Fields\AutoSlugField;
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\TreeModel;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindy\Orm\Image;
+namespace Mindy\Thumb;
 
 use Exception;
 use Imagine\Image\Box;

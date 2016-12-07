@@ -6,19 +6,25 @@
  * Time: 15:13
  */
 
-namespace Mindy\Orm\Tests\Image;
+namespace Mindy\Thumb\Tests;
 
-use Mindy\Application\App;
-use Mindy\Orm\Image\ImageProcessor;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+use Mindy\Thumb\ImageProcessor;
 
 class ImageProcessorTest extends \PHPUnit_Framework_TestCase
 {
+    protected $filesystem;
+
+    public function setUp()
+    {
+        $this->filesystem = new Filesystem(new Local(__DIR__ . '/temp'));
+    }
+
     public function tearDown()
     {
-        /** @var \League\Flysystem\FilesystemInterface $fs */
-        $fs = App::getInstance()->storage->getFilesystem();
-        foreach ($fs->listContents('/temp') as $file) {
-            $fs->delete($file['path']);
+        foreach ($this->filesystem->listContents('/') as $file) {
+            $this->filesystem->delete($file['path']);
         }
     }
 
@@ -26,6 +32,7 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $file = __FILE__;
         $processor = new ImageProcessor();
+        $processor->setFilesystem($this->filesystem);
         $this->assertEquals('ImageProcessorTest_cef4527f9f.php', basename($processor->generateFilename($file, ['width' => 100])));
         $this->assertEquals('ImageProcessorTest_e0bcc3e26e.php', basename($processor->generateFilename($file, ['height' => null, 'width' => 100])));
         $this->assertEquals('ImageProcessorTest_e0bcc3e26e.php', basename($processor->generateFilename($file, ['width' => 100, 'height' => null])));
@@ -43,12 +50,13 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $processor = new ImageProcessor([
-            'uploadTo' => '/temp',
+            'uploadTo' => '/',
             'storeOriginal' => false,
             'sizes' => [
                 $options
             ]
         ]);
+        $processor->setFilesystem($this->filesystem);
 
         $fileName = $processor->generateFilename('/temp/cat.jpg', $options);
         $this->assertEquals('cat_0343c5aa39.jpg', basename($fileName));
@@ -56,10 +64,9 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
         $processor->process(__DIR__ . '/cat.jpg');
 
         /** @var \League\Flysystem\FilesystemInterface $fs */
-        $fs = App::getInstance()->storage->getFilesystem();
-        $this->assertEquals(1, count($fs->listContents('/temp/')));
-        $this->assertEquals('/media/temp/cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['name' => 'thumb']));
-        $this->assertEquals('/media/temp/cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['width' => 200]));
+        $this->assertEquals(1, count($this->filesystem->listContents('/')));
+        $this->assertEquals('cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['name' => 'thumb']));
+        $this->assertEquals('cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['width' => 200]));
     }
 
     public function testWatermark()
@@ -78,17 +85,15 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $processor = new ImageProcessor([
-            'uploadTo' => '/temp',
+            'uploadTo' => '/',
             'storeOriginal' => false,
             'sizes' => [
                 $options
             ]
         ]);
-
+        $processor->setFilesystem($this->filesystem);
         $processor->process(__DIR__ . '/cat.jpg');
 
-        /** @var \League\Flysystem\FilesystemInterface $fs */
-        $fs = App::getInstance()->storage->getFilesystem();
-        $this->assertEquals(1, count($fs->listContents('/temp/')));
+        $this->assertEquals(1, count($this->filesystem->listContents('/')));
     }
 }

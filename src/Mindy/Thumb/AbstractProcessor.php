@@ -6,13 +6,29 @@
  * Time: 15:21
  */
 
-namespace Mindy\Orm\Image;
+namespace Mindy\Thumb;
 
-use Mindy\Orm\Traits\FilesystemAwareTrait;
+use League\Flysystem\FilesystemInterface;
 
 abstract class AbstractProcessor
 {
-    use FilesystemAwareTrait;
+    protected $filesystem;
+
+    /**
+     * @param FilesystemInterface $filesystem
+     */
+    public function setFilesystem(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    /**
+     * @return FilesystemInterface|null
+     */
+    public function getFilesystem()
+    {
+        return $this->filesystem;
+    }
 
     /**
      * @param string $path
