@@ -9,9 +9,8 @@
  * @date 05/05/14.05.2014 18:57
  */
 
-namespace Mindy\Orm\Tests\Tree;
+namespace Mindy\OrmNestedSet\Tests;
 
-use Mindy\Orm\Tests\Models\NestedModel;
 use Mindy\Orm\Tests\OrmDatabaseTestCase;
 
 abstract class TreeModelTest extends OrmDatabaseTestCase
