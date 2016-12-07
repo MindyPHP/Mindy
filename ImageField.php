@@ -36,7 +36,7 @@ class ImageField extends FileField
     /**
      * @return array
      */
-    public function getValidationConstraints() : array
+    public function getValidationConstraints()
     {
         $constraints = parent::getValidationConstraints();
 
@@ -58,14 +58,5 @@ class ImageField extends FileField
         }
 
         return $constraints;
-    }
-
-    /**
-     * @param string $fieldClass
-     * @return false|null|string
-     */
-    public function getFormField($fieldClass = '\Mindy\Form\Fields\ImageField')
-    {
-        return parent::getFormField($fieldClass);
     }
 }
