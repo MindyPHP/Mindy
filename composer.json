@@ -6,7 +6,7 @@
   "homepage": "https://mindy-cms.com",
   "autoload": {
     "psr-4": {
-      "Mindy\\Component\\Pagination\\": ""
+      "Mindy\\Pagination\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
