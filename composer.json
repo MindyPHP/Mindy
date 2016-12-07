@@ -30,5 +30,6 @@
       "name": "Nofriandi Ramenta",
       "email": "nramenta@gmail.com"
     }
-  ]
+  ],
+  "minimum-stability": "dev"
 }
