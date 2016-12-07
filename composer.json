@@ -9,7 +9,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Mindy\\Component\\Template\\": ""
+      "Mindy\\Template\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
