@@ -51,14 +51,14 @@ if (null !== $tag) {
 // Push each component to its component repository
 foreach ($components as $component) {
 
-    if (!is_dir(getcwd() . DIRECTORY_SEPARATOR . $component->subtree)) {
-        echo "> Subtree '" . $component->subtree . "' not existing for component " . $component->name . ". Please check the component mappings.\n";
+    if (!is_dir(getcwd() . DIRECTORY_SEPARATOR . $component->path)) {
+        echo "> Subtree '" . $component->path . "' not existing for component " . $component->path . ". Please check the component mappings.\n";
         continue;
     }
 
-    echo '> Pushing subtree ' . $component->subtree . ' to ' . $component->git . ' (branch ' . $branch . ")\n";
-    echo 'git subtree push --prefix=' . $component->subtree . ' ' . $component->git . ' ' . $branch . "\n\n";
-    exec('git subtree push --prefix=' . $component->subtree . ' --squash ' . $component->git . ' ' . $branch);
+    echo '> Pushing subtree ' . $component->path . ' to ' . $component->git . ' (branch ' . $branch . ")\n";
+    echo 'git subtree push --prefix=' . $component->path . ' ' . $component->git . ' ' . $branch . "\n\n";
+    exec('git subtree push --prefix=' . $component->path . ' --squash ' . $component->git . ' ' . $branch);
 
     // Evaluate tag
     if (null !== $tag) {
@@ -66,10 +66,10 @@ foreach ($components as $component) {
         $temporaryBranch = 'component-split';
 
         echo "> Splitting component into a temporary branch '" . $temporaryBranch . "'\n";
-        echo 'git subtree split --prefix=' . $component->subtree . ' -b ' . $temporaryBranch . "\n\n";
-        exec('git subtree split --prefix=' . $component->subtree . ' -b ' . $temporaryBranch);
+        echo 'git subtree split --prefix=' . $component->path . ' -b ' . $temporaryBranch . "\n\n";
+        exec('git subtree split --prefix=' . $component->path . ' -b ' . $temporaryBranch);
 
-        echo "> Creating tag " . $tag . " for component " . $component->name . " in branch '" . $temporaryBranch . "'\n";
+        echo "> Creating tag " . $tag . " for component " . $component->path . " in branch '" . $temporaryBranch . "'\n";
         echo 'git tag -a ' . $tag . ' -m "Version ' . $tag . '" ' . $temporaryBranch . "\n\n";
         exec('git tag -a ' . $tag . ' -m "Version ' . $tag . '" ' . $temporaryBranch);
 

@@ -1,57 +1,62 @@
 [
   {
-    "name": "MindyBundle",
-    "subtree": "src/Mindy/Bundle/MindyBundle",
+    "path": "src/Mindy/Bundle/MindyBundle",
     "git": "git@github.com:MindyPHP/MindyBundle.git"
   },
   {
-    "name": "OrmBundle",
-    "subtree": "src/Mindy/Bundle/OrmBundle",
+    "path": "src/Mindy/Bundle/OrmBundle",
     "git": "git@github.com:MindyPHP/OrmBundle.git"
   },
   {
-    "name": "PaginationBundle",
-    "subtree": "src/Mindy/Bundle/PaginationBundle",
+    "path": "src/Mindy/Bundle/PaginationBundle",
     "git": "git@github.com:MindyPHP/PaginationBundle.git"
   },
   {
-    "name": "TemplateBundle",
-    "subtree": "src/Mindy/Bundle/TemplateBundle",
+    "path": "src/Mindy/Bundle/TemplateBundle",
     "git": "git@github.com:MindyPHP/TemplateBundle.git"
   },
   {
-    "name": "Template",
-    "subtree": "src/Mindy/Template",
-    "git": "git@github.com:MindyPHP/Template.git"
-  },
-  {
-    "name": "Pagination",
-    "subtree": "src/Mindy/Pagination",
-    "git": "git@github.com:MindyPHP/Pagination.git"
-  },
-  {
-    "name": "Application",
-    "subtree": "src/Mindy/Application",
+    "path": "src/Mindy/Application",
     "git": "git@github.com:MindyPHP/Application.git"
   },
   {
-    "name": "QueryBuilder",
-    "subtree": "src/Mindy/QueryBuilder",
-    "git": "git@github.com:MindyPHP/QueryBuilder.git"
-  },
-  {
-    "name": "Orm",
-    "subtree": "src/Mindy/Orm",
+    "path": "src/Mindy/Orm",
     "git": "git@github.com:MindyPHP/Orm.git"
   },
   {
-    "name": "OrmFields",
-    "subtree": "src/Mindy/OrmFields",
+    "path": "src/Mindy/OrmFields",
     "git": "git@github.com:MindyPHP/OrmFields.git"
   },
   {
-    "name": "Thumb",
-    "subtree": "src/Mindy/Thumb",
+    "path": "src/Mindy/OrmFileField",
+    "git": "git@github.com:MindyPHP/OrmFileField.git"
+  },
+  {
+    "path": "src/Mindy/OrmNestedSet",
+    "git": "git@github.com:MindyPHP/OrmNestedSet.git"
+  },
+  {
+    "path": "src/Mindy/OrmSlugField",
+    "git": "git@github.com:MindyPHP/OrmSlugField.git"
+  },
+  {
+    "path": "src/Mindy/Pagination",
+    "git": "git@github.com:MindyPHP/Pagination.git"
+  },
+  {
+    "path": "src/Mindy/QueryBuilder",
+    "git": "git@github.com:MindyPHP/QueryBuilder.git"
+  },
+  {
+    "path": "src/Mindy/Template",
+    "git": "git@github.com:MindyPHP/Template.git"
+  },
+  {
+    "path": "src/Mindy/Thumb",
     "git": "git@github.com:MindyPHP/Thumb.git"
+  },
+  {
+    "path": "src/Mindy/Validation",
+    "git": "git@github.com:MindyPHP/Validation.git"
   }
 ]

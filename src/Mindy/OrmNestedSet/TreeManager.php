@@ -8,8 +8,6 @@ namespace Mindy\Orm;
  */
 class TreeManager extends Manager
 {
-    private $qs;
-
     /**
      * @return \Mindy\Orm\TreeQuerySet
      */
