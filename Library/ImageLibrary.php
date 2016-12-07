@@ -10,14 +10,31 @@ namespace Mindy\Bundle\MindyBundle\Library;
 
 use Exception;
 use Imagine\Image\ImageInterface;
-use Mindy\Orm\Image\ImageProcess;
-use Mindy\Orm\Traits\FilesystemAwareTrait;
+use League\Flysystem\FilesystemInterface;
+use Mindy\Thumb\ImageProcess;
 use Mindy\Template\Library;
 
+/**
+ * Class ImageLibrary
+ * @package Mindy\Bundle\MindyBundle\Library
+ */
 class ImageLibrary extends Library
 {
     use ImageProcess;
-    use FilesystemAwareTrait;
+
+    /**
+     * @var FilesystemInterface
+     */
+    protected $filesystem;
+
+    /**
+     * ImageLibrary constructor.
+     * @param FilesystemInterface $filesystem
+     */
+    public function __construct(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
 
     /**
      * @return array
@@ -31,9 +48,8 @@ class ImageLibrary extends Library
                 }
 
                 $generateConfig = [$path, $width, $height, $method, $watermark, $options];
-                $fs = $this->getFilesystem();
                 $newPath = $this->generateFilename($path, $generateConfig);
-                if ($fs->has($newPath) == false) {
+                if ($this->filesystem->has($newPath) == false) {
                     $newPath = $this->process($path, $width, $height, $method, $watermark, $options);
                 }
 
@@ -61,8 +77,7 @@ class ImageLibrary extends Library
             throw new Exception('Unknown resize method: ' . $method);
         }
 
-        $fs = $this->getFilesystem();
-        $file = $fs->get($path);
+        $file = $this->filesystem->get($path);
 
         $imagine = self::getImagine();
         $image = $imagine->load($file->read());
@@ -84,7 +99,7 @@ class ImageLibrary extends Library
         }
 
         $sizePath = $this->generateFilename($path, $generateConfig);
-        $fs->write($sizePath, $newSource->get(pathinfo($path, PATHINFO_EXTENSION), $options));
+        $this->filesystem->write($sizePath, $newSource->get(pathinfo($path, PATHINFO_EXTENSION), $options));
         return $sizePath;
     }
 
