@@ -9,7 +9,7 @@ use League\Flysystem\Util\MimeType;
  * Class File
  * @package Mindy\Storage
  */
-class File extends \SplFileInfo
+abstract class File extends \SplFileInfo
 {
     /**
      * Constructs a new file from the given path.
@@ -74,7 +74,8 @@ class File extends \SplFileInfo
             throw new Exception(sprintf('Unable to write in the "%s" directory', $directory));
         }
         $target = rtrim($directory, '/\\') . DIRECTORY_SEPARATOR . (null === $name ? $this->getBasename() : $this->getName($name));
-        return new self($target, false);
+        $cls = get_class($this);
+        return new $cls($target, false);
     }
 
     /**
