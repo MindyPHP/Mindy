@@ -9,6 +9,7 @@ use Mindy\Orm\Files\File;
 use Mindy\Orm\Files\LocalFile;
 use Mindy\Orm\Files\ResourceFile;
 use Mindy\Orm\ModelInterface;
+use Mindy\Orm\OrmFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -280,6 +281,9 @@ class FileField extends CharField
 
     public function getFilesystem()
     {
+        if (null === $this->filesystem) {
+            return OrmFile::getFilesystem();
+        }
         return $this->filesystem;
     }
 }

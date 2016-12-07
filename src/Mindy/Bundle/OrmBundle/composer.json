@@ -15,6 +15,7 @@
   ],
   "require": {
     "php": ">=7.0",
+    "oneup/flysystem-bundle": "~1.0",
     "mindy/orm": "^3.1",
     "doctrine/migrations": "^1.4"
   },
