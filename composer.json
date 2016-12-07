@@ -9,7 +9,7 @@
       "functions.php"
     ],
     "psr-4": {
-      "Mindy\\Component\\Application\\": ""
+      "Mindy\\Application\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
