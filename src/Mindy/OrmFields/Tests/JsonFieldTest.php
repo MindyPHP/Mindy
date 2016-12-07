@@ -12,7 +12,7 @@
  * @date 03/01/14.01.2014 22:42
  */
 
-namespace Tests\Orm\Fields;
+namespace Mindy\Orm\Fields\Tests;
 
 use Mindy\Orm\Fields\JsonField;
 

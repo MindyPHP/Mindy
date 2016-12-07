@@ -1,6 +1,7 @@
 <?php
 
 namespace Mindy\Orm\Files;
+
 use Exception;
 use League\Flysystem\Util\MimeType;
 

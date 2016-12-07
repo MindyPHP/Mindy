@@ -43,5 +43,15 @@
     "name": "Orm",
     "subtree": "src/Mindy/Orm",
     "git": "git@github.com:MindyPHP/Orm.git"
+  },
+  {
+    "name": "OrmFields",
+    "subtree": "src/Mindy/OrmFields",
+    "git": "git@github.com:MindyPHP/OrmFields.git"
+  },
+  {
+    "name": "Thumb",
+    "subtree": "src/Mindy/Thumb",
+    "git": "git@github.com:MindyPHP/Thumb.git"
   }
 ]
