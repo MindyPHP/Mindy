@@ -25,5 +25,6 @@
     "psr-4": {
       "Mindy\\Bundle\\MindyBundle\\": "./"
     }
-  }
+  },
+  "minimum-stability": "dev"
 }
