@@ -4,11 +4,11 @@ namespace Mindy\Orm\Fields;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
+use League\Flysystem\FilesystemInterface;
 use Mindy\Orm\Files\File;
 use Mindy\Orm\Files\LocalFile;
 use Mindy\Orm\Files\ResourceFile;
 use Mindy\Orm\ModelInterface;
-use Mindy\Orm\Traits\FilesystemAwareTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,8 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class FileField extends CharField
 {
-    use FilesystemAwareTrait;
-
     /**
      * Upload to template, you can use these variables:
      * %Y - Current year (4 digits)
@@ -32,23 +30,32 @@ class FileField extends CharField
      * @var string|callable|\Closure
      */
     public $uploadTo = '%M/%O/%Y-%m-%d/';
+
     /**
      * List of allowed file types
      * @var array|null
      */
     public $mimeTypes = [];
+
     /**
      * @var null|int maximum file size or null for unlimited. Default value 2 mb.
      */
     public $maxSize = '5M';
+
     /**
      * @var callable convert file name
      */
     public $nameHasher;
+
     /**
      * @var string
      */
     protected $basePath;
+
+    /**
+     * @var FilesystemInterface
+     */
+    protected $filesystem;
 
     /**
      * @return callable|\Closure
@@ -64,7 +71,7 @@ class FileField extends CharField
     /**
      * @return \Closure
      */
-    protected function getDefaultNameHasher() : \Closure
+    protected function getDefaultNameHasher()
     {
         return function ($filePath) {
             $meta = $this->getFilesystem()->getMetadata($filePath);
@@ -75,7 +82,7 @@ class FileField extends CharField
     /**
      * @return array
      */
-    public function getValidationConstraints() : array
+    public function getValidationConstraints()
     {
         $constraints = [];
         if ($this->isRequired() && empty($this->value)) {
@@ -94,7 +101,7 @@ class FileField extends CharField
     /**
      * @return string
      */
-    public function path() : string
+    public function path()
     {
         return $this->value;
     }
@@ -189,7 +196,7 @@ class FileField extends CharField
     /**
      * @return string
      */
-    protected function getUploadTo() : string
+    protected function getUploadTo()
     {
         if (is_callable($this->uploadTo)) {
             return $this->uploadTo->__invoke();
@@ -206,15 +213,6 @@ class FileField extends CharField
                 '%M' => $model->getBundleName(),
             ]);
         }
-    }
-
-    /**
-     * @param string $fieldClass
-     * @return false|null|string
-     */
-    public function getFormField($fieldClass = '\Mindy\Forms\Fields\FileField')
-    {
-        return parent::getFormField($fieldClass);
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
@@ -237,7 +235,7 @@ class FileField extends CharField
         return $value;
     }
 
-    protected function normalizeValue(string $value)
+    protected function normalizeValue($value)
     {
         return str_replace('//', '/', $value);
     }
@@ -271,5 +269,15 @@ class FileField extends CharField
         }
 
         return $value;
+    }
+
+    public function setFilesystem(FilesystemInterface $filesystem)
+    {
+        $this->filesystem = $filesystem;
+    }
+
+    public function getFilesystem()
+    {
+        return $this->filesystem;
     }
 }
