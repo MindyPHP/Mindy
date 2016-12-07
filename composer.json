@@ -17,11 +17,11 @@
       "Mindy\\Bundle\\": "src/Mindy/Bundle/",
       "Mindy\\": "src/Mindy/",
       "Mindy\\Orm\\": [
-        "src/Mindy/OrmNestedSet"
+        "src/Mindy/OrmNestedSet",
+        "src/Mindy/OrmFileField"
       ],
       "Mindy\\Orm\\Fields\\": [
         "src/Mindy/OrmSlugField",
-        "src/Mindy/OrmFileField",
         "src/Mindy/OrmFields"
       ]
     },

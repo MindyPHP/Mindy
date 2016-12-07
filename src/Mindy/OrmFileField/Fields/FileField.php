@@ -85,7 +85,9 @@ class FileField extends CharField
     public function getValidationConstraints()
     {
         $constraints = [];
-        if ($this->isRequired() && empty($this->value)) {
+
+        $currentValue = $this->getModel()->getAttribute($this->getAttributeName());
+        if ($this->isRequired() && empty($currentValue)) {
             $constraints = [
                 new Assert\NotBlank(),
                 new Assert\File([
@@ -196,7 +198,7 @@ class FileField extends CharField
     /**
      * @return string
      */
-    protected function getUploadTo()
+    public function getUploadTo()
     {
         if (is_callable($this->uploadTo)) {
             return $this->uploadTo->__invoke();
@@ -240,7 +242,7 @@ class FileField extends CharField
         return str_replace('//', '/', $value);
     }
 
-    protected function saveUploadedFile(UploadedFile $file)
+    public function saveUploadedFile(UploadedFile $file)
     {
         $path = $this->getUploadTo() . DIRECTORY_SEPARATOR;
 
@@ -255,7 +257,7 @@ class FileField extends CharField
         return $path . DIRECTORY_SEPARATOR . $file->getClientOriginalName();
     }
 
-    protected function saveFile(File $file)
+    public function saveFile(File $file)
     {
         $contents = file_get_contents($file->getRealPath());
         $value = $this->getUploadTo() . DIRECTORY_SEPARATOR . $file->getFilename();

@@ -14,11 +14,22 @@ namespace Mindy\Orm\Files;
  */
 class ResourceFile extends File
 {
-    public function __construct($content, $name = null)
+    /**
+     * ResourceFile constructor.
+     * @param string $content
+     * @param null|string $name
+     * @param null|string $tempDir
+     */
+    public function __construct($content, $name = null, $tempDir = null)
     {
-        $temp = tempnam(sys_get_temp_dir(), 'tmp');
-        file_put_contents($temp, $content);
+        $path = tempnam($tempDir ?: sys_get_temp_dir(), 'tmp');
 
-        parent::__construct($temp);
+        if ($name) {
+            $path = dirname($path) . DIRECTORY_SEPARATOR . $name;
+        }
+
+        file_put_contents($path, $content);
+
+        parent::__construct($path);
     }
 }
