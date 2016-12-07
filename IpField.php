@@ -16,6 +16,18 @@ class IpField extends CharField
     public $version = 4;
 
     /**
+     * IpField constructor.
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+        if (!in_array($this->version, [4, 6])) {
+            throw new \LogicException('Unknown IP protocol version. Allowed 4 and 6');
+        }
+    }
+
+    /**
      * @return array
      */
     public function getValidationConstraints()

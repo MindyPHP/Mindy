@@ -22,7 +22,7 @@ class EmailField extends CharField
     /**
      * @return array
      */
-    public function getValidationConstraints() : array
+    public function getValidationConstraints()
     {
         return array_merge(parent::getValidationConstraints(), [
             new Assert\Email([

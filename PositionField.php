@@ -8,7 +8,9 @@
 
 namespace Mindy\Orm\Fields;
 
+use Mindy\Orm\Manager;
 use Mindy\Orm\ModelInterface;
+use Mindy\Orm\QuerySet;
 use Mindy\Orm\TreeModel;
 
 /**
@@ -41,6 +43,9 @@ class PositionField extends IntField
     {
         if ($this->callback instanceof \Closure) {
             $qs = $this->callback->__invoke($model);
+            if (!is_object($qs) && is_numeric($qs)) {
+                return $qs;
+            }
         } else {
             $qs = $model->objects();
             if ($model instanceof TreeModel && !empty($model->parent_id)) {
@@ -48,7 +53,7 @@ class PositionField extends IntField
             }
         }
 
-        $max = (int)$qs->max($this->getName());
+        $max = (int)$qs->max($this->getAttributeName());
         return $max ? $max + 1 : 1;
     }
 }
