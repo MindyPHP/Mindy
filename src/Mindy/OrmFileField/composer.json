@@ -1,5 +1,5 @@
 {
-  "name": "mindy/orm-file-file",
+  "name": "mindy/orm-file-field",
   "type": "library",
   "description": "The Mindy Orm File and Image Fields",
   "license": "MIT",
