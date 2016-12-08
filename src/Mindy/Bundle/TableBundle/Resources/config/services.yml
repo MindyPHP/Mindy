@@ -1,0 +1,46 @@
+services:
+    template.table.library:
+        class: Mindy\Bundle\TableBundle\Library\TableLibrary
+        arguments: [ '@template', '@table.factory' ]
+        tags:
+            - { name: template.library }
+
+    table.registry:
+        class: Mindy\Component\Table\Registry
+        arguments: [ [], [] ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    table.factory:
+        class: Mindy\Component\Table\TableFactory
+        arguments: [ '@table.registry', '@property_accessor', '@router' ]
+
+    table.column.text:
+        class: Mindy\Component\Table\Column\TextColumn
+        arguments: [ '@request_stack', '@router' ]
+        tags:
+             - { name: table.column }
+
+    table.column.link:
+        class: Mindy\Component\Table\Column\LinkColumn
+        arguments: [ '@request_stack', '@router' ]
+        tags:
+             - { name: table.column }
+
+    table.column.selection:
+        class: Mindy\Component\Table\Column\SelectionColumn
+        arguments: [ '@request_stack', '@router' ]
+        tags:
+            - { name: table.column }
+
+    table.column.actions:
+        class: Mindy\Component\Table\Column\ActionsColumn
+        arguments: [ '@request_stack', '@router' ]
+        tags:
+            - { name: table.column }
+
+    table.column.template:
+        class: Mindy\Component\Table\Column\TemplateColumn
+        arguments: [ '@request_stack', '@router', '@template' ]
+        tags:
+             - { name: table.column }
