@@ -3,7 +3,7 @@
         {% if pager.getPagesCount() > 1 %}
             <li class="prev">
                 {% if pager.hasPrevPage() %}
-                    <a href="{{ pager.getUrl(pager.currentPage - 1) }}">&larr;</a>
+                    <a href="{{ pager.getUrl(pager.getPage() - 1) }}">&larr;</a>
                 {% else %}
                     <span class="prev">&larr;</span>
                 {% endif %}
@@ -18,7 +18,7 @@
             {% endif %}
 
             <li>
-                <span class="current">{{ pager.getCurrentPage() }}</span>
+                <span class="current">{{ pager.getPage() }}</span>
             </li>
 
             {% if pager.hasNextPage() %}
@@ -31,7 +31,7 @@
 
             <li class="next">
                 {% if pager.hasNextPage %}
-                    <a href="{{ pager.getUrl(pager.currentPage+1) }}">&rarr;</a>
+                    <a href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
                 {% else %}
                     <span class="next">&rarr;</span>
                 {% endif %}
@@ -43,7 +43,17 @@
         <div class="b-pager__total">Всего: {{ pager.getTotal() }}</div>
 
         <div class="b-pager__size">
-            {% include "core/pager/sizes.html" %}
+            {% set pageSizes = pager.getPageSizes() %}
+            <div class="b-select-container">
+                <select name="{{ this.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
+                    <option value=""></option>
+                    {% for pageSize in pageSizes %}
+                        <option value="{{ this.urlPageSize(pageSize) }}" {% if this.getPageSize() == pageSize %}selected="selected"{% endif %}>
+                            {{ pageSize }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     {% endif %}
 </div>
