@@ -24,15 +24,15 @@ class PaginationFactory
     protected $dataSources = [];
 
     /**
-     * @param $source
-     * @param array $options
+     * @param array|DataSourceInterface $source
+     * @param array $parameters
      * @param PaginationHandlerInterface $handler
      * @return Pagination
      */
-    public function createPagination($source, array $options = [], PaginationHandlerInterface $handler)
+    public function createPagination($source, array $parameters = array(), PaginationHandlerInterface $handler)
     {
         $handler = $handler ?: new NativePaginationHandler();
-        return new Pagination($source, $options, $handler, $this->findDataSource($source));
+        return new Pagination($source, $parameters, $handler, $this->findDataSource($source));
     }
 
     /**
