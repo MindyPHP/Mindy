@@ -163,11 +163,7 @@ abstract class BasePagination
      */
     public function getPage()
     {
-        $page = $this->page;
-        if ($page > $this->getPagesCount() && $this->getTotal()) {
-            return $this->getPagesCount();
-        }
-        return (int)$page;
+        return (int)$this->page;
     }
 
     /**
@@ -189,7 +185,7 @@ abstract class BasePagination
     {
         $this->total = $this->dataSource->getTotal($this->source);
         if (
-            $this->getPageSize() > $this->total ||
+            ($this->total > $this->getPageSize()) &&
             ceil($this->total / $this->getPageSize()) < $this->getPage()
         ) {
             $this->handler->wrongPageCallback();
