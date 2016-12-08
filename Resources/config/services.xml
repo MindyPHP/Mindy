@@ -10,7 +10,7 @@
     </parameters>
 
     <services>
-        <service id="db" class="Mindy\QueryBuilder\ConnectionManager">
+        <service id="orm.connection_manager" class="Mindy\Orm\ConnectionManager">
             <call method="setConnections">
                 <argument>%orm.connections%</argument>
             </call>
@@ -39,12 +39,6 @@
         </service>
         <service id="orm.version_command" class="Mindy\Bundle\OrmBundle\Command\VersionCommand" parent="orm.migration_command">
             <tag name="console.command" />
-        </service>
-
-        <service id="orm.file" class="Mindy\Orm\OrmFile" public="true">
-            <call method="setFilesystem">
-                <argument type="expression">service(container.getParameter('orm.file.filesystem'))</argument>
-            </call>
         </service>
     </services>
 </container>
