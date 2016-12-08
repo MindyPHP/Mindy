@@ -5,9 +5,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="pagination.factory" class="Mindy\Bundle\PaginationFactory"/>
+        <service id="pagination.factory" class="Mindy\Pagination\PaginationFactory"/>
 
-        <service id="pagination.handler" class="Mindy\Bundle\Handler\RequestPaginationHandler">
+        <service id="pagination.handler" class="Mindy\Pagination\Handler\RequestPaginationHandler">
             <argument type="service" id="request_stack"/>
             <argument type="service" id="router"/>
         </service>
