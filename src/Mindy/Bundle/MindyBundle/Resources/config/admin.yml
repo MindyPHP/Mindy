@@ -15,16 +15,6 @@ services:
         arguments: [ '@template.finder.chain' ]
         public: false
 
-    template.meta.library:
-        class: Mindy\Bundle\MindyBundle\Library\MetaLibrary
-        calls:
-            - [ setContainer, [ "@service_container" ]]
-        tags:
-            - { name: template.library }
-
-    meta_provider:
-        class: Mindy\Bundle\MindyBundle\Provider\MetaProvider
-
     admin.user_provider:
         class: Mindy\Bundle\MindyBundle\Provider\UserProvider
 

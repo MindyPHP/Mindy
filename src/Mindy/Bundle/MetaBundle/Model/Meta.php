@@ -6,7 +6,7 @@
  * Time: 15:37
  */
 
-namespace Mindy\Bundle\MindyBundle\Model;
+namespace Mindy\Bundle\MetaBundle\Model;
 
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\Fields\TextField;
@@ -43,5 +43,10 @@ class Meta extends Model
                 'length' => 160
             ]
         ];
+    }
+
+    public function __toString()
+    {
+        return sprintf("%s/%s", $this->host, $this->url);
     }
 }

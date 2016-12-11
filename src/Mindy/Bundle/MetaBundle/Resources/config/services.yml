@@ -1,0 +1,15 @@
+services:
+    meta.meta_provider:
+        class: Mindy\Bundle\MindyBundle\Provider\MetaProvider
+
+    meta.meta.form:
+        class: Mindy\Bundle\MetaBundle\Form\MetaFormType
+        arguments: [ '@request_stack' ]
+        tags:
+            - { name: form.type }
+
+    meta.template.meta.library:
+        class: Mindy\Bundle\MetaBundle\Library\MetaLibrary
+        arguments: [ '@request_stack', '@meta.meta_provider', '@template' ]
+        tags:
+            - { name: template.library }
