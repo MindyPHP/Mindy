@@ -78,7 +78,11 @@ class RequestPaginationHandler implements PaginationHandlerInterface
     {
         return $this->urlGenerator->generate(
             $this->request->attributes->get('_route'),
-            array_merge($this->request->query->all(), [$key => $value])
+            array_merge(
+                $this->request->attributes->all(),
+                $this->request->query->all(),
+                [$key => $value]
+            )
         );
     }
 
