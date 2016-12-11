@@ -11,7 +11,6 @@ namespace Mindy\Bundle\MindyBundle\Model;
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\Fields\TextField;
 use Mindy\Orm\Model;
-use function Mindy\trans;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Meta extends Model
@@ -21,30 +20,27 @@ class Meta extends Model
         return [
             'domain' => [
                 'class' => CharField::class,
-                'verboseName' => trans('meta.model.domain')
             ],
             'title' => [
                 'class' => CharField::class,
-                'verboseName' => trans('meta.model.title')
+                'length' => 60,
             ],
             'url' => [
                 'class' => CharField::class,
-                'verboseName' => trans('meta.model.url')
             ],
             'keywords' => [
                 'class' => CharField::class,
-                'verboseName' => trans('meta.model.keywords')
+                'length' => 60
             ],
             'canonical' => [
                 'class' => CharField::class,
-                'verboseName' => trans('meta.model.canonical'),
                 'validators' => [
                     new Assert\Url()
                 ]
             ],
             'description' => [
                 'class' => TextField::class,
-                'verboseName' => trans('meta.model.description')
+                'length' => 160
             ]
         ];
     }

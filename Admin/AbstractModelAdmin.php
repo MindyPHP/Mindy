@@ -16,8 +16,8 @@ use Mindy\Orm\ModelInterface;
 use Mindy\Orm\TreeManager;
 use Mindy\Orm\TreeModel;
 use Mindy\Orm\TreeQuerySet;
-use Mindy\Pagination\Pagination;
 use Mindy\QueryBuilder\Q\QOr;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -79,6 +79,9 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         }
     }
 
+    /**
+     * @return AbstractType
+     */
     public function getFilterFormType()
     {
         return null;
@@ -243,7 +246,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         }
 
         $this->prepareQuerySet($request, $qs);
-        $pager = new Pagination($qs, $this->pager);
+        $pager = $this->createPagination($qs, $this->pager);
 
         return $this->render($this->findTemplate('_table.html'), [
             'models' => $pager->paginate(),
@@ -285,9 +288,8 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         }
     }
 
-    protected function processFilter($qs, array $data)
+    protected function searchFilterForm($qs, $data)
     {
-
     }
 
     public function listAction(Request $request)
@@ -297,7 +299,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         $tree = $this->isTree($qs);
         $this->prepareQuerySet($request, $qs);
 
-        $pager = new Pagination($qs, $this->pager);
+        $pager = $this->createPagination($qs, $this->pager);
 
         $instance = (new \ReflectionClass($this->getModelClass()))->newInstance();
 
@@ -309,7 +311,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             $filterFormView = $filterForm->createView();
 
             if ($filterForm->handleRequest($request)) {
-                $this->processFilter($qs, $filterForm->getData());
+                $this->searchFilterForm($qs, $filterForm->getData());
             }
         }
 

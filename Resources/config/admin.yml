@@ -15,12 +15,6 @@ services:
         arguments: [ '@template.finder.chain' ]
         public: false
 
-    template.menu.library:
-        class: Mindy\Bundle\MindyBundle\Library\MenuLibrary
-        arguments: [ "@template" ]
-        tags:
-            - { name: template.library }
-
     template.meta.library:
         class: Mindy\Bundle\MindyBundle\Library\MetaLibrary
         calls:

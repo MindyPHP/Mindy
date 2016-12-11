@@ -19,8 +19,6 @@ class UserAdmin extends AbstractModelAdmin
 {
     public $columns = [
         'email',
-        'is_superuser',
-        'is_active'
     ];
 
     public function getCustomBreadrumbs(Request $request, ModelInterface $model, string $action)

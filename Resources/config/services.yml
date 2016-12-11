@@ -1,4 +1,10 @@
 services:
+    mindy.meta.form:
+        class: Mindy\Bundle\MindyBundle\Form\MetaFormType
+        arguments: [ '@request_stack' ]
+        tags:
+            - { name: form.type }
+
     mindy.form.data_transformer.file:
         class: Mindy\Bundle\MindyBundle\Form\DataTransformer\FileDataTransformer
         arguments: [ '%storage.media_dir%' ]
