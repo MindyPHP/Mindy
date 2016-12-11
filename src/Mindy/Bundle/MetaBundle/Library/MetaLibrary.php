@@ -8,7 +8,8 @@
 
 namespace Mindy\Bundle\MetaBundle\Library;
 
-use Mindy\Bundle\MindyBundle\Provider\MetaProvider;
+use Mindy\Bundle\MetaBundle\Model\Template;
+use Mindy\Bundle\MetaBundle\Provider\MetaProvider;
 use Mindy\Template\Library;
 use Mindy\Template\Renderer;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -33,8 +34,22 @@ class MetaLibrary extends Library
     {
         return [
             'render_meta' => function ($template = 'meta/meta.html') {
-                $data = $this->metaProvider->process($this->request);
-                return $this->template->render($template, $data);
+                $meta = $this->metaProvider->getMeta($this->request);
+                if (null === $meta) {
+                    $meta = [];
+                }
+                return $this->template->render($template, [
+                    'meta' => $meta
+                ]);
+            },
+            'render_template' => function ($code, array $params = []) {
+                /** @var Template $metaTemplate */
+                $metaTemplate = Template::objects()->get(['code' => $code]);
+                if (null === $metaTemplate) {
+                    return '';
+                }
+
+                return $this->template->renderString($metaTemplate->content, $params);
             }
         ];
     }

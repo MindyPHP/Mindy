@@ -13,12 +13,22 @@ use Mindy\Orm\Fields\TextField;
 use Mindy\Orm\Model;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class Meta
+ * @package Mindy\Bundle\MetaBundle\Model
+ * @property string $domain
+ * @property string $title
+ * @property string $url
+ * @property string $keywords
+ * @property string $canonical
+ * @property string $description
+ */
 class Meta extends Model
 {
     public static function getFields()
     {
         return [
-            'domain' => [
+            'host' => [
                 'class' => CharField::class,
             ],
             'title' => [

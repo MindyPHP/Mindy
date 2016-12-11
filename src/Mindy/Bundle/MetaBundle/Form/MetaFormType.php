@@ -29,7 +29,7 @@ class MetaFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('domain', TextType::class, [
+            ->add('host', TextType::class, [
                 'label' => 'Хост',
                 'constraints' => [
                     new Assert\NotBlank()

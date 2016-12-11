@@ -1,6 +1,6 @@
 services:
     meta.meta_provider:
-        class: Mindy\Bundle\MindyBundle\Provider\MetaProvider
+        class: Mindy\Bundle\MetaBundle\Provider\MetaProvider
 
     meta.meta.form:
         class: Mindy\Bundle\MetaBundle\Form\MetaFormType
