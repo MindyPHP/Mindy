@@ -6,9 +6,9 @@
  * Time: 17:09
  */
 
-namespace Mindy\Bundle\MindyBundle\Library;
+namespace Mindy\Bundle\MenuBundle\Library;
 
-use Mindy\Bundle\MindyBundle\Model\Menu;
+use Mindy\Bundle\MenuBundle\Model\Menu;
 use Mindy\Template\Library;
 use Mindy\Template\Renderer;
 

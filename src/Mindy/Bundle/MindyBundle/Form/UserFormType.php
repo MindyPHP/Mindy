@@ -24,10 +24,6 @@ class UserFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Электронная почта'
             ])
-            ->add('is_superuser', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Администратор'
-            ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Сохранить'
             ]);

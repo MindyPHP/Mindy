@@ -1,11 +1,10 @@
 <?php
 
-namespace Mindy\Bundle\MindyBundle\Model;
+namespace Mindy\Bundle\MenuBundle\Model;
 
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\TreeModel;
-use Mindy\Orm\Validation;
-use function Mindy\trans;
+use Mindy\Validation\Alphanumeric;
 
 /**
  * Class Menu
@@ -23,7 +22,7 @@ class Menu extends TreeModel
                 'class' => CharField::class,
                 'null' => true,
                 'validators' => [
-                    new Validation\Alphanumeric()
+                    new Alphanumeric()
                 ],
                 'helpText' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.'
             ],

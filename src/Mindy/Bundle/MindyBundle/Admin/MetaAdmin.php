@@ -8,12 +8,18 @@
 
 namespace Mindy\Bundle\MindyBundle\Admin;
 
+use Mindy\Bundle\MindyBundle\Form\MetaFilterForm;
 use Mindy\Bundle\MindyBundle\Form\MetaFormType;
 use Mindy\Bundle\MindyBundle\Model\Meta;
 
 class MetaAdmin extends AbstractModelAdmin
 {
     public $columns = ['domain', 'url', 'title'];
+
+    public function getFilterFormType()
+    {
+        return MetaFilterForm::class;
+    }
 
     /**
      * @return string model class name

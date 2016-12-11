@@ -1,14 +1,19 @@
 <?php
 
-namespace Mindy\Bundle\MindyBundle\Admin;
+namespace Mindy\Bundle\MenuBundle\Admin;
 
+use Mindy\Bundle\MenuBundle\Form\MenuForm;
+use Mindy\Bundle\MindyBundle\Admin\AbstractModelAdmin;
 use Mindy\Orm\ModelInterface;
-use function Mindy\trans;
-use Mindy\Bundle\MindyBundle\Model\Menu;
+use Mindy\Bundle\MenuBundle\Model\Menu;
 use Symfony\Component\HttpFoundation\Request;
 
 class MenuAdmin extends AbstractModelAdmin
 {
+    public $columns = ['name', 'slug', 'url'];
+
+    public $searchFields = ['name'];
+
     /**
      * @var string
      */
@@ -39,16 +44,6 @@ class MenuAdmin extends AbstractModelAdmin
         return $breadcrumbs;
     }
 
-    public function getSearchFields()
-    {
-        return ['name'];
-    }
-
-    public function getColumns()
-    {
-        return ['name', 'slug', 'url'];
-    }
-
     public function getModelClass()
     {
         return Menu::class;
@@ -56,6 +51,6 @@ class MenuAdmin extends AbstractModelAdmin
 
     public function getFormType()
     {
-        // TODO: Implement getFormType() method.
+        return MenuForm::class;
     }
 }

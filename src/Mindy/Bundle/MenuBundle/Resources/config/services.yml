@@ -1,0 +1,6 @@
+services:
+    template.menu.library:
+        class: Mindy\Bundle\MenuBundle\Library\MenuLibrary
+        arguments: [ "@template" ]
+        tags:
+            - { name: template.library }
