@@ -104,24 +104,6 @@ $(() => {
 
             notify({ title: 'Ссылка скопирована' });
         })
-        .on('click', '.file-manager__table-paste', e => {
-            e.preventDefault();
-
-            var name = $(e.target).attr('data-name'),
-                url = $(e.target).attr('data-url'),
-                parts = name.split('.'),
-                ext = parts[parts.length-1];
-
-            console.log(ext);
-
-            if (ext.toLowerCase() == "png" || ext.toLowerCase() == "jpg" || ext.toLowerCase() == "jpeg") {
-                top.tinyMCE.activeEditor.insertContent("<img src='"+url+"'>");
-            } else {
-                top.tinyMCE.activeEditor.insertContent("<a href='"+url+"'>"+name+"</a>");
-            }
-
-            notify({ title: 'Элемент вставлен' });
-        })
         .on('click', '.file-manager__table-input', e => {
             document.querySelector('.file-manager__table-input').select();
         });

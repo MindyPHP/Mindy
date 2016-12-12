@@ -8,8 +8,8 @@
 
 namespace Mindy\Bundle\AdminBundle\Admin;
 
-use Mindy\Bundle\MindyBundle\Admin\Sorting\SortingHandler;
-use Mindy\Bundle\MindyBundle\Admin\Sorting\TreeSortingHandler;
+use Mindy\Bundle\AdminBundle\Admin\Sorting\SortingHandler;
+use Mindy\Bundle\AdminBundle\Admin\Sorting\TreeSortingHandler;
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\Fields\TextField;
 use Mindy\Orm\ModelInterface;

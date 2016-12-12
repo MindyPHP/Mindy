@@ -6,7 +6,7 @@
  * Time: 11:19
  */
 
-namespace Mindy\Bundle\MindyBundle\Admin\Sorting;
+namespace Mindy\Bundle\AdminBundle\Admin\Sorting;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

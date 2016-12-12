@@ -6,7 +6,7 @@
  * Time: 11:16
  */
 
-namespace Mindy\Bundle\MindyBundle\Admin\Sorting;
+namespace Mindy\Bundle\AdminBundle\Admin\Sorting;
 
 use Symfony\Component\HttpFoundation\Request;
 
