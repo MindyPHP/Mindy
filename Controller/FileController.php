@@ -8,12 +8,21 @@
 
 namespace Mindy\Bundle\MindyBundle\Controller;
 
+use League\Flysystem\FilesystemInterface;
 use Mindy\Bundle\MindyBundle\Components\UploadHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileController extends Controller
 {
+    /**
+     * @return FilesystemInterface
+     */
+    protected function getFilesystem()
+    {
+        return $this->get('oneup_flysystem.default_filesystem');
+    }
+
     public function createDirectoryAction(Request $request)
     {
         $path = $request->query->get('path', '/');
@@ -30,8 +39,7 @@ class FileController extends Controller
                 'message' => $this->get('translator')->trans('file.directory.incorrect_name_error')
             ]);
         } else {
-            $storage = $this->get('storage');
-            $fs = $storage->getFilesystem();
+            $fs = $this->getFilesystem();
             $dirPath = implode('/', [$path, $directoryName]);
 
             if ($fs->has($dirPath)) {
@@ -59,16 +67,14 @@ class FileController extends Controller
     {
         $path = urldecode($request->query->get('path', '/'));
 
-        $fs = $this->get('storage')->getFilesystem();
-
         $objects = [];
-        foreach ($fs->listContents($path) as $object) {
+        foreach ($this->getFilesystem()->listContents($path) as $object) {
             $objects[] = [
                 'path' => '/' . $object['path'],
                 'name' => basename($object['path']),
                 'date' => date(DATE_W3C, $object['timestamp']),
                 'is_dir' => $object['type'] === 'dir',
-                'size' => $object['size'] ?? 0,
+                'size' => isset($object['size']) ? $object['size'] : 0,
                 'url' => $object['path']
             ];
         }
@@ -97,8 +103,7 @@ class FileController extends Controller
     public function deleteAction(Request $request)
     {
         $path = $request->query->get('path', '/');
-        $storage = $this->container->get('storage');
-        $fs = $storage->getFilesystem();
+        $fs = $this->getFilesystem();
         if ($fs->has($path)) {
             $meta = $fs->getMetadata($path);
             if ($meta['type'] === 'file') {
