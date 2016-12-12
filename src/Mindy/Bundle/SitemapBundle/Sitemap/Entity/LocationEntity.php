@@ -114,7 +114,6 @@ class LocationEntity extends AbstractEntity
     public function setPriority($priority)
     {
         $this->priority = $priority;
-
         return $this;
     }
 
@@ -123,7 +122,6 @@ class LocationEntity extends AbstractEntity
      */
     public function getLastmod()
     {
-
         return $this->lastmod;
     }
 
@@ -134,7 +132,6 @@ class LocationEntity extends AbstractEntity
     public function setLastmod(\DateTime $lastmod)
     {
         $this->lastmod = $lastmod;
-
         return $this;
     }
 
@@ -145,7 +142,6 @@ class LocationEntity extends AbstractEntity
     public function addImage(ImageEntity $imageEntity)
     {
         $this->imageCollection->attach($imageEntity);
-
         return $this;
     }
 
@@ -156,7 +152,6 @@ class LocationEntity extends AbstractEntity
     public function addVideo(VideoEntity $videoEntity)
     {
         $this->videoCollection->attach($videoEntity);
-
         return $this;
     }
 
@@ -167,7 +162,6 @@ class LocationEntity extends AbstractEntity
     public function addNews(NewsEntity $newsEntity)
     {
         $this->newsCollection->attach($newsEntity);
-
         return $this;
     }
 
@@ -176,7 +170,6 @@ class LocationEntity extends AbstractEntity
      */
     public function isMobile()
     {
-
         return $this->isMobile;
     }
 
@@ -187,7 +180,6 @@ class LocationEntity extends AbstractEntity
     public function setMobile($isMobile = false)
     {
         $this->isMobile = $isMobile;
-
         return $this;
     }
 
@@ -223,7 +215,7 @@ class LocationEntity extends AbstractEntity
         $locationText = '<url>';
         $locationText .= '<loc>' . $this->location . '</loc>';
         if (!empty($this->lastmod)) {
-            $locationText .= '<lastmod>' . $this->lastmod->format('Y-m-d') . '</lastmod>';
+            $locationText .= '<lastmod>' . $this->lastmod->format('c') . '</lastmod>';
         }
         if (!empty($this->changefreq)) {
             $locationText .= '<changefreq>' . $this->changefreq . '</changefreq>';

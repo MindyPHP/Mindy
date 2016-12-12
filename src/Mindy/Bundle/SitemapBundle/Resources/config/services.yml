@@ -1,7 +1,9 @@
 parameters:
-    sitemap_host: http://example.com
+    sitemap_scheme: http
+    sitemap_host: example.com
     sitemap_save_path: '%kernel.root_dir%/../web'
 
 services:
     sitemap.builder:
         class: Mindy\Bundle\SitemapBundle\Sitemap\Builder
+        arguments: [ '@router' ]

@@ -35,7 +35,6 @@ class ImageEntity extends AbstractEntity
      */
     public function getLocation()
     {
-
         return $this->loc;
     }
 
@@ -46,7 +45,6 @@ class ImageEntity extends AbstractEntity
     public function setLocation($location)
     {
         $this->loc = $location;
-
         return $this;
     }
 
@@ -55,7 +53,6 @@ class ImageEntity extends AbstractEntity
      */
     public function getCaption()
     {
-
         return $this->caption;
     }
 
@@ -66,7 +63,6 @@ class ImageEntity extends AbstractEntity
     public function setCaption($caption)
     {
         $this->caption = $caption;
-
         return $this;
     }
 
@@ -75,7 +71,6 @@ class ImageEntity extends AbstractEntity
      */
     public function getGeoLocation()
     {
-
         return $this->geoLocation;
     }
 
@@ -87,7 +82,6 @@ class ImageEntity extends AbstractEntity
     public function setGeoLocation($geoLocation)
     {
         $this->geoLocation = $geoLocation;
-
         return $this;
     }
 
@@ -96,7 +90,6 @@ class ImageEntity extends AbstractEntity
      */
     public function getTitle()
     {
-
         return $this->title;
     }
 
@@ -107,7 +100,6 @@ class ImageEntity extends AbstractEntity
     public function setTitle($title)
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -116,7 +108,6 @@ class ImageEntity extends AbstractEntity
      */
     public function getLicense()
     {
-
         return $this->license;
     }
 
@@ -127,7 +118,6 @@ class ImageEntity extends AbstractEntity
     public function setLicense($license)
     {
         $this->license = $license;
-
         return $this;
     }
 

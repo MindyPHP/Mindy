@@ -55,7 +55,6 @@ class NewsEntity extends AbstractEntity
      */
     public function getPublicationName()
     {
-
         return $this->publicationName;
     }
 
@@ -66,7 +65,6 @@ class NewsEntity extends AbstractEntity
     public function setPublicationName($publicationName)
     {
         $this->publicationName = $publicationName;
-
         return $this;
     }
 
@@ -75,7 +73,6 @@ class NewsEntity extends AbstractEntity
      */
     public function getPublicationLanguage()
     {
-
         return $this->publicationLanguage;
     }
 
@@ -86,7 +83,6 @@ class NewsEntity extends AbstractEntity
     public function setPublicationLanguage($publicationLanguage)
     {
         $this->publicationLanguage = $publicationLanguage;
-
         return $this;
     }
 
@@ -95,7 +91,6 @@ class NewsEntity extends AbstractEntity
      */
     public function getAccess()
     {
-
         return $this->access;
     }
 
@@ -106,7 +101,6 @@ class NewsEntity extends AbstractEntity
     public function setAccess($access)
     {
         $this->access = $access;
-
         return $this;
     }
 
@@ -115,7 +109,6 @@ class NewsEntity extends AbstractEntity
      */
     public function getGenres()
     {
-
         return $this->genres;
     }
 
@@ -126,7 +119,6 @@ class NewsEntity extends AbstractEntity
     public function setGenres($genres)
     {
         $this->genres = $genres;
-
         return $this;
     }
 
@@ -135,7 +127,6 @@ class NewsEntity extends AbstractEntity
      */
     public function getPublicationDate()
     {
-
         return $this->publicationDate;
     }
 
@@ -146,7 +137,6 @@ class NewsEntity extends AbstractEntity
     public function setPublicationDate(\DateTime $publicationDate)
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
@@ -165,7 +155,6 @@ class NewsEntity extends AbstractEntity
     public function setTitle($title)
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -184,7 +173,6 @@ class NewsEntity extends AbstractEntity
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
-
         return $this;
     }
 
@@ -203,7 +191,6 @@ class NewsEntity extends AbstractEntity
     public function setStockTickers($stockTickers)
     {
         $this->stockTickers = $stockTickers;
-
         return $this;
     }
 

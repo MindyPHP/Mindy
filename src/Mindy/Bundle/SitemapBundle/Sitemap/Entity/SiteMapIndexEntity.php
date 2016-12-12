@@ -53,7 +53,7 @@ class SiteMapIndexEntity extends AbstractEntity
         foreach ($this->siteMapCollection as $siteMapEntity) {
             $siteMapIndexText .= '<sitemap>';
             $siteMapIndexText .= '<loc>' . $siteMapEntity->getLoc() . '</loc>';
-            $siteMapIndexText .= '<lastmod>' . $siteMapEntity->getLastmod()->format('Y-m-d') . '</lastmod>';
+            $siteMapIndexText .= '<lastmod>' . $siteMapEntity->getLastmod()->format('c') . '</lastmod>';
             $siteMapIndexText .= '</sitemap>';
         }
         $siteMapIndexText .= '</sitemapindex>';

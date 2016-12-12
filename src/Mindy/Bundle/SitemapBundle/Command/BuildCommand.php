@@ -21,6 +21,7 @@ class BuildCommand extends ContainerAwareCommand
         $this
             ->setName('sitemap:build')
             ->addOption('host', '', InputOption::VALUE_OPTIONAL, 'Http host', null)
+            ->addOption('scheme', '', InputOption::VALUE_OPTIONAL, 'Scheme', null)
             ->addOption('savePath', '', InputOption::VALUE_OPTIONAL, 'Path for save sitemap xml', null);
     }
 
@@ -29,6 +30,11 @@ class BuildCommand extends ContainerAwareCommand
         $host = $input->getOption('host');
         if (empty($host)) {
             $host = $this->getContainer()->getParameter('sitemap_host');
+        }
+
+        $scheme = $input->getOption('scheme');
+        if (empty($host)) {
+            $host = $this->getContainer()->getParameter('sitemap_scheme');
         }
 
         $webPath = $input->getOption('savePath');
@@ -40,6 +46,6 @@ class BuildCommand extends ContainerAwareCommand
             throw new \Exception(sprintf("%s isnt directory", $webPath));
         }
 
-        $this->getContainer()->get('sitemap.builder')->build($host, $webPath);
+        $this->getContainer()->get('sitemap.builder')->build($scheme, $host, $webPath);
     }
 }

@@ -12,6 +12,7 @@ use Exception;
 use Mindy\Bundle\SitemapBundle\Sitemap\Entity\SiteMapEntity;
 use Mindy\Bundle\SitemapBundle\Sitemap\Entity\SiteMapIndexEntity;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class Builder
@@ -19,8 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class Builder
 {
-//    const LIMIT = 50000;
-    const LIMIT = 1;
+    const LIMIT = 50000;
 
     /**
      * @var array
@@ -28,10 +28,26 @@ class Builder
     protected $providers = [];
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
+    /**
+     * Builder constructor.
+     * @param UrlGeneratorInterface $urlGenerator
+     */
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
      * @param SitemapProviderInterface $provider
      */
     public function addProvider(SitemapProviderInterface $provider)
     {
+        $provider->setUrlGenerator($this->urlGenerator);
+
         $this->providers[] = $provider;
     }
 
@@ -57,6 +73,11 @@ class Builder
         return $this;
     }
 
+    /**
+     * @param $path
+     * @param array $entities
+     * @return SiteMapEntity
+     */
     public function saveSitemap($path, array $entities)
     {
         $sitemap = new SiteMapEntity();
@@ -71,17 +92,20 @@ class Builder
     }
 
     /**
+     * @param $scheme
+     * @param $host
      * @param $path
-     * @throws Exception
      * @return array
      */
-    public function build($host, $path)
+    public function build($scheme, $host, $path)
     {
         $sitemaps = [];
 
         $entities = [];
         foreach ($this->providers as $provider) {
-            $entities = array_merge($entities, $provider->build());
+            foreach ($provider->build($scheme, $host) as $location) {
+                $entities[] = $location;
+            }
         }
 
         if (count($entities) > self::LIMIT) {
