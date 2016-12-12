@@ -1,5 +1,25 @@
 [
   {
+    "path": "src/Mindy/Bundle/AdminBundle",
+    "git": "git@github.com:MindyPHP/AdminBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/DashboardBundle",
+    "git": "git@github.com:MindyPHP/DashboardBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/FileBundle",
+    "git": "git@github.com:MindyPHP/FileBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/MenuBundle",
+    "git": "git@github.com:MindyPHP/MenuBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/MetaBundle",
+    "git": "git@github.com:MindyPHP/MetaBundle.git"
+  },
+  {
     "path": "src/Mindy/Bundle/MindyBundle",
     "git": "git@github.com:MindyPHP/MindyBundle.git"
   },
@@ -10,14 +30,6 @@
   {
     "path": "src/Mindy/Bundle/PaginationBundle",
     "git": "git@github.com:MindyPHP/PaginationBundle.git"
-  },
-  {
-    "path": "src/Mindy/Bundle/MetaBundle",
-    "git": "git@github.com:MindyPHP/MetaBundle.git"
-  },
-  {
-    "path": "src/Mindy/Bundle/MenuBundle",
-    "git": "git@github.com:MindyPHP/MenuBundle.git"
   },
   {
     "path": "src/Mindy/Bundle/SitemapBundle",
