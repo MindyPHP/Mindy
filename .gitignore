@@ -8,3 +8,4 @@ package.tar
 /.github/packages.json
 /.phpunit
 /report
+node_modules

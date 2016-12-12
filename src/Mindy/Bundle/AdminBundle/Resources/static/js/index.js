@@ -4,12 +4,12 @@ import "expose?notify!./notify";
 
 import "jquery-ui/ui/widget.js";
 import "jquery-ui/ui/widgets/sortable.js";
+
 // todo fixme
 import 'checkboxes.js/src/jquery.checkboxes.js';
 
 import './sidebar';
-import './file/file';
-import './file/wysiwyg';
+import './file/index';
 
 $(document)
     .on('click', '.b-filter-button', e => {
