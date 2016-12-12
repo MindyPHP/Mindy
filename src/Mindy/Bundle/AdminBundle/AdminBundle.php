@@ -2,14 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: max
- * Date: 20/10/2016
- * Time: 18:36
+ * Date: 12/12/2016
+ * Time: 20:50
  */
 
-namespace Mindy\Bundle\MindyBundle;
+namespace Mindy\Bundle\AdminBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class MindyBundle extends Bundle
+class AdminBundle extends Bundle
 {
+
 }

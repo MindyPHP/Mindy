@@ -1,0 +1,15 @@
+file_list:
+    path: /list
+    defaults: { _controller: FileBundle:File:list }
+
+file_upload:
+    path: /upload
+    defaults: { _controller: FileBundle:File:upload }
+
+file_delete:
+    path: /delete
+    defaults: { _controller: FileBundle:File:delete }
+
+file_create_directory:
+    path: /create_directory
+    defaults: { _controller: FileBundle:File:createDirectory }

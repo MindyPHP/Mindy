@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: max
- * Date: 20/10/2016
- * Time: 18:38
+ * Date: 12/12/2016
+ * Time: 20:52
  */
 
-namespace Mindy\Bundle\MindyBundle\DependencyInjection;
+namespace Mindy\Bundle\DashboardBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class MindyExtension extends Extension
+class DashboardExtension extends Extension
 {
     /**
      * Loads a specific configuration.

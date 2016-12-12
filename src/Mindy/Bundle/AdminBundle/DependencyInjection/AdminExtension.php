@@ -6,14 +6,14 @@
  * Time: 18:38
  */
 
-namespace Mindy\Bundle\MindyBundle\DependencyInjection;
+namespace Mindy\Bundle\AdminBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class MindyExtension extends Extension
+class AdminExtension extends Extension
 {
     /**
      * Loads a specific configuration.
