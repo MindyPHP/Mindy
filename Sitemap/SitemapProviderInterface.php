@@ -8,10 +8,24 @@
 
 namespace Mindy\Bundle\SitemapBundle\Sitemap;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
+/**
+ * Interface SitemapProviderInterface
+ * @package Mindy\Bundle\SitemapBundle\Sitemap
+ */
 interface SitemapProviderInterface
 {
     /**
-     * @return array
+     * @param string $scheme
+     * @param string $host
+     * @return \Generator
      */
-    public function build();
+    public function build($scheme, $host);
+
+    /**
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return $this
+     */
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator);
 }

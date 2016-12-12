@@ -91,7 +91,7 @@ class VideoEntity extends AbstractEntity
     protected $live = false;
 
     /**
-     *
+     * VideoEntity constructor.
      */
     public function __construct()
     {
@@ -113,7 +113,6 @@ class VideoEntity extends AbstractEntity
     public function setThumbnailLoc($thumbnailLoc)
     {
         $this->thumbnailLoc = $thumbnailLoc;
-
         return $this;
     }
 
@@ -132,7 +131,6 @@ class VideoEntity extends AbstractEntity
     public function setTitle($title)
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -151,7 +149,6 @@ class VideoEntity extends AbstractEntity
     public function setDescription($description)
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -170,7 +167,6 @@ class VideoEntity extends AbstractEntity
     public function setContentLoc($contentLoc)
     {
         $this->contentLoc = $contentLoc;
-
         return $this;
     }
 
@@ -189,7 +185,6 @@ class VideoEntity extends AbstractEntity
     public function setPlayerLoc(array $playerLoc)
     {
         $this->playerLoc = $playerLoc;
-
         return $this;
     }
 
@@ -208,7 +203,6 @@ class VideoEntity extends AbstractEntity
     public function setDuration($duration)
     {
         $this->duration = $duration;
-
         return $this;
     }
 
@@ -227,7 +221,6 @@ class VideoEntity extends AbstractEntity
     public function setExpirationDate(\DateTime $expirationDate)
     {
         $this->expirationDate = $expirationDate;
-
         return $this;
     }
 
@@ -246,7 +239,6 @@ class VideoEntity extends AbstractEntity
     public function setRating($rating)
     {
         $this->rating = $rating;
-
         return $this;
     }
 
@@ -265,7 +257,6 @@ class VideoEntity extends AbstractEntity
     public function setViewCount($viewCount)
     {
         $this->viewCount = $viewCount;
-
         return $this;
     }
 
@@ -284,7 +275,6 @@ class VideoEntity extends AbstractEntity
     public function setPublicationDate(\DateTime $publicationDate)
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
@@ -303,7 +293,6 @@ class VideoEntity extends AbstractEntity
     public function setFamilyFriendly($familyFriendly = true)
     {
         $this->familyFriendly = (bool)$familyFriendly;
-
         return $this;
     }
 
@@ -322,7 +311,6 @@ class VideoEntity extends AbstractEntity
     public function setTag($tag)
     {
         $this->tag = $tag;
-
         return $this;
     }
 
@@ -341,7 +329,6 @@ class VideoEntity extends AbstractEntity
     public function setCategory($category)
     {
         $this->category = $category;
-
         return $this;
     }
 
@@ -360,7 +347,6 @@ class VideoEntity extends AbstractEntity
     public function setRestriction(array $restriction)
     {
         $this->restriction = $restriction;
-
         return $this;
     }
 
@@ -379,7 +365,6 @@ class VideoEntity extends AbstractEntity
     public function setGalleryLoc(array $galleryLoc)
     {
         $this->galleryLoc = $galleryLoc;
-
         return $this;
     }
 
@@ -398,7 +383,6 @@ class VideoEntity extends AbstractEntity
     public function setPrice(array $price)
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -417,7 +401,6 @@ class VideoEntity extends AbstractEntity
     public function setRequiresSubscription($requiresSubscription = true)
     {
         $this->requiresSubscription = (bool)$requiresSubscription;
-
         return $this;
     }
 
@@ -436,7 +419,6 @@ class VideoEntity extends AbstractEntity
     public function setUploader(array $uploader)
     {
         $this->uploader = $uploader;
-
         return $this;
     }
 
@@ -455,7 +437,6 @@ class VideoEntity extends AbstractEntity
     public function setPlatform(array $platform)
     {
         $this->platform = $platform;
-
         return $this;
     }
 
@@ -474,7 +455,6 @@ class VideoEntity extends AbstractEntity
     public function setLive($live = false)
     {
         $this->live = (bool)$live;
-
         return $this;
     }
 
