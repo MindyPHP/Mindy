@@ -33,8 +33,8 @@ class BuildCommand extends ContainerAwareCommand
         }
 
         $scheme = $input->getOption('scheme');
-        if (empty($host)) {
-            $host = $this->getContainer()->getParameter('sitemap_scheme');
+        if (empty($scheme)) {
+            $scheme = $this->getContainer()->getParameter('sitemap_scheme');
         }
 
         $webPath = $input->getOption('savePath');
