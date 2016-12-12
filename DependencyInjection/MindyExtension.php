@@ -27,7 +27,5 @@ class MindyExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
-        $loader->load('dashboard.yml');
-        $loader->load('admin.yml');
     }
 }

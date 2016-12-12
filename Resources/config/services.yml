@@ -1,15 +1,7 @@
+parameters:
+    mail.from: 'user@example.com'
+
 services:
-    mindy.form.data_transformer.file:
-        class: Mindy\Bundle\MindyBundle\Form\DataTransformer\FileDataTransformer
-        arguments: [ '%storage.media_dir%' ]
-
-    mindy.form.extension.file_type:
-        class: Mindy\Bundle\MindyBundle\Form\Extension\FileExtension
-        arguments: [ '@mindy.form.data_transformer.file' ]
-        tags:
-            - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\FileType }
-        arguments: [ '%storage.media_dir%' ]
-
     mindy.form.extension.query_set_type:
         class: Mindy\Bundle\MindyBundle\Form\Extension\QuerySetExtension
         tags:
@@ -19,12 +11,6 @@ services:
         class: Mindy\Bundle\MindyBundle\Form\Extension\CheckboxExtension
         tags:
             - { name: form.type_extension, extended_type: Symfony\Component\Form\Extension\Core\Type\CheckboxType }
-
-    template.core_image.library:
-        class: Mindy\Bundle\MindyBundle\Library\ImageLibrary
-        arguments: [ '@oneup_flysystem.default_filesystem' ]
-        tags:
-            - { name: template.library }
 
     mindy.form_errors.normalizer:
         class: Mindy\Bundle\MindyBundle\Normalizer\FormErrorsNormalizer
