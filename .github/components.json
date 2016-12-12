@@ -12,12 +12,28 @@
     "git": "git@github.com:MindyPHP/PaginationBundle.git"
   },
   {
+    "path": "src/Mindy/Bundle/MetaBundle",
+    "git": "git@github.com:MindyPHP/MetaBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/MenuBundle",
+    "git": "git@github.com:MindyPHP/MenuBundle.git"
+  },
+  {
+    "path": "src/Mindy/Bundle/TableBundle",
+    "git": "git@github.com:MindyPHP/TableBundle.git"
+  },
+  {
     "path": "src/Mindy/Bundle/TemplateBundle",
     "git": "git@github.com:MindyPHP/TemplateBundle.git"
   },
   {
     "path": "src/Mindy/Application",
     "git": "git@github.com:MindyPHP/Application.git"
+  },
+  {
+    "path": "src/Mindy/Table",
+    "git": "git@github.com:MindyPHP/Table.git"
   },
   {
     "path": "src/Mindy/Orm",
