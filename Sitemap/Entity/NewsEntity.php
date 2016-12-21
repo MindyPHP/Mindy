@@ -3,9 +3,7 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 
 /**
- * Class NewsEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
- * https://support.google.com/news/publisher/answer/74288
+ * Class NewsEntity.
  */
 class NewsEntity extends AbstractEntity
 {
@@ -60,11 +58,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $publicationName
+     *
      * @return $this
      */
     public function setPublicationName($publicationName)
     {
         $this->publicationName = $publicationName;
+
         return $this;
     }
 
@@ -78,11 +78,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $publicationLanguage
+     *
      * @return $this
      */
     public function setPublicationLanguage($publicationLanguage)
     {
         $this->publicationLanguage = $publicationLanguage;
+
         return $this;
     }
 
@@ -96,11 +98,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $access
+     *
      * @return $this
      */
     public function setAccess($access)
     {
         $this->access = $access;
+
         return $this;
     }
 
@@ -114,11 +118,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $genres
+     *
      * @return $this
      */
     public function setGenres($genres)
     {
         $this->genres = $genres;
+
         return $this;
     }
 
@@ -132,11 +138,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param \DateTime $publicationDate
+     *
      * @return $this
      */
     public function setPublicationDate(\DateTime $publicationDate)
     {
         $this->publicationDate = $publicationDate;
+
         return $this;
     }
 
@@ -150,11 +158,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -168,11 +178,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $keywords
+     *
      * @return $this
      */
     public function setKeywords($keywords)
     {
         $this->keywords = $keywords;
+
         return $this;
     }
 
@@ -186,11 +198,13 @@ class NewsEntity extends AbstractEntity
 
     /**
      * @param string $stockTickers
+     *
      * @return $this
      */
     public function setStockTickers($stockTickers)
     {
         $this->stockTickers = $stockTickers;
+
         return $this;
     }
 
@@ -201,26 +215,26 @@ class NewsEntity extends AbstractEntity
     {
         $newsText = '<news:news>';
         $newsText .= '<news:publication>';
-        $newsText .= '<news:name>' . $this->publicationName . '</news:name>';
-        $newsText .= '<news:language>' . $this->publicationLanguage . '</news:language>';
+        $newsText .= '<news:name>'.$this->publicationName.'</news:name>';
+        $newsText .= '<news:language>'.$this->publicationLanguage.'</news:language>';
         $newsText .= '</news:publication>';
         if (!empty($this->access)) {
-            $newsText .= '<news:access>' . $this->access . '</news:access>';
+            $newsText .= '<news:access>'.$this->access.'</news:access>';
         }
         if (!empty($this->genres)) {
-            $newsText .= '<news:genres>' . $this->genres . '</news:genres>';
+            $newsText .= '<news:genres>'.$this->genres.'</news:genres>';
         }
         if (!empty($this->publicationDate)) {
-            $newsText .= '<news:publication_date>' . $this->publicationDate->format('c') . '</news:publication_date>';
+            $newsText .= '<news:publication_date>'.$this->publicationDate->format('c').'</news:publication_date>';
         }
         if (!empty($this->title)) {
-            $newsText .= '<news:title>' . $this->title . '</news:title>';
+            $newsText .= '<news:title>'.$this->title.'</news:title>';
         }
         if (!empty($this->keywords)) {
-            $newsText .= '<news:keywords>' . $this->keywords . '</news:keywords>';
+            $newsText .= '<news:keywords>'.$this->keywords.'</news:keywords>';
         }
         if (!empty($this->stockTickers)) {
-            $newsText .= '<news:stock_tickers>' . $this->stockTickers . '</news:stock_tickers>';
+            $newsText .= '<news:stock_tickers>'.$this->stockTickers.'</news:stock_tickers>';
         }
         $newsText .= '</news:news>';
 

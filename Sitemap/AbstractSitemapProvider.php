@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 20:04
+ * Time: 20:04.
  */
 
 namespace Mindy\Bundle\SitemapBundle\Sitemap;
@@ -11,8 +11,7 @@ namespace Mindy\Bundle\SitemapBundle\Sitemap;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class AbstractSitemapProvider
- * @package Mindy\Bundle\SitemapBundle\Sitemap
+ * Class AbstractSitemapProvider.
  */
 abstract class AbstractSitemapProvider implements SitemapProviderInterface
 {
@@ -23,12 +22,15 @@ abstract class AbstractSitemapProvider implements SitemapProviderInterface
 
     /**
      * PageProvider constructor.
+     *
      * @param UrlGeneratorInterface $urlGenerator
+     *
      * @return $this
      */
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
+
         return $this;
     }
 
@@ -37,12 +39,14 @@ abstract class AbstractSitemapProvider implements SitemapProviderInterface
      * @param $host
      * @param $route
      * @param array $parameters
+     *
      * @return string
      */
     protected function generateLoc($scheme, $host, $route, $parameters = array())
     {
         $this->urlGenerator->getContext()->setHost($host);
         $this->urlGenerator->getContext()->setScheme($scheme);
+
         return $this
             ->urlGenerator
             ->generate($route, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);

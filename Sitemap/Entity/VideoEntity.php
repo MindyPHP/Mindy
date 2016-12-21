@@ -3,9 +3,7 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 
 /**
- * Class VideoEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
- * https://developers.google.com/webmasters/videosearch/sitemaps
+ * Class VideoEntity.
  */
 class VideoEntity extends AbstractEntity
 {
@@ -50,7 +48,7 @@ class VideoEntity extends AbstractEntity
      */
     protected $publicationDate;
     /**
-     * @var boolean
+     * @var bool
      */
     protected $familyFriendly = true;
     /**
@@ -74,7 +72,7 @@ class VideoEntity extends AbstractEntity
      */
     protected $price = array('price' => null, 'currency' => null);
     /**
-     * @var boolean
+     * @var bool
      */
     protected $requiresSubscription = true;
     /**
@@ -86,7 +84,7 @@ class VideoEntity extends AbstractEntity
      */
     protected $platform = array('code' => null, 'relationship' => 'allow');
     /**
-     * @var boolean
+     * @var bool
      */
     protected $live = false;
 
@@ -108,11 +106,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $thumbnailLoc
+     *
      * @return $this
      */
     public function setThumbnailLoc($thumbnailLoc)
     {
         $this->thumbnailLoc = $thumbnailLoc;
+
         return $this;
     }
 
@@ -126,11 +126,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -144,11 +146,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $description
+     *
      * @return $this
      */
     public function setDescription($description)
     {
         $this->description = $description;
+
         return $this;
     }
 
@@ -162,11 +166,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $contentLoc
+     *
      * @return $this
      */
     public function setContentLoc($contentLoc)
     {
         $this->contentLoc = $contentLoc;
+
         return $this;
     }
 
@@ -180,11 +186,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $playerLoc
+     *
      * @return $this
      */
     public function setPlayerLoc(array $playerLoc)
     {
         $this->playerLoc = $playerLoc;
+
         return $this;
     }
 
@@ -198,11 +206,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $duration
+     *
      * @return $this
      */
     public function setDuration($duration)
     {
         $this->duration = $duration;
+
         return $this;
     }
 
@@ -216,11 +226,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param \DateTime $expirationDate
+     *
      * @return $this
      */
     public function setExpirationDate(\DateTime $expirationDate)
     {
         $this->expirationDate = $expirationDate;
+
         return $this;
     }
 
@@ -234,11 +246,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $rating
+     *
      * @return $this
      */
     public function setRating($rating)
     {
         $this->rating = $rating;
+
         return $this;
     }
 
@@ -252,11 +266,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $viewCount
+     *
      * @return $this
      */
     public function setViewCount($viewCount)
     {
         $this->viewCount = $viewCount;
+
         return $this;
     }
 
@@ -270,16 +286,18 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param \DateTime $publicationDate
+     *
      * @return $this
      */
     public function setPublicationDate(\DateTime $publicationDate)
     {
         $this->publicationDate = $publicationDate;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isFamilyFriendly()
     {
@@ -287,12 +305,14 @@ class VideoEntity extends AbstractEntity
     }
 
     /**
-     * @param boolean $familyFriendly
+     * @param bool $familyFriendly
+     *
      * @return $this
      */
     public function setFamilyFriendly($familyFriendly = true)
     {
-        $this->familyFriendly = (bool)$familyFriendly;
+        $this->familyFriendly = (bool) $familyFriendly;
+
         return $this;
     }
 
@@ -306,11 +326,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $tag
+     *
      * @return $this
      */
     public function setTag($tag)
     {
         $this->tag = $tag;
+
         return $this;
     }
 
@@ -324,11 +346,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param string $category
+     *
      * @return $this
      */
     public function setCategory($category)
     {
         $this->category = $category;
+
         return $this;
     }
 
@@ -342,11 +366,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $restriction
+     *
      * @return $this
      */
     public function setRestriction(array $restriction)
     {
         $this->restriction = $restriction;
+
         return $this;
     }
 
@@ -360,11 +386,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $galleryLoc
+     *
      * @return $this
      */
     public function setGalleryLoc(array $galleryLoc)
     {
         $this->galleryLoc = $galleryLoc;
+
         return $this;
     }
 
@@ -378,16 +406,18 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $price
+     *
      * @return $this
      */
     public function setPrice(array $price)
     {
         $this->price = $price;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequiresSubscription()
     {
@@ -395,12 +425,14 @@ class VideoEntity extends AbstractEntity
     }
 
     /**
-     * @param boolean $requiresSubscription
+     * @param bool $requiresSubscription
+     *
      * @return $this
      */
     public function setRequiresSubscription($requiresSubscription = true)
     {
-        $this->requiresSubscription = (bool)$requiresSubscription;
+        $this->requiresSubscription = (bool) $requiresSubscription;
+
         return $this;
     }
 
@@ -414,11 +446,13 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $uploader
+     *
      * @return $this
      */
     public function setUploader(array $uploader)
     {
         $this->uploader = $uploader;
+
         return $this;
     }
 
@@ -432,16 +466,18 @@ class VideoEntity extends AbstractEntity
 
     /**
      * @param array $platform
+     *
      * @return $this
      */
     public function setPlatform(array $platform)
     {
         $this->platform = $platform;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isLive()
     {
@@ -449,12 +485,14 @@ class VideoEntity extends AbstractEntity
     }
 
     /**
-     * @param boolean $live
+     * @param bool $live
+     *
      * @return $this
      */
     public function setLive($live = false)
     {
-        $this->live = (bool)$live;
+        $this->live = (bool) $live;
+
         return $this;
     }
 
@@ -464,54 +502,54 @@ class VideoEntity extends AbstractEntity
     public function getXml()
     {
         $videoText = '<video:video>';
-        $videoText .= '<video:thumbnail_loc>' . $this->thumbnailLoc . '</video:thumbnail_loc>';
-        $videoText .= '<video:title>' . $this->title . '</video:title>';
-        $videoText .= '<video:description>' . $this->description . '</video:description>';
+        $videoText .= '<video:thumbnail_loc>'.$this->thumbnailLoc.'</video:thumbnail_loc>';
+        $videoText .= '<video:title>'.$this->title.'</video:title>';
+        $videoText .= '<video:description>'.$this->description.'</video:description>';
         if (!empty($this->contentLoc)) {
-            $videoText .= '<video:content_loc>' . $this->contentLoc . '</video:content_loc>';
+            $videoText .= '<video:content_loc>'.$this->contentLoc.'</video:content_loc>';
         }
         if (!empty($this->playerLoc['url'])) {
-            $videoText .= '<video:player_loc' . (isset($this->playerLoc['allowEmbed']) ? ' allow_embed="' . ($this->playerLoc['allowEmbed'] ? 'yes' : 'no') . '"' : '') . (!empty($this->playerLoc['autoPlay']) ? ' autoplay="' . $this->playerLoc['autoPlay'] . '"' : '') . '>' . $this->playerLoc['url'] . '</video:player_loc>';
+            $videoText .= '<video:player_loc'.(isset($this->playerLoc['allowEmbed']) ? ' allow_embed="'.($this->playerLoc['allowEmbed'] ? 'yes' : 'no').'"' : '').(!empty($this->playerLoc['autoPlay']) ? ' autoplay="'.$this->playerLoc['autoPlay'].'"' : '').'>'.$this->playerLoc['url'].'</video:player_loc>';
         }
         if (!empty($this->duration)) {
-            $videoText .= '<video:duration>' . intval($this->duration) . '</video:duration>';
+            $videoText .= '<video:duration>'.intval($this->duration).'</video:duration>';
         }
         if (!empty($this->expirationDate)) {
-            $videoText .= '<video:expiration_date>' . $this->expirationDate->format('c') . '</video:expiration_date>';
+            $videoText .= '<video:expiration_date>'.$this->expirationDate->format('c').'</video:expiration_date>';
         }
         if (!empty($this->rating)) {
-            $videoText .= '<video:rating>' . number_format(floatval($this->rating), 1) . '</video:rating>';
+            $videoText .= '<video:rating>'.number_format(floatval($this->rating), 1).'</video:rating>';
         }
         if (!empty($this->viewCount)) {
-            $videoText .= '<video:view_count>' . intval($this->viewCount) . '</video:view_count>';
+            $videoText .= '<video:view_count>'.intval($this->viewCount).'</video:view_count>';
         }
         if (!empty($this->publicationDate)) {
-            $videoText .= '<video:publication_date>' . $this->publicationDate->format('c') . '</video:publication_date>';
+            $videoText .= '<video:publication_date>'.$this->publicationDate->format('c').'</video:publication_date>';
         }
-        $videoText .= '<video:family_friendly>' . ($this->familyFriendly ? 'yes' : 'no') . '</video:family_friendly>';
+        $videoText .= '<video:family_friendly>'.($this->familyFriendly ? 'yes' : 'no').'</video:family_friendly>';
         if (!empty($this->tag)) {
-            $videoText .= '<video:tag>' . $this->tag . '</video:tag>';
+            $videoText .= '<video:tag>'.$this->tag.'</video:tag>';
         }
         if (!empty($this->category)) {
-            $videoText .= '<video:category>' . substr($this->category, 0, 255) . '</video:category>';
+            $videoText .= '<video:category>'.substr($this->category, 0, 255).'</video:category>';
         }
         if (!empty($this->restriction['countries'])) {
-            $videoText .= '<video:restriction relationship="' . $this->restriction['relationship'] . '">' . $this->restriction['countries'] . '</video:restriction>';
+            $videoText .= '<video:restriction relationship="'.$this->restriction['relationship'].'">'.$this->restriction['countries'].'</video:restriction>';
         }
         if (!empty($this->galleryLoc['url'])) {
-            $videoText .= '<video:gallery_loc' . (!empty($this->galleryLoc['title']) ? ' title="' . $this->galleryLoc['title'] . '"' : '') . '>' . $this->galleryLoc['url'] . '</video:gallery_loc>';
+            $videoText .= '<video:gallery_loc'.(!empty($this->galleryLoc['title']) ? ' title="'.$this->galleryLoc['title'].'"' : '').'>'.$this->galleryLoc['url'].'</video:gallery_loc>';
         }
         if (!empty($this->price['price'])) {
-            $videoText .= '<video:price currency="' . $this->price['currency'] . '">' . $this->price['price'] . '</video:price>';
+            $videoText .= '<video:price currency="'.$this->price['currency'].'">'.$this->price['price'].'</video:price>';
         }
-        $videoText .= '<video:requires_subscription>' . ($this->requiresSubscription ? 'yes' : 'no') . '</video:requires_subscription>';
+        $videoText .= '<video:requires_subscription>'.($this->requiresSubscription ? 'yes' : 'no').'</video:requires_subscription>';
         if (!empty($this->uploader['name'])) {
-            $videoText .= '<video:uploader' . (!empty($this->uploader['info']) ? ' info="' . $this->uploader['info'] . '"' : '') . '>' . $this->uploader['name'] . '</video:uploader>';
+            $videoText .= '<video:uploader'.(!empty($this->uploader['info']) ? ' info="'.$this->uploader['info'].'"' : '').'>'.$this->uploader['name'].'</video:uploader>';
         }
         if (!empty($this->platform['code'])) {
-            $videoText .= '<video:platform relationship="' . $this->platform['relationship'] . '">' . $this->platform['code'] . '</video:platform>';
+            $videoText .= '<video:platform relationship="'.$this->platform['relationship'].'">'.$this->platform['code'].'</video:platform>';
         }
-        $videoText .= '<video:live>' . ($this->live ? 'yes' : 'no') . '</video:live>';
+        $videoText .= '<video:live>'.($this->live ? 'yes' : 'no').'</video:live>';
         $videoText .= '</video:video>';
 
         return $videoText;

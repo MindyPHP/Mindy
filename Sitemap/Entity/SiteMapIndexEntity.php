@@ -5,9 +5,7 @@ namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 use Mindy\Bundle\SitemapBundle\Sitemap\Collection\SiteMapCollection;
 
 /**
- * Class SiteMapIndexEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
- * https://support.google.com/webmasters/answer/75712
+ * Class SiteMapIndexEntity.
  */
 class SiteMapIndexEntity extends AbstractEntity
 {
@@ -26,6 +24,7 @@ class SiteMapIndexEntity extends AbstractEntity
 
     /**
      * @param SiteMapEntity $siteMapEntity
+     *
      * @return $this
      */
     public function addSiteMap(SiteMapEntity $siteMapEntity)
@@ -48,12 +47,12 @@ class SiteMapIndexEntity extends AbstractEntity
      */
     public function getXml()
     {
-        $siteMapIndexText = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $siteMapIndexText = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL;
         $siteMapIndexText .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
         foreach ($this->siteMapCollection as $siteMapEntity) {
             $siteMapIndexText .= '<sitemap>';
-            $siteMapIndexText .= '<loc>' . $siteMapEntity->getLoc() . '</loc>';
-            $siteMapIndexText .= '<lastmod>' . $siteMapEntity->getLastmod()->format('c') . '</lastmod>';
+            $siteMapIndexText .= '<loc>'.$siteMapEntity->getLoc().'</loc>';
+            $siteMapIndexText .= '<lastmod>'.$siteMapEntity->getLastmod()->format('c').'</lastmod>';
             $siteMapIndexText .= '</sitemap>';
         }
         $siteMapIndexText .= '</sitemapindex>';

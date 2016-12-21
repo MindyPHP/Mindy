@@ -3,10 +3,8 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Collection;
 
 /**
- * Class SiteMapCollection
- * @package Evheniy\SitemapXmlBundle\Collection
+ * Class SiteMapCollection.
  */
 class SiteMapCollection extends AbstractCollection
 {
-
 }

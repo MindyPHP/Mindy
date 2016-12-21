@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 00:36
+ * Time: 00:36.
  */
 
 namespace Mindy\Bundle\SitemapBundle\Sitemap;
@@ -15,8 +15,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class Builder
- * @package Mindy\Bundle\SitemapBundle\Sitemap
+ * Class Builder.
  */
 class Builder
 {
@@ -34,6 +33,7 @@ class Builder
 
     /**
      * Builder constructor.
+     *
      * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(UrlGeneratorInterface $urlGenerator)
@@ -54,14 +54,16 @@ class Builder
     /**
      * @param string $filePath
      * @param string $fileContent
+     *
      * @return $this
+     *
      * @throws Exception
      */
     public function saveFile($filePath, $fileContent)
     {
         $filesystem = new Filesystem();
         if (false === $filesystem->exists(dirname($filePath))) {
-            throw new Exception('Directory "' . dirname($filePath) . '" does not exist!');
+            throw new Exception('Directory "'.dirname($filePath).'" does not exist!');
         }
         try {
             $filesystem->mkdir(dirname($filePath));
@@ -76,6 +78,7 @@ class Builder
     /**
      * @param $path
      * @param array $entities
+     *
      * @return SiteMapEntity
      */
     public function saveSitemap($path, array $entities)
@@ -95,6 +98,7 @@ class Builder
      * @param $scheme
      * @param $host
      * @param $path
+     *
      * @return array
      */
     public function build($scheme, $host, $path)
@@ -111,22 +115,22 @@ class Builder
         if (count($entities) > self::LIMIT) {
             $sitemapIndex = new SiteMapIndexEntity();
             foreach (array_chunk($entities, self::LIMIT) as $i => $chunk) {
-                $sitemap = $this->saveSitemap(sprintf("%s/sitemap-%s.xml", $path, $i), $chunk);
-                $sitemaps[] = $loc = sprintf("%s/sitemap-%s.xml", rtrim($host, '/'), $i);
+                $sitemap = $this->saveSitemap(sprintf('%s/sitemap-%s.xml', $path, $i), $chunk);
+                $sitemaps[] = $loc = sprintf('%s/sitemap-%s.xml', rtrim($host, '/'), $i);
                 $sitemap->setLoc($loc);
 
                 $sitemapIndex->addSiteMap($sitemap);
             }
 
             $this->saveFile(
-                sprintf("%s/sitemap.xml", $path),
+                sprintf('%s/sitemap.xml', $path),
                 $sitemapIndex->getXml()
             );
         } else {
-            $this->saveSitemap(sprintf("%s/sitemap.xml", $path), $entities);
+            $this->saveSitemap(sprintf('%s/sitemap.xml', $path), $entities);
         }
 
-        $sitemaps[] = sprintf("%s/sitemap.xml", rtrim($host, '/'));
+        $sitemaps[] = sprintf('%s/sitemap.xml', rtrim($host, '/'));
 
         return $sitemaps;
     }

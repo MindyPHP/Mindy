@@ -5,9 +5,7 @@ namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 use Mindy\Bundle\SitemapBundle\Sitemap\Collection\LocationCollection;
 
 /**
- * Class SiteMapEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
- * https://support.google.com/webmasters/answer/183668
+ * Class SiteMapEntity.
  */
 class SiteMapEntity extends AbstractEntity
 {
@@ -35,6 +33,7 @@ class SiteMapEntity extends AbstractEntity
 
     /**
      * @param LocationEntity $locationEntity
+     *
      * @return $this
      */
     public function addLocation(LocationEntity $locationEntity)
@@ -57,12 +56,12 @@ class SiteMapEntity extends AbstractEntity
      */
     public function getLoc()
     {
-
         return $this->loc;
     }
 
     /**
      * @param string $location
+     *
      * @return $this
      */
     public function setLoc($location)
@@ -77,12 +76,12 @@ class SiteMapEntity extends AbstractEntity
      */
     public function getLastmod()
     {
-
         return $this->lastmod;
     }
 
     /**
      * @param \DateTime $dateTime
+     *
      * @return $this
      */
     public function setLastmod(\DateTime $dateTime)
@@ -97,7 +96,7 @@ class SiteMapEntity extends AbstractEntity
      */
     public function getXml()
     {
-        $siteMapText = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $siteMapText = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL;
         $siteMapText .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">';
         foreach ($this->locationCollection as $locationEntity) {
             $siteMapText .= $locationEntity->getXml();

@@ -3,10 +3,8 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Collection;
 
 /**
- * Class AbstractCollection
- * @package Evheniy\SitemapXmlBundle\Collection
+ * Class AbstractCollection.
  */
 abstract class AbstractCollection extends \SplObjectStorage
 {
-
 }
