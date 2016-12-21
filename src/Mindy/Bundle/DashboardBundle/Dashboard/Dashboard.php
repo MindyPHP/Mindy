@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/2016
- * Time: 20:29
+ * Time: 20:29.
  */
 
 namespace Mindy\Bundle\DashboardBundle\Dashboard;
@@ -24,6 +24,7 @@ class Dashboard
 
     /**
      * Dashboard constructor.
+     *
      * @param Renderer $template
      */
     public function __construct(Renderer $template)

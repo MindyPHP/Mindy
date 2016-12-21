@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 20:52
+ * Time: 20:52.
  */
 
 namespace Mindy\Bundle\DashboardBundle\DependencyInjection;
@@ -18,14 +18,14 @@ class DashboardExtension extends Extension
     /**
      * Loads a specific configuration.
      *
-     * @param array $configs An array of configuration values
+     * @param array            $configs   An array of configuration values
      * @param ContainerBuilder $container A ContainerBuilder instance
      *
      * @throws \InvalidArgumentException When provided tag is not defined in this extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
 }
