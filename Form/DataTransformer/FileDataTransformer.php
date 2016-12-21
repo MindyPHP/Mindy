@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/11/2016
- * Time: 20:44
+ * Time: 20:44.
  */
 
 namespace Mindy\Bundle\FileBundle\Form\DataTransformer;
@@ -22,6 +22,7 @@ class FileDataTransformer implements DataTransformerInterface
 
     /**
      * FileDataTransformer constructor.
+     *
      * @param FilesystemInterface $filesystem
      */
     public function __construct(FilesystemInterface $filesystem)
@@ -58,12 +59,12 @@ class FileDataTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        $path = rtrim($this->mediaPath, '/') . '/' . $value;
+        $path = rtrim($this->mediaPath, '/').'/'.$value;
         if (is_file($path)) {
             return new File($path, false);
         }
 
-        return null;
+        return;
     }
 
     /**

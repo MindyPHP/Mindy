@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 30/11/16
- * Time: 18:03
+ * Time: 18:03.
  */
 
 namespace Mindy\Bundle\FileBundle\Controller;
@@ -32,12 +32,12 @@ class FileController extends Controller
         if (empty($directoryName)) {
             return $this->json([
                 'status' => false,
-                'message' => $this->get('translator')->trans('file.directory.missing_name_error')
+                'message' => $this->get('translator')->trans('file.directory.missing_name_error'),
             ]);
-        } else if (strpos($directoryName, '/') !== false) {
+        } elseif (strpos($directoryName, '/') !== false) {
             return $this->json([
                 'status' => false,
-                'message' => $this->get('translator')->trans('file.directory.incorrect_name_error')
+                'message' => $this->get('translator')->trans('file.directory.incorrect_name_error'),
             ]);
         } else {
             $fs = $this->getFilesystem();
@@ -46,18 +46,18 @@ class FileController extends Controller
             if ($fs->has($dirPath)) {
                 return $this->json([
                     'status' => false,
-                    'message' => $this->get('translator')->trans('file.directory.exist_error')
+                    'message' => $this->get('translator')->trans('file.directory.exist_error'),
                 ]);
             } else {
                 if ($fs->createDir($dirPath)) {
                     return $this->json([
                         'status' => true,
-                        'message' => $this->get('translator')->trans('file.directory.create_success')
+                        'message' => $this->get('translator')->trans('file.directory.create_success'),
                     ]);
                 } else {
                     return $this->json([
                         'status' => true,
-                        'message' => $this->get('translator')->trans('file.directory.create_error')
+                        'message' => $this->get('translator')->trans('file.directory.create_error'),
                     ]);
                 }
             }
@@ -71,33 +71,33 @@ class FileController extends Controller
         $objects = [];
         foreach ($this->getFilesystem()->listContents($path) as $object) {
             $objects[] = [
-                'path' => '/' . $object['path'],
+                'path' => '/'.$object['path'],
                 'name' => basename($object['path']),
                 'date' => date(DATE_W3C, $object['timestamp']),
                 'is_dir' => $object['type'] === 'dir',
                 'size' => isset($object['size']) ? $object['size'] : 0,
-                'url' => $object['path']
+                'url' => $object['path'],
             ];
         }
 
         $breadcrumbs = [
             [
                 'url' => $this->generateUrl('file_list'),
-                'name' => $this->get('translator')->trans('admin.file.name')
-            ]
+                'name' => $this->get('translator')->trans('admin.file.name'),
+            ],
         ];
         $prev = [];
         foreach (array_filter(explode('/', $path)) as $part) {
             $prev[] = $part;
 
-            $query = ['path' => '/' . implode('/', $prev)];
+            $query = ['path' => '/'.implode('/', $prev)];
             $url = $this->generateUrl('file_list', $query);
             $breadcrumbs[] = ['url' => $url, 'name' => $part];
         }
 
         return $this->render('file/list.html', [
             'breadcrumbs' => $breadcrumbs,
-            'objects' => $objects
+            'objects' => $objects,
         ]);
     }
 
@@ -126,7 +126,7 @@ class FileController extends Controller
 
         $handler = new UploadHandler([
             'image_versions' => [],
-            'upload_dir' => $media . DIRECTORY_SEPARATOR . trim($path, '/') . DIRECTORY_SEPARATOR
+            'upload_dir' => $media.DIRECTORY_SEPARATOR.trim($path, '/').DIRECTORY_SEPARATOR,
         ]);
 
         return new Response('');

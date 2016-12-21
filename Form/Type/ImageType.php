@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/11/2016
- * Time: 20:30
+ * Time: 20:30.
  */
 
 namespace Mindy\Bundle\FileBundle\Form\Type;
@@ -34,14 +34,14 @@ class ImageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if (!isset($options['base_uri']) || !$options['base_uri']) {
-            throw new \InvalidArgumentException("Base Uri has to be configured.");
+            throw new \InvalidArgumentException('Base Uri has to be configured.');
         }
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         if (!isset($options['base_path']) || !$options['base_path']) {
-            $options['base_path'] = $this->webDir . $options['base_uri'];
+            $options['base_path'] = $this->webDir.$options['base_uri'];
         }
         $data = $form->getData();
         if ($data) {
@@ -55,7 +55,7 @@ class ImageType extends AbstractType
                 $uri = str_replace(DIRECTORY_SEPARATOR, '/', $uri);
             }
             $view->vars['image_uri'] = $uri;
-        } else if ($uri = $options['no_image_placeholder_uri']) {
+        } elseif ($uri = $options['no_image_placeholder_uri']) {
             $view->vars['attr']['image_uri'] = $uri;
         }
         $view->vars['image_alt'] = $options['image_alt'];
