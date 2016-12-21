@@ -8,8 +8,7 @@ use Mindy\Template\Expression\AttributeExpression;
 use Mindy\Template\Node;
 
 /**
- * Class UrlNode
- * @package Mindy\Template
+ * Class UrlNode.
  */
 class UrlNode extends Node
 {
@@ -31,12 +30,12 @@ class UrlNode extends Node
 
         if ($this->name) {
             $name = "\$context['$this->name']";
-            $compiler->raw("if (!isset($name)) $name = null;\n" . "\n", $indent);
+            $compiler->raw("if (!isset($name)) $name = null;\n"."\n", $indent);
             $compiler->raw("\$this->setAttr($name, array(), ", $indent);
             $this->compileUrl($compiler, $indent);
-            $compiler->raw(');' . "\n");
+            $compiler->raw(');'."\n");
         } else {
-            $compiler->raw("echo ", $indent);
+            $compiler->raw('echo ', $indent);
             $this->compileUrl($compiler, $indent);
         }
 

@@ -21,6 +21,7 @@ abstract class Controller extends BaseController
     /**
      * @param $source
      * @param array $parameters
+     *
      * @return Pagination
      */
     protected function createPagination($source, array $parameters = array())
@@ -37,8 +38,8 @@ abstract class Controller extends BaseController
     /**
      * Returns a rendered view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
+     * @param string $view       The view name
+     * @param array  $parameters An array of parameters to pass to the view
      *
      * @return string The rendered view
      */
@@ -53,8 +54,8 @@ abstract class Controller extends BaseController
     /**
      * Renders a view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
+     * @param string   $view       The view name
+     * @param array    $parameters An array of parameters to pass to the view
      * @param Response $response
      *
      * @return string
@@ -66,15 +67,16 @@ abstract class Controller extends BaseController
         }
 
         $response->setContent($this->renderTemplate($view, $parameters));
+
         return $response;
     }
 
     /**
      * Streams a view.
      *
-     * @param string $view The view name
-     * @param array $parameters An array of parameters to pass to the view
-     * @param StreamedResponse $response A response instance
+     * @param string           $view       The view name
+     * @param array            $parameters An array of parameters to pass to the view
+     * @param StreamedResponse $response   A response instance
      *
      * @return StreamedResponse A StreamedResponse instance
      */

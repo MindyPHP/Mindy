@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 13/10/16
- * Time: 09:56
+ * Time: 09:56.
  */
 
 namespace Mindy\Bundle\MindyBundle\Helper;
@@ -32,9 +32,10 @@ class Mail
 
     /**
      * Mail constructor.
-     * @param \Swift_Mailer $mailer
+     *
+     * @param \Swift_Mailer           $mailer
      * @param TemplateFinderInterface $finder
-     * @param Renderer $template
+     * @param Renderer                $template
      * @param $defaultFrom
      */
     public function __construct(\Swift_Mailer $mailer, TemplateFinderInterface $finder, Renderer $template, $defaultFrom)
@@ -51,7 +52,9 @@ class Mail
      * @param $template
      * @param array $data
      * @param array $attachments
+     *
      * @return \Swift_Message
+     *
      * @throws \Exception
      */
     protected function getMessage($subject, $to, $template, array $data = [], array $attachments = [])
@@ -62,14 +65,14 @@ class Mail
         $message->setFrom($this->defaultFrom);
         $message->setTo($to);
 
-        if ($this->finder->find($template . '.html')) {
-            $message->setBody($this->template->render($template . '.html', $data), 'text/html');
+        if ($this->finder->find($template.'.html')) {
+            $message->setBody($this->template->render($template.'.html', $data), 'text/html');
 
-            if ($this->finder->find($template . '.txt')) {
-                $message->addPart($this->template->render($template . '.txt', $data), 'text/plain');
+            if ($this->finder->find($template.'.txt')) {
+                $message->addPart($this->template->render($template.'.txt', $data), 'text/plain');
             }
         } else {
-            throw new \Exception('Unknown template: ' . $template . '.html');
+            throw new \Exception('Unknown template: '.$template.'.html');
         }
 
         foreach ($attachments as $fileName => $options) {
@@ -92,12 +95,15 @@ class Mail
      * @param $template
      * @param array $data
      * @param array $attachments
+     *
      * @return int
+     *
      * @throws \Exception
      */
     public function send($subject, $to, $template, array $data = [], array $attachments = [])
     {
         $message = $this->getMessage($subject, $to, $template, $data, $attachments);
+
         return $this->mailer->send($message);
     }
 }

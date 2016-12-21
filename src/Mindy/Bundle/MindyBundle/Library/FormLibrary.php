@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 02/11/2016
- * Time: 21:48
+ * Time: 21:48.
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
@@ -34,7 +34,7 @@ class FormLibrary extends Library
             'form_errors' => [$this->formHelper, 'errors'],
             'form_row' => [$this->formHelper, 'row'],
             'form_rest' => [$this->formHelper, 'rest'],
-            'form_widget' => [$this->formHelper, 'widget']
+            'form_widget' => [$this->formHelper, 'widget'],
         ];
     }
 

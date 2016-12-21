@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 09/11/2016
- * Time: 00:16
+ * Time: 00:16.
  */
 
 namespace Mindy\Bundle\MindyBundle\Normalizer;
@@ -46,7 +46,7 @@ class FormErrorsNormalizer extends SerializerAwareNormalizer implements Normaliz
     /**
      * Checks whether the given class is supported for normalization by this normalizer.
      *
-     * @param mixed $data Data to normalize
+     * @param mixed  $data   Data to normalize
      * @param string $format The format being (de-)serialized from or into
      *
      * @return bool

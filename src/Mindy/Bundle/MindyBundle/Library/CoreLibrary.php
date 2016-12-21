@@ -4,7 +4,7 @@
  * Email: max@studio107.ru
  * Company: http://en.studio107.ru
  * Date: 18/02/16
- * Time: 12:26
+ * Time: 12:26.
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
@@ -38,7 +38,8 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                         }
                     }
                 }
-                return null;
+
+                return;
             },
             'is_granted' => function ($attributes, $object = null) {
                 if (!$this->container->has('security.authorization_checker')) {
@@ -78,7 +79,7 @@ class CoreLibrary extends Library implements ContainerAwareInterface
     public function getTags()
     {
         return [
-            'url' => 'parseUrl'
+            'url' => 'parseUrl',
         ];
     }
 
@@ -94,7 +95,6 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                 $this->stream->test(Token::STRING)
             ) && !$this->stream->test(Token::BLOCK_END)
         ) {
-
             if ($this->stream->consume(Token::NAME, 'with')) {
                 if ($this->stream->look()->test(Token::OPERATOR, '=')) {
                     $this->stream->expect(Token::OPERATOR, '[');
@@ -103,14 +103,14 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                 } else {
                     $params = $this->parser->parseExpression();
                 }
-            } else if ($this->stream->test(Token::NAME) && $this->stream->look()->test(Token::OPERATOR, '=')) {
+            } elseif ($this->stream->test(Token::NAME) && $this->stream->look()->test(Token::OPERATOR, '=')) {
                 $key = $this->parser->parseName()->getValue();
                 $this->stream->next();
                 $params[$key] = $this->parser->parseExpression();
-            } else if ($this->stream->test(Token::NAME, 'as')) {
+            } elseif ($this->stream->test(Token::NAME, 'as')) {
                 $this->stream->next();
                 $name = $this->parser->parseName()->getValue();
-            } else if ($this->stream->test(Token::NAME)) {
+            } elseif ($this->stream->test(Token::NAME)) {
                 $expression = $this->parser->parseExpression();
                 if (
                     $expression instanceof ArrayExpression ||
@@ -127,6 +127,7 @@ class CoreLibrary extends Library implements ContainerAwareInterface
         }
 
         $this->stream->expect(Token::BLOCK_END);
+
         return new UrlNode($token->getLine(), $route, $params, $name);
     }
 }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/10/2016
- * Time: 20:35
+ * Time: 20:35.
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
@@ -20,6 +20,7 @@ class AssetLibrary extends Library
 
     /**
      * AssetLibrary constructor.
+     *
      * @param Packages $packages
      */
     public function __construct(Packages $packages)
@@ -67,7 +68,7 @@ class AssetLibrary extends Library
             },
             'asset_version' => function ($path, $packageName = null) {
                 return $this->getVersion($path, $packageName);
-            }
+            },
         ];
     }
 

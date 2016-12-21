@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 09/10/2016
- * Time: 23:50
+ * Time: 23:50.
  */
 
 namespace Mindy\Bundle\MindyBundle\EventListener;
@@ -20,15 +20,12 @@ class ResponseListener
         if ((($result = $event->getControllerResult()) instanceof Request) === false) {
             if (is_string($result)) {
                 $event->setResponse(new Response($result));
-
-            } else if (is_array($result)) {
+            } elseif (is_array($result)) {
                 $event->setResponse(new JsonResponse($result));
-
-            } else if (is_object($result)) {
-
+            } elseif (is_object($result)) {
                 if (method_exists($result, 'toArray')) {
                     $event->setResponse(new JsonResponse($result->toArray()));
-                } else if (method_exists($result, 'toJson')) {
+                } elseif (method_exists($result, 'toJson')) {
                     $event->setResponse(new Response($result->toJson()));
                 }
             }
