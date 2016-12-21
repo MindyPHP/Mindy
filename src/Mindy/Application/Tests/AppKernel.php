@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 20:15
+ * Time: 20:15.
  */
 
 namespace Mindy\Application\Tests;
@@ -13,8 +13,7 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
- * Class AppKernel
- * @package Mindy\Tests
+ * Class AppKernel.
  */
 class AppKernel extends Kernel
 {
@@ -33,7 +32,7 @@ class AppKernel extends Kernel
      */
     public function getCacheDir()
     {
-        return $this->rootDir . '/runtime/cache/' . $this->environment;
+        return $this->rootDir.'/runtime/cache/'.$this->environment;
     }
 
     /**
@@ -41,7 +40,7 @@ class AppKernel extends Kernel
      */
     public function getLogDir()
     {
-        return $this->rootDir . '/runtime/logs/' . $this->environment;
+        return $this->rootDir.'/runtime/logs/'.$this->environment;
     }
 
     /**
@@ -51,6 +50,6 @@ class AppKernel extends Kernel
      */
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir() . '/config/config_' . $this->getEnvironment() . '.yml');
+        $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
 }
