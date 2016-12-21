@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/16
- * Time: 10:07
+ * Time: 10:07.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -12,6 +12,7 @@ class TextHelper
 {
     /**
      * @param $name
+     *
      * @return string
      */
     public static function normalizeName($name)

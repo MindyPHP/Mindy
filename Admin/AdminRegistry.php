@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/2016
- * Time: 19:57
+ * Time: 19:57.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -23,6 +23,6 @@ class AdminRegistry
             return $this->controllers[$slug];
         }
 
-        return null;
+        return;
     }
 }

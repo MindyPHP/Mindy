@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/2016
- * Time: 00:08
+ * Time: 00:08.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -15,10 +15,10 @@ use Mindy\Orm\ModelInterface;
 
 class AdminValueFetcher
 {
-
     /**
      * @param $column
      * @param $model
+     *
      * @return array
      */
     public function getChainedModel($column, $model)
@@ -40,19 +40,21 @@ class AdminValueFetcher
                 }
             }
         }
+
         return [$column, $model];
     }
 
     /**
      * @param $column
      * @param ModelInterface|\Mindy\Orm\Model $model
+     *
      * @return mixed
      */
     public function fetchValue($column, ModelInterface $model)
     {
         list($column, $model) = $this->getChainedModel($column, $model);
         if ($model === null) {
-            return null;
+            return;
         }
 
         $column = $model->convertToPrimaryKeyName($column);
@@ -71,11 +73,12 @@ class AdminValueFetcher
                 }
             }
         } else {
-            $method = 'get' . ucfirst($column);
+            $method = 'get'.ucfirst($column);
             if (method_exists($model, $method)) {
                 return $model->{$method}();
             }
         }
-        return null;
+
+        return;
     }
 }

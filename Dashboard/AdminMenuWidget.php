@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 28/11/16
- * Time: 13:19
+ * Time: 13:19.
  */
 
 namespace Mindy\Bundle\AdminBundle\Dashboard;
@@ -28,7 +28,7 @@ class AdminMenuWidget extends AbstractWidget
     public function getData()
     {
         return [
-            'adminMenu' => $this->adminMenu->getMenu()
+            'adminMenu' => $this->adminMenu->getMenu(),
         ];
     }
 }

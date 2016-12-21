@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 30/11/16
- * Time: 18:30
+ * Time: 18:30.
  */
 
 namespace Mindy\Bundle\AdminBundle\Library;
@@ -31,9 +31,9 @@ class AdminLibrary extends Library
         return [
             'admin_menu' => function ($template = 'admin/_menu.html') {
                 return $this->renderer->render($template, [
-                    'adminMenu' => $this->adminMenu->getMenu()
+                    'adminMenu' => $this->adminMenu->getMenu(),
                 ]);
-            }
+            },
         ];
     }
 

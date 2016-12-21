@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 13/11/2016
- * Time: 22:32
+ * Time: 22:32.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;

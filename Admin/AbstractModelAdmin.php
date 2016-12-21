@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 13/11/2016
- * Time: 21:06
+ * Time: 21:06.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -31,11 +31,11 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         'create' => true,
         'update' => true,
         'info' => true,
-        'remove' => true
+        'remove' => true,
     ];
 
     public $pager = [
-        'pageSize' => 50
+        'pageSize' => 50,
     ];
 
     public $sorting = null;
@@ -66,7 +66,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             $columns = [];
             if (null === $this->defaultOrder) {
                 $columns = ['root', 'lft'];
-            } else if (is_array($this->defaultOrder)) {
+            } elseif (is_array($this->defaultOrder)) {
                 $columns = array_merge(['root', 'lft'], $columns);
             } else {
                 $columns = [$this->defaultOrder];
@@ -84,7 +84,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
      */
     public function getFilterFormType()
     {
-        return null;
+        return;
     }
 
     public function getSearchFields()
@@ -96,6 +96,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                     $fields[] = $name;
                 }
             }
+
             return $fields;
         }
 
@@ -104,6 +105,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param ModelInterface $model
+     *
      * @return array
      */
     public function getInfoFields(ModelInterface $model)
@@ -113,6 +115,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param $code
+     *
      * @return bool
      */
     public function can($code)
@@ -121,9 +124,10 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             'create' => true,
             'update' => true,
             'info' => true,
-            'remove' => true
+            'remove' => true,
         ];
         $permissions = array_merge($defaultPermissions, $this->permissions);
+
         return isset($permissions[$code]) && $permissions[$code];
     }
 
@@ -135,10 +139,11 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     {
         $order = $request->query->get('order', '');
         if ($order == $column) {
-            $column = '-' . $column;
+            $column = '-'.$column;
         }
         $queryString = http_build_query(array_merge($request->query->all(), ['order' => $column]));
-        return strtok($request->getUri(), '?') . '?' . $queryString;
+
+        return strtok($request->getUri(), '?').'?'.$queryString;
     }
 
     public function getVerboseNames()
@@ -148,6 +153,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param $column
+     *
      * @return mixed
      */
     public function getVerboseName($column)
@@ -156,7 +162,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         $names = $this->getVerboseNames();
         if (isset($names[$column])) {
             return $names[$column];
-        } else if ($model->hasField($column)) {
+        } elseif ($model->hasField($column)) {
             return $model->getField($column)->getVerboseName();
         } else {
             return $column;
@@ -164,21 +170,23 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     }
 
     /**
-     * Render table cell. Used in template list.html
+     * Render table cell. Used in template list.html.
+     *
      * @param $column
      * @param ModelInterface $model
+     *
      * @return string
      */
     public function renderCell($column, ModelInterface $model)
     {
         $value = $this->fetcher->fetchValue($column, $model);
 
-        if ($template = $this->findTemplate('columns/_' . $column . '.html', false)) {
+        if ($template = $this->findTemplate('columns/_'.$column.'.html', false)) {
             return $this->renderTemplate($template, [
                 'admin' => $this,
                 'model' => $model,
                 'column' => $column,
-                'value' => $value
+                'value' => $value,
             ]);
         } else {
             return $value;
@@ -189,13 +197,16 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     {
         if (null === $this->columns) {
             $fields = call_user_func([$this->getModelClass(), 'getMeta'])->getFields();
+
             return array_keys($fields);
         }
+
         return $this->columns;
     }
 
     /**
      * Get qs from model.
+     *
      * @return \Mindy\Orm\Manager|\Mindy\Orm\TreeManager
      */
     public function getQuerySet()
@@ -205,8 +216,8 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param \Mindy\Orm\QuerySet|\Mindy\Orm\Manager $qs
-     * @param string $q
-     * @param array $fields
+     * @param string                                 $q
+     * @param array                                  $fields
      */
     public function applySearchToQuerySet($qs, $q, array $fields)
     {
@@ -223,7 +234,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 $lookup = 'exact';
             }
 
-            $filters[] = [$fieldName . '__' . $lookup => $q];
+            $filters[] = [$fieldName.'__'.$lookup => $q];
         }
         $qs->filter([new QOr($filters)]);
     }
@@ -253,7 +264,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             'pager' => $pager,
             'tree' => $tree,
             'sorting' => $this->sorting || $tree,
-            'columns' => $this->getColumns()
+            'columns' => $this->getColumns(),
         ]);
     }
 
@@ -266,7 +277,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 $qs->filter(['parent_id' => $pk]);
 
                 if (null === $parent) {
-                    throw new NotFoundHttpException;
+                    throw new NotFoundHttpException();
                 }
             } else {
                 $qs->roots();
@@ -275,11 +286,11 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
         if ($request->query->has('order')) {
             $qs->order([
-                $request->query->get('order')
+                $request->query->get('order'),
             ]);
-        } else if (null !== $this->defaultOrder) {
+        } elseif (null !== $this->defaultOrder) {
             $qs->order($this->defaultOrder);
-        } else if ($this->sorting) {
+        } elseif ($this->sorting) {
             $qs->order($this->sorting);
         }
 
@@ -306,7 +317,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         $filterFormView = null;
         if ($filterFormType = $this->getFilterFormType()) {
             $filterForm = $this->createForm($filterFormType, $request->query->get('filter', []), [
-                'method' => 'GET'
+                'method' => 'GET',
             ]);
             $filterFormView = $filterForm->createView();
 
@@ -323,14 +334,15 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             'sorting' => $this->sorting || $tree,
             'columns' => $this->getColumns(),
             'models' => $pager->paginate(),
-            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'list')
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'list'),
         ]);
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param ModelInterface $model
-     * @param string $action
+     * @param string         $action
+     *
      * @return array
      */
     public function getCustomBreadrumbs(Request $request, ModelInterface $model, string $action)
@@ -351,6 +363,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param $model
+     *
      * @return array
      */
     public function getParentBreadcrumbs(TreeModel $model)
@@ -366,24 +379,26 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         foreach ($parents as $parent) {
             $breadcrumbs[] = [
                 'url' => $this->getAdminUrl('list', ['parent_id' => $parent->pk]),
-                'name' => (string)$parent,
-                'items' => []
+                'name' => (string) $parent,
+                'items' => [],
             ];
         }
+
         return $breadcrumbs;
     }
 
     /**
-     * @param Request $request
+     * @param Request        $request
      * @param ModelInterface $model
      * @param $action
+     *
      * @return array
      */
     public function fetchBreadcrumbs(Request $request, ModelInterface $model, $action)
     {
         list($list, $create, $update) = $this->getAdminNames($model);
         $breadcrumbs = [
-            ['name' => $list, 'url' => $this->getAdminUrl('list')]
+            ['name' => $list, 'url' => $this->getAdminUrl('list')],
         ];
         $custom = $this->getCustomBreadrumbs($request, $model, $action);
         if (!empty($custom)) {
@@ -403,8 +418,8 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 break;
             case 'info':
                 $breadcrumbs[] = [
-                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string)$model], sprintf('%s.admin', $bundleName)),
-                    'url' => $this->getAdminUrl('list')
+                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string) $model], sprintf('%s.admin', $bundleName)),
+                    'url' => $this->getAdminUrl('list'),
                 ];
                 break;
             default:
@@ -416,7 +431,8 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * Array of action => name, where actions is an
-     * action in this admin class
+     * action in this admin class.
+     *
      * @return array
      */
     public function getActions()
@@ -428,6 +444,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     /**
      * @param ModelInterface|null $instance
+     *
      * @return array
      */
     public function getAdminNames(ModelInterface $instance = null)
@@ -435,17 +452,18 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         $bundleName = strtolower(str_replace('Bundle', '', $this->bundle->getName()));
         $model = str_replace(' ', '_', TextHelper::normalizeName(TextHelper::shortName($this->getModelClass())));
         $trans = $this->get('translator');
+
         return [
             $trans->trans(sprintf('%s.admin.%s.list', $bundleName, $model)),
             $trans->trans(sprintf('%s.admin.%s.create', $bundleName, $model)),
-            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string)$instance]),
+            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string) $instance]),
         ];
     }
 
     public function infoAction(Request $request)
     {
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
-            'pk' => $request->query->get('pk')
+            'pk' => $request->query->get('pk'),
         ]);
 
         if (null === $instance) {
@@ -460,14 +478,14 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return $this->render($this->findTemplate('info.html'), [
             'model' => $instance,
             'fields' => $fields,
-            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'info')
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'info'),
         ]);
     }
 
     public function printAction(Request $request)
     {
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
-            'pk' => $request->query->get('pk')
+            'pk' => $request->query->get('pk'),
         ]);
 
         if (null === $instance) {
@@ -482,18 +500,16 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return $this->render($this->findTemplate('info_print.html'), [
             'model' => $instance,
             'fields' => $fields,
-            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'info')
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'info'),
         ]);
     }
 
     protected function beforeCreate($instance)
     {
-
     }
 
     protected function beforeUpdate($instance)
     {
-
     }
 
     public function createAction(Request $request)
@@ -502,7 +518,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
         $form = $this->createForm($this->getFormType(), $instance, [
             'method' => 'POST',
-            'attr' => ['enctype' => 'multipart/form-data']
+            'attr' => ['enctype' => 'multipart/form-data'],
         ]);
 
         if ($request->getMethod() === 'POST') {
@@ -520,12 +536,12 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
         return $this->render($this->findTemplate('create.html'), [
             'form' => $form->createView(),
-            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'create')
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'create'),
         ]);
     }
 
     /**
-     * Example usage:
+     * Example usage:.
      *
      * switch ($action) {
      *      case "save_create":
@@ -537,6 +553,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
      * }
      *
      * @param $action
+     *
      * @return array
      */
     public function getRedirectParams($action)
@@ -545,9 +562,11 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     }
 
     /**
-     * Collect correct array for redirect
+     * Collect correct array for redirect.
+     *
      * @param array $attributes
      * @param $action
+     *
      * @return array
      */
     protected function fetchRedirectParams(array $attributes, $action)
@@ -559,19 +578,21 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 $redirectParams[$saveParams[$key]] = $value;
             }
         }
+
         return $redirectParams;
     }
 
     /**
-     * @param array $data
+     * @param array          $data
      * @param ModelInterface $model
+     *
      * @return string url for redirect
      */
     public function getNextRoute(array $data, ModelInterface $model)
     {
         if (array_key_exists('save_continue', $data)) {
             return $this->getAdminUrl('update', array_merge($this->fetchRedirectParams($model->getAttributes(), 'save_continue'), ['pk' => $model->pk]));
-        } else if (array_key_exists('save_create', $data)) {
+        } elseif (array_key_exists('save_create', $data)) {
             return $this->getAdminUrl('create', $this->fetchRedirectParams($model->getAttributes(), 'save_create'));
         } else {
             return $this->getAdminUrl('list', $this->fetchRedirectParams($model->getAttributes(), 'save'));
@@ -581,7 +602,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     public function updateAction(Request $request)
     {
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
-            'pk' => $request->query->get('pk')
+            'pk' => $request->query->get('pk'),
         ]);
         if ($instance === null) {
             throw new NotFoundHttpException();
@@ -589,7 +610,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
         $form = $this->createForm($this->getFormType(), $instance, [
             'method' => 'POST',
-            'attr' => ['enctype' => 'multipart/form-data']
+            'attr' => ['enctype' => 'multipart/form-data'],
         ]);
 
         if ($request->getMethod() === 'POST') {
@@ -608,14 +629,14 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return $this->render($this->findTemplate('update.html'), [
             'form' => $form->createView(),
             'instance' => $instance,
-            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'update')
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'update'),
         ]);
     }
 
     public function removeAction(Request $request)
     {
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
-            'pk' => $request->query->get('pk')
+            'pk' => $request->query->get('pk'),
         ]);
         if ($instance === null) {
             throw new NotFoundHttpException();
@@ -634,6 +655,6 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             return $model->getAbsoluteUrl();
         }
 
-        return null;
+        return;
     }
 }
