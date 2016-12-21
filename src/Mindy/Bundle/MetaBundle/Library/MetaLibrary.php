@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/10/16
- * Time: 15:48
+ * Time: 15:48.
  */
 
 namespace Mindy\Bundle\MetaBundle\Library;
@@ -38,8 +38,9 @@ class MetaLibrary extends Library
                 if (null === $meta) {
                     $meta = [];
                 }
+
                 return $this->template->render($template, [
-                    'meta' => $meta
+                    'meta' => $meta,
                 ]);
             },
             'render_template' => function ($code, array $params = []) {
@@ -50,7 +51,7 @@ class MetaLibrary extends Library
                 }
 
                 return $this->template->renderString($metaTemplate->content, $params);
-            }
+            },
         ];
     }
 

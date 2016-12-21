@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 28/11/2016
- * Time: 23:43
+ * Time: 23:43.
  */
 
 namespace Mindy\Bundle\MetaBundle\Form;
@@ -32,46 +32,46 @@ class MetaFormType extends AbstractType
             ->add('host', TextType::class, [
                 'label' => 'Хост',
                 'constraints' => [
-                    new Assert\NotBlank()
+                    new Assert\NotBlank(),
                 ],
-                'data' => $this->request->getHost()
+                'data' => $this->request->getHost(),
             ])
             ->add('url', TextType::class, [
                 'label' => 'Адрес страницы',
                 'constraints' => [
-                    new Assert\NotBlank()
-                ]
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('canonical', TextType::class, [
                 'label' => 'Абсолютный адрес (canonical)',
-                'required' => false
+                'required' => false,
             ])
             ->add('title', TextType::class, [
                 'label' => 'Заголовок (title)',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 60])
-                ]
+                    new Assert\Length(['max' => 60]),
+                ],
             ])
             ->add('keywords', TextType::class, [
                 'label' => 'Ключевые слова (keywords)',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 60])
-                ]
+                    new Assert\Length(['max' => 60]),
+                ],
             ])
             ->add('description', TextType::class, [
                 'label' => 'Описание (description)',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 160])
-                ]
+                    new Assert\Length(['max' => 160]),
+                ],
             ]);
 
         if (!$options['inline']) {
             $builder
                 ->add('submit', SubmitType::class, [
-                    'label' => 'Сохранить'
+                    'label' => 'Сохранить',
                 ]);
         }
     }
@@ -80,7 +80,7 @@ class MetaFormType extends AbstractType
     {
         $resolver->setDefaults([
             'inline' => false,
-            'data_class' => Meta::class
+            'data_class' => Meta::class,
         ]);
     }
 }

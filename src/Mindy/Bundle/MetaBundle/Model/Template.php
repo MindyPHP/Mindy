@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 00:07
+ * Time: 00:07.
  */
 
 namespace Mindy\Bundle\MetaBundle\Model;
@@ -13,8 +13,8 @@ use Mindy\Orm\Fields\TextField;
 use Mindy\Orm\Model;
 
 /**
- * Class Template
- * @package Mindy\Bundle\MetaBundle\Model
+ * Class Template.
+ *
  * @property string $code
  * @property string $content
  */
@@ -24,16 +24,16 @@ class Template extends Model
     {
         return [
             'code' => [
-                'class' => CharField::class
+                'class' => CharField::class,
             ],
             'content' => [
-                'class' => TextField::class
+                'class' => TextField::class,
             ],
         ];
     }
 
     public function __toString()
     {
-        return (string)$this->code;
+        return (string) $this->code;
     }
 }

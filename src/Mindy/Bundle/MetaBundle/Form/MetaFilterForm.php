@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 11/12/2016
- * Time: 23:31
+ * Time: 23:31.
  */
 
 namespace Mindy\Bundle\MetaBundle\Form;
@@ -19,10 +19,10 @@ class MetaFilterForm extends AbstractType
     {
         $builder
             ->add('host', TextType::class, [
-                'required' => false
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Поиск'
+                'label' => 'Поиск',
             ]);
     }
 }

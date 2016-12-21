@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 00:16
+ * Time: 00:16.
  */
 
 namespace Mindy\Bundle\MetaBundle\Form;
@@ -25,24 +25,24 @@ class TemplateForm extends AbstractType
             ->add('code', TextType::class, [
                 'label' => 'Код шаблона',
                 'constraints' => [
-                    new Assert\NotBlank
-                ]
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'Шаблон',
                 'constraints' => [
-                    new Assert\NotBlank
-                ]
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Сохранить'
+                'label' => 'Сохранить',
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Template::class
+            'data_class' => Template::class,
         ]);
     }
 }
