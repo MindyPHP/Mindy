@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 30/11/2016
- * Time: 21:05
+ * Time: 21:05.
  */
 
 namespace Mindy\Bundle\AdminBundle\Form\Type;
@@ -19,13 +19,13 @@ class ButtonsType extends AbstractType
     {
         $builder
             ->add('save', SubmitType::class, [
-                'label' => 'Сохранить'
+                'label' => 'Сохранить',
             ])
             ->add('save_and_continue', SubmitType::class, [
-                'label' => 'Сохранить и продолжить редактирование'
+                'label' => 'Сохранить и продолжить редактирование',
             ])
             ->add('save_and_create', SubmitType::class, [
-                'label' => 'Сохранить и создать'
+                'label' => 'Сохранить и создать',
             ]);
     }
 
@@ -33,7 +33,7 @@ class ButtonsType extends AbstractType
     {
         $resolver->setDefaults([
             'label' => false,
-            'mapped' => false
+            'mapped' => false,
         ]);
     }
 }

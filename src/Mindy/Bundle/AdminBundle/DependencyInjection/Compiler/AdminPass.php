@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/2016
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace Mindy\Bundle\AdminBundle\DependencyInjection\Compiler;
@@ -31,7 +31,7 @@ class AdminPass implements CompilerPassInterface
                 if (isset($attributes['slug'])) {
                     $definition->addMethodCall('addAdmin', [
                         $id,
-                        $attributes['slug']
+                        $attributes['slug'],
                     ]);
                 }
             }

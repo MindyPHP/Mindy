@@ -3,14 +3,13 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/10/16
- * Time: 14:58
+ * Time: 14:58.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
 
 /**
- * Class AdminMenu
- * @package Mindy\Bundle\MindyBundle\Admin
+ * Class AdminMenu.
  */
 class AdminMenu
 {
@@ -21,6 +20,7 @@ class AdminMenu
 
     /**
      * AdminMenu constructor.
+     *
      * @param array $menu
      */
     public function __construct(array $menu = [])

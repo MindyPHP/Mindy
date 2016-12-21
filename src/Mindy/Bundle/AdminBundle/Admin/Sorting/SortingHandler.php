@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 01/12/16
- * Time: 11:16
+ * Time: 11:16.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin\Sorting;
@@ -14,7 +14,7 @@ class SortingHandler extends AbstractSortingHandler
 {
     public function sort(Request $request, $column, array $ids)
     {
-        /**
+        /*
          * Pager-independent sorting
          */
         $oldPositions = $this->getQuerySet()->filter(['pk__in' => $ids])
@@ -25,7 +25,7 @@ class SortingHandler extends AbstractSortingHandler
             $this->getQuerySet()
                 ->filter(['pk' => $id])
                 ->update([
-                    $column => array_shift($oldPositions)
+                    $column => array_shift($oldPositions),
                 ]);
         }
     }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 20:36
+ * Time: 20:36.
  */
 
 namespace Mindy\Bundle\AdminBundle\Controller;
@@ -18,23 +18,25 @@ class AdminController extends Controller
     {
         $response = $this->render('admin/index.html', [
             'breadcrumbs' => [
-                ['name' => 'Рабочий стол']
+                ['name' => 'Рабочий стол'],
             ],
             'dashboard' => $this->has('dashboard') ? $this->get('dashboard') : null,
-            'adminMenu' => $this->get('admin.menu')->getMenu()
+            'adminMenu' => $this->get('admin.menu')->getMenu(),
         ]);
+
         return $this->preventCache($response);
     }
 
     public function dispatchAction(Request $request, $bundle, $admin, $action)
     {
-//        $id = $this->get('admin.registry')->resolveAdmin('product');
+        //        $id = $this->get('admin.registry')->resolveAdmin('product');
 //        $response = $this->forward(sprintf("%s:%sAction", $id, $action), ['request' => $request]);
 //        dump($response);die;
 //        return $this->preventCache($response);
 
-        /** @var \Mindy\Bundle\MindyBundle\Admin\AdminManager $adminManager */
+        /* @var \Mindy\Bundle\MindyBundle\Admin\AdminManager $adminManager */
         $response = $this->get('admin')->run($request, $bundle, $admin, $action);
+
         return $this->preventCache($response);
     }
 

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 13/11/2016
- * Time: 20:53
+ * Time: 20:53.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -24,6 +24,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
 
     /**
      * BaseAdmin constructor.
+     *
      * @param AdminTemplateFinder $templateFinder
      */
     public function __construct(AdminTemplateFinder $templateFinder)
@@ -42,6 +43,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     /**
      * @param $action
      * @param array $params
+     *
      * @return string
      */
     public function getAdminUrl($action, array $params = [])
@@ -49,13 +51,14 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
         return $this->generateUrl('admin_dispatch', array_merge($params, [
             'bundle' => $this->bundle->getName(),
             'admin' => $this->classNameShort(),
-            'action' => $action
+            'action' => $action,
         ]));
     }
 
     /**
      * @param $template
      * @param bool $throw
+     *
      * @return null|string
      */
     public function findTemplate($template, $throw = true)
@@ -64,13 +67,15 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
         if (null === $template && $throw) {
             throw new \RuntimeException(sprintf('Template %s not found', $template));
         }
+
         return $template;
     }
 
     /**
-     * @param string $view
-     * @param array $parameters
+     * @param string   $view
+     * @param array    $parameters
      * @param Response $response
+     *
      * @return string
      */
     public function render($view, array $parameters = array(), Response $response = null)
@@ -78,7 +83,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
         return parent::render($view, array_merge($parameters, [
             'admin' => $this,
             'bundle' => $this->bundle,
-            'adminMenu' => $this->container->get('admin.menu')->getMenu()
+            'adminMenu' => $this->container->get('admin.menu')->getMenu(),
         ]), $response);
     }
 }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 01/10/2016
- * Time: 18:53
+ * Time: 18:53.
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -15,8 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
- * Class AdminManager
- * @package Mindy\Admin
+ * Class AdminManager.
  */
 class AdminManager
 {
@@ -25,7 +24,8 @@ class AdminManager
 
     /**
      * AdminManager constructor.
-     * @param Kernel $kernel
+     *
+     * @param Kernel              $kernel
      * @param AdminTemplateFinder $templateFinder
      */
     public function __construct(Kernel $kernel, AdminTemplateFinder $templateFinder)
@@ -37,6 +37,7 @@ class AdminManager
     /**
      * @param string $bundleName
      * @param string $admin
+     *
      * @return AdminInterface
      */
     public function createAdmin(string $bundleName, string $admin) : AdminInterface
@@ -44,7 +45,7 @@ class AdminManager
         $bundles = $this->kernel->getBundles();
         if (!array_key_exists($bundleName, $bundles)) {
             throw new NotFoundHttpException(sprintf(
-                "Bundle not found: %", $bundleName
+                'Bundle not found: %', $bundleName
             ));
         }
 
@@ -54,27 +55,29 @@ class AdminManager
             throw new NotFoundHttpException($e->getMessage());
         }
 
-        $adminClass = sprintf("%s\\Admin\\%s", $bundle->getNamespace(), $admin);
+        $adminClass = sprintf('%s\\Admin\\%s', $bundle->getNamespace(), $admin);
         if (class_exists($adminClass)) {
             return $this->initiateAdmin($bundle, $adminClass);
         }
 
-        throw new NotFoundHttpException("Admin class not found");
+        throw new NotFoundHttpException('Admin class not found');
     }
 
     /**
      * @param Bundle $bundle
      * @param string $adminClass
+     *
      * @return Admin
      */
     protected function initiateAdmin(Bundle $bundle, string $adminClass)
     {
         /** @var Admin $instance */
         $instance = (new \ReflectionClass($adminClass))->newInstanceArgs([
-            $this->templateFinder
+            $this->templateFinder,
         ]);
         $instance->setBundle($bundle);
         $instance->setContainer($this->kernel->getContainer());
+
         return $instance;
     }
 
@@ -83,6 +86,7 @@ class AdminManager
      * @param $bundle
      * @param $admin
      * @param $action
+     *
      * @return Response
      */
     public function run(Request $request, $bundle, $admin, $action)
