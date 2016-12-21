@@ -8,8 +8,7 @@ use Mindy\QueryBuilder\Q\QAndNot;
 use Mindy\QueryBuilder\QueryBuilder;
 
 /**
- * Class TreeQuerySet
- * @package Mindy\Orm
+ * Class TreeQuerySet.
  */
 class TreeQuerySet extends QuerySet
 {
@@ -18,8 +17,10 @@ class TreeQuerySet extends QuerySet
     /**
      * TODO переписать логику на $includeSelf = true делать gte, lte иначе gt, lt соответственно
      * Named scope. Gets descendants for node.
+     *
      * @param bool $includeSelf
-     * @param int $depth the depth.
+     * @param int  $depth       the depth.
+     *
      * @return QuerySet
      */
     public function descendants($includeSelf = false, $depth = null)
@@ -27,18 +28,18 @@ class TreeQuerySet extends QuerySet
         $this->filter([
             'lft__gte' => $this->getModel()->lft,
             'rgt__lte' => $this->getModel()->rgt,
-            'root' => $this->getModel()->root
+            'root' => $this->getModel()->root,
         ])->order(['lft']);
 
         if ($includeSelf === false) {
             $this->exclude([
-                'pk' => $this->getModel()->pk
+                'pk' => $this->getModel()->pk,
             ]);
         }
 
         if ($depth !== null) {
             $this->filter([
-                'level__lte' => $this->getModel()->level + $depth
+                'level__lte' => $this->getModel()->level + $depth,
             ]);
         }
 
@@ -47,7 +48,9 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Named scope. Gets children for node (direct descendants only).
+     *
      * @param bool $includeSelf
+     *
      * @return QuerySet
      */
     public function children($includeSelf = false)
@@ -57,8 +60,10 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Named scope. Gets ancestors for node.
+     *
      * @param bool $includeSelf
-     * @param int $depth the depth.
+     * @param int  $depth       the depth.
+     *
      * @return QuerySet
      */
     public function ancestors($includeSelf = false, $depth = null)
@@ -66,12 +71,12 @@ class TreeQuerySet extends QuerySet
         $qs = $this->filter([
             'lft__lte' => $this->getModel()->lft,
             'rgt__gte' => $this->getModel()->rgt,
-            'root' => $this->getModel()->root
+            'root' => $this->getModel()->root,
         ])->order(['-lft']);
 
         if ($includeSelf === false) {
             $this->exclude([
-                'pk' => $this->getModel()->pk
+                'pk' => $this->getModel()->pk,
             ]);
         }
 
@@ -84,6 +89,7 @@ class TreeQuerySet extends QuerySet
 
     /**
      * @param bool $includeSelf
+     *
      * @return QuerySet
      */
     public function parents($includeSelf = false)
@@ -93,6 +99,7 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Named scope. Gets root node(s).
+     *
      * @return QuerySet
      */
     public function roots()
@@ -102,6 +109,7 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Named scope. Gets parent of node.
+     *
      * @return QuerySet
      */
     public function parent()
@@ -110,12 +118,13 @@ class TreeQuerySet extends QuerySet
             'lft__lt' => $this->getModel()->lft,
             'rgt__gt' => $this->getModel()->rgt,
             'level' => $this->getModel()->level - 1,
-            'root' => $this->getModel()->root
+            'root' => $this->getModel()->root,
         ]);
     }
 
     /**
      * Named scope. Gets previous sibling of node.
+     *
      * @return QuerySet
      */
     public function prev()
@@ -128,6 +137,7 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Named scope. Gets next sibling of node.
+     *
      * @return QuerySet
      */
     public function next()
@@ -151,12 +161,14 @@ class TreeQuerySet extends QuerySet
         $this->asArray(true);
 
         $this->treeKey = $key;
+
         return $this->order(['root', 'lft']);
     }
 
     public function all()
     {
         $data = parent::all();
+
         return $this->treeKey ? $this->toHierarchy($data) : $data;
     }
 
@@ -166,7 +178,7 @@ class TreeQuerySet extends QuerySet
      * SELECT t.id FROM tbl t WHERE
      * t.parent_id IS NOT NULL AND t.root NOT IN (
      *      SELECT r.id FROM tbl r WHERE r.parent_id IS NULL
-     * )
+     * ).
      *
      * Example: root1[1,4], nested1[2,3] and next delete root1 via QuerySet
      * like this: Model::objects()->filter(['name' => 'root1'])->delete();
@@ -182,7 +194,7 @@ class TreeQuerySet extends QuerySet
         $query = clone $this->getQueryBuilder();
         $query->clear()->setTypeSelect()->select(['id'])->from($table)->where([
             'parent_id__isnull' => true,
-            new QAndNot(['root__in' => $subQuery])
+            new QAndNot(['root__in' => $subQuery]),
         ]);
 
         $ids = $db->query($query->toSQL())->fetchColumn();
@@ -197,7 +209,7 @@ class TreeQuerySet extends QuerySet
      * Find broken branch with deleted parent
      * sql:
      * SELECT t.id, t.lft, t.rgt, t.root FROM tbl t
-     * WHERE t.parent_id NOT IN (SELECT r.id FROM tbl r)
+     * WHERE t.parent_id NOT IN (SELECT r.id FROM tbl r).
      *
      * Example: root1[1,6], nested1[2,5], nested2[3,4] and next delete nested1 via QuerySet
      * like this: Model::objects()->filter(['name' => 'nested1'])->delete();
@@ -219,7 +231,7 @@ class TreeQuerySet extends QuerySet
 
         $query = clone $this->getQueryBuilder();
         $query->clear()->setTypeSelect()->select(['id', 'lft', 'rgt', 'root'])->from($table)->where([
-            new QAndNot(['parent_id__in' => $subQuery])
+            new QAndNot(['parent_id__in' => $subQuery]),
         ]);
 
         $rows = $db->query($query->toSQL())->fetchAll();
@@ -228,7 +240,7 @@ class TreeQuerySet extends QuerySet
             $deleteQuery->clear()->setTypeDelete()->from($table)->where([
                 'lft__gte' => $row['lft'],
                 'rgt__lte' => $row['rgt'],
-                'root' => $row['root']
+                'root' => $row['root'],
             ]);
             $db->query($deleteQuery->toSQL())->execute();
         }
@@ -251,16 +263,16 @@ class TreeQuerySet extends QuerySet
      */
     protected function rebuildLftRgt(Connection $db, $table)
     {
-        $subQuery = "SELECT [[tt]].[[parent_id]] FROM " . $table . " AS [[tt]] WHERE [[tt]].[[parent_id]]=[[t]].[[id]]";
-        $where = 'NOT [[lft]]=([[rgt]]-1) AND NOT [[id]] IN (' . $subQuery . ')';
-        $sql = "SELECT [[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]] FROM " . $table . " AS [[t]] WHERE " . $where . " ORDER BY [[rgt]] ASC";
+        $subQuery = 'SELECT [[tt]].[[parent_id]] FROM '.$table.' AS [[tt]] WHERE [[tt]].[[parent_id]]=[[t]].[[id]]';
+        $where = 'NOT [[lft]]=([[rgt]]-1) AND NOT [[id]] IN ('.$subQuery.')';
+        $sql = 'SELECT [[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]] FROM '.$table.' AS [[t]] WHERE '.$where.' ORDER BY [[rgt]] ASC';
         $adapter = QueryBuilder::getInstance($db)->getAdapter();
 
         $rows = $db->query($adapter->quoteSql($sql))->fetchAll();
         foreach ($rows as $row) {
-            $sql = 'UPDATE ' . $table . ' SET [[lft]]=[[lft]]-' . $row['move'] . ', [[rgt]]=[[rgt]]-' . $row['move'] . ' WHERE [[root]]=' . $row['root'] . ' AND [[lft]]>' . $row['rgt'];
+            $sql = 'UPDATE '.$table.' SET [[lft]]=[[lft]]-'.$row['move'].', [[rgt]]=[[rgt]]-'.$row['move'].' WHERE [[root]]='.$row['root'].' AND [[lft]]>'.$row['rgt'];
             $db->query($adapter->quoteSql($sql))->execute();
-            $sql = 'UPDATE ' . $table . ' SET [[rgt]]=[[rgt]]-' . $row['move'] . ' WHERE [[root]]=' . $row['root'] . ' AND [[lft]]<[[rgt]] AND [[rgt]]>=' . $row['rgt'];
+            $sql = 'UPDATE '.$table.' SET [[rgt]]=[[rgt]]-'.$row['move'].' WHERE [[root]]='.$row['root'].' AND [[lft]]<[[rgt]] AND [[rgt]]>='.$row['rgt'];
             $db->query($adapter->quoteSql($sql))->execute();
         }
     }
@@ -283,28 +295,31 @@ class TreeQuerySet extends QuerySet
 
     /**
      * Пересчитываем дерево после удаления моделей через
-     * $modelClass::objects()->filter(['pk__in' => $data])->delete();
+     * $modelClass::objects()->filter(['pk__in' => $data])->delete();.
+     *
      * @return int
      */
     public function delete()
     {
         $deleted = parent::delete();
         $this->findAndFixCorruptedTree();
+
         return $deleted;
     }
 
     /**
-     * @param int $key .
-     * @param int $delta .
-     * @param int $root .
-     * @param array $data .
+     * @param int   $key   .
+     * @param int   $delta .
+     * @param int   $root  .
+     * @param array $data  .
+     *
      * @return array
      */
     private function shiftLeftRight($key, $delta, $root, $data)
     {
         foreach (['lft', 'rgt'] as $attribute) {
-            $this->filter([$attribute . '__gte' => $key, 'root' => $root])
-                ->update([$attribute => new Expression($attribute . sprintf('%+d', $delta))]);
+            $this->filter([$attribute.'__gte' => $key, 'root' => $root])
+                ->update([$attribute => new Expression($attribute.sprintf('%+d', $delta))]);
 
             foreach ($data as &$item) {
                 if ($item[$attribute] >= $key) {
@@ -312,12 +327,15 @@ class TreeQuerySet extends QuerySet
                 }
             }
         }
+
         return $data;
     }
 
     /**
-     * Make hierarchy array by level
+     * Make hierarchy array by level.
+     *
      * @param $collection Model[]
+     *
      * @return array
      */
     public function toHierarchy($collection)
@@ -334,7 +352,7 @@ class TreeQuerySet extends QuerySet
                 // Check if we're dealing with different levels
                 while ($l > 0 && $stack[$l - 1]['level'] >= $item['level']) {
                     array_pop($stack);
-                    $l--;
+                    --$l;
                 }
                 // Stack is empty (we are inspecting the root)
                 if ($l == 0) {
@@ -350,6 +368,7 @@ class TreeQuerySet extends QuerySet
                 }
             }
         }
+
         return $trees;
     }
 }

@@ -1,8 +1,10 @@
 <?php
 /**
  * All rights reserved.
+ *
  * @author Falaleev Maxim
  * @email max@studio107.ru
+ *
  * @version 1.0
  * @company Studio107
  * @site http://studio107.ru
@@ -17,7 +19,7 @@ abstract class TreeModelTest extends OrmDatabaseTestCase
 {
     protected function getModels()
     {
-        return [new NestedModel];
+        return [new NestedModel()];
     }
 
     public function testSaveNewRoot()
@@ -328,15 +330,15 @@ abstract class TreeModelTest extends OrmDatabaseTestCase
 
     public function testInit()
     {
-        $model = new NestedModel;
+        $model = new NestedModel();
         $fields = $model->getMeta()->getFields();
-        $this->assertTrue(array_key_exists("id", $fields));
-        $this->assertTrue(array_key_exists("name", $fields));
-        $this->assertTrue(array_key_exists("lft", $fields));
-        $this->assertTrue(array_key_exists("rgt", $fields));
-        $this->assertTrue(array_key_exists("level", $fields));
-        $this->assertTrue(array_key_exists("root", $fields));
-        $this->assertTrue(array_key_exists("parent", $fields));
+        $this->assertTrue(array_key_exists('id', $fields));
+        $this->assertTrue(array_key_exists('name', $fields));
+        $this->assertTrue(array_key_exists('lft', $fields));
+        $this->assertTrue(array_key_exists('rgt', $fields));
+        $this->assertTrue(array_key_exists('level', $fields));
+        $this->assertTrue(array_key_exists('root', $fields));
+        $this->assertTrue(array_key_exists('parent', $fields));
         $this->assertEquals(7, count($fields));
     }
 
@@ -347,7 +349,7 @@ abstract class TreeModelTest extends OrmDatabaseTestCase
             ['name' => '2'],
             ['name' => '3', 'parent' => 2],
             ['name' => '4', 'parent' => 2],
-            ['name' => '5', 'parent' => 4]
+            ['name' => '5', 'parent' => 4],
         ];
         foreach ($attrs as $item) {
             $this->assertTrue((new NestedModel($item))->save());
@@ -359,14 +361,14 @@ abstract class TreeModelTest extends OrmDatabaseTestCase
             ['id' => '2', 'parent_id' => null, 'lft' => '1', 'rgt' => '8', 'level' => '1', 'root' => '2', 'name' => '2', 'items' => [
                 ['id' => '3', 'parent_id' => '2', 'lft' => '2', 'rgt' => '3', 'level' => '2', 'root' => '2', 'name' => '3', 'items' => []],
                 ['id' => '4', 'parent_id' => '2', 'lft' => '4', 'rgt' => '7', 'level' => '2', 'root' => '2', 'name' => '4', 'items' => [
-                    ['id' => '5', 'parent_id' => '4', 'lft' => '5', 'rgt' => '6', 'level' => '3', 'root' => '2', 'name' => '5', 'items' => []]
-                ]]
-            ]]
+                    ['id' => '5', 'parent_id' => '4', 'lft' => '5', 'rgt' => '6', 'level' => '3', 'root' => '2', 'name' => '5', 'items' => []],
+                ]],
+            ]],
         ], $data);
     }
 
     /**
-     * https://github.com/studio107/Mindy_Orm/issues/50
+     * https://github.com/studio107/Mindy_Orm/issues/50.
      */
     public function testFixIsLeaf()
     {
@@ -424,7 +426,7 @@ abstract class TreeModelTest extends OrmDatabaseTestCase
 
     public function testFixIsLeafAutoRebuild()
     {
-        /** @var \Mindy\Orm\TreeModel $root1 $root2 $nested $nested2 */
+        /* @var \Mindy\Orm\TreeModel $root1 $root2 $nested $nested2 */
         $this->buildTree();
 
         // root1 isleaf == true

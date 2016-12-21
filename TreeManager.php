@@ -3,8 +3,7 @@
 namespace Mindy\Orm;
 
 /**
- * Class TreeManager
- * @package Mindy\Orm
+ * Class TreeManager.
  */
 class TreeManager extends Manager
 {
@@ -16,105 +15,127 @@ class TreeManager extends Manager
         if ($this->qs === null) {
             $this->qs = new TreeQuerySet([
                 'model' => $this->getModel(),
-                'modelClass' => get_class($this->getModel())
+                'modelClass' => get_class($this->getModel()),
             ]);
             $this->qs->order(['lft']);
         }
+
         return $this->qs;
     }
 
     /**
      * Named scope. Gets descendants for node.
+     *
      * @param bool $includeSelf
-     * @param int $depth the depth.
+     * @param int  $depth       the depth.
+     *
      * @return $this
      */
     public function descendants($includeSelf = false, $depth = null)
     {
         $this->getQuerySet()->descendants($includeSelf, $depth);
+
         return $this;
     }
 
     /**
      * Named scope. Gets children for node (direct descendants only).
+     *
      * @param bool $includeSelf
+     *
      * @return $this
      */
     public function children($includeSelf = false)
     {
         $this->getQuerySet()->children($includeSelf);
+
         return $this;
     }
 
     /**
      * Named scope. Gets ancestors for node.
+     *
      * @param bool $includeSelf
-     * @param int $depth the depth.
+     * @param int  $depth       the depth.
+     *
      * @return $this
      */
     public function ancestors($includeSelf = false, $depth = null)
     {
         $this->getQuerySet()->ancestors($includeSelf, $depth);
+
         return $this;
     }
 
     /**
      * @param bool $includeSelf
+     *
      * @return $this
      */
     public function parents($includeSelf = false)
     {
         $this->getQuerySet()->parents($includeSelf);
+
         return $this;
     }
 
     /**
      * Named scope. Gets root node(s).
+     *
      * @return $this
      */
     public function roots()
     {
         $this->getQuerySet()->roots();
+
         return $this;
     }
 
     /**
      * Named scope. Gets parent of node.
+     *
      * @return $this
      */
     public function parent()
     {
         $this->getQuerySet()->parent();
+
         return $this;
     }
 
     /**
      * Named scope. Gets previous sibling of node.
+     *
      * @return $this
      */
     public function prev()
     {
         $this->getQuerySet()->prev();
+
         return $this;
     }
 
     /**
      * Named scope. Gets next sibling of node.
+     *
      * @return $this
      */
     public function next()
     {
         $this->getQuerySet()->next();
+
         return $this;
     }
 
     /**
      * @param string $key
+     *
      * @return \Mindy\Orm\TreeManager
      */
     public function asTree($key = 'items')
     {
         $this->getQuerySet()->asTree($key);
+
         return $this;
     }
 
@@ -123,9 +144,9 @@ class TreeManager extends Manager
         $i = 0;
         $skip = [];
         while ($this->filter(['lft__isnull' => true])->count() != 0) {
-            $i++;
+            ++$i;
             $fixed = 0;
-            echo "Iteration: " . $i . PHP_EOL;
+            echo 'Iteration: '.$i.PHP_EOL;
 
             $clone = clone $this;
             $models = $clone
@@ -138,12 +159,12 @@ class TreeManager extends Manager
                 $model->lft = $model->rgt = $model->level = $model->root = null;
                 if ($model->saveRebuild()) {
                     $skip[] = $model->pk;
-                    $fixed++;
+                    ++$fixed;
                 }
                 echo '.';
             }
             echo PHP_EOL;
-            echo "Fixed: " . $fixed . PHP_EOL;
+            echo 'Fixed: '.$fixed.PHP_EOL;
         }
     }
 }
