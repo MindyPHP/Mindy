@@ -1,11 +1,10 @@
 <?php
 /**
- *
- *
  * All rights reserved.
  *
  * @author Falaleev Maxim
  * @email max@studio107.ru
+ *
  * @version 1.0
  * @company Studio107
  * @site http://studio107.ru
@@ -30,7 +29,9 @@ class JsonFieldTest extends \PHPUnit_Framework_TestCase
     public function testValidation()
     {
         $field = new JsonField();
-        $field->setValue(new class {});
+        $field->setValue(new class()
+        {
+        });
         $this->assertFalse($field->isValid());
     }
 }

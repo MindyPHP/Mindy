@@ -8,9 +8,10 @@ use Mindy\Orm\Fields\TreeForeignField;
 use Mindy\QueryBuilder\Expression;
 
 /**
- * Class TreeModel
+ * Class TreeModel.
+ *
  * @method static \Mindy\Orm\TreeManager objects($instance = null)
- * @package Mindy\Orm
+ *
  * @property TreeModel|null $parent
  * @property int|null $parent_id
  * @property int $root
@@ -30,32 +31,33 @@ abstract class TreeModel extends Model
             ],
             'lft' => [
                 'class' => IntField::class,
-                'editable' => false
+                'editable' => false,
             ],
             'rgt' => [
                 'class' => IntField::class,
-                'editable' => false
+                'editable' => false,
             ],
             'level' => [
                 'class' => IntField::class,
-                'editable' => false
+                'editable' => false,
             ],
             'root' => [
                 'class' => IntField::class,
-                'editable' => false
+                'editable' => false,
             ],
         ];
     }
 
     /**
      * @param null $instance
+     *
      * @return TreeManager
      */
     public static function objectsManager($instance = null)
     {
         if (!$instance) {
             $className = get_called_class();
-            $instance = new $className;
+            $instance = new $className();
         }
 
         if (class_exists($managerClass = self::getManagerClass())) {
@@ -67,7 +69,9 @@ abstract class TreeModel extends Model
 
     /**
      * @DEPRECATED
+     *
      * @param null $instance
+     *
      * @return TreeManager
      */
     public static function treeManager($instance = null)
@@ -77,7 +81,8 @@ abstract class TreeModel extends Model
 
     /**
      * Determines if node is leaf.
-     * @return boolean whether the node is leaf.
+     *
+     * @return bool whether the node is leaf.
      */
     public function getIsLeaf()
     {
@@ -86,7 +91,8 @@ abstract class TreeModel extends Model
 
     /**
      * Determines if node is root.
-     * @return boolean whether the node is root.
+     *
+     * @return bool whether the node is root.
      */
     public function getIsRoot()
     {
@@ -100,9 +106,12 @@ abstract class TreeModel extends Model
 
     /**
      * Create root node if multiple-root tree mode. Update node if it's not new.
+     *
      * @param array $fields
+     *
      * @throws \Exception
-     * @return boolean whether the saving succeeds.
+     *
+     * @return bool whether the saving succeeds.
      */
     public function save(array $fields = [])
     {
@@ -112,15 +121,14 @@ abstract class TreeModel extends Model
             } else {
                 $this->makeRoot();
             }
+
             return parent::save($fields);
-
         } else {
-
             if (in_array('parent_id', $this->getDirtyAttributes())) {
                 if ($saved = parent::save($fields)) {
                     if ($this->parent) {
                         $this->moveAsLast($this->parent);
-                    } else if ($this->isRoot() == false) {
+                    } elseif ($this->isRoot() == false) {
                         $this->moveAsRoot();
                     }
                     /** @var array $parent */
@@ -129,6 +137,7 @@ abstract class TreeModel extends Model
                         $this->setAttributes($parent);
                         $this->setIsNewRecord(false);
                     }
+
                     return $saved;
                 }
 
@@ -148,8 +157,9 @@ abstract class TreeModel extends Model
             $this->rgt = 2;
             $this->level = 0;
             $this->root = $this->pk;
+
             return parent::save($fields);
-        } else if ($this->parent->lft) {
+        } elseif ($this->parent->lft) {
             $target = $this->parent;
             $key = $target->rgt;
 
@@ -162,13 +172,16 @@ abstract class TreeModel extends Model
 
             return parent::save($fields);
         }
+
         return false;
     }
 
     /**
      * Deletes node and it's descendants.
+     *
      * @throws \Exception.
-     * @return boolean whether the deletion is successful.
+     *
+     * @return bool whether the deletion is successful.
      */
     public function delete()
     {
@@ -178,16 +191,19 @@ abstract class TreeModel extends Model
             $result = $this->objects()->filter([
                 'lft__gte' => $this->lft,
                 'rgt__lte' => $this->rgt,
-                'root' => $this->root
+                'root' => $this->root,
             ])->delete();
         }
-        return (bool)$result;
+
+        return (bool) $result;
     }
 
     /**
      * Prepends node to target as first child.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the prepending succeeds.
+     *
+     * @return bool whether the prepending succeeds.
      */
     public function prependTo(TreeModel $target)
     {
@@ -196,8 +212,10 @@ abstract class TreeModel extends Model
 
     /**
      * Prepends target to node as first child.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the prepending succeeds.
+     *
+     * @return bool whether the prepending succeeds.
      */
     public function prepend(TreeModel $target)
     {
@@ -206,18 +224,22 @@ abstract class TreeModel extends Model
 
     /**
      * Appends node to target as last child.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the appending succeeds.
+     *
+     * @return bool whether the appending succeeds.
      */
     public function appendTo(TreeModel $target)
     {
-        return $this->addNode($target, (int)$target->rgt, 1);
+        return $this->addNode($target, (int) $target->rgt, 1);
     }
 
     /**
      * Appends target to node as last child.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the appending succeeds.
+     *
+     * @return bool whether the appending succeeds.
      */
     public function append(TreeModel $target)
     {
@@ -226,9 +248,12 @@ abstract class TreeModel extends Model
 
     /**
      * Inserts node as previous sibling of target.
+     *
      * @param TreeModel $target the target.
+     *
      * @throws \Exception
-     * @return boolean whether the inserting succeeds.
+     *
+     * @return bool whether the inserting succeeds.
      */
     public function insertBefore(TreeModel $target)
     {
@@ -237,8 +262,10 @@ abstract class TreeModel extends Model
 
     /**
      * Inserts node as next sibling of target.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the inserting succeeds.
+     *
+     * @return bool whether the inserting succeeds.
      */
     public function insertAfter(TreeModel $target)
     {
@@ -247,8 +274,10 @@ abstract class TreeModel extends Model
 
     /**
      * Move node as previous sibling of target.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the moving succeeds.
+     *
+     * @return bool whether the moving succeeds.
      */
     public function moveBefore(TreeModel $target)
     {
@@ -257,8 +286,10 @@ abstract class TreeModel extends Model
 
     /**
      * Move node as next sibling of target.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the moving succeeds.
+     *
+     * @return bool whether the moving succeeds.
      */
     public function moveAfter(TreeModel $target)
     {
@@ -267,8 +298,10 @@ abstract class TreeModel extends Model
 
     /**
      * Move node as first child of target.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the moving succeeds.
+     *
+     * @return bool whether the moving succeeds.
      */
     public function moveAsFirst(TreeModel $target)
     {
@@ -277,8 +310,10 @@ abstract class TreeModel extends Model
 
     /**
      * Move node as last child of target.
+     *
      * @param TreeModel $target the target.
-     * @return boolean whether the moving succeeds.
+     *
+     * @return bool whether the moving succeeds.
      */
     public function moveAsLast(TreeModel $target)
     {
@@ -287,9 +322,11 @@ abstract class TreeModel extends Model
 
     /**
      * Move node as new root.
+     *
      * @throws Exception.
      * @throws \Exception.
-     * @return boolean whether the moving succeeds.
+     *
+     * @return bool whether the moving succeeds.
      */
     public function moveAsRoot()
     {
@@ -313,13 +350,13 @@ abstract class TreeModel extends Model
             ->filter([
                 'lft__gte' => $left,
                 'rgt__lte' => $right,
-                'root' => $this->root
+                'root' => $this->root,
             ])
             ->update([
-                'lft' => new Expression('lft' . sprintf('%+d', $delta)),
-                'rgt' => new Expression('rgt' . sprintf('%+d', $delta)),
-                'level' => new Expression('level' . sprintf('%+d', $levelDelta)),
-                'root' => $this->getMaxRoot()
+                'lft' => new Expression('lft'.sprintf('%+d', $delta)),
+                'rgt' => new Expression('rgt'.sprintf('%+d', $delta)),
+                'level' => new Expression('level'.sprintf('%+d', $levelDelta)),
+                'root' => $this->getMaxRoot(),
             ]);
         $this->shiftLeftRight($right + 1, $left - $right - 1);
 
@@ -328,8 +365,10 @@ abstract class TreeModel extends Model
 
     /**
      * Determines if node is descendant of subject node.
+     *
      * @param TreeModel $subj the subject node.
-     * @return boolean whether the node is descendant of subject node.
+     *
+     * @return bool whether the node is descendant of subject node.
      */
     public function isDescendantOf($subj)
     {
@@ -338,7 +377,8 @@ abstract class TreeModel extends Model
 
     /**
      * Determines if node is leaf.
-     * @return boolean whether the node is leaf.
+     *
+     * @return bool whether the node is leaf.
      */
     public function isLeaf()
     {
@@ -347,7 +387,8 @@ abstract class TreeModel extends Model
 
     /**
      * Determines if node is root.
-     * @return boolean whether the node is root.
+     *
+     * @return bool whether the node is root.
      */
     public function isRoot()
     {
@@ -356,7 +397,8 @@ abstract class TreeModel extends Model
 
     /**
      * Returns if the current node is deleted.
-     * @return boolean whether the node is deleted.
+     *
+     * @return bool whether the node is deleted.
      */
     public function getIsDeletedRecord()
     {
@@ -365,7 +407,8 @@ abstract class TreeModel extends Model
 
     /**
      * Sets if the current node is deleted.
-     * @param boolean $value whether the node is deleted.
+     *
+     * @param bool $value whether the node is deleted.
      */
     public function setIsDeletedRecord($value)
     {
@@ -382,20 +425,22 @@ abstract class TreeModel extends Model
 
         foreach (['lft', 'rgt'] as $attribute) {
             $qs = $this->objects()->filter(array_merge($conditions, [
-                $attribute . '__gte' => $value
+                $attribute.'__gte' => $value,
             ]));
 
             $qs->update([
-                $attribute => new Expression('[[' . $attribute . ']]' . sprintf('%+d', $delta))
+                $attribute => new Expression('[['.$attribute.']]'.sprintf('%+d', $delta)),
             ]);
         }
     }
 
     /**
      * @param TreeModel $target
-     * @param int $rgt
-     * @param int $levelUp
+     * @param int       $rgt
+     * @param int       $levelUp
+     *
      * @throws \Exception
+     *
      * @return $this
      */
     private function addNode(TreeModel $target, $rgt, $levelUp)
@@ -427,7 +472,7 @@ abstract class TreeModel extends Model
         $this->setAttributes([
             'lft' => $rgt,
             'rgt' => $rgt + 1,
-            'level' => $target->level + $levelUp
+            'level' => $target->level + $levelUp,
         ]);
 
         return $this;
@@ -440,6 +485,7 @@ abstract class TreeModel extends Model
 
     /**
      * @throws \Exception.
+     *
      * @return $this.
      */
     private function makeRoot()
@@ -448,15 +494,18 @@ abstract class TreeModel extends Model
         $this->rgt = 2;
         $this->level = 1;
         $this->root = $this->getMaxRoot();
+
         return $this;
     }
 
     /**
-     * @param TreeModel $target .
-     * @param int $key .
-     * @param int $levelUp .
+     * @param TreeModel $target  .
+     * @param int       $key     .
+     * @param int       $levelUp .
+     *
      * @throws Exception.
      * @throws \Exception.
+     *
      * @return boolean.
      */
     private function moveNode(TreeModel $target, $key, $levelUp)
@@ -492,22 +541,21 @@ abstract class TreeModel extends Model
         if ($this->root !== $target->root) {
             foreach (['lft', 'rgt'] as $attribute) {
                 $this->objects()
-                    ->filter([$attribute . '__gte' => $key, 'root' => $target->root])
-                    ->update([$attribute => new Expression($attribute . sprintf('%+d', $right - $left + 1))]);
+                    ->filter([$attribute.'__gte' => $key, 'root' => $target->root])
+                    ->update([$attribute => new Expression($attribute.sprintf('%+d', $right - $left + 1))]);
             }
 
             $delta = $key - $left;
             $this->objects()
                 ->filter(['lft__gte' => $left, 'rgt__lte' => $right, 'root' => $this->root])
                 ->update([
-                    'lft' => new Expression('lft' . sprintf('%+d', $delta)),
-                    'rgt' => new Expression('rgt' . sprintf('%+d', $delta)),
-                    'level' => new Expression('level' . sprintf('%+d', $levelDelta)),
+                    'lft' => new Expression('lft'.sprintf('%+d', $delta)),
+                    'rgt' => new Expression('rgt'.sprintf('%+d', $delta)),
+                    'level' => new Expression('level'.sprintf('%+d', $levelDelta)),
                     'root' => $target->root,
                 ]);
 
             $this->shiftLeftRight($right + 1, $left - $right - 1);
-
         } else {
             $delta = $right - $left + 1;
             $this->shiftLeftRight($key, $delta);
@@ -520,17 +568,18 @@ abstract class TreeModel extends Model
             $this->objects()
                 ->filter(['lft__gte' => $left, 'rgt__lte' => $right, 'root' => $this->root])
                 ->update([
-                    'level' => new Expression('level' . sprintf('%+d', $levelDelta))
+                    'level' => new Expression('level'.sprintf('%+d', $levelDelta)),
                 ]);
 
             foreach (['lft', 'rgt'] as $attribute) {
                 $this->objects()
-                    ->filter([$attribute . '__gte' => $left, $attribute . '__lte' => $right, 'root' => $this->root])
-                    ->update([$attribute => new Expression($attribute . sprintf('%+d', $key - $left))]);
+                    ->filter([$attribute.'__gte' => $left, $attribute.'__lte' => $right, 'root' => $this->root])
+                    ->update([$attribute => new Expression($attribute.sprintf('%+d', $key - $left))]);
             }
 
             $this->shiftLeftRight($right + 1, -$delta);
         }
+
         return true;
     }
 }

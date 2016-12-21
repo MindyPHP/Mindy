@@ -5,8 +5,7 @@ namespace Mindy\Orm\Fields;
 use Cocur\Slugify\Slugify;
 
 /**
- * Class UniqueUrl
- * @package Mindy\Orm
+ * Class UniqueUrl.
  */
 trait SlugifyTrait
 {
@@ -14,6 +13,7 @@ trait SlugifyTrait
 
     /**
      * @param $source
+     *
      * @return string
      */
     protected function createSlug($source)
@@ -21,13 +21,15 @@ trait SlugifyTrait
         if ($this->slugify === null) {
             $this->slugify = new Slugify();
         }
+
         return $this->slugify->slugify($source);
     }
 
     /**
      * @param $url
-     * @param int $count
+     * @param int  $count
      * @param null $pk
+     *
      * @return string
      */
     public function uniqueUrl($url, $count = 0, $pk = null)
@@ -36,7 +38,7 @@ trait SlugifyTrait
         $model = $this->getModel();
         $newUrl = $url;
         if ($count) {
-            $newUrl .= '-' . $count;
+            $newUrl .= '-'.$count;
         }
 
         $qs = call_user_func([$model, 'objects'])
@@ -45,10 +47,11 @@ trait SlugifyTrait
             $qs = $qs->exclude(['pk' => $pk]);
         }
         if ($qs->count() > 0) {
-            $count++;
+            ++$count;
+
             return $this->uniqueUrl($url, $count, $pk);
         }
+
         return $newUrl;
     }
-
-} 
+}

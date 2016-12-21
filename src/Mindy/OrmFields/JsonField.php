@@ -8,8 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * Class JsonField
- * @package Mindy\Orm
+ * Class JsonField.
  */
 class JsonField extends TextField
 {
@@ -32,13 +31,14 @@ class JsonField extends TextField
                 ) {
                     $context->addViolation('Not json serialize object: %type%', ['%type%' => gettype($value)]);
                 }
-            })
+            }),
         ]);
     }
 
     /**
      * @param $value
      * @param AbstractPlatform $platform
+     *
      * @return mixed
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
@@ -53,6 +53,7 @@ class JsonField extends TextField
     /**
      * @param $value
      * @param AbstractPlatform $platform
+     *
      * @return mixed
      */
     public function convertToPHPValueSql($value, AbstractPlatform $platform)
@@ -62,7 +63,7 @@ class JsonField extends TextField
         if (is_object($value)) {
             if (method_exists($value, 'toJson')) {
                 $value = $value->toJson();
-            } else if (method_exists($value, 'toArray')) {
+            } elseif (method_exists($value, 'toArray')) {
                 $value = json_encode($value->toArray(), $opts);
             } else {
                 $value = json_encode($value, $opts);

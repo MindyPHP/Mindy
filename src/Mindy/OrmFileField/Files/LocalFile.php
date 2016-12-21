@@ -3,10 +3,8 @@
 namespace Mindy\Orm\Files;
 
 /**
- * Class LocalFile
- * @package Mindy\Storage
+ * Class LocalFile.
  */
 class LocalFile extends File
 {
-    
 }

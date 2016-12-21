@@ -14,8 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class FileField
- * @package Mindy\Orm
+ * Class FileField.
  */
 class FileField extends CharField
 {
@@ -27,13 +26,15 @@ class FileField extends CharField
      * %H - Current hour
      * %i - Current minutes
      * %s - Current seconds
-     * %O - Current object class (lower-based)
+     * %O - Current object class (lower-based).
+     *
      * @var string|callable|\Closure
      */
     public $uploadTo = '%M/%O/%Y-%m-%d/';
 
     /**
-     * List of allowed file types
+     * List of allowed file types.
+     *
      * @var array|null
      */
     public $mimeTypes = [];
@@ -66,6 +67,7 @@ class FileField extends CharField
         if ($this->nameHasher === null) {
             $this->nameHasher = $this->getDefaultNameHasher();
         }
+
         return $this->nameHasher;
     }
 
@@ -76,7 +78,8 @@ class FileField extends CharField
     {
         return function ($filePath) {
             $meta = $this->getFilesystem()->getMetadata($filePath);
-            return md5($meta['filename']) . '.' . $meta['extension'];
+
+            return md5($meta['filename']).'.'.$meta['extension'];
         };
     }
 
@@ -94,7 +97,7 @@ class FileField extends CharField
                 new Assert\File([
                     'maxSize' => $this->maxSize,
                     'mimeTypes' => $this->mimeTypes,
-                ])
+                ]),
             ];
         }
 
@@ -128,8 +131,10 @@ class FileField extends CharField
         if ($this->getFilesystem()->has($this->value)) {
             /** @var \League\Flysystem\File $file */
             $file = $this->getFilesystem()->get($this->value);
+
             return $file->getSize();
         }
+
         return 0;
     }
 
@@ -157,7 +162,6 @@ class FileField extends CharField
             isset($value['name']) &&
             isset($value['type'])
         ) {
-
             if ($value['error'] === UPLOAD_ERR_NO_FILE) {
                 $value = null;
             } else {
@@ -165,25 +169,24 @@ class FileField extends CharField
                     $value['tmp_name'],
                     $value['name'],
                     $value['type'],
-                    (int)$value['size'],
-                    (int)$value['error']
+                    (int) $value['size'],
+                    (int) $value['error']
                 );
             }
-
-        } else if (is_string($value)) {
+        } elseif (is_string($value)) {
             if (strpos($value, 'data:') !== false) {
                 list($type, $value) = explode(';', $value);
                 list(, $value) = explode(',', $value);
                 $value = base64_decode($value);
                 $value = new ResourceFile($value, null, null, $type);
-            } else if (realpath($value)) {
+            } elseif (realpath($value)) {
                 $value = new LocalFile(realpath($value));
             }
         }
 
         if ($value === null) {
             $this->value = null;
-        } else if ($value instanceof File || $value instanceof UploadedFile) {
+        } elseif ($value instanceof File || $value instanceof UploadedFile) {
             $this->value = $value;
         }
     }
@@ -205,6 +208,7 @@ class FileField extends CharField
             return $this->uploadTo->__invoke();
         } else {
             $model = $this->getModel();
+
             return strtr($this->uploadTo, [
                 '%Y' => date('Y'),
                 '%m' => date('m'),
@@ -222,7 +226,7 @@ class FileField extends CharField
     {
         if ($value instanceof UploadedFile) {
             $value = $this->saveUploadedFile($value);
-        } else if ($value instanceof File) {
+        } elseif ($value instanceof File) {
             $value = $this->saveFile($value);
         }
 
@@ -245,23 +249,23 @@ class FileField extends CharField
 
     public function saveUploadedFile(UploadedFile $file)
     {
-        $path = $this->getUploadTo() . DIRECTORY_SEPARATOR;
+        $path = $this->getUploadTo().DIRECTORY_SEPARATOR;
 
         $fs = $this->getFilesystem();
-        if ($fs->has($path . DIRECTORY_SEPARATOR . $file->getClientOriginalName())) {
-            $fs->delete($path . DIRECTORY_SEPARATOR . $file->getClientOriginalName());
+        if ($fs->has($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName())) {
+            $fs->delete($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName());
         }
-        if (!$fs->write($path . DIRECTORY_SEPARATOR . $file->getClientOriginalName(), file_get_contents($file->getRealPath()))) {
+        if (!$fs->write($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName(), file_get_contents($file->getRealPath()))) {
             throw new Exception('Failed to save file');
         }
 
-        return $path . DIRECTORY_SEPARATOR . $file->getClientOriginalName();
+        return $path.DIRECTORY_SEPARATOR.$file->getClientOriginalName();
     }
 
     public function saveFile(File $file)
     {
         $contents = file_get_contents($file->getRealPath());
-        $value = $this->getUploadTo() . DIRECTORY_SEPARATOR . $file->getFilename();
+        $value = $this->getUploadTo().DIRECTORY_SEPARATOR.$file->getFilename();
         $fs = $this->getFilesystem();
         if ($fs->has($value)) {
             $fs->delete($value);
@@ -284,6 +288,7 @@ class FileField extends CharField
         if (null === $this->filesystem) {
             return OrmFile::getFilesystem();
         }
+
         return $this->filesystem;
     }
 }

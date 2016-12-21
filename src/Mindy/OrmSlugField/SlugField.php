@@ -5,8 +5,7 @@ namespace Mindy\Orm\Fields;
 use Mindy\Orm\ModelInterface;
 
 /**
- * Class SlugField
- * @package Mindy\Orm
+ * Class SlugField.
  */
 class SlugField extends AbstractSlugField
 {

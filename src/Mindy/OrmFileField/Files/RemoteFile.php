@@ -5,8 +5,7 @@ namespace Mindy\Orm\Files;
 use Exception;
 
 /**
- * Class RemoteFile
- * @package Mindy\Storage
+ * Class RemoteFile.
  */
 class RemoteFile extends ResourceFile
 {
@@ -30,6 +29,7 @@ class RemoteFile extends ResourceFile
         curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
         return $code == 200;
     }
 }

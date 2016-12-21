@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/12/2016
- * Time: 13:15
+ * Time: 13:15.
  */
 
 namespace Mindy\Orm\Tests;
@@ -22,8 +22,8 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filesystem = new Filesystem(new Local(__DIR__ . '/temp'));
-        file_put_contents(__DIR__ . '/test.txt', '123');
+        $this->filesystem = new Filesystem(new Local(__DIR__.'/temp'));
+        file_put_contents(__DIR__.'/test.txt', '123');
     }
 
     protected function tearDown()
@@ -42,14 +42,14 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $field = new FileField();
         $field->setFilesystem($this->filesystem);
 
-        $field->setModel(new FileModel);
+        $field->setModel(new FileModel());
 
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
         $file = new UploadedFile(
-            __DIR__ . '/test.txt',
+            __DIR__.'/test.txt',
             'test.txt',
             'plain/text',
-            filesize(__DIR__ . '/test.txt'),
+            filesize(__DIR__.'/test.txt'),
             null,
             true
         );
@@ -57,7 +57,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s/', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . 'test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'test.txt'));
     }
 
     public function testLocalFile()
@@ -65,15 +65,15 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $field = new FileField();
         $field->setFilesystem($this->filesystem);
 
-        $field->setModel(new FileModel);
+        $field->setModel(new FileModel());
 
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
-        $file = new LocalFile(__DIR__ . '/test.txt');
+        $file = new LocalFile(__DIR__.'/test.txt');
         $field->saveFile($file);
 
         $path = $field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s/', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . 'test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'test.txt'));
     }
 
     public function testResourceFile()
@@ -81,7 +81,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $field = new FileField();
         $field->setFilesystem($this->filesystem);
 
-        $field->setModel(new FileModel);
+        $field->setModel(new FileModel());
 
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
         $file = new ResourceFile('123', 'test.txt');
@@ -89,7 +89,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s/', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . 'test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'test.txt'));
     }
 
     public function testRemoteFile()
@@ -101,19 +101,19 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $field = new FileField();
         $field->setFilesystem($this->filesystem);
 
-        $field->setModel(new FileModel);
+        $field->setModel(new FileModel());
 
         $file = new RemoteFile('https://raw.githubusercontent.com/MindyPHP/Mindy/master/readme.md', 'readme.md');
         $field->saveFile($file);
 
         $path = $field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s/', date('Y-m-d')), $path);
-        $this->assertTrue(is_file(__DIR__ . '/temp/' . $path . 'readme.md'));
+        $this->assertTrue(is_file(__DIR__.'/temp/'.$path.'readme.md'));
     }
 
     public function testFileFieldValidation()
     {
-        $model = new FileModel;
+        $model = new FileModel();
 
         $field = new FileField([
             'name' => 'file',
@@ -122,7 +122,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($field->isValid());
         $this->assertEquals(['This value should not be blank.'], $field->getErrors());
 
-        $path = __DIR__ . '/test.txt';
+        $path = __DIR__.'/test.txt';
         file_put_contents($path, '123');
 
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
@@ -137,7 +137,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $field = new FileField([
             'mimeTypes' => [
-                'image/*'
+                'image/*',
             ],
             'name' => 'file',
         ]);

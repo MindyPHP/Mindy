@@ -5,8 +5,7 @@ namespace Mindy\Orm\Fields;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class EmailField
- * @package Mindy\Orm
+ * Class EmailField.
  */
 class EmailField extends CharField
 {
@@ -27,8 +26,8 @@ class EmailField extends CharField
         return array_merge(parent::getValidationConstraints(), [
             new Assert\Email([
                 'checkMX' => $this->checkMX,
-                'checkHost' => $this->checkHost
-            ])
+                'checkHost' => $this->checkHost,
+            ]),
         ]);
     }
 }

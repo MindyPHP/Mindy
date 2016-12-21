@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/12/2016
- * Time: 12:51
+ * Time: 12:51.
  */
 
 namespace Mindy\Orm\Fields\Tests;
@@ -19,11 +19,12 @@ class PositionFieldTest extends \PHPUnit_Framework_TestCase
         $callback = function () use ($i) {
             global $i;
             $i += 1;
+
             return $i;
         };
 
         $field = new PositionField([
-            'callback' => $callback
+            'callback' => $callback,
         ]);
 
         $model = $this

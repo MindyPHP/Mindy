@@ -5,8 +5,7 @@ namespace Mindy\Orm\Fields;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ImageField
- * @package Mindy\Orm
+ * Class ImageField.
  */
 class ImageField extends FileField
 {
@@ -53,7 +52,7 @@ class ImageField extends FileField
                     'allowLandscape' => $this->allowLandscape,
                     'allowPortrait' => $this->allowPortrait,
                     'detectCorrupted' => $this->detectCorrupted,
-                ])
+                ]),
             ]);
         }
 

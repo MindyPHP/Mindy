@@ -2,22 +2,22 @@
 
 namespace Mindy\Orm\Fields;
 
-@trigger_error('The ' . __NAMESPACE__ . ' class is deprecated since version 3.0 and will be removed in 4.0.', E_USER_DEPRECATED);
+@trigger_error('The '.__NAMESPACE__.' class is deprecated since version 3.0 and will be removed in 4.0.', E_USER_DEPRECATED);
 
 /**
- * Class TreeForeignField
- * @package Mindy\Orm
+ * Class TreeForeignField.
  */
 class TreeForeignField extends ForeignField
 {
     /**
      * @param string $fieldClass
+     *
      * @return false|null|string
      */
     public function getFormField($fieldClass = '\Mindy\Form\Fields\SelectField')
     {
         if ($this->primary || $this->editable === false) {
-            return null;
+            return;
         }
 
         $relatedModel = $this->getRelatedModel();
@@ -32,8 +32,9 @@ class TreeForeignField extends ForeignField
                 $parents = $qs->all();
                 foreach ($parents as $model) {
                     $level = $model->level ? $model->level - 1 : $model->level;
-                    $list[$model->pk] = $level ? str_repeat("—", $level) . ' ' . $model->name : $model->name;
+                    $list[$model->pk] = $level ? str_repeat('—', $level).' '.$model->name : $model->name;
                 }
+
                 return $list;
             };
         }
@@ -57,7 +58,7 @@ class TreeForeignField extends ForeignField
             'name' => $this->name,
             'label' => $this->verboseName,
             'hint' => $this->helpText,
-            'value' => $value
+            'value' => $value,
         ];
     }
 }

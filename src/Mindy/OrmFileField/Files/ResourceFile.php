@@ -3,20 +3,20 @@
 /**
  * User: max
  * Date: 24/07/15
- * Time: 16:23
+ * Time: 16:23.
  */
 
 namespace Mindy\Orm\Files;
 
 /**
- * Class ResourceFile
- * @package Mindy\Orm\Files
+ * Class ResourceFile.
  */
 class ResourceFile extends File
 {
     /**
      * ResourceFile constructor.
-     * @param string $content
+     *
+     * @param string      $content
      * @param null|string $name
      * @param null|string $tempDir
      */
@@ -25,7 +25,7 @@ class ResourceFile extends File
         $path = tempnam($tempDir ?: sys_get_temp_dir(), 'tmp');
 
         if ($name) {
-            $path = dirname($path) . DIRECTORY_SEPARATOR . $name;
+            $path = dirname($path).DIRECTORY_SEPARATOR.$name;
         }
 
         file_put_contents($path, $content);
