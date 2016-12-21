@@ -3,14 +3,14 @@
  * Created by PhpStorm.
  * User: max
  * Date: 04/10/16
- * Time: 21:05
+ * Time: 21:05.
  */
 
 namespace Mindy\Application;
 
 /**
- * Class LegacyMethodsTrait
- * @package Mindy\Traits
+ * Class LegacyMethodsTrait.
+ *
  * @method \Symfony\Component\DependencyInjection\ContainerInterface getContainer()
  */
 trait LegacyMethodsTrait
@@ -28,16 +28,16 @@ trait LegacyMethodsTrait
     public function getUser()
     {
         if (!$this->getContainer()->has('security.token_storage')) {
-            return null;
+            return;
         }
 
         if (null === $token = $this->getContainer()->get('security.token_storage')->getToken()) {
-            return null;
+            return;
         }
 
         if (!is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
-            return null;
+            return;
         }
 
         return $user;

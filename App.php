@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 04/10/16
- * Time: 20:03
+ * Time: 20:03.
  */
 
 namespace Mindy\Application;
@@ -14,8 +14,7 @@ use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class Mindy
- * @package Mindy
+ * Class Mindy.
  */
 final class App
 {
@@ -43,9 +42,10 @@ final class App
 
     /**
      * App constructor.
+     *
      * @param string $className
      * @param string $environment
-     * @param bool $debug
+     * @param bool   $debug
      */
     final private function __construct($className, $environment, $debug = false)
     {
@@ -56,7 +56,8 @@ final class App
     /**
      * @param string $className
      * @param string $environment
-     * @param bool $debug
+     * @param bool   $debug
+     *
      * @return App
      */
     public static function createInstance($className, $environment, $debug)
@@ -64,11 +65,13 @@ final class App
         if (self::$instance === null) {
             self::$instance = new self($className, $environment, $debug);
         }
+
         return self::$instance;
     }
 
     /**
      * @param $throw
+     *
      * @return App|null
      */
     public static function getInstance($throw = true)
@@ -78,12 +81,15 @@ final class App
                 'Please run createInstance and create application before get application instance'
             );
         }
+
         return self::$instance;
     }
 
     /**
-     * Override getter for access to components
+     * Override getter for access to components.
+     *
      * @param $name
+     *
      * @return object
      */
     public function __get($name)
@@ -92,7 +98,7 @@ final class App
     }
 
     /**
-     * Clear application instance
+     * Clear application instance.
      */
     public static function shutdown()
     {
@@ -121,7 +127,7 @@ final class App
     }
 
     /**
-     * Start application
+     * Start application.
      *
      * @throws \Exception
      */

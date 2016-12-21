@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 04/10/16
- * Time: 20:04
+ * Time: 20:04.
  */
 
 namespace Mindy\Application\Tests;
@@ -20,7 +20,7 @@ class AppTest extends \PHPUnit_Framework_TestCase
         App::shutdown();
 
         $fs = new Filesystem();
-        $fs->remove(__DIR__ . '/runtime');
+        $fs->remove(__DIR__.'/runtime');
     }
 
     public function testInit()
