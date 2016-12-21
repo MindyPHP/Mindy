@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 06/10/16
- * Time: 17:09
+ * Time: 17:09.
  */
 
 namespace Mindy\Bundle\MenuBundle\Library;
@@ -18,6 +18,7 @@ class MenuLibrary extends Library
 
     /**
      * MenuLibrary constructor.
+     *
      * @param Renderer $template
      */
     public function __construct(Renderer $template)
@@ -31,17 +32,16 @@ class MenuLibrary extends Library
     public function getHelpers()
     {
         return [
-            'get_menu' => function ($slug, $template = "menu/menu.html") {
+            'get_menu' => function ($slug, $template = 'menu/menu.html') {
                 $menu = Menu::objects()->get(['slug' => $slug]);
                 if ($menu === null) {
                     return '';
                 }
 
-
                 return $this->template->render($template, [
-                    'items' => $menu->objects()->descendants()->asTree()->all()
+                    'items' => $menu->objects()->descendants()->asTree()->all(),
                 ]);
-            }
+            },
         ];
     }
 

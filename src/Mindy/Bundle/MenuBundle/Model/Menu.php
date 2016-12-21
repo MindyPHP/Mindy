@@ -7,8 +7,8 @@ use Mindy\Orm\TreeModel;
 use Mindy\Validation\Alphanumeric;
 
 /**
- * Class Menu
- * @package Mindy\Orm
+ * Class Menu.
+ *
  * @property string $slug
  * @property string $name
  * @property string $url
@@ -22,9 +22,9 @@ class Menu extends TreeModel
                 'class' => CharField::class,
                 'null' => true,
                 'validators' => [
-                    new Alphanumeric()
+                    new Alphanumeric(),
                 ],
-                'helpText' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.'
+                'helpText' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.',
             ],
             'name' => [
                 'class' => CharField::class,
@@ -33,13 +33,13 @@ class Menu extends TreeModel
                 'class' => CharField::class,
                 'null' => true,
                 'default' => '#',
-                'helpText' => 'Ссылка может быть абсолютной, относительной или любым js кодом'
-            ]
+                'helpText' => 'Ссылка может быть абсолютной, относительной или любым js кодом',
+            ],
         ]);
     }
 
     public function __toString()
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 }

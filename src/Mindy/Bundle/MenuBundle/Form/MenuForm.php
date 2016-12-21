@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 11/12/2016
- * Time: 23:42
+ * Time: 23:42.
  */
 
 namespace Mindy\Bundle\MenuBundle\Form;
@@ -23,7 +23,7 @@ class MenuForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Menu::class
+            'data_class' => Menu::class,
         ]);
     }
 }

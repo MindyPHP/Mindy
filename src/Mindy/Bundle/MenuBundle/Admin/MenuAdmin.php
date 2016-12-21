@@ -36,8 +36,8 @@ class MenuAdmin extends AbstractModelAdmin
         $parents = $model->objects()->ancestors(true)->order(['lft'])->all();
         foreach ($parents as $ancestor) {
             $breadcrumbs[] = [
-                'name' => (string)$ancestor,
-                'url' => $this->getAdminUrl('list') . '?' . http_build_query(['pk' => $ancestor->id])
+                'name' => (string) $ancestor,
+                'url' => $this->getAdminUrl('list').'?'.http_build_query(['pk' => $ancestor->id]),
             ];
         }
 
