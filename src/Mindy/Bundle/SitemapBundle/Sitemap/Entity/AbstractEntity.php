@@ -3,10 +3,8 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 
 /**
- * Class AbstractEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
+ * Class AbstractEntity.
  */
 abstract class AbstractEntity implements EntityInterface
 {
-
 }

@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: max
  * Date: 12/12/2016
- * Time: 00:32
+ * Time: 00:32.
  */
 
 namespace Mindy\Bundle\SitemapBundle\Command;
 
-use Mindy\Bundle\SitemapBundle\Sitemap\Entity\LocationEntity;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,7 +42,7 @@ class BuildCommand extends ContainerAwareCommand
         }
 
         if (false == is_dir($webPath)) {
-            throw new \Exception(sprintf("%s isnt directory", $webPath));
+            throw new \Exception(sprintf('%s isnt directory', $webPath));
         }
 
         $this->getContainer()->get('sitemap.builder')->build($scheme, $host, $webPath);

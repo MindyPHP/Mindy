@@ -3,10 +3,8 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Collection;
 
 /**
- * Class NewsCollection
- * @package Evheniy\SitemapXmlBundle\Collection
+ * Class NewsCollection.
  */
 class NewsCollection extends AbstractCollection
 {
-
 }

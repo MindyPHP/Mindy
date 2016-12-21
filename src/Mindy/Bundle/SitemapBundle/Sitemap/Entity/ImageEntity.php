@@ -3,9 +3,7 @@
 namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
 
 /**
- * Class ImageEntity
- * @package Mindy\Bundle\SitemapBundle\Entity
- * https://support.google.com/webmasters/answer/178636
+ * Class ImageEntity.
  */
 class ImageEntity extends AbstractEntity
 {
@@ -40,11 +38,13 @@ class ImageEntity extends AbstractEntity
 
     /**
      * @param string $location
+     *
      * @return $this
      */
     public function setLocation($location)
     {
         $this->loc = $location;
+
         return $this;
     }
 
@@ -58,11 +58,13 @@ class ImageEntity extends AbstractEntity
 
     /**
      * @param string $caption
+     *
      * @return $this
      */
     public function setCaption($caption)
     {
         $this->caption = $caption;
+
         return $this;
     }
 
@@ -76,12 +78,14 @@ class ImageEntity extends AbstractEntity
 
     /**
      * @param string $geoLocation
-     * Example: place of photo (country, city...)
+     *                            Example: place of photo (country, city...)
+     *
      * @return $this
      */
     public function setGeoLocation($geoLocation)
     {
         $this->geoLocation = $geoLocation;
+
         return $this;
     }
 
@@ -95,11 +99,13 @@ class ImageEntity extends AbstractEntity
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -113,11 +119,13 @@ class ImageEntity extends AbstractEntity
 
     /**
      * @param string $license
+     *
      * @return $this
      */
     public function setLicense($license)
     {
         $this->license = $license;
+
         return $this;
     }
 
@@ -127,18 +135,18 @@ class ImageEntity extends AbstractEntity
     public function getXml()
     {
         $imageText = '<image:image>';
-        $imageText .= '<image:loc>' . $this->loc . '</image:loc>';
+        $imageText .= '<image:loc>'.$this->loc.'</image:loc>';
         if (!empty($this->caption)) {
-            $imageText .= '<image:caption>' . $this->caption . '</image:caption>';
+            $imageText .= '<image:caption>'.$this->caption.'</image:caption>';
         }
         if (!empty($this->geoLocation)) {
-            $imageText .= '<image:geo_location>' . $this->geoLocation . '</image:geo_location>';
+            $imageText .= '<image:geo_location>'.$this->geoLocation.'</image:geo_location>';
         }
         if (!empty($this->title)) {
-            $imageText .= '<image:title>' . $this->title . '</image:title>';
+            $imageText .= '<image:title>'.$this->title.'</image:title>';
         }
         if (!empty($this->license)) {
-            $imageText .= '<image:license>' . $this->license . '</image:license>';
+            $imageText .= '<image:license>'.$this->license.'</image:license>';
         }
         $imageText .= '</image:image>';
 
