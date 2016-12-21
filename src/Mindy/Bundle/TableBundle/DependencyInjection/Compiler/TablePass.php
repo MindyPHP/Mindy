@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 20:26
+ * Time: 20:26.
  */
 
 namespace Mindy\Bundle\TableBundle\DependencyInjection\Compiler;

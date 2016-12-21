@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 18:03
+ * Time: 18:03.
  */
 
 namespace Mindy\Bundle\TableBundle\Library;
@@ -29,7 +29,7 @@ class TableLibrary extends Library
         return [
             'table_render' => function (TableView $table, $template = 'table/table.html') {
                 return $this->template->render($template, $table->getData());
-            }
+            },
         ];
     }
 
