@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class AttributeExpression
- * @package Mindy\Template
+ * Class AttributeExpression.
  */
 class AttributeExpression extends Expression
 {
@@ -42,4 +41,3 @@ class AttributeExpression extends Expression
         $compiler->raw(')');
     }
 }
-

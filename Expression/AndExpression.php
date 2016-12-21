@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class AndExpression
- * @package Mindy\Template
+ * Class AndExpression.
  */
 class AndExpression extends LogicalExpression
 {
@@ -19,4 +18,3 @@ class AndExpression extends LogicalExpression
         $compiler->raw('))');
     }
 }
-

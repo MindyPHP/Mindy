@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class BlockDisplayNode
- * @package Mindy\Template
+ * Class BlockDisplayNode.
  */
 class BlockDisplayNode extends Node
 {
@@ -23,9 +22,8 @@ class BlockDisplayNode extends Node
     {
         $compiler->addTraceInfo($this, $indent);
         $compiler->raw(
-            '$this->displayBlock(\'' . $this->name .
-            '\', $context, $blocks, $macros, $imports);' . "\n", $indent
+            '$this->displayBlock(\''.$this->name.
+            '\', $context, $blocks, $macros, $imports);'."\n", $indent
         );
     }
 }
-

@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Library
- * @package Mindy\Template
+ * Class Library.
  */
 abstract class Library
 {
@@ -30,12 +29,14 @@ abstract class Library
     public function setParser(Parser $parser)
     {
         $this->parser = $parser;
+
         return $this;
     }
 
     public function setStream(TokenStream $stream)
     {
         $this->stream = $stream;
+
         return $this;
     }
 }

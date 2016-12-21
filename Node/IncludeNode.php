@@ -7,8 +7,7 @@ use Mindy\Template\Expression\ArrayExpression;
 use Mindy\Template\Node;
 
 /**
- * Class IncludeNode
- * @package Mindy\Template
+ * Class IncludeNode.
  */
 class IncludeNode extends Node
 {
@@ -34,7 +33,6 @@ class IncludeNode extends Node
             $compiler->raw(' + ');
         }
 
-        $compiler->raw('$context);' . "\n");
+        $compiler->raw('$context);'."\n");
     }
 }
-

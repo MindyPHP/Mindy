@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class PosExpression
- * @package Mindy\Template
+ * Class PosExpression.
  */
 class PosExpression extends UnaryExpression
 {
@@ -15,4 +14,3 @@ class PosExpression extends UnaryExpression
         $compiler->raw('+');
     }
 }
-

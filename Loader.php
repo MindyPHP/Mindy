@@ -7,8 +7,7 @@ use Mindy\Template\Adapter\FileAdapter;
 use RuntimeException;
 
 /**
- * Class Loader
- * @package Mindy\Template
+ * Class Loader.
  */
 class Loader
 {
@@ -45,6 +44,7 @@ class Loader
 
     /**
      * Loader constructor.
+     *
      * @param array $options
      */
     public function __construct(array $options = [])
@@ -71,7 +71,7 @@ class Loader
             'mkdir' => 0777,
             'helpers' => array(),
             'globals' => array(),
-            'autoEscape' => true
+            'autoEscape' => true,
         );
 
         if (!isset($options['adapter'])) {
@@ -100,7 +100,7 @@ class Loader
         $this->paths = array();
         $this->cache = array();
 
-        $this->addLibrary(new DefaultLibrary);
+        $this->addLibrary(new DefaultLibrary());
     }
 
     /**
@@ -118,11 +118,11 @@ class Loader
     {
         if ($this->exceptionHandler) {
             $adapter = $this->getAdapter();
-            echo $this->renderString(file_get_contents(__DIR__ . '/templates/debug.html'), [
+            echo $this->renderString(file_get_contents(__DIR__.'/templates/debug.html'), [
                 'exception' => $exception,
                 'source' => $adapter->getContents($exception->getTemplateFile()),
-                'styles' => file_get_contents(__DIR__ . '/templates/core.css') . file_get_contents(__DIR__ . '/templates/exception.css'),
-                'loader' => $this
+                'styles' => file_get_contents(__DIR__.'/templates/core.css').file_get_contents(__DIR__.'/templates/exception.css'),
+                'loader' => $this,
             ]);
             die();
         } else {
@@ -136,31 +136,36 @@ class Loader
         $parts = array();
         foreach (explode('/', $path) as $i => $part) {
             if ($part === '..') {
-                if (!empty($parts)) array_pop($parts);
+                if (!empty($parts)) {
+                    array_pop($parts);
+                }
             } elseif ($part !== '.') {
                 $parts[] = $part;
             }
         }
+
         return $parts;
     }
 
     /**
      * @param $template
      * @param string $from
+     *
      * @return string
      */
     public function resolvePath($template, $from = '')
     {
         foreach ($this->options['source'] as $sourcePath) {
             $source = implode('/', $this->normalizePath($sourcePath));
-            $file = $source . '/' . ltrim($template, '/');
+            $file = $source.'/'.ltrim($template, '/');
             if (is_file($file)) {
-                $parts = $this->normalizePath($source . '/' . dirname($from) . '/' . $template);
+                $parts = $this->normalizePath($source.'/'.dirname($from).'/'.$template);
                 foreach ($this->normalizePath($source) as $i => $part) {
                     if ($part !== $parts[$i]) {
                         throw new RuntimeException(sprintf('%s is outside the source directory', $template));
                     }
                 }
+
                 return $template;
             }
         }
@@ -186,13 +191,13 @@ class Loader
 
         $path = $this->resolvePath($template);
 
-        $class = self::CLASS_PREFIX . md5($path);
+        $class = self::CLASS_PREFIX.md5($path);
 
         if (!$adapter->isReadable($path)) {
             throw new RuntimeException(sprintf('%s is not a valid readable template', $template));
         }
 
-        $target = $this->options['target'] . '/' . $class . '.php';
+        $target = $this->options['target'].'/'.$class.'.php';
 
         if (!isset($mode)) {
             $mode = $this->options['mode'];
@@ -221,7 +226,7 @@ class Loader
                 $compiler->compile($path, $target);
             } catch (SyntaxError $e) {
                 $e->setTemplateFile($path);
-                $this->handleSyntaxError($e->setMessage($path . ': ' . $e->getMessage()));
+                $this->handleSyntaxError($e->setMessage($path.': '.$e->getMessage()));
             }
         }
 
@@ -231,7 +236,9 @@ class Loader
     /**
      * @param $template
      * @param string $from
+     *
      * @return Template
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @throws \Exception
@@ -248,26 +255,25 @@ class Loader
 
         $adapter = $this->getAdapter();
 
-        if (isset($this->paths[$template . $from])) {
-            $path = $this->paths[$template . $from];
+        if (isset($this->paths[$template.$from])) {
+            $path = $this->paths[$template.$from];
         } else {
             $path = $this->resolvePath($template, $from);
-            $this->paths[$template . $from] = $path;
+            $this->paths[$template.$from] = $path;
         }
 
-        $class = self::CLASS_PREFIX . md5($path);
+        $class = self::CLASS_PREFIX.md5($path);
 
         if (isset($this->cache[$class])) {
             return $this->cache[$class];
         }
-
 
         if (!class_exists($class, false)) {
             if (!$adapter->isReadable($path)) {
                 throw new RuntimeException(sprintf('%s is not a valid readable template', $template));
             }
 
-            $target = $this->options['target'] . '/' . $class . '.php';
+            $target = $this->options['target'].'/'.$class.'.php';
 
             switch ($this->options['mode']) {
                 case self::RECOMPILE_ALWAYS:
@@ -292,7 +298,7 @@ class Loader
                     $compiler->compile($path, $target);
                 } catch (SyntaxError $e) {
                     $e->setTemplateFile($path);
-                    $this->handleSyntaxError($e->setMessage($path . ': ' . $e->getMessage()));
+                    $this->handleSyntaxError($e->setMessage($path.': '.$e->getMessage()));
                 }
             }
             require_once $target;
@@ -303,7 +309,9 @@ class Loader
 
     /**
      * @param $template
+     *
      * @return Template
+     *
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
@@ -313,14 +321,14 @@ class Loader
             throw new \InvalidArgumentException('string expected');
         }
 
-        $class = self::CLASS_PREFIX . md5($template);
+        $class = self::CLASS_PREFIX.md5($template);
 
         if (isset($this->cache[$class])) {
             return $this->cache[$class];
         }
 
-        $target = $this->options['target'] . '/' . $class . '.php';
-        $path = "";
+        $target = $this->options['target'].'/'.$class.'.php';
+        $path = '';
 
         try {
             $lexer = new Lexer($template);
@@ -331,7 +339,7 @@ class Loader
             $compiler->compile($template, $target);
         } catch (SyntaxError $e) {
             $e->setTemplateFile($path);
-            $this->handleSyntaxError($e->setMessage($path . ': ' . $e->getMessage()));
+            $this->handleSyntaxError($e->setMessage($path.': '.$e->getMessage()));
         }
         require_once $target;
 
@@ -361,14 +369,17 @@ class Loader
             new Compiler($parser->parse());
         } catch (\Exception $e) {
             $error = $e->getMessage();
+
             return false;
         }
+
         return true;
     }
 
     /**
      * @param $template
      * @param array $data
+     *
      * @return string
      */
     public function render($template, array $data = [])
@@ -379,6 +390,7 @@ class Loader
     /**
      * @param $source
      * @param array $data
+     *
      * @return string
      */
     public function renderString($source, array $data = [])
@@ -389,16 +401,19 @@ class Loader
     /**
      * @param $name
      * @param $func
+     *
      * @return $this
      */
     public function addHelper($name, $func)
     {
         $this->options['helpers'][$name] = $func;
+
         return $this;
     }
 
     /**
      * @param Library $library
+     *
      * @return $this
      */
     public function addLibrary(Library $library)
@@ -407,6 +422,7 @@ class Loader
         foreach ($library->getHelpers() as $name => $func) {
             $this->addHelper($name, $func);
         }
+
         return $this;
     }
 

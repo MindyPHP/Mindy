@@ -7,12 +7,11 @@ use Mindy\Template\Helper\RangeIterator;
 use Traversable;
 
 /**
- * Class Helper
- * @package Mindy\Template
+ * Class Helper.
  */
 class Helper
 {
-    static $encoding = 'UTF-8';
+    public static $encoding = 'UTF-8';
 
     public static function method_exists($obj = null, $method)
     {
@@ -53,7 +52,8 @@ class Helper
         } elseif (is_string($obj)) {
             return mb_substr($obj, $start, $length, self::$encoding);
         }
-        return null;
+
+        return;
     }
 
     public static function startswith($obj = null, $needle)
@@ -72,12 +72,15 @@ class Helper
         $places = strlen($obj);
         if ($places <= 9 && $places >= 7) {
             $obj = number_format($obj / 1048576, $decimals, $dec, $sep);
+
             return "$obj MB";
         } elseif ($places >= 10) {
             $obj = number_format($obj / 1073741824, $decimals, $dec, $sep);
+
             return "$obj GB";
         } else {
             $obj = number_format($obj / 1024, $decimals, $dec, $sep);
+
             return "$obj KB";
         }
     }
@@ -85,12 +88,14 @@ class Helper
     public static function capitalize($obj)
     {
         $str = (string) $obj;
-        return mb_strtoupper(mb_substr($str, 0, 1, self::$encoding), self::$encoding) . mb_strtolower(mb_substr($str, 1, mb_strlen($str), self::$encoding), self::$encoding);
+
+        return mb_strtoupper(mb_substr($str, 0, 1, self::$encoding), self::$encoding).mb_strtolower(mb_substr($str, 1, mb_strlen($str), self::$encoding), self::$encoding);
     }
 
     public static function cycle($obj = null)
     {
         $obj = ($obj instanceof Traversable) ? iterator_to_array($obj) : (array) $obj;
+
         return new Helper\Cycler((array) $obj);
     }
 
@@ -104,6 +109,7 @@ class Helper
         if (!is_numeric($obj) && is_string($obj)) {
             $obj = strtotime($obj);
         }
+
         return date($format, $obj ? $obj : time());
     }
 
@@ -139,6 +145,7 @@ class Helper
         if (count($keys)) {
             return $obj[$keys[0]];
         }
+
         return $default;
     }
 
@@ -158,6 +165,7 @@ class Helper
         if ($number == 0) {
             return false;
         }
+
         return fmod($obj, $number) == 0;
     }
 
@@ -189,6 +197,7 @@ class Helper
         } else {
             return false;
         }
+
         return abs($obj % 2) == 0;
     }
 
@@ -203,12 +212,13 @@ class Helper
         } else {
             return false;
         }
+
         return abs($obj % 2) == 1;
     }
 
     public static function join($obj = null, $glue = '')
     {
-        return join($glue, ($obj instanceof Traversable) ? iterator_to_array($obj) : (array) $obj);
+        return implode($glue, ($obj instanceof Traversable) ? iterator_to_array($obj) : (array) $obj);
     }
 
     public static function json_encode($obj = null)
@@ -223,7 +233,8 @@ class Helper
         } elseif ($obj instanceof Traversable) {
             return array_keys(iterator_to_array($obj));
         }
-        return null;
+
+        return;
     }
 
     public static function last($obj = null, $default = null)
@@ -236,6 +247,7 @@ class Helper
         if ($len = count($keys)) {
             return $obj[$keys[$len - 1]];
         }
+
         return $default;
     }
 
@@ -248,7 +260,7 @@ class Helper
         } elseif ($obj instanceof Traversable) {
             return iterator_count($obj);
         } else {
-            return null;
+            return;
         }
     }
 
@@ -316,7 +328,8 @@ class Helper
         }
 
         $truncated = $preserve_words ? preg_replace('/\s+?(\S+)?$/', '', mb_substr($obj, 0, $length + 1, self::$encoding)) : mb_substr($obj, 0, $length, self::$encoding);
-        return $truncated . $hellip;
+
+        return $truncated.$hellip;
     }
 
     public static function unescape($obj = null)
@@ -354,6 +367,7 @@ class Helper
                 return floor($obj);
                 break;
         }
+
         return round($obj, $precision);
     }
 
@@ -389,9 +403,9 @@ class Helper
     {
         if (is_numeric($obj) && mb_strlen($obj, self::$encoding)) {
             return (bool) $obj;
-        } else if (is_numeric($obj)) {
+        } elseif (is_numeric($obj)) {
             return (int) $obj;
-        } else if (is_string($obj) && in_array((string) $obj, ['true', 'false'])) {
+        } elseif (is_string($obj) && in_array((string) $obj, ['true', 'false'])) {
             return (bool) $obj;
         } else {
             return (string) $obj;

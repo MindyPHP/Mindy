@@ -3,11 +3,9 @@
 namespace Mindy\Template\Node;
 
 use Mindy\Template\Compiler;
-use Mindy\Template\Node;
 
 /**
- * Class SpacelessNode
- * @package Mindy\Template
+ * Class SpacelessNode.
  */
 class SpacelessNode extends OutputNode
 {
@@ -20,4 +18,3 @@ class SpacelessNode extends OutputNode
         $compiler->raw("echo trim(preg_replace('/>\\s+</', '><', ob_get_clean()));\n", $indent);
     }
 }
-

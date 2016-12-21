@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class MacroExpression
- * @package Mindy\Template
+ * Class MacroExpression.
  */
 class MacroExpression extends Expression
 {
@@ -26,7 +25,7 @@ class MacroExpression extends Expression
     public function compile(Compiler $compiler, $indent = 0)
     {
         $compiler->raw(
-            '$this->expandMacro(\'' . $this->module . '\', \'' . $this->name .
+            '$this->expandMacro(\''.$this->module.'\', \''.$this->name.
             '\', array(', $indent
         );
         foreach ($this->args as $key => $val) {
@@ -43,4 +42,3 @@ class MacroExpression extends Expression
         }
     }
 }
-

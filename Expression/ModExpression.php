@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class ModExpression
- * @package Mindy\Template
+ * Class ModExpression.
  */
 class ModExpression extends BinaryExpression
 {
@@ -19,4 +18,3 @@ class ModExpression extends BinaryExpression
         $compiler->raw(')');
     }
 }
-

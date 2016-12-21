@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class ArrayExpression
- * @package Mindy\Template
+ * Class ArrayExpression.
  */
 class ArrayExpression extends Expression
 {
@@ -35,4 +34,3 @@ class ArrayExpression extends Expression
         $compiler->raw(')');
     }
 }
-

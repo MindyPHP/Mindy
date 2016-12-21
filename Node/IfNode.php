@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class IfNode
- * @package Mindy\Template
+ * Class IfNode.
  */
 class IfNode extends Node
 {
@@ -26,7 +25,7 @@ class IfNode extends Node
         $compiler->addTraceInfo($this, $indent);
         $idx = 0;
         foreach ($this->tests as $test) {
-            $compiler->raw(($idx++ ? "} else" : '') . 'if (', $indent);
+            $compiler->raw(($idx++ ? '} else' : '').'if (', $indent);
             $test[0]->compile($compiler);
             $compiler->raw(") {\n");
             $test[1]->compile($compiler, $indent + 1);
@@ -38,4 +37,3 @@ class IfNode extends Node
         $compiler->raw("}\n", $indent);
     }
 }
-

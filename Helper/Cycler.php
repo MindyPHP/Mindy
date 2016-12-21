@@ -6,8 +6,7 @@ use ArrayIterator;
 use IteratorAggregate;
 
 /**
- * Class Cycler
- * @package Mindy\Template
+ * Class Cycler.
  */
 class Cycler implements IteratorAggregate
 {
@@ -37,6 +36,7 @@ class Cycler implements IteratorAggregate
         if (isset($seed)) {
             mt_srand($seed);
         }
+
         return $this->elements[mt_rand(0, $this->length - 1)];
     }
 

@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class SubExpression
- * @package Mindy\Template
+ * Class SubExpression.
  */
 class SubExpression extends BinaryExpression
 {
@@ -13,4 +12,3 @@ class SubExpression extends BinaryExpression
         return '-';
     }
 }
-

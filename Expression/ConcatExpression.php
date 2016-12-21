@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class ConcatExpression
- * @package Mindy\Template
+ * Class ConcatExpression.
  */
 class ConcatExpression extends BinaryExpression
 {
@@ -13,4 +12,3 @@ class ConcatExpression extends BinaryExpression
         return '.';
     }
 }
-

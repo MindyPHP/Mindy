@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class XorExpression
- * @package Mindy\Template
+ * Class XorExpression.
  */
 class XorExpression extends BinaryExpression
 {
@@ -13,4 +12,3 @@ class XorExpression extends BinaryExpression
         return 'xor';
     }
 }
-

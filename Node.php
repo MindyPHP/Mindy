@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Node
- * @package Mindy\Template
+ * Class Node.
  */
 class Node
 {
@@ -15,6 +14,7 @@ class Node
 
     /**
      * Node constructor.
+     *
      * @param $line
      */
     public function __construct($line)
@@ -41,10 +41,9 @@ class Node
 
     /**
      * @param Compiler $compiler
-     * @param int $indent
+     * @param int      $indent
      */
     public function compile(Compiler $compiler, $indent = 0)
     {
     }
 }
-

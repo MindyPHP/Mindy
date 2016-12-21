@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class OrExpression
- * @package Mindy\Template
+ * Class OrExpression.
  */
 class OrExpression extends LogicalExpression
 {
@@ -19,4 +18,3 @@ class OrExpression extends LogicalExpression
         $compiler->raw('))');
     }
 }
-

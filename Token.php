@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Token
- * @package Mindy\Template
+ * Class Token.
  */
 class Token
 {
@@ -36,7 +35,7 @@ class Token
     public static function getTypeAsString($type, $canonical = false)
     {
         if (is_string($type)) {
-            return $canonical ? (__CLASS__ . '::' . $type) : $type;
+            return $canonical ? (__CLASS__.'::'.$type) : $type;
         }
 
         switch ($type) {
@@ -74,7 +73,8 @@ class Token
                 $name = 'CONSTANT';
                 break;
         }
-        return $canonical ? (__CLASS__ . '::' . $name) : $name;
+
+        return $canonical ? (__CLASS__.'::'.$name) : $name;
     }
 
     public static function getTypeError($type)
@@ -87,20 +87,20 @@ class Token
                 $name = 'text type';
                 break;
             case self::BLOCK_START:
-                $name = 'block start (either "' . Lexer::BLOCK_START . '" or "' .
-                    Lexer::BLOCK_START_TRIM . '")';
+                $name = 'block start (either "'.Lexer::BLOCK_START.'" or "'.
+                    Lexer::BLOCK_START_TRIM.'")';
                 break;
             case self::OUTPUT_START:
-                $name = 'block start (either "' . Lexer::OUTPUT_START . '" or "' .
-                    Lexer::OUTPUT_START_TRIM . '")';
+                $name = 'block start (either "'.Lexer::OUTPUT_START.'" or "'.
+                    Lexer::OUTPUT_START_TRIM.'")';
                 break;
             case self::BLOCK_END:
-                $name = 'block end (either "' . Lexer::BLOCK_END . '" or "' .
-                    Lexer::BLOCK_END_TRIM . '")';
+                $name = 'block end (either "'.Lexer::BLOCK_END.'" or "'.
+                    Lexer::BLOCK_END_TRIM.'")';
                 break;
             case self::OUTPUT_END:
-                $name = 'block end (either "' . Lexer::OUTPUT_END . '" or "' .
-                    Lexer::OUTPUT_END_TRIM . '")';
+                $name = 'block end (either "'.Lexer::OUTPUT_END.'" or "'.
+                    Lexer::OUTPUT_END_TRIM.'")';
                 break;
             case self::NAME:
                 $name = 'name type';
@@ -118,6 +118,7 @@ class Token
                 $name = 'constant type (true, false, or null)';
                 break;
         }
+
         return $name;
     }
 
@@ -140,6 +141,7 @@ class Token
         if ($asString) {
             return self::getTypeAsString($this->type, $canonical);
         }
+
         return $this->type;
     }
 
@@ -163,4 +165,3 @@ class Token
         return $this->getValue();
     }
 }
-

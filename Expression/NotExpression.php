@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class NotExpression
- * @package Mindy\Template
+ * Class NotExpression.
  */
 class NotExpression extends UnaryExpression
 {
@@ -15,4 +14,3 @@ class NotExpression extends UnaryExpression
         $compiler->raw('!');
     }
 }
-

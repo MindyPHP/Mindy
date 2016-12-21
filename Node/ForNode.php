@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class ForNode
- * @package Mindy\Template
+ * Class ForNode.
  */
 class ForNode extends Node
 {
@@ -57,12 +56,12 @@ class ForNode extends Node
 
         if ($this->key) {
             $compiler->raw(
-                ')) as $context[\'' . $this->key .
-                '\'] => $context[\'' . $this->value . '\']) {' . "\n"
+                ')) as $context[\''.$this->key.
+                '\'] => $context[\''.$this->value.'\']) {'."\n"
             );
         } else {
             $compiler->raw(
-                ')) as $context[\'' . $this->value . '\']) {' . "\n"
+                ')) as $context[\''.$this->value.'\']) {'."\n"
             );
         }
 
@@ -86,4 +85,3 @@ class ForNode extends Node
         $compiler->popContext($this->value, $indent);
     }
 }
-

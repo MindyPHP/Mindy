@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class BinaryExpression
- * @package Mindy\Template
+ * Class BinaryExpression.
  */
 class BinaryExpression extends Expression
 {
@@ -26,9 +25,8 @@ class BinaryExpression extends Expression
         $op = $this->operator($compiler);
         $compiler->raw('(', $indent);
         $this->left->compile($compiler);
-        $compiler->raw(' ' . $op . ' ');
+        $compiler->raw(' '.$op.' ');
         $this->right->compile($compiler);
         $compiler->raw(')');
     }
 }
-

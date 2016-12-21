@@ -5,8 +5,7 @@ namespace Mindy\Template;
 use Exception;
 
 /**
- * Class SyntaxError
- * @package Mindy\Template
+ * Class SyntaxError.
  */
 class SyntaxError extends Exception
 {
@@ -15,8 +14,9 @@ class SyntaxError extends Exception
 
     /**
      * SyntaxError constructor.
+     *
      * @param string $message
-     * @param Token $token
+     * @param Token  $token
      */
     public function __construct($message, Token $token)
     {
@@ -29,6 +29,7 @@ class SyntaxError extends Exception
     public function setTemplateFile($path)
     {
         $this->path = $path;
+
         return $this;
     }
 
@@ -39,12 +40,13 @@ class SyntaxError extends Exception
 
     public function __toString()
     {
-        return (string)$this->message;
+        return (string) $this->message;
     }
 
     public function setMessage($message)
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -53,4 +55,3 @@ class SyntaxError extends Exception
         return $this->token;
     }
 }
-

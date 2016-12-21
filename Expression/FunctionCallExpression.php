@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class FunctionCallExpression
- * @package Mindy\Template
+ * Class FunctionCallExpression.
  */
 class FunctionCallExpression extends Expression
 {
@@ -31,6 +30,4 @@ class FunctionCallExpression extends Expression
         }
         $compiler->raw(')');
     }
-
 }
-
