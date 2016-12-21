@@ -6,23 +6,22 @@ use Exception;
 use League\Flysystem\Util\MimeType;
 
 /**
- * Class File
- * @package Mindy\Storage
+ * Class File.
  */
 abstract class File extends \SplFileInfo
 {
     /**
      * Constructs a new file from the given path.
      *
-     * @param string $path The path to the file
-     * @param bool $checkPath Whether to check the path or not
+     * @param string $path      The path to the file
+     * @param bool   $checkPath Whether to check the path or not
      *
      * @throws Exception If the given path is not a file
      */
     public function __construct($path, $checkPath = true)
     {
         if ($checkPath && !is_file($path)) {
-            throw new Exception("File not found: " . $path);
+            throw new Exception('File not found: '.$path);
         }
         parent::__construct($path);
     }
@@ -47,7 +46,7 @@ abstract class File extends \SplFileInfo
      * Moves the file to a new location.
      *
      * @param string $directory The destination folder
-     * @param string $name The new file name
+     * @param string $name      The new file name
      *
      * @return File A File object representing the new file
      *
@@ -61,6 +60,7 @@ abstract class File extends \SplFileInfo
             throw new Exception(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error['message'])));
         }
         @chmod($target, 0666 & ~umask());
+
         return $target;
     }
 
@@ -73,8 +73,9 @@ abstract class File extends \SplFileInfo
         } elseif (!is_writable($directory)) {
             throw new Exception(sprintf('Unable to write in the "%s" directory', $directory));
         }
-        $target = rtrim($directory, '/\\') . DIRECTORY_SEPARATOR . (null === $name ? $this->getBasename() : $this->getName($name));
+        $target = rtrim($directory, '/\\').DIRECTORY_SEPARATOR.(null === $name ? $this->getBasename() : $this->getName($name));
         $cls = get_class($this);
+
         return new $cls($target, false);
     }
 
@@ -90,6 +91,7 @@ abstract class File extends \SplFileInfo
         $originalName = str_replace('\\', '/', $name);
         $pos = strrpos($originalName, '/');
         $originalName = false === $pos ? $originalName : substr($originalName, $pos + 1);
+
         return $originalName;
     }
 
@@ -110,7 +112,7 @@ abstract class File extends \SplFileInfo
         } elseif (0 === strpos($max, '0')) {
             $max = intval($max, 8);
         } else {
-            $max = (int)$max;
+            $max = (int) $max;
         }
         switch (substr($iniMax, -1)) {
             case 't':
@@ -122,6 +124,7 @@ abstract class File extends \SplFileInfo
             case 'k':
                 $max *= 1024;
         }
+
         return $max;
     }
 }

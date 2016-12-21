@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/12/2016
- * Time: 20:06
+ * Time: 20:06.
  */
 
 namespace Mindy\Orm;
@@ -12,8 +12,7 @@ use League\Flysystem\FilesystemInterface;
 use Mindy\Application\App;
 
 /**
- * Class OrmFile
- * @package Mindy\Orm
+ * Class OrmFile.
  */
 class OrmFile
 {
@@ -39,6 +38,7 @@ class OrmFile
             // TODO https://github.com/MindyPHP/Mindy/issues/7
             self::$filesystem = App::getInstance()->getComponent('oneup_flysystem.default_filesystem');
         }
+
         return self::$filesystem;
     }
 }
