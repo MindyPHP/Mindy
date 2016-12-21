@@ -6,8 +6,7 @@ use Mindy\Pagination\DataSource\DataSourceInterface;
 use Mindy\Pagination\Handler\PaginationHandlerInterface;
 
 /**
- * Class BasePagination
- * @package Mindy\Pagination
+ * Class BasePagination.
  */
 abstract class BasePagination
 {
@@ -72,14 +71,15 @@ abstract class BasePagination
 
     /**
      * BasePagination constructor.
+     *
      * @param $source
-     * @param array $config
+     * @param array                      $config
      * @param PaginationHandlerInterface $handler
-     * @param DataSourceInterface $dataSource
+     * @param DataSourceInterface        $dataSource
      */
     public function __construct($source, array $config = [], PaginationHandlerInterface $handler, DataSourceInterface $dataSource)
     {
-        self::$_id++;
+        ++self::$_id;
         $this->id = self::$_id;
 
         $this->source = $source;
@@ -111,7 +111,8 @@ abstract class BasePagination
     }
 
     /**
-     * Return PageSize
+     * Return PageSize.
+     *
      * @return int
      */
     public function getPageSize()
@@ -121,11 +122,13 @@ abstract class BasePagination
 
     /**
      * @param $pageSize
+     *
      * @return $this
      */
     public function setPageSize($pageSize)
     {
-        $this->pageSize = (int)$pageSize;
+        $this->pageSize = (int) $pageSize;
+
         return $this;
     }
 
@@ -134,7 +137,7 @@ abstract class BasePagination
      */
     public function getPageSizeKey()
     {
-        return empty($this->pageSizeKey) ? $this->getPageKey() . '_PageSize' : $this->pageSizeKey;
+        return empty($this->pageSizeKey) ? $this->getPageKey().'_PageSize' : $this->pageSizeKey;
     }
 
     /**
@@ -146,13 +149,13 @@ abstract class BasePagination
     }
 
     /**
-     * @return integer number of pages
+     * @return int number of pages
      */
     public function getPagesCount()
     {
         $total = $this->getTotal();
         if ($total > 0) {
-            return (int)ceil($total / $this->getPageSize());
+            return (int) ceil($total / $this->getPageSize());
         }
 
         return 0;
@@ -163,22 +166,26 @@ abstract class BasePagination
      */
     public function getPage()
     {
-        return (int)$this->page;
+        return (int) $this->page;
     }
 
     /**
      * @param $page
+     *
      * @return $this
      */
     public function setPage($page)
     {
-        $this->page = (int)$page;
+        $this->page = (int) $page;
+
         return $this;
     }
 
     /**
-     * Apply limits to source
+     * Apply limits to source.
+     *
      * @throws \Exception
+     *
      * @return $this
      */
     public function paginate()
@@ -196,6 +203,7 @@ abstract class BasePagination
             $this->getPage(),
             $this->getPageSize()
         );
+
         return $this->data;
     }
 
@@ -231,12 +239,12 @@ abstract class BasePagination
             'page_size' => $this->getPageSize(),
             'page_count' => $this->getPagesCount(),
             'page_key' => $this->getPageKey(),
-            'page_size_key' => $this->getPageSizeKey()
+            'page_size_key' => $this->getPageSizeKey(),
         ], $this->handler);
     }
 
     /**
-     * Reset id counter
+     * Reset id counter.
      */
     public static function resetCounter()
     {

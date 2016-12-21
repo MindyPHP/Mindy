@@ -3,14 +3,13 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 21:26
+ * Time: 21:26.
  */
 
 namespace Mindy\Pagination\DataSource;
 
 /**
- * Class ArrayDataSource
- * @package Mindy\Pagination\DataSource
+ * Class ArrayDataSource.
  */
 class ArrayDataSource implements DataSourceInterface
 {

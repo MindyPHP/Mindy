@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 22:38
+ * Time: 22:38.
  */
 
 namespace Mindy\Pagination;
@@ -11,8 +11,7 @@ namespace Mindy\Pagination;
 use Mindy\Pagination\Handler\PaginationHandlerInterface;
 
 /**
- * Class PaginationView
- * @package Mindy\Pagination
+ * Class PaginationView.
  */
 class PaginationView
 {
@@ -28,7 +27,8 @@ class PaginationView
 
     /**
      * PaginationView constructor.
-     * @param array $data
+     *
+     * @param array                      $data
      * @param PaginationHandlerInterface $handler
      */
     public function __construct(array $data, PaginationHandlerInterface $handler)
@@ -79,6 +79,7 @@ class PaginationView
 
     /**
      * @param int|string $page
+     *
      * @return string
      */
     public function getUrl($page)
@@ -88,6 +89,7 @@ class PaginationView
 
     /**
      * @param int|string $pageSize
+     *
      * @return string
      */
     public function urlPageSize($pageSize)
@@ -97,6 +99,7 @@ class PaginationView
 
     /**
      * @param $page
+     *
      * @return bool
      */
     public function hasPage($page)
@@ -122,6 +125,7 @@ class PaginationView
 
     /**
      * @param int $count
+     *
      * @return array
      */
     public function iterPrevPage($count = 3)
@@ -136,11 +140,13 @@ class PaginationView
                 $pages[] = $page;
             }
         }
+
         return $pages;
     }
 
     /**
      * @param int $count
+     *
      * @return array
      */
     public function iterNextPage($count = 3)
@@ -155,6 +161,7 @@ class PaginationView
                 $pages[] = $page;
             }
         }
+
         return $pages;
     }
 }

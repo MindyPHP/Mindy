@@ -3,20 +3,20 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 21:39
+ * Time: 21:39.
  */
 
 namespace Mindy\Pagination\Handler;
 
 /**
- * Interface PaginationHandlerInterface
- * @package Mindy\Pagination\Handler
+ * Interface PaginationHandlerInterface.
  */
 interface PaginationHandlerInterface
 {
     /**
      * @param $key
      * @param $defaultPageSize
+     *
      * @return int
      */
     public function getPageSize($key, $defaultPageSize);
@@ -24,6 +24,7 @@ interface PaginationHandlerInterface
     /**
      * @param $key
      * @param int $defaultPage
+     *
      * @return int
      */
     public function getPage($key, $defaultPage = 1);
@@ -31,6 +32,7 @@ interface PaginationHandlerInterface
     /**
      * @param $key
      * @param $value
+     *
      * @return string
      */
     public function getUrlForQueryParam($key, $value);
@@ -46,7 +48,7 @@ interface PaginationHandlerInterface
      * function ($handler) {
      *      header("Location: " . $handler->getUrl(1));
      *      exit();
-     * }
+     * }.
      *
      * or throw not found exception:
      * function ($handler) {

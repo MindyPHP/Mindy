@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 22:33
+ * Time: 22:33.
  */
 
 namespace Mindy\Pagination\DataSource;
@@ -22,6 +22,7 @@ class QuerySetDataSource implements DataSourceInterface
             $source = $source->getQuerySet();
         }
         $clone = clone $source;
+
         return $clone->count();
     }
 
@@ -34,6 +35,7 @@ class QuerySetDataSource implements DataSourceInterface
             $source = $source->getQuerySet();
         }
         $clone = clone $source;
+
         return $clone->paginate($page, $pageSize)->all();
     }
 
