@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/11/2016
- * Time: 20:44
+ * Time: 20:44.
  */
 
 namespace Mindy\Bundle\MindyBundle\Form\DataTransformer;
@@ -28,6 +28,7 @@ class QuerySetTransformer implements DataTransformerInterface
         if (!is_array($value)) {
             $value = [$value];
         }
+
         return $value;
     }
 }

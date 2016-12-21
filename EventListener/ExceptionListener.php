@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 26/10/16
- * Time: 15:26
+ * Time: 15:26.
  */
 
 namespace Mindy\Bundle\MindyBundle\EventListener;
@@ -46,7 +46,7 @@ class ExceptionListener
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());
             $response->headers->replace($exception->getHeaders());
-        } else if ($exception instanceof AccessDeniedException || $exception instanceof InvalidCsrfTokenException) {
+        } elseif ($exception instanceof AccessDeniedException || $exception instanceof InvalidCsrfTokenException) {
             $response->setStatusCode(Response::HTTP_FORBIDDEN);
         } else {
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -61,11 +61,12 @@ class ExceptionListener
         $code = Response::HTTP_INTERNAL_SERVER_ERROR;
         if ($exception instanceof HttpExceptionInterface) {
             $code = $exception->getStatusCode();
-        } else if ($exception instanceof AccessDeniedException || $exception instanceof InvalidCsrfTokenException) {
+        } elseif ($exception instanceof AccessDeniedException || $exception instanceof InvalidCsrfTokenException) {
             $code = Response::HTTP_FORBIDDEN;
         }
+
         return $this->template->render(sprintf($this->path, $code), [
-            'exception' => $exception
+            'exception' => $exception,
         ]);
     }
 
@@ -73,7 +74,7 @@ class ExceptionListener
     {
         $this->logger->error($exception->getMessage(), [
             'line' => $exception->getLine(),
-            'file' => $exception->getFile()
+            'file' => $exception->getFile(),
         ]);
     }
 }

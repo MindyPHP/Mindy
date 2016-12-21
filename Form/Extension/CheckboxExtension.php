@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/11/2016
- * Time: 20:39
+ * Time: 20:39.
  */
 
 namespace Mindy\Bundle\MindyBundle\Form\Extension;
@@ -29,10 +29,10 @@ class CheckboxExtension extends AbstractTypeExtension
     {
         $builder->addModelTransformer(new CallbackTransformer(
             function ($value) {
-                return (bool)$value;
+                return (bool) $value;
             },
             function ($value) {
-                return (string)$value;
+                return (string) $value;
             }
         ));
     }
