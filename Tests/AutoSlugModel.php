@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 18/09/16
- * Time: 20:58
+ * Time: 20:58.
  */
 
 namespace Mindy\Orm\Fields\Tests;
@@ -18,11 +18,11 @@ class AutoSlugModel extends TreeModel
     {
         return array_merge(parent::getFields(), [
             'name' => [
-                'class' => CharField::class
+                'class' => CharField::class,
             ],
             'slug' => [
-                'class' => AutoSlugField::class
-            ]
+                'class' => AutoSlugField::class,
+            ],
         ]);
     }
 }

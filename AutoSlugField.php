@@ -6,8 +6,7 @@ use Mindy\Orm\ModelInterface;
 use Mindy\QueryBuilder\Expression;
 
 /**
- * Class AutoSlugField
- * @package Mindy\Orm
+ * Class AutoSlugField.
  */
 class AutoSlugField extends AbstractSlugField
 {
@@ -15,9 +14,10 @@ class AutoSlugField extends AbstractSlugField
      * @var string|null
      */
     protected $oldValue;
-    
+
     /**
-     * Internal event
+     * Internal event.
+     *
      * @param \Mindy\Orm\TreeModel|ModelInterface $model
      * @param $value
      */
@@ -30,7 +30,7 @@ class AutoSlugField extends AbstractSlugField
         }
 
         if ($model->parent) {
-            $slug = $model->parent->getAttribute($this->getAttributeName()) . '/' . ltrim($slug, '/');
+            $slug = $model->parent->getAttribute($this->getAttributeName()).'/'.ltrim($slug, '/');
         }
 
         $model->setAttribute($this->getAttributeName(), $this->uniqueUrl(ltrim($slug, '/')));
@@ -38,6 +38,7 @@ class AutoSlugField extends AbstractSlugField
 
     /**
      * @param $slug
+     *
      * @return string
      */
     protected function getLastSegment($slug)
@@ -51,6 +52,7 @@ class AutoSlugField extends AbstractSlugField
 
     /**
      * @param $slug
+     *
      * @return string
      */
     protected function getParentSegment($slug)
@@ -63,7 +65,8 @@ class AutoSlugField extends AbstractSlugField
     }
 
     /**
-     * Internal event
+     * Internal event.
+     *
      * @param \Mindy\Orm\TreeModel|ModelInterface $model
      * @param $value
      */
@@ -78,7 +81,7 @@ class AutoSlugField extends AbstractSlugField
         if ($model->parent) {
             $slug = implode('/', [
                 $this->getParentSegment($model->parent->getAttribute($this->getAttributeName())),
-                $slug
+                $slug,
             ]);
         }
 
@@ -87,18 +90,18 @@ class AutoSlugField extends AbstractSlugField
         $conditions = [
             'lft__gte' => $model->getAttribute('lft'),
             'rgt__lte' => $model->getAttribute('rgt'),
-            'root' => $model->getAttribute('root')
+            'root' => $model->getAttribute('root'),
         ];
 
         $attributeValue = $model->getOldAttribute($this->getAttributeName());
         if (empty($attributeValue)) {
             $attributeValue = $model->getAttribute($this->getAttributeName());
         }
-        $expr = "REPLACE([[" . $this->getAttributeName() . "]], @" . $attributeValue . "@, @" . $slug . "@)";
+        $expr = 'REPLACE([['.$this->getAttributeName().']], @'.$attributeValue.'@, @'.$slug.'@)';
 
         $qs = $model->objects()->filter($conditions);
         $qs->update([
-            $this->getAttributeName() => new Expression($expr)
+            $this->getAttributeName() => new Expression($expr),
         ]);
 
         $model->setAttribute($this->getAttributeName(), $slug);
