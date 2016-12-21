@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 06/12/16
- * Time: 12:02
+ * Time: 12:02.
  */
 
 namespace Mindy\Bundle\PaginationBundle\Library;
@@ -34,10 +34,11 @@ class PaginationLibrary extends Library
                 if (null === $this->template) {
                     throw new \LogicException('Template component not injected to PaginationLibrary');
                 }
+
                 return $this->template->render($template, [
-                    'pager' => $view
+                    'pager' => $view,
                 ]);
-            }
+            },
         ];
     }
 

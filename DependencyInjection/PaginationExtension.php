@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 06/12/16
- * Time: 11:10
+ * Time: 11:10.
  */
 
 namespace Mindy\Bundle\PaginationBundle\DependencyInjection;
@@ -18,14 +18,14 @@ class PaginationExtension extends Extension
     /**
      * Loads a specific configuration.
      *
-     * @param array $configs An array of configuration values
+     * @param array            $configs   An array of configuration values
      * @param ContainerBuilder $container A ContainerBuilder instance
      *
      * @throws \InvalidArgumentException When provided tag is not defined in this extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
     }
 }

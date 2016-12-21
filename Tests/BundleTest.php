@@ -3,14 +3,13 @@
  * Created by PhpStorm.
  * User: max
  * Date: 06/12/16
- * Time: 11:25
+ * Time: 11:25.
  */
 
 namespace Mindy\Bundle\PaginationBundle\Tests;
 
 use Mindy\Bundle\PaginationBundle\DependencyInjection\PaginationExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\RequestContext;
