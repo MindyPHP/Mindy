@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/11/2016
- * Time: 20:39
+ * Time: 20:39.
  */
 
 namespace Mindy\Bundle\FileBundle\Form\Extension;
@@ -23,6 +23,7 @@ class FileExtension extends AbstractTypeExtension
 
     /**
      * FileExtension constructor.
+     *
      * @param FileDataTransformer $fileDataTransformer
      */
     public function __construct(FileDataTransformer $fileDataTransformer)
@@ -46,23 +47,23 @@ class FileExtension extends AbstractTypeExtension
     }
 
     /**
-     * Add the image_path option
+     * Add the image_path option.
      *
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefined([
-            'media_path'
+            'media_path',
         ]);
     }
 
     /**
-     * Pass the image URL to the view
+     * Pass the image URL to the view.
      *
-     * @param FormView $view
+     * @param FormView      $view
      * @param FormInterface $form
-     * @param array $options
+     * @param array         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
@@ -79,5 +80,4 @@ class FileExtension extends AbstractTypeExtension
             $view->vars['file_url'] = $fileUrl;
         }
     }
-
 }
