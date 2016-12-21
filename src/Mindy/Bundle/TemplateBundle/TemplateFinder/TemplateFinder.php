@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 21:19
+ * Time: 21:19.
  */
 
 namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
@@ -15,6 +15,7 @@ class TemplateFinder implements TemplateFinderInterface
 
     /**
      * TemplateFinder constructor.
+     *
      * @param $basePath
      * @param string $templatesDir
      */
@@ -26,6 +27,7 @@ class TemplateFinder implements TemplateFinderInterface
 
     /**
      * @param $templatePath
+     *
      * @return null|string absolute path of template if founded
      */
     public function find($templatePath)
@@ -35,7 +37,7 @@ class TemplateFinder implements TemplateFinderInterface
             return $path;
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -44,7 +46,7 @@ class TemplateFinder implements TemplateFinderInterface
     public function getPaths()
     {
         return [
-            implode(DIRECTORY_SEPARATOR, [$this->basePath, $this->templatesDir])
+            implode(DIRECTORY_SEPARATOR, [$this->basePath, $this->templatesDir]),
         ];
     }
 }

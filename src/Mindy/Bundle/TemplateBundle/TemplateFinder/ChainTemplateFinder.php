@@ -3,14 +3,13 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 21:21
+ * Time: 21:21.
  */
 
 namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
 
 /**
- * Class ChainTemplateFinder
- * @package Mindy\Bundle\TemplateBundle\TemplateFinder
+ * Class ChainTemplateFinder.
  */
 class ChainTemplateFinder implements TemplateFinderInterface
 {
@@ -21,6 +20,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
 
     /**
      * Finder constructor.
+     *
      * @param array $finders
      */
     public function __construct(array $finders = [])
@@ -38,6 +38,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
 
     /**
      * @param $templatePath
+     *
      * @return mixed
      */
     public function find($templatePath)
@@ -49,6 +50,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
                 $templates[] = $template;
             }
         }
+
         return array_shift($templates);
     }
 
@@ -61,6 +63,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
         foreach ($this->finders as $finder) {
             $paths = array_merge($paths, $finder->getPaths());
         }
+
         return $paths;
     }
 }

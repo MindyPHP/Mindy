@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 21:51
+ * Time: 21:51.
  */
 
 namespace Mindy\Bundle\TemplateBundle\Tests;
@@ -15,7 +15,7 @@ class KernelTestCase extends TestCase
 {
     protected function deleteTmpDir($testCase)
     {
-        if (!file_exists($dir = sys_get_temp_dir() . '/' . Kernel::VERSION . '/' . $testCase)) {
+        if (!file_exists($dir = sys_get_temp_dir().'/'.Kernel::VERSION.'/'.$testCase)) {
             return;
         }
 
@@ -25,7 +25,7 @@ class KernelTestCase extends TestCase
 
     protected static function getKernelClass()
     {
-        require_once __DIR__ . '/AppKernel.php';
+        require_once __DIR__.'/AppKernel.php';
 
         return 'Mindy\Bundle\TemplateBundle\Tests\AppKernel';
     }
@@ -41,7 +41,7 @@ class KernelTestCase extends TestCase
         return new $class(
             $options['test_case'],
             isset($options['root_config']) ? $options['root_config'] : 'config.yml',
-            isset($options['environment']) ? $options['environment'] : 'frameworkbundletest' . strtolower($options['test_case']),
+            isset($options['environment']) ? $options['environment'] : 'frameworkbundletest'.strtolower($options['test_case']),
             isset($options['debug']) ? $options['debug'] : true
         );
     }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 09/10/2016
- * Time: 22:09
+ * Time: 22:09.
  */
 
 namespace Mindy\Bundle\TemplateBundle\VariableProvider;
@@ -13,8 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
- * Class AppVariableProvider
- * @package Mindy\Bundle\TemplateBundle\VariableProvider
+ * Class AppVariableProvider.
  */
 class AppVariableProvider implements VariableProviderInterface, ContainerAwareInterface
 {
@@ -43,16 +42,16 @@ class AppVariableProvider implements VariableProviderInterface, ContainerAwareIn
     protected function getUser()
     {
         if (!$this->container->has('security.token_storage')) {
-            return null;
+            return;
         }
 
         if (null === $token = $this->container->get('security.token_storage')->getToken()) {
-            return null;
+            return;
         }
 
         if (!is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
-            return null;
+            return;
         }
 
         return $user;

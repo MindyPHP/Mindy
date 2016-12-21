@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 23:17
+ * Time: 23:17.
  */
 
 namespace Mindy\Bundle\TemplateBundle\Tests;
@@ -20,7 +20,7 @@ class TestLibrary extends Library
         return [
             'foo' => function () {
                 return 'bar';
-            }
+            },
         ];
     }
 

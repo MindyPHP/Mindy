@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 21:19
+ * Time: 21:19.
  */
 
 namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
@@ -15,7 +15,8 @@ class BundlesTemplateFinder implements TemplateFinderInterface
 
     /**
      * BundlesTemplateFinder constructor.
-     * @param array $bundlesDirs
+     *
+     * @param array  $bundlesDirs
      * @param string $templatesDir
      */
     public function __construct(array $bundlesDirs, $templatesDir = 'templates')
@@ -26,6 +27,7 @@ class BundlesTemplateFinder implements TemplateFinderInterface
 
     /**
      * @param $templatePath
+     *
      * @return null|string absolute path of template if founded
      */
     public function find($templatePath)
@@ -38,7 +40,7 @@ class BundlesTemplateFinder implements TemplateFinderInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -48,10 +50,11 @@ class BundlesTemplateFinder implements TemplateFinderInterface
     {
         $paths = [];
         foreach ($this->bundlesDirs as $dir) {
-            if ($extra = glob($dir . DIRECTORY_SEPARATOR . '*' . DIRECTORY_SEPARATOR . $this->templatesDir)) {
+            if ($extra = glob($dir.DIRECTORY_SEPARATOR.'*'.DIRECTORY_SEPARATOR.$this->templatesDir)) {
                 $paths = array_merge($paths, $extra);
             }
         }
+
         return $paths;
     }
 }

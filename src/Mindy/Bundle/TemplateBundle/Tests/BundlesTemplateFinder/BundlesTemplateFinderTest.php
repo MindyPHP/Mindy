@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
- * Time: 21:51
+ * Time: 21:51.
  */
 
 namespace Mindy\Bundle\TemplateBundle\Tests;
@@ -17,21 +17,21 @@ class BundlesTemplateFinderTest extends KernelTestCase
         $kernel = $this->createKernel([
             'debug' => true,
             'environment' => 'dev',
-            'test_case' => 'BundlesTemplateFinder'
+            'test_case' => 'BundlesTemplateFinder',
         ]);
         $kernel->boot();
 
         $finder = new BundlesTemplateFinder([
-            __DIR__ . "/AppBundle",
-            __DIR__ . "/Workspace/FooBundle",
-            __DIR__ . "/Workspace/ExampleBundle",
+            __DIR__.'/AppBundle',
+            __DIR__.'/Workspace/FooBundle',
+            __DIR__.'/Workspace/ExampleBundle',
         ]);
         $this->assertEquals([
-            __DIR__ . "/AppBundle/Resources/templates",
-            __DIR__ . "/Workspace/FooBundle/Resources/templates",
+            __DIR__.'/AppBundle/Resources/templates',
+            __DIR__.'/Workspace/FooBundle/Resources/templates',
         ], $finder->getPaths());
 
-        $this->assertEquals(__DIR__ . "/AppBundle/Resources/templates/main.html", $finder->find('main.html'));
+        $this->assertEquals(__DIR__.'/AppBundle/Resources/templates/main.html', $finder->find('main.html'));
 
         $this->assertTrue($kernel->getContainer()->has('template.finder.bundles'));
         $this->assertTrue($kernel->getContainer()->has('template.finder.chain'));

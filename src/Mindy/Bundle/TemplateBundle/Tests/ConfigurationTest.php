@@ -32,19 +32,19 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             'helpers' => [],
             'bundles' => [
                 'enabled' => true,
-                'templatesDir' => 'templates'
+                'templatesDir' => 'templates',
             ],
             'theme' => [
                 'enabled' => false,
                 'basePath' => '%kernel.root_dir%/Resources',
                 'theme' => 'default',
-                'templatesDir' => 'templates'
+                'templatesDir' => 'templates',
             ],
             'templates' => [
                 'enabled' => true,
                 'basePath' => '%kernel.root_dir%/Resources',
-                'templatesDir' => 'templates'
-            ]
+                'templatesDir' => 'templates',
+            ],
         ];
     }
 }
