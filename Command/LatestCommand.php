@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 10/10/2016
- * Time: 20:45
+ * Time: 20:45.
  */
 
 namespace Mindy\Bundle\OrmBundle\Command;

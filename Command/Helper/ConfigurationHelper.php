@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 10/10/2016
- * Time: 20:07
+ * Time: 20:07.
  */
 
 namespace Mindy\Bundle\OrmBundle\Command\Helper;
@@ -23,6 +23,7 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
 
     /**
      * ModuleConfigurationHelper constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -40,8 +41,10 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
 
     /**
      * @param InputInterface $input
-     * @param OutputWriter $outputWriter
+     * @param OutputWriter   $outputWriter
+     *
      * @return Configuration
+     *
      * @throws \Exception
      */
     public function getMigrationConfig(InputInterface $input, OutputWriter $outputWriter)
@@ -61,7 +64,7 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
             'Mindy\Bundle\%s\Migrations', $bundle->getName()
         ));
 
-        $dir = sprintf("%s/Migrations", $bundle->getPath());
+        $dir = sprintf('%s/Migrations', $bundle->getPath());
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
@@ -72,12 +75,14 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
 
     /**
      * @param string $name
+     *
      * @return string
      */
     public function normalizeName(string $name) : string
     {
         $cleanName = str_replace('Bundle', '', $name);
         $normalizedName = trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $cleanName)), '_');
-        return sprintf("%s_migrations", $normalizedName);
+
+        return sprintf('%s_migrations', $normalizedName);
     }
 }
