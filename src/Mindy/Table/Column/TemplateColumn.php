@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 28/11/16
- * Time: 09:56
+ * Time: 09:56.
  */
 
 namespace Mindy\Component\Table\Column;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\RouterInterface;
 class TemplateColumn extends AbstractColumn
 {
     protected $renderer;
-    
+
     protected $template;
 
     public function __construct(RequestStack $requestStack, RouterInterface $router, Renderer $renderer)

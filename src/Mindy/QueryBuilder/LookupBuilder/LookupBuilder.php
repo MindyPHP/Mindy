@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 10:39
+ * Time: 10:39.
  */
 
 namespace Mindy\QueryBuilder\LookupBuilder;
@@ -17,7 +17,7 @@ class LookupBuilder extends Base
     {
         if (substr_count($rawLookup, $this->separator) > 1) {
             if (empty($this->callback)) {
-                throw new Exception('Unknown lookup: ' . $rawLookup);
+                throw new Exception('Unknown lookup: '.$rawLookup);
             } else {
                 return $this->runCallback($queryBuilder, explode($this->separator, $rawLookup), $value);
             }
@@ -25,15 +25,17 @@ class LookupBuilder extends Base
 
         if (substr_count($rawLookup, $this->separator) == 0) {
             $rawLookup = $this->fetchColumnName($rawLookup);
+
             return [$this->default, $rawLookup, $value];
         } else {
             $lookupNodes = explode($this->separator, $rawLookup);
             if ($this->hasLookup(end($lookupNodes)) && substr_count($rawLookup, $this->separator) == 1) {
                 list($column, $lookup) = explode($this->separator, $rawLookup);
                 if ($this->hasLookup($lookup) == false) {
-                    throw new Exception('Unknown lookup:' . $lookup);
+                    throw new Exception('Unknown lookup:'.$lookup);
                 }
                 $column = $this->fetchColumnName($column);
+
                 return [$lookup, $column, $value];
             } else {
                 return $this->runCallback($queryBuilder, $lookupNodes, $value);
@@ -54,7 +56,7 @@ class LookupBuilder extends Base
     {
         $conditions = [];
         foreach ($where as $lookup => $value) {
-            /**
+            /*
              * Parse new QOr([[username => 1], [username => 2]])
              */
             if (is_numeric($lookup) && is_array($value)) {
@@ -63,6 +65,7 @@ class LookupBuilder extends Base
             }
             $conditions[] = $this->parseLookup($queryBuilder, $lookup, $value);
         }
+
         return $conditions;
     }
 }

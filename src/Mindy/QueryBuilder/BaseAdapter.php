@@ -3,17 +3,15 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 10:50
+ * Time: 10:50.
  */
 
 namespace Mindy\QueryBuilder;
 
-use Exception;
 use Mindy\QueryBuilder\Aggregation\Aggregation;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\Q\Q;
-use Mindy\QueryBuilder\Q\QAnd;
 
 abstract class BaseAdapter implements ISQLGenerator
 {
@@ -49,8 +47,11 @@ abstract class BaseAdapter implements ISQLGenerator
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains '(', '[[' or '{{',
      * then this method will do nothing.
+     *
      * @param string $name column name
+     *
      * @return string the properly quoted column name
+     *
      * @see quoteSimpleColumnName()
      */
     public function quoteColumn($name)
@@ -59,37 +60,43 @@ abstract class BaseAdapter implements ISQLGenerator
             return $name;
         }
         if (($pos = strrpos($name, '.')) !== false) {
-            $prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
+            $prefix = $this->quoteTableName(substr($name, 0, $pos)).'.';
             $name = substr($name, $pos + 1);
         } else {
             $prefix = '';
         }
-        return $prefix . $this->quoteSimpleColumnName($name);
+
+        return $prefix.$this->quoteSimpleColumnName($name);
     }
 
     /**
      * Quotes a simple column name for use in a query.
      * A simple column name should contain the column name only without any prefix.
      * If the column name is already quoted or is the asterisk character '*', this method will do nothing.
+     *
      * @param string $name column name
+     *
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
+        return strpos($name, '"') !== false || $name === '*' ? $name : '"'.$name.'"';
     }
 
     /**
      * Returns the actual name of a given table name.
      * This method will strip off curly brackets from the given table name
      * and replace the percentage character '%' with [[Connection::tablePrefix]].
+     *
      * @param string $name the table name to be converted
+     *
      * @return string the real name of the given table name
      */
     public function getRawTableName($name)
     {
         if (strpos($name, '{{') !== false) {
             $name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
+
             return str_replace('%', $this->getTablePrefix(), $name);
         } else {
             return $name;
@@ -106,11 +113,13 @@ abstract class BaseAdapter implements ISQLGenerator
 
     /**
      * @param $pdo
+     *
      * @return $this
      */
     public function setDriver($pdo)
     {
         $this->driver = $pdo;
+
         return $this;
     }
 
@@ -125,7 +134,9 @@ abstract class BaseAdapter implements ISQLGenerator
      * character are not supported because they are not standard SQL.
      *
      * @param string $str string to be quoted
+     *
      * @return string the properly quoted string
+     *
      * @see http://www.php.net/manual/en/function.PDO-quote.php
      */
     public function quoteValue($str)
@@ -142,8 +153,11 @@ abstract class BaseAdapter implements ISQLGenerator
      * If the table name contains schema prefix, the prefix will also be properly quoted.
      * If the table name is already quoted or contains '(' or '{{',
      * then this method will do nothing.
+     *
      * @param string $name table name
+     *
      * @return string the properly quoted table name
+     *
      * @see quoteSimpleTableName()
      */
     public function quoteTableName($name)
@@ -158,6 +172,7 @@ abstract class BaseAdapter implements ISQLGenerator
         foreach ($parts as $i => $part) {
             $parts[$i] = $this->quoteSimpleTableName($part);
         }
+
         return implode('.', $parts);
     }
 
@@ -165,22 +180,25 @@ abstract class BaseAdapter implements ISQLGenerator
      * Quotes a simple table name for use in a query.
      * A simple table name should contain the table name only without any schema prefix.
      * If the table name is already quoted, this method will do nothing.
+     *
      * @param string $name table name
+     *
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "'") !== false ? $name : "'" . $name . "'";
+        return strpos($name, "'") !== false ? $name : "'".$name."'";
     }
 
     public function quoteSql($sql)
     {
         $tablePrefix = $this->tablePrefix;
+
         return preg_replace_callback('/(\\{\\{(%?[\w\-\. ]+%?)\\}\\}|\\[\\[([\w\-\. ]+)\\]\\])|\\@([\w\-\. \/\%\:]+)\\@/',
             function ($matches) use ($tablePrefix) {
                 if (isset($matches[4])) {
                     return $this->quoteValue($this->convertToDbValue($matches[4]));
-                } else if (isset($matches[3])) {
+                } elseif (isset($matches[3])) {
                     return $this->quoteColumn($matches[3]);
                 } else {
                     return str_replace('%', $tablePrefix, $this->quoteTableName($matches[2]));
@@ -192,41 +210,48 @@ abstract class BaseAdapter implements ISQLGenerator
     {
         if ($rawValue === true || $rawValue === false || $rawValue === 'true' || $rawValue === 'false') {
             return $this->getBoolean($rawValue);
-        } else if ($rawValue === 'null' || $rawValue === null) {
+        } elseif ($rawValue === 'null' || $rawValue === null) {
             return 'NULL';
         }
+
         return $rawValue;
     }
 
     /**
      * Checks to see if the given limit is effective.
+     *
      * @param mixed $limit the given limit
-     * @return boolean whether the limit is effective
+     *
+     * @return bool whether the limit is effective
      */
     public function hasLimit($limit)
     {
-        return (int)$limit > 0;
+        return (int) $limit > 0;
     }
 
     /**
      * Checks to see if the given offset is effective.
+     *
      * @param mixed $offset the given offset
-     * @return boolean whether the offset is effective
+     *
+     * @return bool whether the offset is effective
      */
     public function hasOffset($offset)
     {
-        return (int)$offset > 0;
+        return (int) $offset > 0;
     }
 
     /**
-     * @param integer $limit
-     * @param integer $offset
+     * @param int $limit
+     * @param int $offset
+     *
      * @return string the LIMIT and OFFSET clauses
      */
     abstract public function sqlLimitOffset($limit = null, $offset = null);
 
     /**
      * @param $columns
+     *
      * @return array|string
      */
     public function buildColumns($columns)
@@ -234,8 +259,9 @@ abstract class BaseAdapter implements ISQLGenerator
         if (!is_array($columns)) {
             if ($columns instanceof Aggregation) {
                 $columns->setFieldsSql($this->buildColumns($columns->getFields()));
+
                 return $this->quoteSql($columns->toSQL());
-            } else if (strpos($columns, '(') !== false) {
+            } elseif (strpos($columns, '(') !== false) {
                 return $this->quoteSql($columns);
             } else {
                 $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
@@ -244,23 +270,26 @@ abstract class BaseAdapter implements ISQLGenerator
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
                 $columns[$i] = $this->quoteSql($column->toSQL());
-            } else if (strpos($column, 'AS') !== false) {
+            } elseif (strpos($column, 'AS') !== false) {
                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
                     list(, $rawColumn, $rawAlias) = $matches;
-                    $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
+                    $columns[$i] = $this->quoteColumn($rawColumn).' AS '.$this->quoteColumn($rawAlias);
                 }
-            } else if (strpos($column, '(') === false) {
+            } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->quoteColumn($column);
             }
         }
+
         return is_array($columns) ? implode(', ', $columns) : $columns;
     }
 
     /**
      * Builds a SQL statement for adding a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint.
-     * @param string $tableName the table that the primary key constraint will be added to.
-     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
+     *
+     * @param string       $name      the name of the primary key constraint.
+     * @param string       $tableName the table that the primary key constraint will be added to.
+     * @param string|array $columns   comma separated string or array of columns that the primary key will consist of.
+     *
      * @return string the SQL statement for adding a primary key constraint to an existing table.
      */
     public function sqlAddPrimaryKey($tableName, $name, $columns)
@@ -271,32 +300,36 @@ abstract class BaseAdapter implements ISQLGenerator
         foreach ($columns as $i => $col) {
             $columns[$i] = $this->quoteColumn($col);
         }
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' ADD CONSTRAINT '
-        . $this->quoteColumn($name) . ' PRIMARY KEY (' . implode(', ', $columns) . ')';
+
+        return 'ALTER TABLE '.$this->quoteTableName($tableName).' ADD CONSTRAINT '
+        .$this->quoteColumn($name).' PRIMARY KEY ('.implode(', ', $columns).')';
     }
 
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
+     *
+     * @param string $name      the name of the primary key constraint to be removed.
      * @param string $tableName the table that the primary key constraint will be removed from.
+     *
      * @return string the SQL statement for removing a primary key constraint from an existing table.
      */
     public function sqlDropPrimaryKey($tableName, $name)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP PRIMARY KEY ' . $this->quoteColumn($name);
+        return 'ALTER TABLE '.$this->quoteTableName($tableName).' DROP PRIMARY KEY '.$this->quoteColumn($name);
     }
 
     public function sqlAlterColumn($tableName, $column, $type)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' CHANGE '
-        . $this->quoteColumn($column) . ' '
-        . $this->quoteColumn($column) . ' '
-        . $type;
+        return 'ALTER TABLE '.$this->quoteTableName($tableName).' CHANGE '
+        .$this->quoteColumn($column).' '
+        .$this->quoteColumn($column).' '
+        .$type;
     }
 
     /**
      * @param $tableName
      * @param array $rows
+     *
      * @return string
      */
     public function sqlInsert($tableName, array $rows)
@@ -313,22 +346,22 @@ abstract class BaseAdapter implements ISQLGenerator
                 foreach ($row as $value) {
                     if ($value instanceof Expression) {
                         $value = $value->toSQL();
-                    } else if ($value === true || $value === 'true') {
+                    } elseif ($value === true || $value === 'true') {
                         $value = 'TRUE';
-                    } else if ($value === false || $value === 'false') {
+                    } elseif ($value === false || $value === 'false') {
                         $value = 'FALSE';
-                    } else if ($value === null || $value === 'null') {
+                    } elseif ($value === null || $value === 'null') {
                         $value = 'NULL';
-                    } else if (is_string($value)) {
+                    } elseif (is_string($value)) {
                         $value = $this->quoteValue($value);
                     }
 
                     $record[] = $value;
                 }
-                $values[] = '(' . implode(', ', $record) . ')';
+                $values[] = '('.implode(', ', $record).')';
             }
 
-            $sql = 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+            $sql = 'INSERT INTO '.$this->quoteTableName($tableName).' ('.implode(', ', $columns).') VALUES '.implode(', ', $values);
 
             return $this->quoteSql($sql);
         } else {
@@ -339,20 +372,20 @@ abstract class BaseAdapter implements ISQLGenerator
             $values = array_map(function ($value) {
                 if ($value instanceof Expression) {
                     $value = $value->toSQL();
-                } else if ($value === true || $value === 'true') {
+                } elseif ($value === true || $value === 'true') {
                     $value = 'TRUE';
-                } else if ($value === false || $value === 'false') {
+                } elseif ($value === false || $value === 'false') {
                     $value = 'FALSE';
-                } else if ($value === null || $value === 'null') {
+                } elseif ($value === null || $value === 'null') {
                     $value = 'NULL';
-                } else if (is_string($value)) {
+                } elseif (is_string($value)) {
                     $value = $this->quoteValue($value);
                 }
 
                 return $value;
             }, $rows);
 
-            $sql = 'INSERT INTO ' . $this->quoteTableName($tableName) . ' (' . implode(', ', $columns) . ') VALUES (' . implode(', ', $values) . ')';
+            $sql = 'INSERT INTO '.$this->quoteTableName($tableName).' ('.implode(', ', $columns).') VALUES ('.implode(', ', $values).')';
 
             return $this->quoteSql($sql);
         }
@@ -369,18 +402,18 @@ abstract class BaseAdapter implements ISQLGenerator
                 // TODO refact, use getSqlType
                 if ($value === 'true' || $value === true) {
                     $val = 'TRUE';
-                } else if ($value === null || $value === 'null') {
+                } elseif ($value === null || $value === 'null') {
                     $val = 'NULL';
-                } else if ($value === false || $value === 'false') {
+                } elseif ($value === false || $value === 'false') {
                     $val = 'FALSE';
                 } else {
                     $val = $this->quoteValue($value);
                 }
             }
-            $parts[] = $this->quoteColumn($column) . '=' . $val;
+            $parts[] = $this->quoteColumn($column).'='.$val;
         }
 
-        return 'UPDATE ' . $this->quoteTableName($tableName) . ' SET ' . implode(', ', $parts);
+        return 'UPDATE '.$this->quoteTableName($tableName).' SET '.implode(', ', $parts);
     }
 
     /**
@@ -395,6 +428,7 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $having
      * @param $union
      * @param $distinct
+     *
      * @return string
      */
     public function generateSelectSQL($select, $from, $where, $order, $group, $limit, $offset, $join, $having, $union, $distinct)
@@ -419,16 +453,16 @@ abstract class BaseAdapter implements ISQLGenerator
             '{having}' => $this->sqlHaving($having),
             '{join}' => $join,
             '{limit_offset}' => $this->sqlLimitOffset($limit, $offset),
-            '{union}' => empty($union) ? '' : $unionSql . $orderSql
+            '{union}' => empty($union) ? '' : $unionSql.$orderSql,
         ]);
     }
-
 
     /**
      * @param $tableName
      * @param array $columns
-     * @param null $options
-     * @param bool $ifNotExists
+     * @param null  $options
+     * @param bool  $ifNotExists
+     *
      * @return string
      */
     public function sqlCreateTable($tableName, $columns, $options = null, $ifNotExists = false)
@@ -438,21 +472,23 @@ abstract class BaseAdapter implements ISQLGenerator
             $cols = [];
             foreach ($columns as $name => $type) {
                 if (is_string($name)) {
-                    $cols[] = "\t" . $this->quoteColumn($name) . ' ' . $type;
+                    $cols[] = "\t".$this->quoteColumn($name).' '.$type;
                 } else {
-                    $cols[] = "\t" . $type;
+                    $cols[] = "\t".$type;
                 }
             }
-            $sql = ($ifNotExists ? "CREATE TABLE IF NOT EXISTS " : "CREATE TABLE ") . $this->quoteTableName($tableName) . " (\n" . implode(",\n", $cols) . "\n)";
+            $sql = ($ifNotExists ? 'CREATE TABLE IF NOT EXISTS ' : 'CREATE TABLE ').$this->quoteTableName($tableName)." (\n".implode(",\n", $cols)."\n)";
         } else {
-            $sql = ($ifNotExists ? "CREATE TABLE IF NOT EXISTS " : "CREATE TABLE ") . $this->quoteTableName($tableName) . " " . $this->quoteSql($columns);
+            $sql = ($ifNotExists ? 'CREATE TABLE IF NOT EXISTS ' : 'CREATE TABLE ').$this->quoteTableName($tableName).' '.$this->quoteSql($columns);
         }
-        return empty($options) ? $sql : $sql . ' ' . $options;
+
+        return empty($options) ? $sql : $sql.' '.$options;
     }
 
     /**
      * @param $oldTableName
      * @param $newTableName
+     *
      * @return string
      */
     abstract public function sqlRenameTable($oldTableName, $newTableName);
@@ -461,42 +497,47 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName
      * @param bool $ifExists
      * @param bool $cascade
+     *
      * @return string
      */
     public function sqlDropTable($tableName, $ifExists = false, $cascade = false)
     {
         $tableName = $this->getRawTableName($tableName);
-        return ($ifExists ? "DROP TABLE IF EXISTS " : "DROP TABLE ") . $this->quoteTableName($tableName);
+
+        return ($ifExists ? 'DROP TABLE IF EXISTS ' : 'DROP TABLE ').$this->quoteTableName($tableName);
     }
 
     /**
      * @param $tableName
      * @param bool $cascade
+     *
      * @return string
      */
     public function sqlTruncateTable($tableName, $cascade = false)
     {
-        return "TRUNCATE TABLE " . $this->quoteTableName($tableName);
+        return 'TRUNCATE TABLE '.$this->quoteTableName($tableName);
     }
 
     /**
      * @param $tableName
      * @param $name
+     *
      * @return string
      */
     abstract public function sqlDropIndex($tableName, $name);
 
     /**
      * @param $value
+     *
      * @return string
      */
     public function getSqlType($value)
     {
         if ($value === 'true' || $value === true) {
             return 'TRUE';
-        } else if ($value === null || $value === 'null') {
+        } elseif ($value === null || $value === 'null') {
             return 'NULL';
-        } else if ($value === false || $value === 'false') {
+        } elseif ($value === false || $value === 'false') {
             return 'FALSE';
         } else {
             return $value;
@@ -506,17 +547,19 @@ abstract class BaseAdapter implements ISQLGenerator
     /**
      * @param $tableName
      * @param $column
+     *
      * @return string
      */
     public function sqlDropColumn($tableName, $column)
     {
-        return 'ALTER TABLE ' . $this->quoteTableName($tableName) . ' DROP COLUMN ' . $this->quoteColumn($column);
+        return 'ALTER TABLE '.$this->quoteTableName($tableName).' DROP COLUMN '.$this->quoteColumn($column);
     }
 
     /**
      * @param $tableName
      * @param $oldName
      * @param $newName
+     *
      * @return mixed
      */
     abstract public function sqlRenameColumn($tableName, $oldName, $newName);
@@ -524,6 +567,7 @@ abstract class BaseAdapter implements ISQLGenerator
     /**
      * @param $tableName
      * @param $name
+     *
      * @return mixed
      */
     abstract public function sqlDropForeignKey($tableName, $name);
@@ -536,21 +580,23 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $refColumns
      * @param null $delete
      * @param null $update
+     *
      * @return string
      */
     public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
-        $sql = 'ALTER TABLE ' . $this->quoteTableName($tableName)
-            . ' ADD CONSTRAINT ' . $this->quoteColumn($name)
-            . ' FOREIGN KEY (' . $this->buildColumns($columns) . ')'
-            . ' REFERENCES ' . $this->quoteTableName($refTable)
-            . ' (' . $this->buildColumns($refColumns) . ')';
+        $sql = 'ALTER TABLE '.$this->quoteTableName($tableName)
+            .' ADD CONSTRAINT '.$this->quoteColumn($name)
+            .' FOREIGN KEY ('.$this->buildColumns($columns).')'
+            .' REFERENCES '.$this->quoteTableName($refTable)
+            .' ('.$this->buildColumns($refColumns).')';
         if ($delete !== null) {
-            $sql .= ' ON DELETE ' . $delete;
+            $sql .= ' ON DELETE '.$delete;
         }
         if ($update !== null) {
-            $sql .= ' ON UPDATE ' . $update;
+            $sql .= ' ON UPDATE '.$update;
         }
+
         return $sql;
     }
 
@@ -561,24 +607,28 @@ abstract class BaseAdapter implements ISQLGenerator
 
     /**
      * @param $value
+     *
      * @return string
      */
     abstract public function getBoolean($value = null);
 
     /**
      * @param null $value
+     *
      * @return string
      */
     abstract public function getDateTime($value = null);
 
     /**
      * @param null $value
+     *
      * @return string
      */
     abstract public function getDate($value = null);
 
     /**
      * @param null $value
+     *
      * @return mixed
      */
     public function getTimestamp($value = null)
@@ -590,6 +640,7 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName
      * @param $column
      * @param $type
+     *
      * @return string
      */
     abstract public function sqlAddColumn($tableName, $column, $type);
@@ -598,19 +649,21 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName
      * @param $name
      * @param array $columns
-     * @param bool $unique
+     * @param bool  $unique
+     *
      * @return string
      */
     public function sqlCreateIndex($tableName, $name, array $columns, $unique = false)
     {
         return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')
-        . $this->quoteTableName($name) . ' ON '
-        . $this->quoteTableName($tableName)
-        . ' (' . $this->buildColumns($columns) . ')';
+        .$this->quoteTableName($name).' ON '
+        .$this->quoteTableName($tableName)
+        .' ('.$this->buildColumns($columns).')';
     }
 
     /**
      * @param $tables
+     *
      * @return string
      */
     public function sqlFrom($tables)
@@ -620,7 +673,7 @@ abstract class BaseAdapter implements ISQLGenerator
         }
 
         if (!is_array($tables)) {
-            $tables = (array)$tables;
+            $tables = (array) $tables;
         }
         $quotedTableNames = [];
         foreach ($tables as $tableAlias => $table) {
@@ -630,9 +683,9 @@ abstract class BaseAdapter implements ISQLGenerator
                 $tableRaw = $this->getRawTableName($table);
             }
             if (strpos($tableRaw, 'SELECT') !== false) {
-                $quotedTableNames[] = '(' . $tableRaw . ')' . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
+                $quotedTableNames[] = '('.$tableRaw.')'.(is_numeric($tableAlias) ? '' : ' AS '.$this->quoteTableName($tableAlias));
             } else {
-                $quotedTableNames[] = $this->quoteTableName($tableRaw) . (is_numeric($tableAlias) ? '' : ' AS ' . $this->quoteTableName($tableAlias));
+                $quotedTableNames[] = $this->quoteTableName($tableRaw).(is_numeric($tableAlias) ? '' : ' AS '.$this->quoteTableName($tableAlias));
             }
         }
 
@@ -644,13 +697,14 @@ abstract class BaseAdapter implements ISQLGenerator
      * @param $tableName string
      * @param $on string|array
      * @param $alias string
+     *
      * @return string
      */
     public function sqlJoin($joinType, $tableName, $on, $alias)
     {
         if (is_string($tableName)) {
             $tableName = $this->getRawTableName($tableName);
-        } else if ($tableName instanceof QueryBuilder) {
+        } elseif ($tableName instanceof QueryBuilder) {
             $tableName = $tableName->toSQL();
         }
 
@@ -660,22 +714,23 @@ abstract class BaseAdapter implements ISQLGenerator
         } else {
             foreach ($on as $leftColumn => $rightColumn) {
                 if ($rightColumn instanceof Expression) {
-                    $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteSql($rightColumn->toSQL());
+                    $onSQL[] = $this->quoteColumn($leftColumn).'='.$this->quoteSql($rightColumn->toSQL());
                 } else {
-                    $onSQL[] = $this->quoteColumn($leftColumn) . '=' . $this->quoteColumn($rightColumn);
+                    $onSQL[] = $this->quoteColumn($leftColumn).'='.$this->quoteColumn($rightColumn);
                 }
             }
         }
 
         if (strpos($tableName, 'SELECT') !== false) {
-            return $joinType . ' (' . $this->quoteSql($tableName) . ')' . (empty($alias) ? '' : ' AS ' . $this->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
+            return $joinType.' ('.$this->quoteSql($tableName).')'.(empty($alias) ? '' : ' AS '.$this->quoteColumn($alias)).' ON '.implode(',', $onSQL);
         } else {
-            return $joinType . ' ' . $this->quoteTableName($tableName) . (empty($alias) ? '' : ' AS ' . $this->quoteColumn($alias)) . ' ON ' . implode(',', $onSQL);
+            return $joinType.' '.$this->quoteTableName($tableName).(empty($alias) ? '' : ' AS '.$this->quoteColumn($alias)).' ON '.implode(',', $onSQL);
         }
     }
 
     /**
      * @param $where string|array
+     *
      * @return string
      */
     public function sqlWhere($where)
@@ -684,11 +739,12 @@ abstract class BaseAdapter implements ISQLGenerator
             return '';
         }
 
-        return ' WHERE ' . $this->quoteSql($where);
+        return ' WHERE '.$this->quoteSql($where);
     }
 
     /**
      * @param $having
+     *
      * @return string
      */
     public function sqlHaving($having)
@@ -703,11 +759,12 @@ abstract class BaseAdapter implements ISQLGenerator
             $sql = $this->quoteSql($having);
         }
 
-        return empty($sql) ? '' : ' HAVING ' . $sql;
+        return empty($sql) ? '' : ' HAVING '.$sql;
     }
 
     /**
      * @param $unions
+     *
      * @return string
      */
     public function sqlUnion($union, $all = false)
@@ -721,26 +778,30 @@ abstract class BaseAdapter implements ISQLGenerator
         } else {
             $unionSQL = $this->quoteSql($union);
         }
-        return ($all ? 'UNION ALL' : 'UNION') . ' (' . $unionSQL . ')';
+
+        return ($all ? 'UNION ALL' : 'UNION').' ('.$unionSQL.')';
     }
 
     /**
      * @param $tableName
      * @param $sequenceName
+     *
      * @return string
      */
     abstract public function sqlResetSequence($tableName, $sequenceName);
 
     /**
-     * @param bool $check
+     * @param bool   $check
      * @param string $schema
      * @param string $table
+     *
      * @return string
      */
     abstract public function sqlCheckIntegrity($check = true, $schema = '', $table = '');
 
     /**
      * @param $columns
+     *
      * @return string
      */
     public function sqlGroupBy($columns)
@@ -754,6 +815,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $quotedColumns = array_map(function ($column) {
                 return $this->quoteColumn($column);
             }, $columns);
+
             return implode(', ', $quotedColumns);
         }
 
@@ -768,6 +830,7 @@ abstract class BaseAdapter implements ISQLGenerator
     /**
      * @param $columns
      * @param null $options
+     *
      * @return string
      */
     public function sqlOrderBy($columns, $options = null)
@@ -781,11 +844,12 @@ abstract class BaseAdapter implements ISQLGenerator
             $quotedColumns = array_map(function ($column) {
                 $temp = explode(' ', $column);
                 if (count($temp) == 2) {
-                    return $this->quoteColumn($temp[0]) . ' ' . $temp[1];
+                    return $this->quoteColumn($temp[0]).' '.$temp[1];
                 } else {
                     return $this->quoteColumn($column);
                 }
             }, $columns);
+
             return implode(', ', $quotedColumns);
         }
 
@@ -803,22 +867,23 @@ abstract class BaseAdapter implements ISQLGenerator
                 $column = $key;
             }
 
-            $order[] = $this->quoteColumn($column) . ' ' . $direction;
+            $order[] = $this->quoteColumn($column).' '.$direction;
         }
 
-        return implode(', ', $order) . (empty($options) ? '' : ' ' . $options);
+        return implode(', ', $order).(empty($options) ? '' : ' '.$options);
     }
 
     /**
      * @param array|null|string $columns
-     * @param null $distinct
+     * @param null              $distinct
+     *
      * @return string
      */
     public function sqlSelect($columns, $distinct = null)
     {
         $selectSql = $distinct ? 'SELECT DISTINCT ' : 'SELECT ';
         if (empty($columns)) {
-            return $selectSql . '*';
+            return $selectSql.'*';
         }
 
         if (is_array($columns) === false) {
@@ -829,7 +894,7 @@ abstract class BaseAdapter implements ISQLGenerator
         foreach ($columns as $column => $subQuery) {
             if ($subQuery instanceof QueryBuilder) {
                 $subQuery = $subQuery->toSQL();
-            } else if ($subQuery instanceof Expression) {
+            } elseif ($subQuery instanceof Expression) {
                 $subQuery = $this->quoteSql($subQuery->toSQL());
             } else {
                 $subQuery = $this->quoteSql($subQuery);
@@ -842,9 +907,9 @@ abstract class BaseAdapter implements ISQLGenerator
 
             if (!empty($subQuery)) {
                 if (strpos($subQuery, 'SELECT') !== false) {
-                    $value = '(' . $subQuery . ') AS ' . $this->quoteColumn($column);
+                    $value = '('.$subQuery.') AS '.$this->quoteColumn($column);
                 } else {
-                    $value = $this->quoteColumn($subQuery) . ' AS ' . $this->quoteColumn($column);
+                    $value = $this->quoteColumn($subQuery).' AS '.$this->quoteColumn($column);
                 }
             } else {
                 if (strpos($column, ',') === false && strpos($column, 'AS') !== false) {
@@ -855,8 +920,8 @@ abstract class BaseAdapter implements ISQLGenerator
                         $rawAlias = '';
                     }
 
-                    $value = empty($rawAlias) ? $this->quoteColumn(trim($rawColumn)) : $this->quoteColumn(trim($rawColumn)) . ' AS ' . $this->quoteColumn(trim($rawAlias));
-                } else if (strpos($column, ',') !== false) {
+                    $value = empty($rawAlias) ? $this->quoteColumn(trim($rawColumn)) : $this->quoteColumn(trim($rawColumn)).' AS '.$this->quoteColumn(trim($rawAlias));
+                } elseif (strpos($column, ',') !== false) {
                     $newSelect = [];
                     foreach (explode(',', $column) as $item) {
                         // if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $item, $matches)) {
@@ -870,10 +935,9 @@ abstract class BaseAdapter implements ISQLGenerator
                             $rawAlias = '';
                         }
 
-                        $newSelect[] = empty($rawAlias) ? $this->quoteColumn(trim($rawColumn)) : $this->quoteColumn(trim($rawColumn)) . ' AS ' . $this->quoteColumn(trim($rawAlias));
+                        $newSelect[] = empty($rawAlias) ? $this->quoteColumn(trim($rawColumn)) : $this->quoteColumn(trim($rawColumn)).' AS '.$this->quoteColumn(trim($rawAlias));
                     }
                     $value = implode(', ', $newSelect);
-
                 } else {
                     $value = $this->quoteColumn($column);
                 }
@@ -881,7 +945,7 @@ abstract class BaseAdapter implements ISQLGenerator
             $select[] = $value;
         }
 
-        return $selectSql . implode(', ', $select);
+        return $selectSql.implode(', ', $select);
     }
 
     public function generateInsertSQL($tableName, $values)
@@ -913,8 +977,10 @@ abstract class BaseAdapter implements ISQLGenerator
     }
 
     /**
-     * Prepare value for db
+     * Prepare value for db.
+     *
      * @param $value
+     *
      * @return int
      */
     public function prepareValue($value)

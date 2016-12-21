@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:04
+ * Time: 23:04.
  */
 
 namespace Mindy\Component\Table\Column;
@@ -77,6 +77,7 @@ abstract class AbstractColumn implements ColumnInterface
         if (null === ($path = $this->path)) {
             $path = is_array($row) ? sprintf('[%s]', $this->name) : $this->name;
         }
+
         return $this->accessor->getValue($row, $path);
     }
 
@@ -104,12 +105,13 @@ abstract class AbstractColumn implements ColumnInterface
         if ($this->sorting) {
             $request = $this->getRequest();
             $currentOrder = $request->query->get('order', '');
-            $column = $currentOrder == $this->name ? '-' . $this->name : $this->name;
+            $column = $currentOrder == $this->name ? '-'.$this->name : $this->name;
 
             $url = $this->router->generate(
                 $request->attributes->get('_route'),
                 array_merge($request->query->all(), ['order' => $column])
             );
+
             return sprintf('<a href="%s">%s</a>', $url, $label);
         }
 

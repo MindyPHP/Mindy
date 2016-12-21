@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class LogicalExpression
- * @package Mindy\Template
+ * Class LogicalExpression.
  */
 class LogicalExpression extends BinaryExpression
 {

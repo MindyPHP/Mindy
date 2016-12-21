@@ -5,8 +5,7 @@ namespace Mindy\Template\Adapter;
 use RuntimeException;
 
 /**
- * Class FileAdapter
- * @package Mindy\Template
+ * Class FileAdapter.
  */
 class FileAdapter implements Adapter
 {
@@ -17,6 +16,7 @@ class FileAdapter implements Adapter
 
     /**
      * FileAdapter constructor.
+     *
      * @param $source
      */
     public function __construct($source)
@@ -42,12 +42,13 @@ class FileAdapter implements Adapter
 
     /**
      * @param $path
+     *
      * @return bool
      */
     public function isReadable($path)
     {
         foreach ($this->source as $source) {
-            if (is_readable($source . '/' . $path)) {
+            if (is_readable($source.'/'.$path)) {
                 return true;
             }
         }
@@ -57,30 +58,33 @@ class FileAdapter implements Adapter
 
     /**
      * @param $path
+     *
      * @return int|null
      */
     public function lastModified($path)
     {
         foreach ($this->source as $source) {
-            if (is_file($source . '/' . $path)) {
-                return filemtime($source . '/' . $path);
+            if (is_file($source.'/'.$path)) {
+                return filemtime($source.'/'.$path);
             }
         }
-        return null;
+
+        return;
     }
 
     /**
      * @param $path
+     *
      * @return null|string
      */
     public function getContents($path)
     {
         foreach ($this->source as $source) {
-            if (is_file($source . '/' . $path)) {
-                return file_get_contents($source . '/' . $path);
+            if (is_file($source.'/'.$path)) {
+                return file_get_contents($source.'/'.$path);
             }
         }
-        return null;
+
+        return;
     }
 }
-

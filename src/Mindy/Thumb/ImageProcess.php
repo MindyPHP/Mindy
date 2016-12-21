@@ -11,8 +11,7 @@ use Imagine\Image\Metadata\DefaultMetadataReader;
 use Imagine\Image\Point;
 
 /**
- * Class ImageProcess
- * @package Mindy\Orm
+ * Class ImageProcess.
  */
 trait ImageProcess
 {
@@ -36,6 +35,7 @@ trait ImageProcess
 
     /**
      * Returns the `Imagine` object that supports various image manipulations.
+     *
      * @return ImagineInterface the `Imagine` object
      */
     public static function getImagine()
@@ -49,7 +49,9 @@ trait ImageProcess
 
     /**
      * Creates an `Imagine` object based on the specified [[driver]].
+     *
      * @return ImagineInterface the new `Imagine` object
+     *
      * @throws Exception if [[driver]] is unknown or the system doesn't support any [[driver]].
      */
     protected static function createImagine()
@@ -57,15 +59,16 @@ trait ImageProcess
         $drivers = [
             self::$DRIVER_GMAGICK,
             self::$DRIVER_IMAGICK,
-            self::$DRIVER_GD2
+            self::$DRIVER_GD2,
         ];
 
-        foreach ((array)$drivers as $driver) {
+        foreach ((array) $drivers as $driver) {
             switch ($driver) {
                 case self::$DRIVER_GMAGICK:
                     if (class_exists('Gmagick', false)) {
                         $imagine = new \Imagine\Gmagick\Imagine();
                         $imagine->setMetadataReader(new DefaultMetadataReader());
+
                         return $imagine;
                     }
                     break;
@@ -73,6 +76,7 @@ trait ImageProcess
                     if (class_exists('Imagick', false)) {
                         $imagine = new \Imagine\Imagick\Imagine();
                         $imagine->setMetadataReader(new DefaultMetadataReader());
+
                         return $imagine;
                     }
                     break;
@@ -80,6 +84,7 @@ trait ImageProcess
                     if (function_exists('gd_info')) {
                         $imagine = new \Imagine\Gd\Imagine();
                         $imagine->setMetadataReader(new DefaultMetadataReader());
+
                         return $imagine;
                     }
                     break;
@@ -87,7 +92,7 @@ trait ImageProcess
                     throw new Exception("Unknown driver: $driver");
             }
         }
-        throw new Exception("Your system does not support any of these drivers: " . implode(',', $drivers));
+        throw new Exception('Your system does not support any of these drivers: '.implode(',', $drivers));
     }
 
     /**
@@ -95,7 +100,6 @@ trait ImageProcess
      * @param $width
      * @param $height
      * @param $method
-     * @return null
      */
     public function resize(ImageInterface $img, $width, $height, $method) : ImageInterface
     {
@@ -138,7 +142,8 @@ trait ImageProcess
     /**
      * @param ImageInterface $source
      * @param ImageInterface $watermark
-     * @param string $position
+     * @param string         $position
+     *
      * @return ImageInterface
      */
     public function applyWatermark(ImageInterface $source, ImageInterface $watermark, string $position = 'center') : ImageInterface
@@ -255,6 +260,7 @@ trait ImageProcess
      * @param $source
      * @param null $width
      * @param null $height
+     *
      * @return array
      */
     protected function imageScale(ImageInterface $source, $width = null, $height = null) : array
@@ -263,13 +269,13 @@ trait ImageProcess
         $ratio = $size->getWidth() / $size->getHeight();
         if ($width && !$height) {
             $height = $width / $ratio;
-        } else if (!$width && $height) {
+        } elseif (!$width && $height) {
             $width = $height * $ratio;
         }
 
         return [
-            (int)$width,
-            (int)$height
+            (int) $width,
+            (int) $height,
         ];
     }
 }

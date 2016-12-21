@@ -9,8 +9,7 @@ use IteratorAggregate;
 use Traversable;
 
 /**
- * Class ContextIterator
- * @package Mindy\Template
+ * Class ContextIterator.
  */
 class ContextIterator implements Iterator
 {
@@ -63,7 +62,7 @@ class ContextIterator implements Iterator
             $this->sequence = new ArrayIterator($sequence);
         } else {
             $this->length = 0;
-            $this->sequence = new ArrayIterator;
+            $this->sequence = new ArrayIterator();
         }
         $this->parent = $parent;
     }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:02
+ * Time: 23:02.
  */
 
 namespace Mindy\Component\Table;
@@ -43,7 +43,7 @@ class Registry implements ContainerAwareInterface
     {
         $fqcn = get_class($type);
 
-        return new $fqcn;
+        return new $fqcn();
     }
 
     /**
@@ -71,19 +71,21 @@ class Registry implements ContainerAwareInterface
 
     /**
      * @param $name
+     *
      * @return ColumnInterface
      */
     public function getColumn($name)
     {
         if ($this->hasColumn($name)) {
             $column = $this->columns[$name];
+
             return $this->container->get($column);
-        } else if (class_exists($name) && in_array(ColumnInterface::class, class_implements($name))) {
-            return $this->columns[$name] = new $name;
+        } elseif (class_exists($name) && in_array(ColumnInterface::class, class_implements($name))) {
+            return $this->columns[$name] = new $name();
         }
 
         throw new \RuntimeException(sprintf(
-            "Unknown column type %s", $name
+            'Unknown column type %s', $name
         ));
     }
 }

@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class FilterExpression
- * @package Mindy\Template
+ * Class FilterExpression.
  */
 class FilterExpression extends Expression
 {
@@ -31,18 +30,21 @@ class FilterExpression extends Expression
     public function setAutoEscape($autoEscape = true)
     {
         $this->autoEscape = $autoEscape;
+
         return $this;
     }
 
     public function appendFilter($filter)
     {
         $this->filters[] = $filter;
+
         return $this;
     }
 
     public function prependFilter($filter)
     {
         array_unshift($this->filters, $filter);
+
         return $this;
     }
 
@@ -72,7 +74,7 @@ class FilterExpression extends Expression
             if (in_array($name, $rawNames)) {
                 continue;
             }
-            $compiler->raw('$this->helper(\'' . $name . '\', ');
+            $compiler->raw('$this->helper(\''.$name.'\', ');
             $postponed[] = $arguments;
         }
 
@@ -87,5 +89,3 @@ class FilterExpression extends Expression
         }
     }
 }
-
-

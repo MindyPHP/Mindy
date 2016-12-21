@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 01/12/2016
- * Time: 21:44
+ * Time: 21:44.
  */
 
 namespace Mindy\Component\Table;
@@ -22,7 +22,6 @@ class AbstractTableType implements TableTypeInterface
 
     public function buildTable(TableBuilder $tableBuilder, array $options)
     {
-
     }
 
     /**

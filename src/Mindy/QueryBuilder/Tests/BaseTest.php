@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 16:53
+ * Time: 16:53.
  */
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Mindy\QueryBuilder\QueryBuilder;
@@ -27,12 +26,12 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         parent::setUp();
-        $config = require(__DIR__ . '/config/' . (@getenv('TRAVIS') ? 'config_travis.php' : 'config.php'));
+        $config = require __DIR__.'/config/'.(@getenv('TRAVIS') ? 'config_travis.php' : 'config.php');
         $driverConfig = [];
-        if (isset($config[$this->driver]) && extension_loaded('pdo_' . $this->driver)) {
+        if (isset($config[$this->driver]) && extension_loaded('pdo_'.$this->driver)) {
             $driverConfig = $config[$this->driver];
         } else {
-            $this->markTestSkipped('Missing config for ' . $this->driver . ' driver');
+            $this->markTestSkipped('Missing config for '.$this->driver.' driver');
         }
 
         $fixtures = $driverConfig['fixture'];
@@ -55,7 +54,7 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
             return;
         }
 
-        /** @var \PDOStatement $stmt */
+        /* @var \PDOStatement $stmt */
         if ($connection instanceof \Doctrine\DBAL\Driver\PDOConnection) {
             // PDO Drivers
             try {
@@ -66,7 +65,7 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
                     // Required due to "MySQL has gone away!" issue
                     $stmt->fetch();
                     $stmt->closeCursor();
-                    $lines++;
+                    ++$lines;
                 } while ($stmt->nextRowset());
             } catch (\PDOException $e) {
                 throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
@@ -101,6 +100,7 @@ abstract class BaseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param $sql
+     *
      * @return string
      */
     protected function quoteSql($sql)

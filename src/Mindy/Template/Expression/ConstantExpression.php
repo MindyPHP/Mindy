@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class ConstantExpression
- * @package Mindy\Template
+ * Class ConstantExpression.
  */
 class ConstantExpression extends Expression
 {
@@ -24,4 +23,3 @@ class ConstantExpression extends Expression
         $compiler->repr($this->value);
     }
 }
-

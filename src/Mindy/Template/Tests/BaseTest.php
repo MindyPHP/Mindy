@@ -6,12 +6,11 @@ use Mindy\Template\Loader;
 use Mindy\Template\Renderer;
 
 /**
- *
- *
  * All rights reserved.
  *
  * @author Falaleev Maxim
  * @email max@studio107.ru
+ *
  * @version 1.0
  * @company Studio107
  * @site http://studio107.ru
@@ -21,7 +20,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
-        foreach (glob(__DIR__ . '/cache/*.php') as $file) {
+        foreach (glob(__DIR__.'/cache/*.php') as $file) {
             unlink($file);
         }
     }
@@ -29,9 +28,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     protected function getTemplate()
     {
         return new Loader([
-            'source' => __DIR__ . '/templates',
-            'target' => __DIR__ . '/cache',
-            'mode' => Loader::RECOMPILE_ALWAYS
+            'source' => __DIR__.'/templates',
+            'target' => __DIR__.'/cache',
+            'mode' => Loader::RECOMPILE_ALWAYS,
         ]);
     }
 
@@ -64,7 +63,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
             ['global_variable.html', '1', ['global_variable' => 1]],
             ['loop.html', '123456', ['data' => [
                 [1, 2, 3],
-                [4, 5, 6]
+                [4, 5, 6],
             ]]],
         ];
     }
@@ -103,6 +102,7 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerTemplate
+     *
      * @param $template
      * @param array $data
      * @param $result
@@ -117,14 +117,14 @@ class BaseTest extends \PHPUnit_Framework_TestCase
     {
         $renderer = new Renderer([
             'source' => function () {
-                $templates = [__DIR__ . '/templates'];
-                $modulesTemplates = glob(__DIR__ . '/Modules/*/templates');
-                $themesTemplates = glob(__DIR__ . '/themes/*/templates');
+                $templates = [__DIR__.'/templates'];
+                $modulesTemplates = glob(__DIR__.'/Modules/*/templates');
+                $themesTemplates = glob(__DIR__.'/themes/*/templates');
 
                 return array_merge($templates, $modulesTemplates, $themesTemplates);
             },
-            'target' => __DIR__ . '/cache',
-            'mode' => Renderer::RECOMPILE_ALWAYS
+            'target' => __DIR__.'/cache',
+            'mode' => Renderer::RECOMPILE_ALWAYS,
         ]);
         $this->assertEquals('foobar', $renderer->render('example.html', ['data' => 'foobar']));
         $this->assertEquals('foobar', $renderer->render('core/index.html', ['data' => 'foobar']));

@@ -5,8 +5,7 @@ namespace Mindy\Template\Helper;
 use Iterator;
 
 /**
- * Class RangeIterator
- * @package Mindy\Template
+ * Class RangeIterator.
  */
 class RangeIterator implements Iterator
 {
@@ -41,6 +40,7 @@ class RangeIterator implements Iterator
         if (isset($seed)) {
             mt_srand($seed);
         }
+
         return $this->upper >= $this->lower ?
             mt_rand($this->lower, $this->upper) :
             mt_rand($this->upper, $this->lower);
@@ -68,6 +68,7 @@ class RangeIterator implements Iterator
     public function next()
     {
         $this->current += $this->step;
+
         return $this;
     }
 
@@ -76,4 +77,3 @@ class RangeIterator implements Iterator
         return $this->current;
     }
 }
-

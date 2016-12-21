@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/06/16
- * Time: 10:02
+ * Time: 10:02.
  */
 
 namespace Mindy\QueryBuilder;
@@ -29,9 +29,11 @@ class QueryBuilderFactory
 
     /**
      * QueryBuilder constructor.
-     * @param Connection $connection
-     * @param BaseAdapter $adapter
+     *
+     * @param Connection     $connection
+     * @param BaseAdapter    $adapter
      * @param ILookupBuilder $lookupBuilder
+     *
      * @internal param ICallback $callback
      */
     public function __construct(Connection $connection, BaseAdapter $adapter, ILookupBuilder $lookupBuilder)

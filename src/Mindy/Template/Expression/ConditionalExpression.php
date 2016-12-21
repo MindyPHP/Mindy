@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class ConditionalExpression
- * @package Mindy\Template
+ * Class ConditionalExpression.
  */
 class ConditionalExpression extends Expression
 {
@@ -34,4 +33,3 @@ class ConditionalExpression extends Expression
         $compiler->raw('))');
     }
 }
-

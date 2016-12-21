@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class ParentNode
- * @package Mindy\Template
+ * Class ParentNode.
  */
 class ParentNode extends Node
 {
@@ -23,9 +22,8 @@ class ParentNode extends Node
     {
         $compiler->addTraceInfo($this, $indent);
         $compiler->raw(
-            '$this->displayParent(\'' . $this->name .
-            '\', $context, $blocks, $macros, $imports);' . "\n", $indent
+            '$this->displayParent(\''.$this->name.
+            '\', $context, $blocks, $macros, $imports);'."\n", $indent
         );
     }
 }
-

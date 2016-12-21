@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/06/16
- * Time: 15:35
+ * Time: 15:35.
  */
 
 namespace Mindy\QueryBuilder\LookupBuilder;
@@ -52,37 +52,44 @@ abstract class Base implements ILookupBuilder
 
     /**
      * @param ILookupCollection $lookupCollection
+     *
      * @return $this
      */
     public function addLookupCollection(ILookupCollection $lookupCollection)
     {
         $this->_lookupCollections[] = $lookupCollection;
+
         return $this;
     }
 
     /**
      * @param mixed $callback
+     *
      * @return $this
      */
     public function setCallback($callback)
     {
         $this->callback = $callback;
+
         return $this;
     }
 
     /**
      * @param $callback
+     *
      * @return $this
      */
     public function setJoinCallback($callback)
     {
         $this->joinCallback = $callback;
+
         return $this;
     }
-    
+
     public function setFetchColumnCallback($callback)
     {
         $this->fetchColumnCallback = $callback;
+
         return $this;
     }
 
@@ -108,16 +115,18 @@ abstract class Base implements ILookupBuilder
     public function runCallback(QueryBuilder $queryBuilder, $lookupNodes, $value)
     {
         if ($this->callback === null) {
-            return null;
+            return;
         }
+
         return $this->callback->run($queryBuilder, $this, $lookupNodes, $value);
     }
 
     public function runJoinCallback(QueryBuilder $queryBuilder, $lookupNodes)
     {
         if ($this->joinCallback === null) {
-            return null;
+            return;
         }
+
         return $this->joinCallback->run($queryBuilder, $this, $lookupNodes);
     }
 
@@ -133,6 +142,7 @@ abstract class Base implements ILookupBuilder
 
     /**
      * @param $lookup
+     *
      * @return bool
      */
     public function hasLookup($lookup)
@@ -142,15 +152,17 @@ abstract class Base implements ILookupBuilder
                 return true;
             }
         }
+
         return false;
     }
-
 
     /**
      * @param $lookup
      * @param $column
      * @param $value
+     *
      * @return string
+     *
      * @throws Exception
      * @exception \Exception
      */
@@ -161,7 +173,7 @@ abstract class Base implements ILookupBuilder
                 return $collection->process($adapter, $lookup, $column, $value);
             }
         }
-        throw new Exception('Unknown lookup: ' . $lookup . ', column: ' . $column . ', value: ' . (is_array($value) ? print_r($value, true) : $value));
+        throw new Exception('Unknown lookup: '.$lookup.', column: '.$column.', value: '.(is_array($value) ? print_r($value, true) : $value));
     }
 
     abstract public function parse(QueryBuilder $queryBuilder, array $where);

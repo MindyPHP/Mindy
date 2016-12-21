@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:02
+ * Time: 23:02.
  */
 
 namespace Mindy\Component\Table;
@@ -22,13 +22,14 @@ class Table
     {
         return [
             'columns' => $this->columns,
-            'rows' => $this->data
+            'rows' => $this->data,
         ];
     }
 
     public function setData(array $data)
     {
         $this->data = $data;
+
         return $this;
     }
 
@@ -36,6 +37,7 @@ class Table
     {
         $view = new TableView();
         $view->setData($this->buildView());
+
         return $view;
     }
 }

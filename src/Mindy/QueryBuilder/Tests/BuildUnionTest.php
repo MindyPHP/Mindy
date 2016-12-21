@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 17:38
+ * Time: 17:38.
  */
 
 namespace Mindy\QueryBuilder\Tests;

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 16:56
+ * Time: 16:56.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -137,7 +137,7 @@ class BuildJoinTest extends BaseTest
         $qb->getLookupBuilder()->setJoinCallback($this->joinCallback);
         $qb->from('customer')->select([
             new Min('user__id', 'id_min'),
-            new Max('user__id', 'id_max')
+            new Max('user__id', 'id_max'),
         ]);
         $this->assertSql('', $qb->buildJoin());
         $this->assertSql('SELECT MIN([[user_1]].[[id]]) AS [[id_min]], MAX([[user_1]].[[id]]) AS [[id_max]] FROM [[customer]] LEFT JOIN [[user]] AS [[user_1]] ON [[user_1]].[[id]]=[[customer]].[[user_id]]', $qb->toSQL());

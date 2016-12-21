@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class MacroNode
- * @package Mindy\Template
+ * Class MacroNode.
  */
 class MacroNode extends Node
 {
@@ -28,18 +27,18 @@ class MacroNode extends Node
         $compiler->raw("\n");
         $compiler->addTraceInfo($this, $indent, false);
         $compiler->raw(
-            'public function macro_' . $this->name .
-            '($params = array(), $context = array(), $macros = array(),' .
-            ' $imports = array())' .
+            'public function macro_'.$this->name.
+            '($params = array(), $context = array(), $macros = array(),'.
+            ' $imports = array())'.
             "\n", $indent
         );
         $compiler->raw("{\n", $indent);
 
-        $compiler->raw('$context = $params + array(' . "\n", $indent + 1);
+        $compiler->raw('$context = $params + array('."\n", $indent + 1);
         $i = 0;
         foreach ($this->args as $key => $val) {
             $compiler->raw(
-                "'$key' => !isset(\$params['$key']) &&" .
+                "'$key' => !isset(\$params['$key']) &&".
                 " isset(\$params[$i]) ? \$params[$i] : ",
                 $indent + 2
             );
@@ -55,4 +54,3 @@ class MacroNode extends Node
         $compiler->raw("}\n", $indent);
     }
 }
-

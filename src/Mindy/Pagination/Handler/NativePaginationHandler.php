@@ -3,15 +3,15 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 21:35
+ * Time: 21:35.
  */
 
 namespace Mindy\Pagination\Handler;
+
 use Mindy\Pagination\Exception\IncorrectPageException;
 
 /**
- * Class NativePaginationHandler
- * @package Mindy\Pagination\Handler
+ * Class NativePaginationHandler.
  */
 class NativePaginationHandler implements PaginationHandlerInterface
 {
@@ -25,12 +25,12 @@ class NativePaginationHandler implements PaginationHandlerInterface
      */
     public function getPageSize($key, $defaultPageSize)
     {
-        $pageSize = isset($_GET[$key]) ? (int)$_GET[$key] : $defaultPageSize;
+        $pageSize = isset($_GET[$key]) ? (int) $_GET[$key] : $defaultPageSize;
         if (empty($pageSize) || $pageSize < 1) {
             $pageSize = $defaultPageSize;
         }
 
-        return (int)$pageSize;
+        return (int) $pageSize;
     }
 
     /**
@@ -38,12 +38,12 @@ class NativePaginationHandler implements PaginationHandlerInterface
      */
     public function getPage($key, $defaultPage = 1)
     {
-        $page = isset($_GET[$key]) ? (int)$_GET[$key] : 1;
+        $page = isset($_GET[$key]) ? (int) $_GET[$key] : 1;
         if (empty($page) || $page < 1) {
             $page = $defaultPage;
         }
 
-        return (int)$page;
+        return (int) $page;
     }
 
     /**
@@ -57,7 +57,8 @@ class NativePaginationHandler implements PaginationHandlerInterface
         }
         parse_str($uri['query'], $params);
         $params[$key] = $value;
-        return $uri['path'] . "?" . http_build_query($params);
+
+        return $uri['path'].'?'.http_build_query($params);
     }
 
     /**
@@ -69,7 +70,7 @@ class NativePaginationHandler implements PaginationHandlerInterface
     }
 
     /**
-     * Throw exception or redirect user to correct page
+     * Throw exception or redirect user to correct page.
      */
     public function wrongPageCallback()
     {

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 30/06/16
- * Time: 10:07
+ * Time: 10:07.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -18,10 +18,10 @@ abstract class SchemaTest extends BaseTest
         switch ($this->getConnection()->getDriver()->getName()) {
             case 'sqlite':
             case 'pgsql':
-                $this->assertEquals('RANDOM()' , $adapter->getRandomOrder());
+                $this->assertEquals('RANDOM()', $adapter->getRandomOrder());
                 break;
             case 'mysql':
-                $this->assertEquals('RAND()' , $adapter->getRandomOrder());
+                $this->assertEquals('RAND()', $adapter->getRandomOrder());
                 break;
         }
     }
@@ -40,8 +40,8 @@ abstract class SchemaTest extends BaseTest
         $this->assertEquals('2016-07-22', $a->getDate($timestamp));
         $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime($timestamp));
 
-        $this->assertEquals('2016-07-22', $a->getDate((string)$timestamp));
-        $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime((string)$timestamp));
+        $this->assertEquals('2016-07-22', $a->getDate((string) $timestamp));
+        $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime((string) $timestamp));
 
         $this->assertEquals('2016-07-22', $a->getDate('2016-07-22 13:54:09'));
         $this->assertEquals('2016-07-22 13:54:09', $a->getDateTime('2016-07-22 13:54:09'));

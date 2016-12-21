@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class OutputNode
- * @package Mindy\Template
+ * Class OutputNode.
  */
 class OutputNode extends Node
 {
@@ -30,4 +29,3 @@ class OutputNode extends Node
         $compiler->raw(";\n");
     }
 }
-

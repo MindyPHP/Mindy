@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 22/06/16
- * Time: 12:46
+ * Time: 12:46.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -11,14 +11,12 @@ namespace Mindy\QueryBuilder\Tests;
 use Exception;
 use Mindy\QueryBuilder\Interfaces\IAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
-use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
-use Mindy\QueryBuilder\Database\Mysql\Adapter;
-use Mindy\QueryBuilder\QueryBuilder;
 
 class LookupLibrary implements ILookupCollection
 {
     /**
      * @param $lookup
+     *
      * @return bool
      */
     public function has($lookup)
@@ -31,17 +29,19 @@ class LookupLibrary implements ILookupCollection
      * @param $lookup
      * @param $column
      * @param $value
+     *
      * @return string
+     *
      * @throws Exception
      */
     public function process(IAdapter $adapter, $lookup, $column, $value)
     {
         switch ($lookup) {
             case 'foo':
-                return $adapter->quoteColumn($column) . ' ??? ' . $adapter->quoteValue($value);
+                return $adapter->quoteColumn($column).' ??? '.$adapter->quoteValue($value);
 
             default:
-                throw new Exception('Unknown lookup: ' . $lookup);
+                throw new Exception('Unknown lookup: '.$lookup);
         }
     }
 }

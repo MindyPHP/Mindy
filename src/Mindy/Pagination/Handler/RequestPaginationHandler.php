@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 21:38
+ * Time: 21:38.
  */
 
 namespace Mindy\Pagination\Handler;
@@ -14,8 +14,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Class RequestPaginationHandler
- * @package Mindy\Pagination\Handler
+ * Class RequestPaginationHandler.
  */
 class RequestPaginationHandler implements PaginationHandlerInterface
 {
@@ -36,7 +35,8 @@ class RequestPaginationHandler implements PaginationHandlerInterface
 
     /**
      * RequestPaginationHandler constructor.
-     * @param RequestStack $requestStack
+     *
+     * @param RequestStack          $requestStack
      * @param UrlGeneratorInterface $urlGenerator
      */
     public function __construct(RequestStack $requestStack, UrlGeneratorInterface $urlGenerator)
@@ -55,7 +55,7 @@ class RequestPaginationHandler implements PaginationHandlerInterface
             return $defaultPageSize;
         }
 
-        return (int)$pageSize;
+        return (int) $pageSize;
     }
 
     /**
@@ -68,7 +68,7 @@ class RequestPaginationHandler implements PaginationHandlerInterface
             $page = $defaultPage;
         }
 
-        return (int)$page;
+        return (int) $page;
     }
 
     /**
@@ -95,7 +95,7 @@ class RequestPaginationHandler implements PaginationHandlerInterface
     }
 
     /**
-     * Throw exception or redirect user to correct page
+     * Throw exception or redirect user to correct page.
      */
     public function wrongPageCallback()
     {

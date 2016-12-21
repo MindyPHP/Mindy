@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/06/16
- * Time: 11:59
+ * Time: 11:59.
  */
 
 namespace Mindy\QueryBuilder\Q;
@@ -50,12 +50,14 @@ abstract class Q
     public function setLookupBuilder(ILookupBuilder $lookupBuilder)
     {
         $this->lookupBuilder = $lookupBuilder;
+
         return $this;
     }
 
     public function setAdapter(IAdapter $adapter)
     {
         $this->adapter = $adapter;
+
         return $this;
     }
 
@@ -67,6 +69,7 @@ abstract class Q
     public function addWhere($where)
     {
         $this->where[] = $where;
+
         return $this;
     }
 
@@ -104,6 +107,7 @@ abstract class Q
 
     /**
      * @param array $where
+     *
      * @return string
      */
     protected function parseConditions(QueryBuilder $queryBuilder, $where)
@@ -119,7 +123,7 @@ abstract class Q
             $condition = $where['___condition'];
             if ($this->isWherePart($childWhere)) {
                 $whereSql = $this->parseConditions($queryBuilder, $childWhere);
-                $sql .= '(' . $whereSql . ') ' . strtoupper($operator) . ' (' . $this->parsePart($condition, $operator) . ')';
+                $sql .= '('.$whereSql.') '.strtoupper($operator).' ('.$this->parsePart($condition, $operator).')';
             } else {
                 $sql .= $this->parsePart($queryBuilder, $childWhere, $operator);
             }
@@ -136,7 +140,9 @@ abstract class Q
 
     /**
      * @param $part
+     *
      * @return string
+     *
      * @throws Exception
      */
     protected function parsePart(QueryBuilder $queryBuilder, $part, $operator = null)
@@ -144,38 +150,40 @@ abstract class Q
         if ($operator === null) {
             $operator = $this->getOperator();
         }
-        
+
         if (is_string($part)) {
             return $part;
-        } else if (is_array($part)) {
+        } elseif (is_array($part)) {
             $sql = [];
             foreach ($part as $key => $value) {
                 if ($part instanceof QueryBuilder) {
                     $sql[] = $part->toSQL();
-                } else if ($value instanceof Q) {
-                    $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';
-                } else if (is_numeric($key) && is_array($value)) {
-                    $sql[] = '(' . $this->parsePart($queryBuilder, $value) . ')';
+                } elseif ($value instanceof self) {
+                    $sql[] = '('.$this->parsePart($queryBuilder, $value).')';
+                } elseif (is_numeric($key) && is_array($value)) {
+                    $sql[] = '('.$this->parsePart($queryBuilder, $value).')';
                 } else {
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($queryBuilder, $key, $value);
                     if (empty($this->_tableAlias) === false && strpos($column, '.') === false) {
-                        $column = $this->_tableAlias . '.' . $column;
+                        $column = $this->_tableAlias.'.'.$column;
                     }
                     $sql[] = $this->lookupBuilder->runLookup($this->adapter, $lookup, $column, $lookupValue);
                 }
             }
-            return implode(' ' . $operator . ' ', $sql);
-        } else if ($part instanceof Expression) {
+
+            return implode(' '.$operator.' ', $sql);
+        } elseif ($part instanceof Expression) {
             return $this->adapter->quoteSql($part->toSQL());
-        } else if ($part instanceof Q) {
+        } elseif ($part instanceof self) {
             $part->setLookupBuilder($this->lookupBuilder);
             $part->setAdapter($this->adapter);
             $part->setTableAlias($this->_tableAlias);
+
             return $part->toSQL($queryBuilder);
-        } else if ($part instanceof QueryBuilder) {
+        } elseif ($part instanceof QueryBuilder) {
             return $part->toSQL();
         } else {
-            throw new Exception("Unknown sql part type");
+            throw new Exception('Unknown sql part type');
         }
     }
 }

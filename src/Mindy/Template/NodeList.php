@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class NodeList
- * @package Mindy\Template
+ * Class NodeList.
  */
 class NodeList extends Node
 {

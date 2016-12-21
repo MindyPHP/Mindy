@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class NameExpression
- * @package Mindy\Template
+ * Class NameExpression.
  */
 class NameExpression extends Expression
 {
@@ -31,8 +30,7 @@ class NameExpression extends Expression
 
     public function compile(Compiler $compiler, $indent = 0)
     {
-        $compiler->raw('(array_key_exists(\'' . $this->name . '\', $context) ? ');
-        $compiler->raw('$context[\'' . $this->name . '\'] : null)');
+        $compiler->raw('(array_key_exists(\''.$this->name.'\', $context) ? ');
+        $compiler->raw('$context[\''.$this->name.'\'] : null)');
     }
 }
-

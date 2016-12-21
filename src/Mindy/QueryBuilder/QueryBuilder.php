@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 10:17
+ * Time: 10:17.
  */
 
 namespace Mindy\QueryBuilder;
@@ -17,7 +17,6 @@ use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
-
 use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
 use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
 use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
@@ -107,7 +106,8 @@ class QueryBuilder
      */
     protected $schema;
     /**
-     * Counter of joined tables aliases
+     * Counter of joined tables aliases.
+     *
      * @var int
      */
     private $_aliasesCount = 0;
@@ -133,7 +133,9 @@ class QueryBuilder
 
     /**
      * @param Connection $connection
+     *
      * @return QueryBuilder
+     *
      * @throws Exception
      */
     public static function getInstance(Connection $connection)
@@ -154,13 +156,15 @@ class QueryBuilder
         }
         $lookupBuilder = new LookupBuilder();
         $lookupBuilder->addLookupCollection($adapter->getLookupCollection());
-        return new QueryBuilder($connection, $adapter, $lookupBuilder);
+
+        return new self($connection, $adapter, $lookupBuilder);
     }
 
     /**
      * QueryBuilder constructor.
-     * @param Connection $connection
-     * @param BaseAdapter $adapter
+     *
+     * @param Connection     $connection
+     * @param BaseAdapter    $adapter
      * @param ILookupBuilder $lookupBuilder
      */
     public function __construct(Connection $connection, BaseAdapter $adapter, ILookupBuilder $lookupBuilder)
@@ -172,11 +176,13 @@ class QueryBuilder
 
     /**
      * @param ILookupCollection $lookupCollection
+     *
      * @return $this
      */
     public function addLookupCollection(ILookupCollection $lookupCollection)
     {
         $this->lookupBuilder->addLookupCollection($lookupCollection);
+
         return $this;
     }
 
@@ -186,6 +192,7 @@ class QueryBuilder
     public function setTypeSelect()
     {
         $this->_type = self::TYPE_SELECT;
+
         return $this;
     }
 
@@ -195,6 +202,7 @@ class QueryBuilder
     public function setTypeUpdate()
     {
         $this->_type = self::TYPE_UPDATE;
+
         return $this;
     }
 
@@ -204,11 +212,13 @@ class QueryBuilder
     public function setTypeDelete()
     {
         $this->_type = self::TYPE_DELETE;
+
         return $this;
     }
 
     /**
-     * If type is null return TYPE_SELECT
+     * If type is null return TYPE_SELECT.
+     *
      * @return string
      */
     public function getType()
@@ -219,12 +229,14 @@ class QueryBuilder
     public function distinct($distinct)
     {
         $this->_distinct = $distinct;
+
         return $this;
     }
 
     /**
      * @param Aggregation $aggregation
-     * @param string $columnAlias
+     * @param string      $columnAlias
+     *
      * @return string
      */
     protected function buildSelectFromAggregation(Aggregation $aggregation)
@@ -236,11 +248,11 @@ class QueryBuilder
             if (empty($tableAlias) || $rawColumns === '*') {
                 $columns = $rawColumns;
             } else {
-                $columns = $tableAlias . '.' . $rawColumns;
+                $columns = $tableAlias.'.'.$rawColumns;
             }
         } else {
             list($alias, $joinColumn) = $newSelect;
-            $columns = $alias . '.' . $joinColumn;
+            $columns = $alias.'.'.$joinColumn;
         }
         $fieldsSql = $this->getAdapter()->buildColumns($columns);
         $aggregation->setFieldsSql($fieldsSql);
@@ -250,6 +262,7 @@ class QueryBuilder
 
     /**
      * @param $columns
+     *
      * @return array|string
      */
     public function buildColumnsqwe($columns)
@@ -257,8 +270,9 @@ class QueryBuilder
         if (!is_array($columns)) {
             if ($columns instanceof Aggregation) {
                 $columns->setFieldsSql($this->buildColumns($columns->getFields()));
+
                 return $this->quoteSql($columns->toSQL());
-            } else if (strpos($columns, '(') !== false) {
+            } elseif (strpos($columns, '(') !== false) {
                 return $this->quoteSql($columns);
             } else {
                 $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
@@ -267,15 +281,16 @@ class QueryBuilder
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
                 $columns[$i] = $this->quoteSql($column->toSQL());
-            } else if (strpos($column, 'AS') !== false) {
+            } elseif (strpos($column, 'AS') !== false) {
                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
                     list(, $rawColumn, $rawAlias) = $matches;
-                    $columns[$i] = $this->quoteColumn($rawColumn) . ' AS ' . $this->quoteColumn($rawAlias);
+                    $columns[$i] = $this->quoteColumn($rawColumn).' AS '.$this->quoteColumn($rawAlias);
                 }
-            } else if (strpos($column, '(') === false) {
+            } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->quoteColumn($column);
             }
         }
+
         return is_array($columns) ? implode(', ', $columns) : $columns;
     }
 
@@ -294,7 +309,7 @@ class QueryBuilder
             foreach ($this->_select as $alias => $column) {
                 if ($column instanceof Aggregation) {
                     $select[$alias] = $this->buildSelectFromAggregation($column);
-                } else if (is_string($column)) {
+                } elseif (is_string($column)) {
                     if (strpos($column, 'SELECT') !== false) {
                         $select[$alias] = $column;
                     } else {
@@ -304,9 +319,10 @@ class QueryBuilder
                     $select[$alias] = $column;
                 }
             }
-        } else if (is_string($this->_select)) {
+        } elseif (is_string($this->_select)) {
             $select = $this->addColumnAlias($this->_select);
         }
+
         return $this->getAdapter()->sqlSelect($select, $this->_distinct);
     }
 
@@ -318,6 +334,7 @@ class QueryBuilder
 
         if (empty($select)) {
             $this->_select = [];
+
             return $this;
         }
 
@@ -329,7 +346,7 @@ class QueryBuilder
                     $newSelect = $builder->buildJoin($this, $part);
                     if ($newSelect) {
                         list($alias, $column) = $newSelect;
-                        $parts[$key] = $alias . '.' . $column;
+                        $parts[$key] = $alias.'.'.$column;
                     } else {
                         $parts[$key] = $part;
                     }
@@ -337,7 +354,7 @@ class QueryBuilder
                     $parts[$key] = $part;
                 }
             }
-        } else if (is_string($select)) {
+        } elseif (is_string($select)) {
             $newSelect = $builder->buildJoin($this, $select);
             if ($newSelect) {
                 list($alias, $column) = $newSelect;
@@ -349,12 +366,14 @@ class QueryBuilder
             $parts[] = $select;
         }
         $this->_select = $parts;
+
         return $this;
     }
 
     /**
      * @param $select array|string columns
      * @param $distinct array|string columns
+     *
      * @return $this
      */
     public function selectOld($select, $distinct = null)
@@ -365,6 +384,7 @@ class QueryBuilder
 
         if (empty($select)) {
             $this->_select = [];
+
             return $this;
         }
 
@@ -375,46 +395,50 @@ class QueryBuilder
             foreach ($select as $columnAlias => $partSelect) {
                 if ($partSelect instanceof Aggregation) {
                     $columns[$columnAlias] = $this->buildSelectFromAggregation($partSelect, $columnAlias);
-                } else if ($partSelect instanceof Expression) {
+                } elseif ($partSelect instanceof Expression) {
                     $columns[$columnAlias] = $this->getAdapter()->quoteSql($partSelect->toSQL());
-                } else if (strpos($partSelect, 'SELECT') !== false) {
+                } elseif (strpos($partSelect, 'SELECT') !== false) {
                     if (empty($columnAlias)) {
-                        $columns[$columnAlias] = '(' . $partSelect . ')';
+                        $columns[$columnAlias] = '('.$partSelect.')';
                     } else {
-                        $columns[$columnAlias] = '(' . $partSelect . ') AS ' . $columnAlias;
+                        $columns[$columnAlias] = '('.$partSelect.') AS '.$columnAlias;
                     }
                 } else {
                     $newSelect = $builder->buildJoin($this, $partSelect);
                     if ($newSelect === false) {
-                        $columns[$columnAlias] = empty($tableAlias) ? $partSelect : $tableAlias . '.' . $partSelect;
-                        var_dump(empty($tableAlias) ? $partSelect : $tableAlias . '.' . $partSelect);
+                        $columns[$columnAlias] = empty($tableAlias) ? $partSelect : $tableAlias.'.'.$partSelect;
+                        var_dump(empty($tableAlias) ? $partSelect : $tableAlias.'.'.$partSelect);
                     } else {
                         list($alias, $joinColumn) = $newSelect;
-                        $columns[$columnAlias] = $alias . '.' . $joinColumn . ' AS ' . $partSelect;
+                        $columns[$columnAlias] = $alias.'.'.$joinColumn.' AS '.$partSelect;
                     }
                 }
             }
-        } else if ($select instanceof Aggregation) {
+        } elseif ($select instanceof Aggregation) {
             $columns = $this->buildSelectFromAggregation($select);
         } else {
             $columns = $select;
         }
         $this->_select = $this->getAdapter()->buildColumns($columns);
+
         return $this;
     }
 
     /**
      * @param $tableName string
+     *
      * @return $this
      */
     public function from($tableName)
     {
         $this->_from = $tableName;
+
         return $this;
     }
 
     /**
      * @param $alias string join alias
+     *
      * @return bool
      */
     public function hasJoin($alias)
@@ -425,28 +449,33 @@ class QueryBuilder
     /**
      * @param int $page
      * @param int $pageSize
+     *
      * @return $this
      */
     public function paginate($page = 1, $pageSize = 10)
     {
         $this->limit($pageSize);
         $this->offset($page > 1 ? $pageSize * ($page - 1) : 0);
+
         return $this;
     }
 
     public function limit($limit)
     {
         $this->_limit = $limit;
+
         return $this;
     }
 
     /**
      * @param $offset
+     *
      * @return $this
      */
     public function offset($offset)
     {
         $this->_offset = $offset;
+
         return $this;
     }
 
@@ -469,59 +498,69 @@ class QueryBuilder
     /**
      * @param $joinType string LEFT JOIN, RIGHT JOIN, etc...
      * @param $tableName string
-     * @param array $on link columns
+     * @param array  $on    link columns
      * @param string $alias string
+     *
      * @return $this
+     *
      * @throws Exception
      */
     public function join($joinType, $tableName = '', $on = [], $alias = '')
     {
         if (is_string($joinType) && empty($tableName)) {
             $this->_join[] = $this->getAdapter()->quoteSql($joinType);
-        } else if ($tableName instanceof QueryBuilder) {
+        } elseif ($tableName instanceof self) {
             $this->_join[] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
         } else {
             $this->_join[$tableName] = $this->getAdapter()->sqlJoin($joinType, $tableName, $on, $alias);
             $this->_joinAlias[$tableName] = $alias;
         }
+
         return $this;
     }
 
     /**
      * @param $sql
      * @param string $alias
+     *
      * @return $this
      */
     public function joinRaw($sql)
     {
         $this->_join[] = $this->getAdapter()->quoteSql($sql);
+
         return $this;
     }
 
     /**
      * @param array $columns columns
+     *
      * @return $this
      */
     public function group($columns)
     {
         $this->_group = $columns;
+
         return $this;
     }
 
     /**
      * @param array|string $columns columns
-     * @param null $options
+     * @param null         $options
+     *
      * @return $this
      */
     public function order($columns, $options = null)
     {
         $this->_order = $columns;
         $this->_orderOptions = $options;
+
         return $this;
     }
 
     /**
-     * Clear properties
+     * Clear properties.
+     *
      * @return $this
      */
     public function clear()
@@ -537,12 +576,14 @@ class QueryBuilder
         $this->_from = '';
         $this->_union = [];
         $this->_having = [];
+
         return $this;
     }
 
     /**
      * @param $tableName
      * @param array $rows
+     *
      * @return $this
      */
     public function insert($tableName, $rows)
@@ -553,11 +594,13 @@ class QueryBuilder
     /**
      * @param $tableName string
      * @param array $values columns [name => value...]
+     *
      * @return $this
      */
     public function update($tableName, array $values)
     {
         $this->_update = [$tableName, $values];
+
         return $this;
     }
 
@@ -574,20 +617,22 @@ class QueryBuilder
     public function setAlias($alias)
     {
         $this->_alias = $alias;
+
         return $this;
     }
 
     public function buildCondition($condition, &$params = [])
     {
         if (!is_array($condition)) {
-            return (string)$condition;
-        } else if (empty($condition)) {
+            return (string) $condition;
+        } elseif (empty($condition)) {
             return '';
         }
 
         if (isset($condition[0]) && is_string($condition[0])) {
             $operatorRaw = array_shift($condition);
             $operator = strtoupper($operatorRaw);
+
             return $this->buildAndCondition($operator, $condition, $params);
         } else {
             return $this->parseCondition($condition);
@@ -601,6 +646,7 @@ class QueryBuilder
 
     /**
      * @param $condition
+     *
      * @return string
      */
     protected function parseCondition($condition)
@@ -609,14 +655,14 @@ class QueryBuilder
         $parts = [];
         if ($condition instanceof Expression) {
             $parts[] = $this->getAdapter()->quoteSql($condition->toSQL());
-        } else if ($condition instanceof Q) {
+        } elseif ($condition instanceof Q) {
             $condition->setLookupBuilder($this->getLookupBuilder());
             $condition->setAdapter($this->getAdapter());
             $condition->setTableAlias($tableAlias);
             $parts[] = $condition->toSQL($this);
-        } else if ($condition instanceof QueryBuilder) {
+        } elseif ($condition instanceof self) {
             $parts[] = $condition->toSQL();
-        } else if (is_array($condition)) {
+        } elseif (is_array($condition)) {
             foreach ($condition as $key => $value) {
                 if ($value instanceof Q) {
                     $parts[] = $this->parseCondition($value);
@@ -626,7 +672,7 @@ class QueryBuilder
                     list($lookup, $column, $lookupValue) = $this->lookupBuilder->parseLookup($this, $key, $value);
                     $column = $this->getLookupBuilder()->fetchColumnName($column);
                     if (empty($tableAlias) === false && strpos($column, '.') === false) {
-                        $column = $tableAlias . '.' . $column;
+                        $column = $tableAlias.'.'.$column;
                     }
                     $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
                 }
@@ -643,16 +689,16 @@ class QueryBuilder
                 $parts[] = $this->lookupBuilder->runLookup($this->getAdapter(), $lookup, $column, $lookupValue);
             }
             */
-        } else if (is_string($condition)) {
+        } elseif (is_string($condition)) {
             $parts[] = $condition;
-        } else if ($condition instanceof Expression) {
+        } elseif ($condition instanceof Expression) {
             $parts[] = $condition->toSQL();
         }
 
         if (count($parts) === 1) {
             return $parts[0];
         } else {
-            return '(' . implode(') AND (', $parts) . ')';
+            return '('.implode(') AND (', $parts).')';
         }
     }
 
@@ -670,7 +716,7 @@ class QueryBuilder
             }
         }
         if (!empty($parts)) {
-            return '(' . implode(') ' . $operator . ' (', $parts) . ')';
+            return '('.implode(') '.$operator.' (', $parts).')';
         } else {
             return '';
         }
@@ -678,21 +724,25 @@ class QueryBuilder
 
     /**
      * @param $condition
+     *
      * @return $this
      */
     public function where($condition)
     {
         $this->_whereAnd[] = $condition;
+
         return $this;
     }
 
     /**
      * @param $condition
+     *
      * @return $this
      */
     public function orWhere($condition)
     {
         $this->_whereOr[] = $condition;
+
         return $this;
     }
 
@@ -717,6 +767,7 @@ class QueryBuilder
                 $where = ['or', $where, ['and', $condition]];
             }
         }
+
         return $where;
     }
 
@@ -729,7 +780,8 @@ class QueryBuilder
     {
         $params = [];
         $sql = $this->buildCondition($this->buildWhereTree(), $params);
-        return empty($sql) ? '' : ' WHERE ' . $sql;
+
+        return empty($sql) ? '' : ' WHERE '.$sql;
     }
 
 //    protected function prepareJoin()
@@ -786,6 +838,7 @@ class QueryBuilder
         $group = $this->buildGroup();
         $having = $this->buildHaving();
         $limitOffset = $this->buildLimitOffset();
+
         return strtr('{select}{from}{join}{where}{group}{having}{order}{limit_offset}{union}', [
             '{select}' => $select,
             '{from}' => $from,
@@ -795,7 +848,7 @@ class QueryBuilder
             '{having}' => $having,
             '{join}' => $join,
             '{limit_offset}' => $limitOffset,
-            '{union}' => empty($union) ? '' : $union . $order
+            '{union}' => empty($union) ? '' : $union.$order,
         ]);
     }
 
@@ -804,7 +857,7 @@ class QueryBuilder
         return strtr('{delete}{from}{where}', [
             '{delete}' => 'DELETE',
             '{from}' => $this->buildFrom(),
-            '{where}' => $this->buildWhere()
+            '{where}' => $this->buildWhere(),
         ]);
     }
 
@@ -812,6 +865,7 @@ class QueryBuilder
     {
         list($tableName, $values) = $this->_update;
         $this->setAlias(null);
+
         return strtr('{update}{where}', [
             '{update}' => $this->getAdapter()->sqlUpdate($tableName, $values),
             '{where}' => $this->buildWhere(),
@@ -820,6 +874,7 @@ class QueryBuilder
 
     /**
      * @return string
+     *
      * @throws Exception
      */
     public function toSQL()
@@ -827,9 +882,9 @@ class QueryBuilder
         $type = $this->getType();
         if ($type == self::TYPE_SELECT) {
             return $this->generateSelectSql();
-        } else if ($type == self::TYPE_UPDATE) {
+        } elseif ($type == self::TYPE_UPDATE) {
             return $this->generateUpdateSql();
-        } else if ($type == self::TYPE_DELETE) {
+        } elseif ($type == self::TYPE_DELETE) {
             return $this->generateDeleteSql();
         }
 
@@ -851,7 +906,7 @@ class QueryBuilder
         $sql = '';
         foreach ($this->_union as $part) {
             list($union, $all) = $part;
-            $sql .= ' ' . $this->getAdapter()->sqlUnion($union, $all);
+            $sql .= ' '.$this->getAdapter()->sqlUnion($union, $all);
         }
 
         return empty($sql) ? '' : $sql;
@@ -867,6 +922,7 @@ class QueryBuilder
      * @param $columns
      * @param null $options
      * @param bool $ifNotExists
+     *
      * @return string
      */
     public function createTable($tableName, $columns, $options = null, $ifNotExists = false)
@@ -876,6 +932,7 @@ class QueryBuilder
 
     /**
      * @param array|string|Q $where lookups
+     *
      * @return $this
      */
     public function having($having)
@@ -886,12 +943,14 @@ class QueryBuilder
         $having->setLookupBuilder($this->getLookupBuilder());
         $having->setAdapter($this->getAdapter());
         $this->having = $having;
+
         return $this;
     }
 
     public function union($union, $all = false)
     {
         $this->_union[] = [$union, $all];
+
         return $this;
     }
 
@@ -899,6 +958,7 @@ class QueryBuilder
      * @param $tableName
      * @param $name
      * @param $columns
+     *
      * @return string
      */
     public function addPrimaryKey($tableName, $name, $columns)
@@ -910,6 +970,7 @@ class QueryBuilder
      * @param $tableName
      * @param $column
      * @param $type
+     *
      * @return string
      */
     public function alterColumn($tableName, $column, $type)
@@ -918,19 +979,21 @@ class QueryBuilder
     }
 
     /**
-     * Makes alias for joined table
+     * Makes alias for joined table.
+     *
      * @param $table
      * @param bool $increment
+     *
      * @return string
      */
     public function makeAliasKey($table, $increment = true)
     {
-//        if ($increment) {
+        //        if ($increment) {
 //            $this->_aliasesCount += 1;
 //        }
         return strtr('{table}_{count}', [
             '{table}' => $this->getAdapter()->getRawTableName($table),
-            '{count}' => $this->_aliasesCount + 1
+            '{count}' => $this->_aliasesCount + 1,
         ]);
     }
 
@@ -941,6 +1004,7 @@ class QueryBuilder
 
     /**
      * @param $column
+     *
      * @return string
      */
     protected function addColumnAlias($column)
@@ -954,7 +1018,7 @@ class QueryBuilder
             strpos($column, '(') === false &&
             strpos($column, 'SELECT') === false
         ) {
-            return $tableAlias . '.' . $column;
+            return $tableAlias.'.'.$column;
         } else {
             return $column;
         }
@@ -965,7 +1029,8 @@ class QueryBuilder
         // If column already has alias - skip
         if (strpos($column, '.') === false) {
             $tableAlias = $this->getAlias();
-            return empty($tableAlias) ? $column : $tableAlias . '.' . $column;
+
+            return empty($tableAlias) ? $column : $tableAlias.'.'.$column;
         } else {
             return $column;
         }
@@ -980,12 +1045,13 @@ class QueryBuilder
         foreach ($this->_join as $part) {
             $join[] = $part;
         }
-        return ' ' . implode(' ', $join);
-    }
 
+        return ' '.implode(' ', $join);
+    }
 
     /**
      * @param $order
+     *
      * @return string
      */
     protected function buildOrderJoin($order)
@@ -1002,7 +1068,8 @@ class QueryBuilder
             return [$order, $direction];
         } else {
             list($alias, $column) = $newOrder;
-            return [$alias . '.' . $column, $direction];
+
+            return [$alias.'.'.$column, $direction];
         }
     }
 
@@ -1013,7 +1080,7 @@ class QueryBuilder
 
     public function buildOrder()
     {
-        /**
+        /*
          * не делать проверку по empty(), проваливается половина тестов с ORDER BY
          * и проваливается тест с построением JOIN по lookup
          */
@@ -1031,12 +1098,12 @@ class QueryBuilder
                     $order[$this->applyTableAlias($newColumn)] = $direction;
                 }
             }
-        } else if (is_string($this->_order)) {
+        } elseif (is_string($this->_order)) {
             $columns = preg_split('/\s*,\s*/', $this->_order, -1, PREG_SPLIT_NO_EMPTY);
             $order = array_map(function ($column) {
                 $temp = explode(' ', $column);
                 if (count($temp) == 2) {
-                    return $this->getAdapter()->quoteColumn($temp[0]) . ' ' . $temp[1];
+                    return $this->getAdapter()->quoteColumn($temp[0]).' '.$temp[1];
                 } else {
                     return $this->getAdapter()->quoteColumn($column);
                 }
@@ -1047,13 +1114,15 @@ class QueryBuilder
         }
 
         $sql = $this->getAdapter()->sqlOrderBy($order, $this->_orderOptions);
-        return empty($sql) ? '' : ' ORDER BY ' . $sql;
+
+        return empty($sql) ? '' : ' ORDER BY '.$sql;
     }
 
     public function buildGroup()
     {
         $sql = $this->getAdapter()->sqlGroupBy($this->_group);
-        return empty($sql) ? '' : ' GROUP BY ' . $sql;
+
+        return empty($sql) ? '' : ' GROUP BY '.$sql;
     }
 
     public function buildFrom()
@@ -1064,6 +1133,7 @@ class QueryBuilder
             $from = $this->_from;
         }
         $sql = $this->getAdapter()->sqlFrom($from);
-        return empty($sql) ? '' : ' FROM ' . $sql;
+
+        return empty($sql) ? '' : ' FROM '.$sql;
     }
 }

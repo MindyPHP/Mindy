@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class TokenStream
- * @package Mindy\Template
+ * Class TokenStream.
  */
 class TokenStream
 {
@@ -43,7 +42,7 @@ class TokenStream
 
     public function look($t = 1)
     {
-        $t--;
+        --$t;
         $length = count($this->tokens);
         if ($this->cursor + $t > $length) {
             $t = 0;
@@ -51,14 +50,16 @@ class TokenStream
         if ($this->cursor + $t < 0) {
             $t = -$this->cursor;
         }
+
         return $this->tokens[$this->cursor + $t];
     }
 
     public function skip($times = 1)
     {
-        for ($i = 0; $i < $times; $i++) {
+        for ($i = 0; $i < $times; ++$i) {
             $this->next();
         }
+
         return $this;
     }
 
@@ -73,9 +74,9 @@ class TokenStream
             if (is_null($secondary)) {
                 $expecting = Token::getTypeError($primary);
             } elseif (is_array($secondary)) {
-                $expecting = '"' . implode('" or "', $secondary) . '"';
+                $expecting = '"'.implode('" or "', $secondary).'"';
             } else {
-                $expecting = '"' . $secondary . '"';
+                $expecting = '"'.$secondary.'"';
             }
             if ($token->getType() === Token::EOF) {
                 throw new SyntaxError('unexpected end of file', $token);
@@ -84,6 +85,7 @@ class TokenStream
             }
         }
         $this->next();
+
         return $token;
     }
 
@@ -92,6 +94,7 @@ class TokenStream
         foreach ($tokens as $token) {
             $this->expect($token->getType(), $token->getValue());
         }
+
         return $this;
     }
 
@@ -104,6 +107,7 @@ class TokenStream
     {
         if ($this->test($primary, $secondary)) {
             $this->expect($primary, $secondary);
+
             return true;
         } else {
             return false;
@@ -125,4 +129,3 @@ class TokenStream
         return $this->tokens;
     }
 }
-

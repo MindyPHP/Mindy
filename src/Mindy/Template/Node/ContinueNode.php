@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class ContinueNode
- * @package Mindy\Template
+ * Class ContinueNode.
  */
 class ContinueNode extends Node
 {
@@ -17,4 +16,3 @@ class ContinueNode extends Node
         $compiler->raw("continue;\n", $indent);
     }
 }
-

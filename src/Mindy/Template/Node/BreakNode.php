@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class BreakNode
- * @package Mindy\Template
+ * Class BreakNode.
  */
 class BreakNode extends Node
 {
@@ -17,4 +16,3 @@ class BreakNode extends Node
         $compiler->raw("break;\n", $indent);
     }
 }
-

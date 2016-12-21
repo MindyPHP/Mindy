@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class MulExpression
- * @package Mindy\Template
+ * Class MulExpression.
  */
 class MulExpression extends BinaryExpression
 {

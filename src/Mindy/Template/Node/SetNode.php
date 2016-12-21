@@ -7,8 +7,7 @@ use Mindy\Template\Node;
 use Mindy\Template\NodeList;
 
 /**
- * Class SetNode
- * @package Mindy\Template
+ * Class SetNode.
  */
 class SetNode extends Node
 {
@@ -31,22 +30,22 @@ class SetNode extends Node
             $compiler->raw("ob_start();\n", $indent);
             $this->value->compile($compiler);
             $compiler->raw(
-                "if (!isset($name)) $name = array();\n" . "\n", $indent
+                "if (!isset($name)) $name = array();\n"."\n", $indent
             );
             $compiler->addTraceInfo($this, $indent);
             $compiler->raw("\$this->setAttr($name, array(", $indent);
             foreach ($this->attrs as $attr) {
-                if(is_string($attr)) {
+                if (is_string($attr)) {
                     $compiler->repr($attr);
                 } else {
                     $attr->compile($compiler);
                 }
                 $compiler->raw(', ');
             }
-            $compiler->raw('), ob_get_clean());' . "\n");
+            $compiler->raw('), ob_get_clean());'."\n");
         } else {
             $compiler->raw(
-                "if (!isset($name)) $name = array();\n" . "\n", $indent
+                "if (!isset($name)) $name = array();\n"."\n", $indent
             );
             $compiler->addTraceInfo($this, $indent);
             $compiler->raw("\$this->setAttr($name, array(", $indent);
@@ -61,4 +60,3 @@ class SetNode extends Node
         }
     }
 }
-

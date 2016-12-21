@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:05
+ * Time: 23:05.
  */
 
 namespace Mindy\Component\Table\Column;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 interface ColumnInterface

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/09/16
- * Time: 15:13
+ * Time: 15:13.
  */
 
 namespace Mindy\Thumb\Tests;
@@ -18,7 +18,7 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filesystem = new Filesystem(new Local(__DIR__ . '/temp'));
+        $this->filesystem = new Filesystem(new Local(__DIR__.'/temp'));
     }
 
     public function tearDown()
@@ -47,23 +47,23 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
             'options' => [
                 'jpeg_quality' => 100,
                 'quality' => 100,
-            ]
+            ],
         ];
         $processor = new ImageProcessor([
             'uploadTo' => '/',
             'storeOriginal' => false,
             'sizes' => [
-                $options
-            ]
+                $options,
+            ],
         ]);
         $processor->setFilesystem($this->filesystem);
 
         $fileName = $processor->generateFilename('/temp/cat.jpg', $options);
         $this->assertEquals('cat_0343c5aa39.jpg', basename($fileName));
 
-        $processor->process(__DIR__ . '/cat.jpg');
+        $processor->process(__DIR__.'/cat.jpg');
 
-        /** @var \League\Flysystem\FilesystemInterface $fs */
+        /* @var \League\Flysystem\FilesystemInterface $fs */
         $this->assertEquals(1, count($this->filesystem->listContents('/')));
         $this->assertEquals('cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['name' => 'thumb']));
         $this->assertEquals('cat_0343c5aa39.jpg', $processor->url('/temp/cat.jpg', ['width' => 200]));
@@ -80,19 +80,19 @@ class ImageProcessorTest extends \PHPUnit_Framework_TestCase
                 'quality' => 100,
             ],
             'watermark' => [
-                'file' => __DIR__ . '/watermark.png',
-                'position' => 'repeat'
-            ]
+                'file' => __DIR__.'/watermark.png',
+                'position' => 'repeat',
+            ],
         ];
         $processor = new ImageProcessor([
             'uploadTo' => '/',
             'storeOriginal' => false,
             'sizes' => [
-                $options
-            ]
+                $options,
+            ],
         ]);
         $processor->setFilesystem($this->filesystem);
-        $processor->process(__DIR__ . '/cat.jpg');
+        $processor->process(__DIR__.'/cat.jpg');
 
         $this->assertEquals(1, count($this->filesystem->listContents('/')));
     }

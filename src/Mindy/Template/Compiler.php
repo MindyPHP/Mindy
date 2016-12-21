@@ -5,8 +5,7 @@ namespace Mindy\Template;
 use RuntimeException;
 
 /**
- * Class Compiler
- * @package Mindy\Template
+ * Class Compiler.
  */
 class Compiler
 {
@@ -17,25 +16,27 @@ class Compiler
 
     /**
      * Compiler constructor.
+     *
      * @param $node
      */
     public function __construct($node)
     {
-        $this->node  = $node;
-        $this->line  = 1;
+        $this->node = $node;
+        $this->line = 1;
         $this->trace = array();
     }
 
     /**
      * @param $raw
      * @param int $indent
+     *
      * @return $this
      */
     public function raw($raw, $indent = 0)
     {
         $this->line = $this->line + substr_count($raw, "\n");
-        if (!fwrite($this->fp, str_repeat(' ', 4 * $indent) . $raw)) {
-            throw new RuntimeException('failed writing to file: ' .  $this->target);
+        if (!fwrite($this->fp, str_repeat(' ', 4 * $indent).$raw)) {
+            throw new RuntimeException('failed writing to file: '.$this->target);
         }
 
         return $this;
@@ -58,7 +59,7 @@ class Compiler
     public function compile($name, $target, $indent = 0)
     {
         if (!($this->fp = fopen($target, 'wb'))) {
-            throw new RuntimeException('unable to create target file: ' . $target);
+            throw new RuntimeException('unable to create target file: '.$target);
         }
         $this->node->compile($name, $this, $indent);
         fclose($this->fp);
@@ -67,6 +68,7 @@ class Compiler
     /**
      * @param $name
      * @param int $indent
+     *
      * @return $this
      */
     public function pushContext($name, $indent = 0)
@@ -74,12 +76,14 @@ class Compiler
         $this->raw('$this->pushContext($context, ', $indent);
         $this->repr($name);
         $this->raw(");\n");
+
         return $this;
     }
 
     /**
      * @param $name
      * @param int $indent
+     *
      * @return $this
      */
     public function popContext($name, $indent = 0)
@@ -87,18 +91,19 @@ class Compiler
         $this->raw('$this->popContext($context, ', $indent);
         $this->repr($name);
         $this->raw(");\n");
+
         return $this;
     }
 
     /**
      * @param Node $node
-     * @param int $indent
+     * @param int  $indent
      * @param bool $line
      */
     public function addTraceInfo($node, $indent = 0, $line = true)
     {
         $this->raw(
-            '/* line ' . $node->getLine() . " -> " . ($this->line + 1) .
+            '/* line '.$node->getLine().' -> '.($this->line + 1).
             " */\n", $indent
         );
         if ($line) {
@@ -108,6 +113,7 @@ class Compiler
 
     /**
      * @param bool $export
+     *
      * @return array|mixed
      */
     public function getTraceInfo($export = false)
@@ -115,11 +121,12 @@ class Compiler
         if ($export) {
             return str_replace(["\n", ' '], '', var_export($this->trace, true));
         }
+
         return $this->trace;
     }
 
     /**
-     * Free resources
+     * Free resources.
      */
     public function __destruct()
     {
@@ -128,4 +135,3 @@ class Compiler
         }
     }
 }
-

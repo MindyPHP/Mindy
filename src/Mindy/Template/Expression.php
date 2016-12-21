@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Expression
- * @package Mindy\Template
+ * Class Expression.
  */
 class Expression extends Node
 {

@@ -3,8 +3,7 @@
 namespace Mindy\Template\Expression;
 
 /**
- * Class JoinExpression
- * @package Mindy\Template
+ * Class JoinExpression.
  */
 class JoinExpression extends BinaryExpression
 {
@@ -13,4 +12,3 @@ class JoinExpression extends BinaryExpression
         return ".' '.";
     }
 }
-

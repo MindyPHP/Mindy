@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/12/2016
- * Time: 21:34
+ * Time: 21:34.
  */
 
 namespace Mindy\Pagination;
@@ -13,8 +13,7 @@ use Mindy\Pagination\Handler\NativePaginationHandler;
 use Mindy\Pagination\Handler\PaginationHandlerInterface;
 
 /**
- * Class PaginationFactory
- * @package Mindy\Pagination
+ * Class PaginationFactory.
  */
 class PaginationFactory
 {
@@ -24,19 +23,22 @@ class PaginationFactory
     protected $dataSources = [];
 
     /**
-     * @param array|DataSourceInterface $source
-     * @param array $parameters
+     * @param array|DataSourceInterface  $source
+     * @param array                      $parameters
      * @param PaginationHandlerInterface $handler
+     *
      * @return Pagination
      */
     public function createPagination($source, array $parameters = array(), PaginationHandlerInterface $handler)
     {
         $handler = $handler ?: new NativePaginationHandler();
+
         return new Pagination($source, $parameters, $handler, $this->findDataSource($source));
     }
 
     /**
      * @param $source
+     *
      * @return DataSourceInterface
      */
     protected function findDataSource($source)

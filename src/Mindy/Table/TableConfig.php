@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:53
+ * Time: 23:53.
  */
 
 namespace Mindy\Component\Table;

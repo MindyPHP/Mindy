@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Node;
 
 /**
- * Class BlockNode
- * @package Mindy\Template
+ * Class BlockNode.
  */
 class BlockNode extends Node
 {
@@ -26,13 +25,12 @@ class BlockNode extends Node
         $compiler->raw("\n");
         $compiler->addTraceInfo($this, $indent, false);
         $compiler->raw(
-            'public function block_' . $this->name .
-            '($context, $blocks = array(), $macros = array(),' .
-            ' $imports = array())' . "\n", $indent
+            'public function block_'.$this->name.
+            '($context, $blocks = array(), $macros = array(),'.
+            ' $imports = array())'."\n", $indent
         );
         $compiler->raw("{\n", $indent);
         $this->body->compile($compiler, $indent + 1);
         $compiler->raw("}\n", $indent);
     }
 }
-

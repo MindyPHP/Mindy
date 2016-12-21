@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/11/2016
- * Time: 23:03
+ * Time: 23:03.
  */
 
 namespace Mindy\Component\Table;
@@ -16,8 +16,9 @@ class TableBuilder
 
     /**
      * TableBuilder constructor.
+     *
      * @param TableFactory $factory
-     * @param array $options
+     * @param array        $options
      */
     public function __construct($factory, array $options = [])
     {
@@ -29,8 +30,9 @@ class TableBuilder
     {
         $this->columns[$name] = [
             'column' => $column,
-            'options' => array_merge($options, ['name' => $name])
+            'options' => array_merge($options, ['name' => $name]),
         ];
+
         return $this;
     }
 
@@ -45,6 +47,7 @@ class TableBuilder
         foreach ($this->columns as $name => $params) {
             $columns[$name] = $this->factory->createColumn($params['column'], $params['options']);
         }
+
         return new Table($columns);
     }
 }

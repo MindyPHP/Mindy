@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/09/16
- * Time: 14:03
+ * Time: 14:03.
  */
 
 namespace Mindy\Thumb;
@@ -12,28 +12,7 @@ use Exception;
 use Imagine\Image\ImageInterface;
 
 /**
- * Class ImageProcessor
- * @package Mindy\Orm\Image
- *
- * watermark:
- * File MUST be described relative to "www" directory!
- *
- * example
- * [
- *  'file' => 'static/images/watermark.png',
- *  'position' => [200,100]
- * ]
- *
- * OR
- *
- * [
- *  'file' => 'static/images/watermark.png',
- *  'position' => 'top'
- * ]
- *
- * position can be array [x,y] coordinates or
- * string with one of available position
- * top, top-left, top-right, bottom, bottom-left, bottom-right, left, right, center, repeat
+ * Class ImageProcessor.
  */
 class ImageProcessor extends AbstractProcessor implements ImageProcessorInterface
 {
@@ -44,7 +23,8 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      */
     public $storeOriginal = true;
     /**
-     * Default resize method
+     * Default resize method.
+     *
      * @var string
      */
     public $defaultResize = 'adaptiveResizeFromTop';
@@ -57,7 +37,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      *          300,200,
      *          'method' => 'adaptiveResize'
      *      ]
-     * ]
+     * ].
      *
      * There are 3 methods resize(THUMBNAIL_INSET), adaptiveResize(THUMBNAIL_OUTBOUND),
      * adaptiveResizeFromTop(THUMBNAIL_OUTBOUND from top)
@@ -71,7 +51,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
     protected $availableResizeMethods = [
         'resize',
         'adaptiveResize',
-        'adaptiveResizeFromTop'
+        'adaptiveResizeFromTop',
     ];
     /**
      * @var string
@@ -80,7 +60,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
 
     /**
      * ImageProcessor constructor.
+     *
      * @param array $config
+     *
      * @throws Exception
      */
     public function __construct(array $config = [])
@@ -102,7 +84,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
 
     /**
      * @param array $options
+     *
      * @return array
+     *
      * @throws Exception
      */
     protected function findOptionsByConfigPart(array $options)
@@ -122,21 +106,23 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
                 $optionsWidth = isset($options['width']) ? $options['width'] : '';
                 $optionsHeight = isset($options['height']) ? $options['height'] : '';
 
-                $configSize = sprintf("%sx%s", $configWidth, $configHeight);
-                $optionsSize = sprintf("%sx%s", $optionsWidth, $optionsHeight);
+                $configSize = sprintf('%sx%s', $configWidth, $configHeight);
+                $optionsSize = sprintf('%sx%s', $optionsWidth, $optionsHeight);
                 if ($configSize == $optionsSize) {
                     return $config;
                 }
             }
         }
 
-        throw new Exception('Cannot find options for: ' . print_r($options, true));
+        throw new Exception('Cannot find options for: '.print_r($options, true));
     }
 
     /**
      * @param string $value
-     * @param array $config
+     * @param array  $config
+     *
      * @return string
+     *
      * @throws Exception
      */
     public function path($value, array $config = [])
@@ -154,7 +140,8 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
 
     /**
      * @param string $value
-     * @param array $config
+     * @param array  $config
+     *
      * @return string
      */
     public function url($value, array $config = [])
@@ -171,14 +158,17 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
         }
 
         $fileName = $this->generateFilename($value, $options);
+
         return ltrim($fileName, '/');
     }
 
     /**
-     * @param string $path
+     * @param string         $path
      * @param ImageInterface $image
-     * @param null $prefix
+     * @param null           $prefix
+     *
      * @return $this
+     *
      * @throws Exception
      */
     public function processSource($path, ImageInterface $image, $prefix = null)
@@ -189,12 +179,12 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
             'resolution-y' => 72,
             'jpeg_quality' => 100,
             'quality' => 100,
-            'png_compression_level' => 0
+            'png_compression_level' => 0,
         ];
 
         foreach ($this->getSizes() as $config) {
 
-            /**
+            /*
              * Skip unused sizes
              */
             if (is_null($prefix) === false && $config['name'] !== $prefix) {
@@ -207,7 +197,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
             $extSize = isset($config['format']) ? $config['format'] : pathinfo($path, PATHINFO_EXTENSION);
 
             if (!in_array($method, $this->availableResizeMethods)) {
-                throw new Exception('Unknown resize method: ' . $method);
+                throw new Exception('Unknown resize method: '.$method);
             }
 
             if (!$width || !$height) {
@@ -236,7 +226,7 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
         }
 
         if ($this->storeOriginal === false) {
-            $originalPath = $this->uploadTo . DIRECTORY_SEPARATOR . basename($path);
+            $originalPath = $this->uploadTo.DIRECTORY_SEPARATOR.basename($path);
             if ($this->has($originalPath)) {
                 $this->getFilesystem()->delete($originalPath);
             }
@@ -247,7 +237,8 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
 
     /**
      * @param string $path
-     * @param array $options
+     * @param array  $options
+     *
      * @return string
      */
     public function generateFilename($path, array $options = [])
@@ -258,22 +249,26 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
         $name = basename($path);
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         $basename = substr($name, 0, strpos($name, $ext) - 1);
-        return rtrim($this->uploadTo, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . implode('_', [$basename, $hash]) . '.' . $ext;
+
+        return rtrim($this->uploadTo, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.implode('_', [$basename, $hash]).'.'.$ext;
     }
 
     /**
      * @param string $path
-     * @param null $prefix
+     * @param null   $prefix
+     *
      * @return $this
+     *
      * @throws Exception
      */
     public function process($path, $prefix = null)
     {
         if (!is_file($path)) {
-            throw new Exception('File not found: ' . $path);
+            throw new Exception('File not found: '.$path);
         }
 
         $image = $this->getImagine()->open($path);
+
         return $this->processSource($path, $image, $prefix);
     }
 }

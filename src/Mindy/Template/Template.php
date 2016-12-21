@@ -4,12 +4,10 @@ namespace Mindy\Template;
 
 use Closure;
 use Exception;
-use Mindy\Template\Helper;
 use RuntimeException;
 
 /**
- * Class Template
- * @package Mindy\Template
+ * Class Template.
  */
 abstract class Template
 {
@@ -30,7 +28,7 @@ abstract class Template
         'dirname',
         'basename',
         'time',
-        'strtotime'
+        'strtotime',
     ];
     /**
      * @var Loader
@@ -67,8 +65,9 @@ abstract class Template
 
     /**
      * Template constructor.
-     * @param Loader $loader
-     * @param array $helpers
+     *
+     * @param Loader                            $loader
+     * @param array                             $helpers
      * @param array|VariableProviderInterface[] $variablesProviders
      */
     public function __construct(Loader $loader, $helpers = array(), $variablesProviders = array())
@@ -86,7 +85,7 @@ abstract class Template
     public function loadExtends($template)
     {
         if ($template == static::NAME) {
-            throw new Exception("Template cannot be inherited from himself: " . static::NAME);
+            throw new Exception('Template cannot be inherited from himself: '.static::NAME);
         }
         try {
             return $this->loader->load($template, static::NAME);
@@ -160,6 +159,7 @@ abstract class Template
             $this->stack[$name] = array();
         }
         array_push($this->stack[$name], isset($context[$name]) ? $context[$name] : null);
+
         return $this;
     }
 
@@ -168,32 +168,37 @@ abstract class Template
         if (!empty($this->stack[$name])) {
             $context[$name] = array_pop($this->stack[$name]);
         }
+
         return $this;
     }
 
     public function getLineTrace(Exception $e = null)
     {
         if (!isset($e)) {
-            $e = new Exception;
+            $e = new Exception();
         }
 
         $lines = static::$lines;
 
-        $file = get_class($this) . '.php';
+        $file = get_class($this).'.php';
 
         foreach ($e->getTrace() as $trace) {
             if (isset($trace['file']) && basename($trace['file']) == $file) {
                 $line = $trace['line'];
+
                 return isset($lines[$line]) ? $lines[$line] : null;
             }
         }
-        return null;
+
+        return;
     }
 
     /**
      * @param $name
      * @param array $args
+     *
      * @return mixed
+     *
      * @throws \RuntimeException
      */
     public function helper($name, $args = array())
@@ -203,12 +208,13 @@ abstract class Template
 
         if (isset($this->helpers[$name]) && is_callable($this->helpers[$name])) {
             return call_user_func_array($this->helpers[$name], $args);
-        } else if (($helper = array($this->helperClassName, $name)) && is_callable($helper)) {
+        } elseif (($helper = array($this->helperClassName, $name)) && is_callable($helper)) {
             return call_user_func_array($helper, $args);
-        } else if (function_exists($name) && in_array($name, $this->internalHelpers)) {
+        } elseif (function_exists($name) && in_array($name, $this->internalHelpers)) {
             if (isset($args[0])) {
-                $args[0] = (string)$args[0];
+                $args[0] = (string) $args[0];
             }
+
             return call_user_func_array($name, $args);
         }
 
@@ -220,6 +226,7 @@ abstract class Template
      * @param array $blocks
      * @param array $macros
      * @param array $imports
+     *
      * @return string
      */
     abstract public function display($context = array(), $blocks = array(), $macros = array(), $imports = array());
@@ -229,17 +236,20 @@ abstract class Template
      * @param array $blocks
      * @param array $macros
      * @param array $imports
+     *
      * @return string
      */
     public function render($context = array(), $blocks = array(), $macros = array(), $imports = array())
     {
         ob_start();
         $this->display($this->mergeContext($context), $blocks, $macros, $imports);
+
         return ob_get_clean();
     }
 
     /**
      * @param array $context
+     *
      * @return array
      */
     protected function mergeContext($context = array())
@@ -247,6 +257,7 @@ abstract class Template
         foreach ($this->variableProviders as $variableProvider) {
             $context = array_merge($context, $variableProvider->getData());
         }
+
         return $context;
     }
 
@@ -259,6 +270,7 @@ abstract class Template
         } else {
             $iter = null;
         }
+
         return new Helper\ContextIterator($seq, $iter);
     }
 
@@ -287,16 +299,18 @@ abstract class Template
                     } else {
                         $args = array($obj);
                     }
+
                     return call_user_func_array($obj[$attr], $args);
                 } else {
                     return $obj[$attr];
                 }
             } else {
-                return null;
+                return;
             }
         } elseif (is_object($obj)) {
             if (is_array($args)) {
                 $callable = array($obj, $attr);
+
                 return is_callable($callable) ? call_user_func_array($callable, $args) : null;
             } else {
                 $members = array_keys(get_object_vars($obj));
@@ -309,11 +323,12 @@ abstract class Template
                     return $obj->__get($attr);
                 } else {
                     $callable = array($obj, $attr);
+
                     return is_callable($callable) ? call_user_func($callable) : null;
                 }
             }
         } else {
-            return null;
+            return;
         }
     }
 
@@ -321,6 +336,7 @@ abstract class Template
     {
         if (empty($attrs)) {
             $obj = $value;
+
             return;
         }
         $attr = array_shift($attrs);
@@ -330,6 +346,7 @@ abstract class Template
             if (!in_array($attr, $members)) {
                 if (empty($attrs) && method_exists($obj, '__set')) {
                     $obj->__set($attr, $value);
+
                     return;
                 } elseif (property_exists($class, $attr)) {
                     throw new RuntimeException("inaccessible '$attr' object attribute");
@@ -361,4 +378,3 @@ abstract class Template
         }
     }
 }
-

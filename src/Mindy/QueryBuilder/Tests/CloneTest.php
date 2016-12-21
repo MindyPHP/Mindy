@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 26/07/16
- * Time: 19:40
+ * Time: 19:40.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -15,6 +15,7 @@ class CloneCallback
     public function run(QueryBuilder $queryBuilder, $lookupBuilder, $lookupNodes, $value)
     {
         $queryBuilder->join('LEFT JOIN', 'test', ['test_1.id' => 'user_1.user_id'], 'test_1');
+
         return ['exact', 'id', $value];
     }
 }
@@ -63,7 +64,7 @@ class CloneTest extends BaseTest
     public function testCloneCallback()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setCallback(new CloneCallback);
+        $qb->getLookupBuilder()->setCallback(new CloneCallback());
         $qb->from('user')->where(['test__id' => 1])->setAlias('user_1');
         $sql = 'SELECT [[user_1]].* FROM [[user]] AS [[user_1]] LEFT JOIN [[test]] AS [[test_1]] ON [[test_1]].[[id]]=[[user_1]].[[user_id]] WHERE ([[user_1]].[[id]]=1)';
 

@@ -18,6 +18,7 @@ use Symfony\Component\Routing\RouteCollection;
  *
  * @author Falaleev Maxim
  * @email max@studio107.ru
+ *
  * @version 1.0
  * @company Studio107
  * @site http://studio107.ru
@@ -44,6 +45,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
         $handler->setIncorrectPageCallback(function ($h) {
             throw new \RuntimeException('Incorrect page');
         });
+
         return $handler;
     }
 
@@ -51,6 +53,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new PaginationFactory();
         $factory->addDataSource(new ArrayDataSource());
+
         return $factory->createPagination($source, $options, $handler ? $handler : $this->getHandler());
     }
 
@@ -149,7 +152,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     {
         $pager = $this->createPagination(range(1, 20), [
             'page' => 2,
-            'pageSize' => 30
+            'pageSize' => 30,
         ]);
         $this->assertSame(2, $pager->getPage());
         $this->assertSame(30, $pager->getPageSize());

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 15:17
+ * Time: 15:17.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -20,7 +20,7 @@ class BuildWhereTest extends BaseTest
     {
         $subQuery = clone $this->getQueryBuilder();
         $subQuery->setTypeSelect()->select(['parent_id'])->from('test')->where([
-            'parent_id' => new Expression('[[id]]')
+            'parent_id' => new Expression('[[id]]'),
         ]);
         $this->assertSql('SELECT [[parent_id]] FROM [[test]] WHERE ([[parent_id]]=[[id]])', $subQuery->toSQL());
 
@@ -53,13 +53,13 @@ class BuildWhereTest extends BaseTest
             ->setAlias('test_1')
             ->where(new QAndNot([
                 'lft' => new Expression('[[test_1]].[[rgt]]-1'),
-                'id__in' => $subQuery
+                'id__in' => $subQuery,
             ]))
             ->order(['rgt']);
 
         $this->assertSql('SELECT [[test_1]].[[id]], [[test_1]].[[root]], [[test_1]].[[lft]], [[test_1]].[[rgt]], [[test_1]].[[rgt]]-[[test_1]].[[lft]]-1 AS [[move]]', $query->buildSelect());
         $this->assertSql('SELECT [[test_1]].[[id]], [[test_1]].[[root]], [[test_1]].[[lft]], [[test_1]].[[rgt]], [[test_1]].[[rgt]]-[[test_1]].[[lft]]-1 AS [[move]] FROM [[test]] AS [[test_1]] WHERE (NOT ([[test_1]].[[lft]]=[[test_1]].[[rgt]]-1 AND [[test_1]].[[id]] IN ('
-            . $subQuerySql . '))) ORDER BY [[test_1]].[[rgt]] ASC', $query->toSQL());
+            .$subQuerySql.'))) ORDER BY [[test_1]].[[rgt]] ASC', $query->toSQL());
     }
 
     public function testQAnd()
@@ -84,7 +84,7 @@ class BuildWhereTest extends BaseTest
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOr([
-            ['id' => 1, 'name' => 'username'], ['id' => 2, 'name' => 'foobar']
+            ['id' => 1, 'name' => 'username'], ['id' => 2, 'name' => 'foobar'],
         ]));
         $this->assertSql('WHERE (([[id]]=1 OR [[name]]=@username@) OR ([[id]]=2 OR [[name]]=@foobar@))', $qb->buildWhere());
     }
@@ -98,7 +98,7 @@ class BuildWhereTest extends BaseTest
         $qb = $this->getQueryBuilder();
         $qb->where(new QAndNot([
             'id__in' => [1, 2, 3],
-            'price__gte' => 100
+            'price__gte' => 100,
         ]));
     }
 
@@ -110,14 +110,14 @@ class BuildWhereTest extends BaseTest
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOrNot([
-            ['id' => 1], ['id' => 2]
+            ['id' => 1], ['id' => 2],
         ]));
         $this->assertSql('WHERE (NOT (([[id]]=1) OR ([[id]]=2)))', $qb->buildWhere());
 
         $qb = $this->getQueryBuilder();
         $qb->where(new QOrNot([
             'id__in' => [1, 2, 3],
-            'price__gte' => 100
+            'price__gte' => 100,
         ]));
         $this->assertEquals($this->quoteSql('SELECT * WHERE (NOT ([[id]] IN (1, 2, 3) OR [[price]]>=100))'), $qb->toSQL());
     }
@@ -155,7 +155,7 @@ class BuildWhereTest extends BaseTest
         $data = [
             'or',
             ['and', ['id' => 1]],
-            ['and', ['id' => 2]]
+            ['and', ['id' => 2]],
         ];
 
         $this->assertSql('((`id`=1)) OR ((`id`=2))', $qb->buildCondition($data));
@@ -166,7 +166,7 @@ class BuildWhereTest extends BaseTest
         $data = [
             'or',
             ['and', ['id' => 1]],
-            ['and', ['id' => 2]]
+            ['and', ['id' => 2]],
         ];
 
         $qb = $this->getQueryBuilder();
@@ -191,7 +191,7 @@ class BuildWhereTest extends BaseTest
         $qb = $this->getQueryBuilder();
         $qb->orWhere(new QOr([
             ['id' => 2],
-            ['id' => 1]
+            ['id' => 1],
         ]));
         $this->assertSql('WHERE ((`id`=2) OR (`id`=1))', $qb->buildWhere());
 
@@ -199,7 +199,7 @@ class BuildWhereTest extends BaseTest
         $qb
             ->where(new QOr([
                 ['id' => 2],
-                ['id' => 1]
+                ['id' => 1],
             ]))
             ->where(['id' => 3]);
         $this->assertSql('WHERE (((`id`=2) OR (`id`=1))) AND ((`id`=3))', $qb->buildWhere());
@@ -215,29 +215,29 @@ class BuildWhereTest extends BaseTest
     {
         $qb = $this->getQueryBuilder();
         $qb->where(['id' => 'SELECT [[id]] FROM [[test]]']);
-        $this->assertSql("WHERE (`id`=(SELECT `id` FROM `test`))", $qb->buildWhere());
+        $this->assertSql('WHERE (`id`=(SELECT `id` FROM `test`))', $qb->buildWhere());
     }
 
     public function testSubQuery()
     {
         $qb = $this->getQueryBuilder();
         $qb->where([
-            'id' => $this->getQueryBuilder()->select('id')->from('test')
+            'id' => $this->getQueryBuilder()->select('id')->from('test'),
         ]);
-        $this->assertSql("WHERE (`id`=(SELECT `id` FROM `test`))", $qb->buildWhere());
+        $this->assertSql('WHERE (`id`=(SELECT `id` FROM `test`))', $qb->buildWhere());
     }
 
     public function testString()
     {
         $qb = $this->getQueryBuilder();
         $qb->where('[[id]]=1');
-        $this->assertSql("WHERE (`id`=1)", $qb->buildWhere());
+        $this->assertSql('WHERE (`id`=1)', $qb->buildWhere());
     }
 
     public function testExpression()
     {
         $qb = $this->getQueryBuilder();
         $qb->where(new Expression('id=1'));
-        $this->assertSql("WHERE (id=1)", $qb->buildWhere());
+        $this->assertSql('WHERE (id=1)', $qb->buildWhere());
     }
 }

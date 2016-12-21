@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Lexer
- * @package Mindy\Template
+ * Class Lexer.
  */
 class Lexer
 {
@@ -108,13 +107,13 @@ class Lexer
         $match = null;
         $tokens = array();
 
-        $pattern = '/(.*?)(' .
-            preg_quote(self::COMMENT_START_TRIM) . '|' .
-            preg_quote(self::COMMENT_START) . '|' .
-            preg_quote(self::OUTPUT_START_TRIM) . '|' .
-            preg_quote(self::OUTPUT_START) . '|' .
-            preg_quote(self::BLOCK_START_TRIM) . '|' .
-            preg_quote(self::BLOCK_START) . ')/As';
+        $pattern = '/(.*?)('.
+            preg_quote(self::COMMENT_START_TRIM).'|'.
+            preg_quote(self::COMMENT_START).'|'.
+            preg_quote(self::OUTPUT_START_TRIM).'|'.
+            preg_quote(self::OUTPUT_START).'|'.
+            preg_quote(self::BLOCK_START_TRIM).'|'.
+            preg_quote(self::BLOCK_START).')/As';
 
         // all text
         if (!preg_match($pattern, $this->source, $match, 0, $this->cursor)) {
@@ -126,6 +125,7 @@ class Lexer
             $tokens[] = new Token(Token::TEXT, $text, $this->line, $this->char);
             $this->adjustLineChar($text);
             $this->cursor = $this->end;
+
             return $tokens;
         }
 
@@ -155,9 +155,9 @@ class Lexer
 
             case self::COMMENT_START_TRIM:
             case self::COMMENT_START:
-                if (preg_match('/.*?(' .
-                    preg_quote(self::COMMENT_END_TRIM) . '|' .
-                    preg_quote(self::COMMENT_END) . ')/As',
+                if (preg_match('/.*?('.
+                    preg_quote(self::COMMENT_END_TRIM).'|'.
+                    preg_quote(self::COMMENT_END).')/As',
                     $this->source, $match, 0, $this->cursor)
                 ) {
                     if ($match[1] == self::COMMENT_END_TRIM) {
@@ -170,13 +170,13 @@ class Lexer
 
             case self::BLOCK_START_TRIM:
             case self::BLOCK_START:
-                if (preg_match('/(\s*raw\s*)(' .
-                    preg_quote(self::BLOCK_END_TRIM) . '|' .
-                    preg_quote(self::BLOCK_END) . ')(.*?)(' .
-                    preg_quote(self::BLOCK_START_TRIM) . '|' .
-                    preg_quote(self::BLOCK_START) . ')(\s*endraw\s*)(' .
-                    preg_quote(self::BLOCK_END_TRIM) . '|' .
-                    preg_quote(self::BLOCK_END) . ')/As',
+                if (preg_match('/(\s*raw\s*)('.
+                    preg_quote(self::BLOCK_END_TRIM).'|'.
+                    preg_quote(self::BLOCK_END).')(.*?)('.
+                    preg_quote(self::BLOCK_START_TRIM).'|'.
+                    preg_quote(self::BLOCK_START).')(\s*endraw\s*)('.
+                    preg_quote(self::BLOCK_END_TRIM).'|'.
+                    preg_quote(self::BLOCK_END).')/As',
                     $this->source, $match, 0, $this->cursor)
                 ) {
                     $raw = $match[3];
@@ -189,8 +189,8 @@ class Lexer
                     if ($match[6] == self::BLOCK_END_TRIM) {
                         $this->trim = true;
                     }
-                    $before = $token . $match[1] . $match[2];
-                    $after = $match[3] . $match[4] . $match[5] . $match[6];
+                    $before = $token.$match[1].$match[2];
+                    $after = $match[3].$match[4].$match[5].$match[6];
                     $this->cursor += strlen($match[0]);
                     $this->adjustLineChar($before);
                     $tokens[] = new Token(
@@ -226,9 +226,9 @@ class Lexer
         $tokens = array();
         $match = null;
 
-        $pattern = '/(\s*)(' .
-            preg_quote(self::BLOCK_END_TRIM) . '|' .
-            preg_quote(self::BLOCK_END) . ')/A';
+        $pattern = '/(\s*)('.
+            preg_quote(self::BLOCK_END_TRIM).'|'.
+            preg_quote(self::BLOCK_END).')/A';
 
         if (preg_match($pattern, $this->source, $match, 0, $this->cursor)) {
             if ($match[2] == self::BLOCK_END_TRIM) {
@@ -242,6 +242,7 @@ class Lexer
 
             return $tokens;
         }
+
         return $this->lexExpression();
     }
 
@@ -250,9 +251,9 @@ class Lexer
         $tokens = array();
         $match = null;
 
-        if (preg_match('/(\s*)(' .
-            preg_quote(self::OUTPUT_END_TRIM) . '|' .
-            preg_quote(self::OUTPUT_END) . ')/A',
+        if (preg_match('/(\s*)('.
+            preg_quote(self::OUTPUT_END_TRIM).'|'.
+            preg_quote(self::OUTPUT_END).')/A',
             $this->source, $match, 0, $this->cursor)
         ) {
             if ($match[2] == self::OUTPUT_END_TRIM) {
@@ -268,6 +269,7 @@ class Lexer
 
             return $tokens;
         }
+
         return $this->lexExpression();
     }
 
@@ -289,7 +291,6 @@ class Lexer
                 Token::NUMBER, $number, $this->line, $this->char
             );
             $this->adjustLineChar($match[0]);
-
         } elseif (preg_match(self::REGEX_OPERATOR, $this->source, $match, 0, $this->cursor)) {
             $this->cursor += strlen($match[0]);
             $operator = $match[0];
@@ -297,7 +298,6 @@ class Lexer
                 Token::OPERATOR, $operator, $this->line, $this->char
             );
             $this->adjustLineChar($match[0]);
-
         } elseif (preg_match(self::REGEX_CONSTANT, $this->source, $match, 0, $this->cursor)) {
             $this->cursor += strlen($match[0]);
             $constant = $match[0];
@@ -305,13 +305,11 @@ class Lexer
                 Token::CONSTANT, $constant, $this->line, $this->char
             );
             $this->adjustLineChar($match[0]);
-
         } elseif (preg_match(self::REGEX_NAME, $this->source, $match, 0, $this->cursor)) {
             $this->cursor += strlen($match[0]);
             $name = $match[0];
             $tokens[] = new Token(Token::NAME, $name, $this->line, $this->char);
             $this->adjustLineChar($match[0]);
-
         } elseif (preg_match(self::REGEX_STRING, $this->source, $match, 0, $this->cursor)) {
             $this->cursor += strlen($match[0]);
             $string = stripcslashes(substr($match[0], 1, strlen($match[0]) - 2));
@@ -319,28 +317,25 @@ class Lexer
                 Token::STRING, $string, $this->line, $this->char
             );
             $this->adjustLineChar($match[0]);
-
-        } elseif ($this->position == self::POSITION_BLOCK && preg_match('/(.+?)\s*(' .
-                preg_quote(self::BLOCK_END_TRIM) . '|' .
-                preg_quote(self::BLOCK_END) . ')/As', $this->source, $match, 0, $this->cursor)
+        } elseif ($this->position == self::POSITION_BLOCK && preg_match('/(.+?)\s*('.
+                preg_quote(self::BLOCK_END_TRIM).'|'.
+                preg_quote(self::BLOCK_END).')/As', $this->source, $match, 0, $this->cursor)
         ) {
             // a catch-all text token
             $this->cursor += strlen($match[1]);
             $text = $match[1];
             $tokens[] = new Token(Token::TEXT, $text, $this->line, $this->char);
             $this->adjustLineChar($match[1]);
-
         } elseif ($this->position == self::POSITION_OUTPUT &&
-            preg_match('/(.+?)\s*(' .
-                preg_quote(self::OUTPUT_END_TRIM) . '|' .
-                preg_quote(self::OUTPUT_END) . ')/As',
+            preg_match('/(.+?)\s*('.
+                preg_quote(self::OUTPUT_END_TRIM).'|'.
+                preg_quote(self::OUTPUT_END).')/As',
                 $this->source, $match, null, $this->cursor)
         ) {
             $this->cursor += strlen($match[1]);
             $text = $match[1];
             $tokens[] = new Token(Token::TEXT, $text, $this->line, $this->char);
             $this->adjustLineChar($match[1]);
-
         } else {
             $text = substr($this->source, $this->cursor);
             $this->cursor += $this->end;
@@ -351,4 +346,3 @@ class Lexer
         return $tokens;
     }
 }
-

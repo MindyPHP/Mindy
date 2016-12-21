@@ -3,8 +3,7 @@
 namespace Mindy\Template;
 
 /**
- * Class Renderer
- * @package Mindy\Template
+ * Class Renderer.
  */
 class Renderer extends Loader
 {

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 15/09/16
- * Time: 22:07
+ * Time: 22:07.
  */
 
 namespace Mindy\QueryBuilder\Driver;
@@ -16,6 +16,7 @@ class SqliteDriver extends Driver
     {
         $connect = parent::connect($params, $username, $password, $driverOptions);
         $connect->sqliteCreateFunction('REGEXP', 'preg_match', 2);
+
         return $connect;
     }
 }

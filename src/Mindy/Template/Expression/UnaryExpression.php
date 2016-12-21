@@ -6,8 +6,7 @@ use Mindy\Template\Compiler;
 use Mindy\Template\Expression;
 
 /**
- * Class UnaryExpression
- * @package Mindy\Template
+ * Class UnaryExpression.
  */
 class UnaryExpression extends Expression
 {
@@ -28,4 +27,3 @@ class UnaryExpression extends Expression
         $compiler->raw('))');
     }
 }
-

@@ -5,8 +5,7 @@ namespace Mindy\Template\Expression;
 use Mindy\Template\Compiler;
 
 /**
- * Class InclusionExpression
- * @package Mindy\Template
+ * Class InclusionExpression.
  */
 class InclusionExpression extends LogicalExpression
 {
@@ -43,4 +42,3 @@ class InclusionExpression extends LogicalExpression
         $compiler->raw(')');
     }
 }
-
