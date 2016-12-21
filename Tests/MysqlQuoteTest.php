@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/06/16
- * Time: 19:46
+ * Time: 19:46.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -23,6 +23,7 @@ class MysqlQuoteTest extends \PHPUnit_Framework_TestCase
     protected function getAdapter()
     {
         $pdo = new PDO('mysql:host=localhost;dbname=test', 'root', '');
+
         return new Adapter($pdo);
     }
 

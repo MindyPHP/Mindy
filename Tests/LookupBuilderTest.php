@@ -3,14 +3,13 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 15:00
+ * Time: 15:00.
  */
 
 namespace Mindy\QueryBuilder\Tests;
 
 use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
 use Mindy\QueryBuilder\Database\Sqlite\LookupCollection;
-use Mindy\QueryBuilder\QueryBuilder;
 
 class LookupBuilderTest extends BaseTest
 {
@@ -39,7 +38,7 @@ class LookupBuilderTest extends BaseTest
             [['id__endswith' => 'FOO'], '[[id]] LIKE @%FOO@'],
             [['id__iendswith' => 'FOO'], 'LOWER([[id]]) LIKE @%foo@'],
             [['id__in' => [1, 2, 'test']], '[[id]] IN (1, 2, @test@)'],
-            [['id__raw' => "?? [[qwe]]"], "[[id]] ?? [[qwe]]"],
+            [['id__raw' => '?? [[qwe]]'], '[[id]] ?? [[qwe]]'],
         ];
     }
 

@@ -3,18 +3,14 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 17:34
+ * Time: 17:34.
  */
 
 namespace Mindy\QueryBuilder\Tests;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\DriverManager;
-use Mindy\Helper\Creator;
 use Mindy\Query\Connection;
-use Mindy\Query\PDO;
-use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
-use Mindy\QueryBuilder\QueryBuilder;
 use ReflectionClass;
 
 abstract class BuildSchemaTest extends BaseTest
@@ -30,7 +26,7 @@ abstract class BuildSchemaTest extends BaseTest
         parent::setUp();
         $reflector = new ReflectionClass(get_class($this));
         $dir = dirname($reflector->getFileName());
-        $dbConfig =  require($dir . '/' . (@getenv('TRAVIS') ? 'config_travis.php' : 'config.php'));
+        $dbConfig = require $dir.'/'.(@getenv('TRAVIS') ? 'config_travis.php' : 'config.php');
 
         $fixtures = $dbConfig['fixture'];
         unset($dbConfig['fixture']);
@@ -57,13 +53,13 @@ abstract class BuildSchemaTest extends BaseTest
         $this->assertEquals($this->quoteSql('CREATE TABLE [[test]] (
 	[[id]] int(11)
 )'), $qb->createTable('test', [
-            'id' => 'int(11)'
+            'id' => 'int(11)',
         ], ''));
 
         $this->assertEquals($this->quoteSql('CREATE TABLE [[test]] (
 	[[id]] int(11)
 ) CHARACTER SET utf8 COLLATE utf8_bin'), $qb->createTable('test', [
-            'id' => 'int(11)'
+            'id' => 'int(11)',
         ], 'CHARACTER SET utf8 COLLATE utf8_bin'));
 
         $this->assertEquals($this->quoteSql('CREATE TABLE [[test]] SELECT * FROM [[clone]]'),

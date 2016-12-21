@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 18:06
+ * Time: 18:06.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -43,8 +43,8 @@ class OtherTest extends BaseTest
 
     public function testRawTableName()
     {
-        $this->assertEquals('test', $this->getAdapter()->getRawTableName("{{%test}}"));
-        $this->assertEquals('test', $this->getAdapter()->getRawTableName("test"));
+        $this->assertEquals('test', $this->getAdapter()->getRawTableName('{{%test}}'));
+        $this->assertEquals('test', $this->getAdapter()->getRawTableName('test'));
     }
 
     public function testInsert()

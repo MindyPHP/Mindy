@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 05/07/16
- * Time: 11:17
+ * Time: 11:17.
  */
 
 namespace Mindy\QueryBuilder\Aggregation;
@@ -23,18 +23,20 @@ class Aggregation extends Expression
     public function setFieldsSql($sql)
     {
         $this->fieldsSql = $sql;
+
         return $this;
     }
 
     public function setTableAlias($alias)
     {
         $this->tableAlias = $alias;
+
         return $this;
     }
 
     public function toSQL()
     {
-        return (empty($this->tableAlias) ? '' : '[[' . $this->tableAlias . ']].') . $this->fieldsSql;
+        return (empty($this->tableAlias) ? '' : '[['.$this->tableAlias.']].').$this->fieldsSql;
     }
 
     public function getFields()

@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: max
  * Date: 27/06/16
- * Time: 20:36
+ * Time: 20:36.
  */
 
 namespace Mindy\QueryBuilder\Tests;
 
-use Mindy\QueryBuilder\Database\Sqlite\Adapter;
 use PDO;
 
 class SqliteQuoteTest extends BaseTest
@@ -24,9 +23,9 @@ class SqliteQuoteTest extends BaseTest
     public function testAutoQuoting()
     {
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
-        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $this->getAdapter()->quoteSql($sql));
+        $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $this->getAdapter()->quoteSql($sql));
     }
-    
+
     public function testQuoteValue()
     {
         $adapter = $this->getAdapter();
@@ -38,8 +37,8 @@ class SqliteQuoteTest extends BaseTest
     public function testQuoteTableName()
     {
         $adapter = $this->getAdapter();
-        $this->assertEquals("`table`", $adapter->quoteTableName('table'));
-        $this->assertEquals("`schema`.`table`", $adapter->quoteTableName('schema.table'));
+        $this->assertEquals('`table`', $adapter->quoteTableName('table'));
+        $this->assertEquals('`schema`.`table`', $adapter->quoteTableName('schema.table'));
         $this->assertEquals('{{table}}', $adapter->quoteTableName('{{table}}'));
         $this->assertEquals('(table)', $adapter->quoteTableName('(table)'));
     }
@@ -48,7 +47,7 @@ class SqliteQuoteTest extends BaseTest
     {
         $adapter = $this->getAdapter();
         $this->assertEquals('`column`', $adapter->quoteColumn('column'));
-        $this->assertEquals("`table`.`column`", $adapter->quoteColumn('table.column'));
+        $this->assertEquals('`table`.`column`', $adapter->quoteColumn('table.column'));
         $this->assertEquals('[[column]]', $adapter->quoteColumn('[[column]]'));
         $this->assertEquals('{{column}}', $adapter->quoteColumn('{{column}}'));
         $this->assertEquals('(column)', $adapter->quoteColumn('(column)'));

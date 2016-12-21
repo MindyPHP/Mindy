@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 20/06/16
- * Time: 15:04
+ * Time: 15:04.
  */
 
 namespace Mindy\QueryBuilder\Database\Sqlite;
@@ -17,7 +17,7 @@ class LookupCollection extends BaseLookupCollection
     {
         $lookups = [
             'regex', 'iregex', 'second', 'year', 'minute',
-            'hour', 'day', 'month', 'week_day'
+            'hour', 'day', 'month', 'week_day',
         ];
         if (in_array($lookup, $lookups)) {
             return true;
@@ -31,49 +31,53 @@ class LookupCollection extends BaseLookupCollection
      * @param $lookup
      * @param $column
      * @param $value
+     *
      * @return string
      */
     public function process(IAdapter $adapter, $lookup, $column, $value)
     {
         switch ($lookup) {
             case 'regex':
-                return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue('/' . $value . '/');
+                return $adapter->quoteColumn($column).' REGEXP '.$adapter->quoteValue('/'.$value.'/');
 
             case 'iregex':
-                return $adapter->quoteColumn($column) . ' REGEXP ' . $adapter->quoteValue('/' . $value . '/i');
+                return $adapter->quoteColumn($column).' REGEXP '.$adapter->quoteValue('/'.$value.'/i');
 
             case 'second':
-                return "strftime('%S', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+                return "strftime('%S', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'year':
-                return "strftime('%Y', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+                return "strftime('%Y', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'minute':
-                return "strftime('%M', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+                return "strftime('%M', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'hour':
-                return "strftime('%H', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+                return "strftime('%H', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'day':
-                return "strftime('%d', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+                return "strftime('%d', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'month':
-                $value = (int)$value;
+                $value = (int) $value;
                 if (strlen($value) == 1) {
-                    $value = "0" . (string)$value;
+                    $value = '0'.(string) $value;
                 }
-                return "strftime('%m', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+
+                return "strftime('%m', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'week_day':
-                $value = (int)$value + 1;
+                $value = (int) $value + 1;
                 if ($value == 7) {
                     $value = 1;
                 }
-                return "strftime('%w', " . $adapter->quoteColumn($column) . ')=' . $adapter->quoteValue((string)$value);
+
+                return "strftime('%w', ".$adapter->quoteColumn($column).')='.$adapter->quoteValue((string) $value);
 
             case 'range':
                 list($min, $max) = $value;
-                return $adapter->quoteColumn($column) . ' BETWEEN ' . (int)$min . ' AND ' . (int)$max;
+
+                return $adapter->quoteColumn($column).' BETWEEN '.(int) $min.' AND '.(int) $max;
         }
 
         return parent::process($adapter, $lookup, $column, $value);

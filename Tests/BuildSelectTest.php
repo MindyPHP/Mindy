@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 25/07/16
- * Time: 16:40
+ * Time: 16:40.
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -51,7 +51,7 @@ class BuildSelectTest extends BaseTest
         $qb = $this->getQueryBuilder();
         $qb->select([
             'id', 'root', 'lft', 'rgt',
-            new Expression('[[rgt]]-[[lft]]-1 AS [[move]]')
+            new Expression('[[rgt]]-[[lft]]-1 AS [[move]]'),
         ]);
         $this->assertSql('SELECT [[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]]', $qb->buildSelect());
     }
@@ -143,7 +143,7 @@ class BuildSelectTest extends BaseTest
     public function testSelectAutoJoin()
     {
         $qb = $this->getQueryBuilder();
-        $qb->getLookupBuilder()->setJoinCallback(new BuildSelectJoinCallback);
+        $qb->getLookupBuilder()->setJoinCallback(new BuildSelectJoinCallback());
         $qb->select(['user__username'])->from('customer');
 
         $this->assertSql(
