@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/12/2016
- * Time: 12:46
+ * Time: 12:46.
  */
 
 namespace Mindy\Orm\Fields\Tests;
@@ -32,7 +32,7 @@ class IpFieldTest extends \PHPUnit_Framework_TestCase
     public function testIpV6()
     {
         $field = new IpField([
-            'version' => 6
+            'version' => 6,
         ]);
 
         $field->setValue('0:0:0:0:0:0:0');
@@ -48,7 +48,7 @@ class IpFieldTest extends \PHPUnit_Framework_TestCase
     public function testIpWrong()
     {
         $field = new IpField([
-            'version' => 8
+            'version' => 8,
         ]);
     }
 }

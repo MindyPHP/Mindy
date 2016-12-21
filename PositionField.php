@@ -3,19 +3,16 @@
  * Created by PhpStorm.
  * User: max
  * Date: 28/09/16
- * Time: 22:56
+ * Time: 22:56.
  */
 
 namespace Mindy\Orm\Fields;
 
-use Mindy\Orm\Manager;
 use Mindy\Orm\ModelInterface;
-use Mindy\Orm\QuerySet;
 use Mindy\Orm\TreeModel;
 
 /**
- * Class PositionField
- * @package Modules\Core\Fields\Orm
+ * Class PositionField.
  */
 class PositionField extends IntField
 {
@@ -37,6 +34,7 @@ class PositionField extends IntField
 
     /**
      * @param ModelInterface $model
+     *
      * @return int
      */
     public function getNextPosition(ModelInterface $model)
@@ -53,7 +51,8 @@ class PositionField extends IntField
             }
         }
 
-        $max = (int)$qs->max($this->getAttributeName());
+        $max = (int) $qs->max($this->getAttributeName());
+
         return $max ? $max + 1 : 1;
     }
 }
