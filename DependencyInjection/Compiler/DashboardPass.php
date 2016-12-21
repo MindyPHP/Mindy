@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 14/11/2016
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace Mindy\Bundle\DashboardBundle\DependencyInjection\Compiler;
@@ -29,7 +29,7 @@ class DashboardPass implements CompilerPassInterface
         if ($definition) {
             foreach ($container->findTaggedServiceIds('dashboard.widget') as $id => $attributes) {
                 $definition->addMethodCall('addWidget', array(
-                    new Reference($id)
+                    new Reference($id),
                 ));
             }
         }
