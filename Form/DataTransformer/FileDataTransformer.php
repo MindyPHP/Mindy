@@ -59,11 +59,11 @@ class FileDataTransformer implements DataTransformerInterface
      */
     public function transform($value)
     {
-        $path = rtrim($this->mediaPath, '/').'/'.$value;
-        if (is_file($path)) {
-            return new File($path, false);
+        if ($this->filesystem->has($value)) {
+            $meta = $this->filesystem->getMetadata($value);
+            return new File($meta['path'], false);
         }
-
+        
         return;
     }
 

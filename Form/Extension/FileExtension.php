@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\FileBundle\Form\Extension;
 
-use Mindy\Bundle\MindyBundle\Form\DataTransformer\FileDataTransformer;
+use Mindy\Bundle\FileBundle\Form\DataTransformer\FileDataTransformer;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;

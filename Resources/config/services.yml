@@ -7,7 +7,7 @@ services:
 
     file.form.data_transformer.file:
         class: Mindy\Bundle\FileBundle\Form\DataTransformer\FileDataTransformer
-        arguments: [ '%file.local_directory%' ]
+        arguments: [ "@=container.get(container.getParameter('file.filesystem'))" ]
 
     file.form.extension.file_type:
         class: Mindy\Bundle\FileBundle\Form\Extension\FileExtension
