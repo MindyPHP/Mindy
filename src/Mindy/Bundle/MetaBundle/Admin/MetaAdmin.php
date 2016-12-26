@@ -11,11 +11,11 @@ namespace Mindy\Bundle\MetaBundle\Admin;
 use Mindy\Bundle\MetaBundle\Form\MetaFilterForm;
 use Mindy\Bundle\MetaBundle\Form\MetaFormType;
 use Mindy\Bundle\MetaBundle\Model\Meta;
-use Mindy\Bundle\MindyBundle\Admin\AbstractModelAdmin;
+use Mindy\Bundle\AdminBundle\Admin\AbstractModelAdmin;
 
 class MetaAdmin extends AbstractModelAdmin
 {
-    public $columns = ['domain', 'url', 'title'];
+    public $columns = ['host', 'url', 'title'];
 
     public function getFilterFormType()
     {
