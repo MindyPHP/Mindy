@@ -21,7 +21,7 @@ class FileController extends Controller
      */
     protected function getFilesystem()
     {
-        return $this->get('oneup_flysystem.default_filesystem');
+        return $this->get($this->getParameter('file.filesystem'));
     }
 
     public function createDirectoryAction(Request $request)
@@ -73,7 +73,7 @@ class FileController extends Controller
             $objects[] = [
                 'path' => '/'.$object['path'],
                 'name' => basename($object['path']),
-                'date' => date(DATE_W3C, $object['timestamp']),
+                'date' => isset($object['timestamp']) ? date(DATE_W3C, $object['timestamp']) : null,
                 'is_dir' => $object['type'] === 'dir',
                 'size' => isset($object['size']) ? $object['size'] : 0,
                 'url' => $object['path'],
