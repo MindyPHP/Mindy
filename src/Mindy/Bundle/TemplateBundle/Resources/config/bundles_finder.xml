@@ -6,7 +6,7 @@
 
     <services>
         <service id="template.finder.bundles" class="Mindy\Bundle\TemplateBundle\TemplateFinder\BundlesTemplateFinder">
-            <argument type="collection" key="bundles_dirs"></argument>
+            <argument type="collection" key="bundles_dirs"/>
             <argument key="templates_dir">templates</argument>
         </service>
     </services>

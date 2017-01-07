@@ -20,9 +20,15 @@
         </service>
 
         <service id="template.finder.chain" class="Mindy\Bundle\TemplateBundle\TemplateFinder\ChainTemplateFinder">
-            <argument type="collection">
+            <call method="addFinder">
                 <argument type="service" id="template.finder.templates" />
-            </argument>
+            </call>
+            <call method="addFinder">
+                <argument type="service" id="template.finder.theme" on-invalid="ignore" />
+            </call>
+            <call method="addFinder">
+                <argument type="service" id="template.finder.bundles" on-invalid="ignore" />
+            </call>
         </service>
 
         <service id="template.variable_provider.app" class="Mindy\Bundle\TemplateBundle\VariableProvider\AppVariableProvider">

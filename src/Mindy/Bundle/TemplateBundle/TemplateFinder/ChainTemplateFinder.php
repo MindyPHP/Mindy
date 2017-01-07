@@ -19,16 +19,6 @@ class ChainTemplateFinder implements TemplateFinderInterface
     protected $finders = [];
 
     /**
-     * Finder constructor.
-     *
-     * @param array $finders
-     */
-    public function __construct(array $finders = [])
-    {
-        $this->finders = $finders;
-    }
-
-    /**
      * @param TemplateFinderInterface $finder
      */
     public function addFinder(TemplateFinderInterface $finder)
