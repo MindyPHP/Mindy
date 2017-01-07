@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\AdminBundle\View;
 
-class ListView extends AbstractView
+class ListView extends AbstractFormView
 {
 
 }

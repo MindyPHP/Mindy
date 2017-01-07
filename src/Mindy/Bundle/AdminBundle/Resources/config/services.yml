@@ -2,10 +2,6 @@ services:
     admin.registry:
         class: Mindy\Bundle\AdminBundle\Admin\AdminRegistry
 
-    admin:
-        class: Mindy\Bundle\AdminBundle\Admin\AdminManager
-        arguments: [ '@kernel', '@admin.template.finder' ]
-
     admin.menu:
         class: Mindy\Bundle\AdminBundle\Admin\AdminMenu
         arguments: [ "%admin.menu%" ]
@@ -13,7 +9,6 @@ services:
     admin.template.finder:
         class: Mindy\Bundle\AdminBundle\Admin\AdminTemplateFinder
         arguments: [ '@template.finder.chain' ]
-        public: false
 
     template.admin.library:
         class: Mindy\Bundle\AdminBundle\Library\AdminLibrary
