@@ -36,12 +36,7 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Returns a rendered view.
-     *
-     * @param string $view       The view name
-     * @param array  $parameters An array of parameters to pass to the view
-     *
-     * @return string The rendered view
+     * {@inheritdoc}
      */
     protected function renderTemplate($view, array $parameters = array())
     {
@@ -52,13 +47,7 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Renders a view.
-     *
-     * @param string   $view       The view name
-     * @param array    $parameters An array of parameters to pass to the view
-     * @param Response $response
-     *
-     * @return string
+     * {@inheritdoc}
      */
     protected function render($view, array $parameters = array(), Response $response = null)
     {
@@ -72,13 +61,7 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Streams a view.
-     *
-     * @param string           $view       The view name
-     * @param array            $parameters An array of parameters to pass to the view
-     * @param StreamedResponse $response   A response instance
-     *
-     * @return StreamedResponse A StreamedResponse instance
+     * {@inheritdoc}
      */
     protected function stream($view, array $parameters = array(), StreamedResponse $response = null)
     {
