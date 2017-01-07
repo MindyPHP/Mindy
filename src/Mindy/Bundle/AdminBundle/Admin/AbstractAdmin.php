@@ -9,6 +9,7 @@
 namespace Mindy\Bundle\AdminBundle\Admin;
 
 use Mindy\Bundle\MindyBundle\Controller\Controller;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -48,14 +49,12 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
         return (new \ReflectionClass($this))->getShortName();
     }
 
+    /**
+     * @param string $id
+     */
     public function setAdminId($id)
     {
         $this->adminId = $id;
-    }
-
-    protected function getAdminId()
-    {
-        return $this->adminId;
     }
 
     /**
@@ -67,7 +66,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     public function getAdminUrl($action, array $params = [])
     {
         return $this->generateUrl('admin_dispatch', array_merge($params, [
-            'admin' => $this->getAdminId(),
+            'admin' => $this->adminId,
             'action' => $action,
         ]));
     }
@@ -85,26 +84,10 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
             ->findTemplate($this->getBundle()->getName(), $this->classNameShort(), $template);
 
         if (null === $template && $throw) {
-            throw new \RuntimeException(sprintf('Template %s not found', $template));
+            throw new RuntimeException(sprintf('Template %s not found', $template));
         }
 
         return $template;
-    }
-
-    /**
-     * @param string   $view
-     * @param array    $parameters
-     * @param Response $response
-     *
-     * @return string
-     */
-    public function render($view, array $parameters = array(), Response $response = null)
-    {
-        return parent::render($view, array_merge($parameters, [
-            'admin' => $this,
-            'bundle' => $this->getBundle(),
-            'adminMenu' => $this->get('admin.menu')->getMenu(),
-        ]), $response);
     }
 
     /**
