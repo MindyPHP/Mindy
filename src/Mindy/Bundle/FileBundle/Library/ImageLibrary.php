@@ -13,6 +13,7 @@ use Imagine\Image\ImageInterface;
 use League\Flysystem\FilesystemInterface;
 use Mindy\Thumb\ImageProcess;
 use Mindy\Template\Library;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 
 /**
  * Class ImageLibrary.
@@ -25,15 +26,21 @@ class ImageLibrary extends Library
      * @var FilesystemInterface
      */
     protected $filesystem;
+    /**
+     * @var CacheManager
+     */
+    protected $cacheManager;
 
     /**
      * ImageLibrary constructor.
      *
      * @param FilesystemInterface $filesystem
+     * @param CacheManager $cacheManager
      */
-    public function __construct(FilesystemInterface $filesystem)
+    public function __construct(FilesystemInterface $filesystem, CacheManager $cacheManager)
     {
         $this->filesystem = $filesystem;
+        $this->cacheManager = $cacheManager;
     }
 
     /**
@@ -55,6 +62,9 @@ class ImageLibrary extends Library
 
                 return $newPath;
             },
+            'imagine_filter' => function ($path, $filter, array $runtimeConfig = array(), $resolver = null) {
+                return $this->cacheManager->getBrowserPath($path, $filter, $runtimeConfig, $resolver);
+            },
         ];
     }
 
@@ -74,7 +84,7 @@ class ImageLibrary extends Library
         ], $options);
 
         if (!in_array($method, $resizeMethods)) {
-            throw new Exception('Unknown resize method: '.$method);
+            throw new Exception('Unknown resize method: ' . $method);
         }
 
         $file = $this->filesystem->get($path);
@@ -106,16 +116,16 @@ class ImageLibrary extends Library
 
     /**
      * @param string $path
-     * @param array  $options
+     * @param array $options
      *
      * @return string
      */
     public function generateFilename($path, array $options = [])
     {
         $hash = md5(json_encode($options));
-        $newFilename = implode('_', [pathinfo($path, PATHINFO_FILENAME), $hash]).'.'.pathinfo($path, PATHINFO_EXTENSION);
+        $newFilename = implode('_', [pathinfo($path, PATHINFO_FILENAME), $hash]) . '.' . pathinfo($path, PATHINFO_EXTENSION);
 
-        return pathinfo($path, PATHINFO_DIRNAME).'/'.$newFilename;
+        return pathinfo($path, PATHINFO_DIRNAME) . '/' . $newFilename;
     }
 
     /**
