@@ -49,11 +49,5 @@ class TemplatePass implements CompilerPassInterface
                 $definition->addMethodCall('addVariableProvider', array(new Reference($id)));
             }
         }
-
-        if ($container->hasParameter('template.helpers')) {
-            foreach ($container->getParameter('template.helpers') as $id => $func) {
-                $definition->addMethodCall('addHelper', array($id, $func));
-            }
-        }
     }
 }

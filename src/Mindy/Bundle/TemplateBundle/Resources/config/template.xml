@@ -8,9 +8,9 @@
         <service id="template" class="Mindy\Template\Renderer">
             <argument type="collection">
                 <argument key="source" type="expression">container.get('template.finder.chain').getPaths()</argument>
-                <argument key="target">%kernel.cache_dir%/templates</argument>
-                <argument key="mode">0</argument>
-                <argument key="autoEscape">true</argument>
+                <argument key="target">%template.cache_dir%</argument>
+                <argument key="mode">%template.cache_dir%</argument>
+                <argument key="autoEscape">%template.auto_escape%</argument>
             </argument>
         </service>
 
