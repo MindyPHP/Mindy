@@ -8,8 +8,30 @@
 
 namespace Mindy\Bundle\AdminBundle\View;
 
+use Symfony\Component\HttpFoundation\Request;
 
-class DetailView
+class DetailView extends AbstractView
 {
+    /**
+     * @param Request $request
+     */
+    public function handleRequest(Request $request)
+    {
 
+    }
+
+    protected function getObject()
+    {
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getContextData()
+    {
+        return [
+            'instance' => $this->getObject()
+        ];
+    }
 }

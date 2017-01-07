@@ -8,20 +8,29 @@
 
 namespace Mindy\Bundle\AdminBundle\View;
 
-use Mindy\Template\Renderer;
+use Mindy\Template\RendererInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractView implements ViewInterface
 {
+    use ContainerAwareTrait;
+
     /**
-     * @var Renderer
+     * @var RendererInterface
      */
     protected $renderer;
+    /**
+     * @var string
+     */
+    protected $template;
 
     /**
      * AbstractView constructor.
-     * @param Renderer $renderer
+     * @param RendererInterface $renderer
      */
-    public function __construct(Renderer $renderer)
+    public function __construct(RendererInterface $renderer)
     {
         $this->renderer = $renderer;
     }
@@ -29,8 +38,35 @@ abstract class AbstractView implements ViewInterface
     /**
      * {@inheritdoc}
      */
-    public function renderTemplate($view, array $parameters = array())
+    public function renderTemplate(array $parameters = array())
     {
-        return $this->renderer->render($view, $parameters);
+        return $this->renderer->render($this->template, array_merge($this->getContextData(), $parameters));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function render(array $parameters = array(), $response = null)
+    {
+        if (null === $response) {
+            $response = new Response();
+        }
+
+        $response->setContent($this->renderTemplate($parameters));
+
+        return $response;
+    }
+
+    /**
+     * @param string $template
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+    }
+
+    /**
+     * @param Request $request
+     */
+    abstract public function handleRequest(Request $request);
 }

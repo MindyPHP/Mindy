@@ -6,7 +6,7 @@
  * Time: 20:45
  */
 
-namespace Mindy\Bundle\AdminBundle\Admin;
+namespace Mindy\Bundle\AdminBundle\Admin\Handler;
 
 use Mindy\Orm\Manager;
 use Mindy\Orm\QuerySet;

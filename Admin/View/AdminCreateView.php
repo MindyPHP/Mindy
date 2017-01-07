@@ -6,7 +6,7 @@
  * Time: 21:52
  */
 
-namespace Mindy\Bundle\AdminBundle\View\Admin;
+namespace Mindy\Bundle\AdminBundle\Admin\View;
 
 use Mindy\Bundle\AdminBundle\View\CreateView;
 

@@ -6,7 +6,7 @@
  * Time: 19:55
  */
 
-namespace Mindy\Bundle\AdminBundle\Admin;
+namespace Mindy\Bundle\AdminBundle\Admin\Handler;
 
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\Fields\TextField;

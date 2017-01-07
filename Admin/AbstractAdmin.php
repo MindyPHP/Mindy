@@ -9,6 +9,7 @@
 namespace Mindy\Bundle\AdminBundle\Admin;
 
 use Mindy\Bundle\MindyBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -19,7 +20,25 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     const FLASH_WARNING = 'admin_warning';
     const FLASH_ERROR = 'admin_error';
 
+    /**
+     * @var string
+     */
     protected $adminId;
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
+
+    /**
+     * @return EventDispatcher
+     */
+    public function getEventDispatcher()
+    {
+        if (null === $this->eventDispatcher) {
+            $this->eventDispatcher = new EventDispatcher();
+        }
+        return $this->eventDispatcher;
+    }
 
     /**
      * @return string

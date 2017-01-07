@@ -6,7 +6,7 @@
  * Time: 19:39
  */
 
-namespace Mindy\Bundle\AdminBundle\View\Admin;
+namespace Mindy\Bundle\AdminBundle\Admin\View;
 
 use Mindy\Bundle\AdminBundle\Admin\Handler\AdminHandlerInterface;
 use Mindy\Bundle\AdminBundle\View\ListView;

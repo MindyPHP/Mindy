@@ -21,8 +21,8 @@ class ButtonsType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label' => 'Сохранить',
             ])
-            ->add('save_and_continue', SubmitType::class, [
-                'label' => 'Сохранить и продолжить редактирование',
+            ->add('save_and_return', SubmitType::class, [
+                'label' => 'Сохранить и вернуться',
             ])
             ->add('save_and_create', SubmitType::class, [
                 'label' => 'Сохранить и создать',

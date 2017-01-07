@@ -21,3 +21,27 @@ services:
         arguments: [ '@admin.menu' ]
         tags:
             - { name: admin.dashboard.widget }
+
+    admin.view.list:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminListView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.create:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminCreateView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.update:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminUpdateView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.delete:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminDeleteView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]

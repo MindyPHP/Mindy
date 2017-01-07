@@ -18,9 +18,12 @@ interface ViewInterface
     public function handleRequest(Request $request);
 
     /**
-     * @param $view
-     * @param array $parameters
      * @return string
      */
-    public function renderTemplate($view, array $parameters = array());
+    public function renderTemplate();
+
+    /**
+     * @return array
+     */
+    public function getContextData();
 }

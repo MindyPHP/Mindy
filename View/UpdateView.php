@@ -8,7 +8,16 @@
 
 namespace Mindy\Bundle\AdminBundle\View;
 
-class UpdateView extends AbstractView
+class UpdateView extends AbstractFormView
 {
-
+    /**
+     * @return array
+     */
+    public function getContextData()
+    {
+        return [
+            'instance' => $this->model,
+            'form' => $this->getForm()->createView()
+        ];
+    }
 }
