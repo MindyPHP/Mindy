@@ -13,3 +13,8 @@ services:
         arguments: [ '@request_stack', '@meta.meta_provider', '@template' ]
         tags:
             - { name: template.library }
+
+    meta.admin.meta:
+        class: Mindy\Bundle\MetaBundle\Admin\MetaAdmin
+        tags:
+            - { name: admin.admin, slug: meta_meta }
