@@ -8,8 +8,9 @@
 
 namespace Mindy\Bundle\AdminBundle\Form;
 
+use Symfony\Component\Form\FormInterface;
 
-interface FilterFormInterface
+interface FilterFormInterface extends FormInterface
 {
-
+    public function filter($qs);
 }

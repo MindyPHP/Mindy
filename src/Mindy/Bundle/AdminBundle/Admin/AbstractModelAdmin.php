@@ -8,22 +8,32 @@
 
 namespace Mindy\Bundle\AdminBundle\Admin;
 
-use Mindy\Bundle\AdminBundle\Admin\Sorting\SortingHandler;
-use Mindy\Bundle\AdminBundle\Admin\Sorting\TreeSortingHandler;
-use Mindy\Orm\Fields\CharField;
-use Mindy\Orm\Fields\TextField;
+use Mindy\Bundle\AdminBundle\Admin\Event\AdminEvent;
+use Mindy\Bundle\AdminBundle\Admin\Handler\OrderHandler;
+use Mindy\Bundle\AdminBundle\Admin\Handler\SearchHandler;
+use Mindy\Bundle\AdminBundle\Admin\Handler\SortHandler;
+use Mindy\Bundle\AdminBundle\Form\DeleteConfirmForm;
+use Mindy\Bundle\AdminBundle\Form\FilterFormInterface;
+use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Orm\ModelInterface;
 use Mindy\Orm\TreeManager;
 use Mindy\Orm\TreeModel;
 use Mindy\Orm\TreeQuerySet;
-use Mindy\QueryBuilder\Q\QOr;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 abstract class AbstractModelAdmin extends AbstractAdmin
 {
+    const EVENT_BEFORE_CREATE = 'before_create';
+    const EVENT_AFTER_CREATE = 'after_create';
+    const EVENT_BEFORE_UPDATE = 'before_update';
+    const EVENT_AFTER_UPDATE = 'after_update';
+    const EVENT_BEFORE_DELETE = 'before_update';
+    const EVENT_AFTER_DELETE = 'after_update';
+
     /**
      * @var array
      */
@@ -58,52 +68,14 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     {
         $this->fetcher = new AdminValueFetcher();
         $this->propertyAccessor = new PropertyAccessor();
-
-        $instance = (new \ReflectionClass($this->getModelClass()))->newInstance();
-        if ($instance instanceof TreeModel) {
-            $columns = [];
-            if (null === $this->defaultOrder) {
-                $columns = ['root', 'lft'];
-            } elseif (is_array($this->defaultOrder)) {
-                $columns = array_merge(['root', 'lft'], $columns);
-            } else {
-                $columns = [$this->defaultOrder];
-            }
-            $this->defaultOrder = $columns;
-
-            $this->sortingHandler = new TreeSortingHandler($instance);
-        } else {
-            $this->sortingHandler = new SortingHandler($instance);
-        }
-    }
-
-    public function setColumns(array $columns)
-    {
-        $this->columns = $columns;
     }
 
     /**
-     * @return AbstractType
+     * @return FilterFormInterface|AbstractType
      */
     public function getFilterFormType()
     {
         return;
-    }
-
-    public function getSearchFields()
-    {
-        if (null === $this->searchFields) {
-            $fields = [];
-            foreach (call_user_func([$this->getModelClass(), 'getMeta'])->getFields() as $name => $field) {
-                if ($field instanceof CharField || $field instanceof TextField) {
-                    $fields[] = $name;
-                }
-            }
-
-            return $fields;
-        }
-
-        return $this->searchFields;
     }
 
     /**
@@ -137,17 +109,6 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     abstract public function getFormType();
 
     abstract public function getModelClass();
-
-    public function getOrderUrl(Request $request, $column)
-    {
-        $order = $request->query->get('order', '');
-        if ($order == $column) {
-            $column = '-'.$column;
-        }
-        $queryString = http_build_query(array_merge($request->query->all(), ['order' => $column]));
-
-        return strtok($request->getUri(), '?').'?'.$queryString;
-    }
 
     public function getVerboseNames()
     {
@@ -184,7 +145,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     {
         $value = $this->fetcher->fetchValue($column, $model);
 
-        if ($template = $this->findTemplate('columns/_'.$column.'.html', false)) {
+        if ($template = $this->findTemplate(sprintf('columns/_%s.html', $column), false)) {
             return $this->renderTemplate($template, [
                 'admin' => $this,
                 'model' => $model,
@@ -217,63 +178,21 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return call_user_func([$this->getModelClass(), 'objects']);
     }
 
-    /**
-     * @param \Mindy\Orm\QuerySet|\Mindy\Orm\Manager $qs
-     * @param string                                 $q
-     * @param array                                  $fields
-     */
-    public function applySearchToQuerySet($qs, $q, array $fields)
-    {
-        if (empty($q)) {
-            return;
-        }
-
-        $filters = [];
-        foreach ($fields as $field) {
-            $lookup = 'icontains';
-            $fieldName = $field;
-            if (strpos($field, '=') === 0) {
-                $fieldName = substr($field, 1);
-                $lookup = 'exact';
-            }
-
-            $filters[] = [$fieldName.'__'.$lookup => $q];
-        }
-        $qs->filter([new QOr($filters)]);
-    }
-
-    protected function isTree($qs)
-    {
-        return $qs instanceof TreeManager || $qs instanceof TreeQuerySet;
-    }
-
-    public function sortingAction(Request $request)
+    public function listAction(Request $request)
     {
         $qs = $this->getQuerySet();
+        $tree = $qs instanceof TreeManager || $qs instanceof TreeQuerySet;
 
-        $tree = $this->isTree($qs);
-        $ids = $request->query->get('models', []);
-        if ($tree) {
-            $this->sortingHandler->sort($request, null, $ids);
+        $view = $this->get('admin.view.list');
+
+        if ($request->isXmlHttpRequest()) {
+            $view->setTemplate($this->findTemplate('_table.html'));
         } else {
-            $this->sortingHandler->sort($request, $this->sorting, $ids);
+            $view->setTemplate($this->findTemplate('list.html'));
         }
 
-        $this->prepareQuerySet($request, $qs);
-        $pager = $this->createPagination($qs, $this->pager);
-
-        return $this->render($this->findTemplate('_table.html'), [
-            'models' => $pager->paginate(),
-            'pager' => $pager,
-            'tree' => $tree,
-            'sorting' => $this->sorting || $tree,
-            'columns' => $this->getColumns(),
-        ]);
-    }
-
-    protected function prepareQuerySet(Request $request, $qs)
-    {
-        if ($this->isTree($qs)) {
+        // TODO
+        if ($tree) {
             if ($request->query->has('parent_id') && ($pk = $request->query->getInt('parent_id'))) {
                 $clone = clone $qs;
                 $parent = $clone->get(['pk' => $pk]);
@@ -287,64 +206,33 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             }
         }
 
-        if ($request->query->has('order')) {
-            $qs->order([
-                $request->query->get('order'),
-            ]);
-        } elseif (null !== $this->defaultOrder) {
-            $qs->order($this->defaultOrder);
-        } elseif ($this->sorting) {
-            $qs->order($this->sorting);
+        $view->setQuerySet($qs);
+        $view->setPaginationParameters($this->pager);
+
+        $view->setSearchHandler(new SearchHandler($request, 'search', $this->searchFields));
+        $view->setOrderHandler(new OrderHandler($request, 'order', $this->defaultOrder));
+
+        if ($this->sorting) {
+            $view->setSortHandler(new SortHandler($request, 'models', $this->sorting, $this->sorting));
         }
 
-        if ($request->query->has('search')) {
-            $this->applySearchToQuerySet($qs, $request->query->get('search'), $this->getSearchFields());
-        }
-    }
-
-    protected function searchFilterForm($qs, $data)
-    {
-    }
-
-    public function listAction(Request $request)
-    {
-        $qs = $this->getQuerySet();
-
-        $tree = $this->isTree($qs);
-        $this->prepareQuerySet($request, $qs);
-
-        $pager = $this->createPagination($qs, $this->pager);
+        $view->handleRequest($request);
 
         $instance = (new \ReflectionClass($this->getModelClass()))->newInstance();
 
-        $filterFormView = null;
-        if ($filterFormType = $this->getFilterFormType()) {
-            $filterForm = $this->createForm($filterFormType, $request->query->get('filter', []), [
-                'method' => 'GET',
-            ]);
-            $filterFormView = $filterForm->createView();
-
-            if ($filterForm->handleRequest($request)) {
-                $this->searchFilterForm($qs, $filterForm->getData());
-            }
-        }
-
-        return $this->render($this->findTemplate('list.html'), [
-            'pager' => $pager,
+        return $view->render([
+            'admin' => $this,
             'tree' => $tree,
-            'filterForm' => $filterFormView,
-            'linkColumn' => $this->linkColumn,
-            'sorting' => $this->sorting || $tree,
-            'columns' => $this->getColumns(),
-            'models' => $pager->paginate(),
             'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'list'),
+            'linkColumn' => $this->linkColumn,
+            'columns' => $this->getColumns(),
         ]);
     }
 
     /**
-     * @param Request        $request
+     * @param Request $request
      * @param ModelInterface $model
-     * @param string         $action
+     * @param string $action
      *
      * @return array
      */
@@ -382,7 +270,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         foreach ($parents as $parent) {
             $breadcrumbs[] = [
                 'url' => $this->getAdminUrl('list', ['parent_id' => $parent->pk]),
-                'name' => (string) $parent,
+                'name' => (string)$parent,
                 'items' => [],
             ];
         }
@@ -391,7 +279,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     }
 
     /**
-     * @param Request        $request
+     * @param Request $request
      * @param ModelInterface $model
      * @param $action
      *
@@ -421,7 +309,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 break;
             case 'info':
                 $breadcrumbs[] = [
-                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string) $model], sprintf('%s.admin', $bundleName)),
+                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string)$model], sprintf('%s.admin', $bundleName)),
                     'url' => $this->getAdminUrl('list'),
                 ];
                 break;
@@ -459,10 +347,15 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return [
             $trans->trans(sprintf('%s.admin.%s.list', $bundleName, $model)),
             $trans->trans(sprintf('%s.admin.%s.create', $bundleName, $model)),
-            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string) $instance]),
+            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string)$instance]),
         ];
     }
 
+    /**
+     * TODO
+     * @param Request $request
+     * @return string
+     */
     public function infoAction(Request $request)
     {
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
@@ -507,38 +400,35 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         ]);
     }
 
-    protected function beforeCreate($instance)
+    protected function getDeleteFormType()
     {
-    }
-
-    protected function beforeUpdate($instance)
-    {
+        return DeleteConfirmForm::class;
     }
 
     public function createAction(Request $request)
     {
         $instance = (new \ReflectionClass($this->getModelClass()))->newInstance();
 
-        $form = $this->createForm($this->getFormType(), $instance, [
-            'method' => 'POST',
-            'attr' => ['enctype' => 'multipart/form-data'],
-        ]);
+        $view = $this->get('admin.view.create');
+        $view->setTemplate($this->findTemplate('create.html'));
+        $view->setForm($this->getFormType());
+        $view->setModel($instance);
 
-        if ($request->getMethod() === 'POST') {
-            if ($form->handleRequest($request)->isValid()) {
-                $instance = $form->getData();
-                $this->beforeCreate($instance);
+        if ($view->handleRequest($request)->isSubmitted()) {
+            $form = $view->getForm();
+            $instance = $form->getData();
+            $this->getEventDispatcher()->dispatch(self::EVENT_BEFORE_CREATE, new AdminEvent($instance));
 
-                if ($instance->save()) {
-                    $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+            if ($instance->save()) {
+                $this->getEventDispatcher()->dispatch(self::EVENT_AFTER_CREATE, new AdminEvent($instance));
 
-                    return $this->redirect($this->getAdminUrl('update', ['pk' => $instance->id]));
-                }
+                $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+                return $this->getNextRoute($form->get('buttons'), $instance);
             }
         }
 
-        return $this->render($this->findTemplate('create.html'), [
-            'form' => $form->createView(),
+        return $view->render([
+            'admin' => $this,
             'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'create'),
         ]);
     }
@@ -586,19 +476,18 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     }
 
     /**
-     * @param array          $data
-     * @param ModelInterface $model
-     *
+     * @param FormInterface|ButtonsType $buttons
+     * @param ModelInterface $instance
      * @return string url for redirect
      */
-    public function getNextRoute(array $data, ModelInterface $model)
+    public function getNextRoute(FormInterface $buttons, ModelInterface $instance)
     {
-        if (array_key_exists('save_continue', $data)) {
-            return $this->getAdminUrl('update', array_merge($this->fetchRedirectParams($model->getAttributes(), 'save_continue'), ['pk' => $model->pk]));
-        } elseif (array_key_exists('save_create', $data)) {
-            return $this->getAdminUrl('create', $this->fetchRedirectParams($model->getAttributes(), 'save_create'));
-        } else {
-            return $this->getAdminUrl('list', $this->fetchRedirectParams($model->getAttributes(), 'save'));
+        if ($buttons->get('save')->isClicked()) {
+            return $this->redirect($this->getAdminUrl('update', ['pk' => $instance->pk]));
+        } elseif ($buttons->get('save_and_return')->isClicked()) {
+            return $this->redirect($this->getAdminUrl('list'));
+        } elseif ($buttons->get('save_and_create')->isClicked()) {
+            return $this->redirect($this->getAdminUrl('create'));
         }
     }
 
@@ -611,33 +500,34 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             throw new NotFoundHttpException();
         }
 
-        $form = $this->createForm($this->getFormType(), $instance, [
-            'method' => 'POST',
-            'attr' => ['enctype' => 'multipart/form-data'],
-        ]);
+        $view = $this->get('admin.view.update');
+        $view->setTemplate($this->findTemplate('update.html'));
+        $view->setForm($this->getFormType());
+        $view->setModel($instance);
 
-        if ($request->getMethod() === 'POST') {
-            if ($form->handleRequest($request)->isValid()) {
-                $instance = $form->getData();
-                $this->beforeUpdate($instance);
+        if ($view->handleRequest($request)->isSubmitted()) {
+            $form = $view->getForm();
+            $instance = $form->getData();
+            $this->getEventDispatcher()->dispatch(self::EVENT_BEFORE_UPDATE, new AdminEvent($instance));
 
-                if ($instance->save()) {
-                    $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+            if ($instance->save()) {
+                $this->getEventDispatcher()->dispatch(self::EVENT_BEFORE_UPDATE, new AdminEvent($instance));
 
-                    return $this->redirect($request->getRequestUri());
-                }
+                $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+
+                return $this->getNextRoute($form->get('buttons'), $instance);
             }
         }
 
-        return $this->render($this->findTemplate('update.html'), [
-            'form' => $form->createView(),
-            'instance' => $instance,
+        return $view->render([
+            'admin' => $this,
             'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'update'),
         ]);
     }
 
     public function removeAction(Request $request)
     {
+        /** @var ModelInterface $instance */
         $instance = call_user_func([$this->getModelClass(), 'objects'])->get([
             'pk' => $request->query->get('pk'),
         ]);
@@ -645,28 +535,31 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             throw new NotFoundHttpException();
         }
 
-        if ($instance->delete()) {
-            return $this->redirect($this->getAdminUrl('list'));
+        $view = $this->get('admin.view.delete');
+        $view->setTemplate($this->findTemplate('delete.html'));
+        $view->setForm($this->getDeleteFormType());
+
+        if ($view->handleRequest($request)->isSubmitted()) {
+            if ($view->getForm()->isValid()) {
+                $this->getEventDispatcher()->dispatch(self::EVENT_BEFORE_DELETE, new AdminEvent($instance));
+
+                if ($instance->delete()) {
+                    $this->getEventDispatcher()->dispatch(self::EVENT_AFTER_DELETE, new AdminEvent($instance));
+
+                    $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+                    return $this->redirect($this->getAdminUrl('list'));
+                }
+            }
         }
 
-        throw new \RuntimeException('Failed to remove entry');
-    }
-
-    public function getAbsoluteUrl(ModelInterface $model)
-    {
-        if (method_exists($model, 'getAbsoluteUrl')) {
-            return $model->getAbsoluteUrl();
-        }
-
-        return;
+        return $view->render([
+            'admin' => $this
+        ]);
     }
 
     protected function getBundle()
     {
-        $name = call_user_func([
-            $this->getModelClass(),
-            'getBundleName'
-        ]);
+        $name = call_user_func([$this->getModelClass(), 'getBundleName']);
         return $this->get('kernel')->getBundle($name);
     }
 }

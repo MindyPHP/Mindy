@@ -8,7 +8,15 @@
 
 namespace Mindy\Bundle\AdminBundle\View;
 
-class CreateView extends AbstractView
+class CreateView extends AbstractFormView
 {
-
+    /**
+     * @return array
+     */
+    public function getContextData()
+    {
+        return [
+            'form' => $this->getForm()->createView()
+        ];
+    }
 }

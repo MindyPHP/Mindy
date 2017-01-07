@@ -8,9 +8,34 @@
 
 namespace Mindy\Bundle\AdminBundle\Admin\Event;
 
+use Mindy\Orm\ModelInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class AdminAfterCreate extends Event
+/**
+ * Class AdminEvent
+ * @package Mindy\Bundle\AdminBundle\Admin\Event
+ */
+class AdminEvent extends Event
 {
+    /**
+     * @var ModelInterface
+     */
+    protected $instance;
 
+    /**
+     * AdminEvent constructor.
+     * @param ModelInterface $instance
+     */
+    public function __construct(ModelInterface $instance)
+    {
+        $this->instance = $instance;
+    }
+
+    /**
+     * @return ModelInterface
+     */
+    public function getInstance()
+    {
+        return $this->instance;
+    }
 }

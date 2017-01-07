@@ -49,7 +49,7 @@ class AdminController extends Controller
 
         $response = $this->forward(sprintf("%s:%sAction", $id, $action), [
             'request' => $request
-        ]);
+        ], $request->query->all());
         return $this->preventCache($response);
     }
 

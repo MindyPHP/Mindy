@@ -1,5 +1,6 @@
 <div class="table--container__main">
-    {{ pager.render(admin.findTemplate('_pager.html'))|safe }}
+    {{ pagination_render(pager, admin.findTemplate('_pager.html'))|safe }}
+
     <table id="table-main" data-toggle="checkboxes" data-range="true" class="b-table">
         <thead>
         <tr>
@@ -7,22 +8,25 @@
                 <input type="checkbox" id="check-all">
                 <label class="checkbox-state" for="check-all"></label>
             </th>
-            {% if sorting %}
+            {% if sortHandler %}
                 <th class="sorting"></th>
             {% endif %}
             {%- for column in columns -%}
                 <th class="th-{{ column }}">
-                    {% set orderUrl = admin.getOrderUrl(request, column) %}
+                    {% set orderUrl = orderHandler.generateUrl(column) %}
                     {% if orderUrl %}
-                        <a href="{{ admin.getOrderUrl(request, column) }}">
-                            {{ admin.getVerboseName(column) }}
+                        <a href="{{ orderHandler.generateUrl(column) }}">
                             {% if request.query.has('order') %}
-                                {% if request.query.get('order') == column %}
-                                    <i class="icon caret down"></i>
+                                <span class="float-right">
+                                    {% if request.query.get('order') == column %}
+                                        <i class="icon chevron down"></i>
                                     {% elif request.query.get('order') == ('-' ~ column) %}
-                                    <i class="icon caret up"></i>
-                                {% endif %}
+                                        <i class="icon chevron up"></i>
+                                    {% endif %}
+                                </span>
                             {% endif %}
+
+                            {{ admin.getVerboseName(column) }}
                         </a>
                     {% else %}
                         {{ admin.getVerboseName(column) }}
@@ -42,7 +46,7 @@
                                 <input type="checkbox" name="models[]" id="check-{{ loop.counter }}" value="{{ model.pk }}">
                                 <label class="checkbox-state" for="check-{{ loop.counter }}"></label>
                             </td>
-                            {% if sorting %}
+                            {% if sortHandler %}
                                 <td class="sorting">
                                 <span class="sorting--container">
                                     <i class="icon content" aria-hidden="true"></i>
@@ -76,14 +80,15 @@
         {% endif %}
         </tbody>
     </table>
-    {{ pager.render(admin.findTemplate('_pager.html'))|safe }}
+
+    {{ pagination_render(pager, admin.findTemplate('_pager.html'))|safe }}
 
     <div class="table--loader">
         Загрузка...
     </div>
 </div>
 
-{% if sorting %}
+{% if sortHandler %}
     <script type="text/javascript">
         $(".table--container__main tbody").sortable({
             items: 'tr',
@@ -103,7 +108,7 @@
                         $next = $to.next(),
                         data = $(this).sortable('toArray', { attribute: 'data-pk' });
 
-                fetch.post('{{ admin.getAdminUrl('sorting', ['pk' => request.query.get('pk')]) }}', {}, {
+                fetch.post('{{ admin.getAdminUrl('list', ['pk' => request.query.get('pk')]) }}', {}, {
                     models: data,
                     pk: $to.data('pk'),
                     insertAfter: $prev.data('pk'),
