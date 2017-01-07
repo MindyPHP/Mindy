@@ -54,10 +54,8 @@ abstract class AbstractModelAdmin extends AbstractAdmin
 
     protected $propertyAccessor;
 
-    public function __construct(AdminTemplateFinder $templateFinder)
+    public function __construct()
     {
-        parent::__construct($templateFinder);
-
         $this->fetcher = new AdminValueFetcher();
         $this->propertyAccessor = new PropertyAccessor();
 
@@ -77,6 +75,11 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         } else {
             $this->sortingHandler = new SortingHandler($instance);
         }
+    }
+
+    public function setColumns(array $columns)
+    {
+        $this->columns = $columns;
     }
 
     /**
@@ -406,7 +409,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             $breadcrumbs = array_merge($breadcrumbs, $custom);
         }
 
-        $bundleName = $this->bundle->getName();
+        $bundleName = $this->getBundle()->getName();
         switch ($action) {
             case 'create':
                 $breadcrumbs[] = ['name' => $create];
@@ -449,7 +452,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
      */
     public function getAdminNames(ModelInterface $instance = null)
     {
-        $bundleName = strtolower(str_replace('Bundle', '', $this->bundle->getName()));
+        $bundleName = strtolower(str_replace('Bundle', '', $this->getBundle()->getName()));
         $model = str_replace(' ', '_', TextHelper::normalizeName(TextHelper::shortName($this->getModelClass())));
         $trans = $this->get('translator');
 
@@ -656,5 +659,14 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         }
 
         return;
+    }
+
+    protected function getBundle()
+    {
+        $name = call_user_func([
+            $this->getModelClass(),
+            'getBundleName'
+        ]);
+        return $this->get('kernel')->getBundle($name);
     }
 }

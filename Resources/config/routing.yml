@@ -3,10 +3,11 @@ admin_index:
     defaults: { _controller: AdminBundle:Admin:index }
 
 admin_dispatch:
-    path: /{bundle}/{admin}/{action}
-    defaults: { _controller: AdminBundle:Admin:dispatch }
+    path: /{admin}/{action}
+    defaults:
+        _controller: AdminBundle:Admin:dispatch
+        action: 'list'
     requirements:
-        bundle: \w+
         admin: \w+
         action: \w+
 
