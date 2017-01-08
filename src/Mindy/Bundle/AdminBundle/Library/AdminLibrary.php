@@ -9,6 +9,7 @@
 namespace Mindy\Bundle\AdminBundle\Library;
 
 use Mindy\Bundle\AdminBundle\Admin\AdminMenu;
+use Mindy\Orm\TreeModel;
 use Mindy\Template\Library;
 use Mindy\Template\Renderer;
 
@@ -33,7 +34,7 @@ class AdminLibrary extends Library
                 return $this->renderer->render($template, [
                     'adminMenu' => $this->adminMenu->getMenu(),
                 ]);
-            },
+            }
         ];
     }
 

@@ -236,7 +236,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
      *
      * @return array
      */
-    public function getCustomBreadrumbs(Request $request, ModelInterface $model, string $action)
+    public function getCustomBreadrumbs(Request $request, ModelInterface $model, $action)
     {
         if ($model instanceof TreeModel) {
             $pk = $request->query->get('pk');

@@ -18,3 +18,8 @@ services:
         class: Mindy\Bundle\MetaBundle\Admin\MetaAdmin
         tags:
             - { name: admin.admin, slug: meta_meta }
+
+    meta.admin.template:
+        class: Mindy\Bundle\MetaBundle\Admin\TemplateAdmin
+        tags:
+            - { name: admin.admin, slug: meta_template }
