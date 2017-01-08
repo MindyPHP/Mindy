@@ -19,3 +19,25 @@ $border-radius: 0 !default;
 $button-border-radius: 0 !default;
 //$text-color: $wet-asphalt;
 $text-color: #000;
+
+$text-inputs: "[type='color'],
+[type='date'],
+[type='datetime'],
+[type='datetime-local'],
+[type='email'],
+[type='month'],
+[type='number'],
+[type='password'],
+[type='search'],
+[type='tel'],
+[type='text'],
+[type='time'],
+[type='url'],
+[type='week'],
+input:not([type]),
+textarea" !default;
+
+
+/********************/
+
+$header-height: 48px;

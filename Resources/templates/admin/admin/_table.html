@@ -4,7 +4,7 @@
     <table id="table-main" data-toggle="checkboxes" data-range="true" class="b-table">
         <thead>
         <tr>
-            <th class="check all">
+            <th class="b-check_all check all">
                 <input type="checkbox" id="check-all">
                 <label class="checkbox-state" for="check-all"></label>
             </th>
@@ -42,7 +42,7 @@
                 <tr data-pk="{{ model.pk }}">
                     {% for column in columns %}
                         {% if loop.first %}
-                            <td class="check" align="left">
+                            <td class="b-check_all check" align="left">
                                 <input type="checkbox" name="models[]" id="check-{{ loop.counter }}" value="{{ model.pk }}">
                                 <label class="checkbox-state" for="check-{{ loop.counter }}"></label>
                             </td>

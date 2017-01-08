@@ -2,6 +2,14 @@ admin_index:
     path: /
     defaults: { _controller: AdminBundle:Admin:index }
 
+admin_login:
+    path: /login
+    defaults: { _controller: AdminBundle:Admin:login }
+
+admin_logout:
+    path: /logout
+    defaults: { _controller: AdminBundle:Admin:logout }
+
 admin_dispatch:
     path: /{admin}/{action}
     defaults:
@@ -10,11 +18,3 @@ admin_dispatch:
     requirements:
         admin: \w+
         action: \w+
-
-admin_login:
-    path: /login
-    defaults: { _controller: AdminBundle:Admin:login }
-
-admin_logout:
-    path: /logout
-    defaults: { _controller: AdminBundle:Admin:logout }

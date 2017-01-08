@@ -1,5 +1,13 @@
 {% extends admin.findTemplate("base.html") %}
 
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+    ['name' => admin.getAdminNames(model)[0], 'url' => admin.getAdminUrl('list')],
+    ['name' => admin.getAdminNames(model)[1]]
+    ] %}
+    {% parent %}
+{% endblock %}
+
 {% block title %}{{ admin.getAdminNames(model)[1] }}{% endblock %}
 
 {% block content %}
