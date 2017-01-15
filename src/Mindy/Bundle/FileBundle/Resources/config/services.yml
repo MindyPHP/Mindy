@@ -1,7 +1,7 @@
 services:
     file.template.image.library:
         class: Mindy\Bundle\FileBundle\Library\ImageLibrary
-        arguments: [ "@=container.get(container.getParameter('file.filesystem'))" ]
+        arguments: [ "@=container.get(container.getParameter('file.filesystem'))", '@liip_imagine.cache.manager' ]
         tags:
             - { name: template.library }
 
