@@ -21,5 +21,10 @@
     "symfony/routing": "~2.8|~3.0",
     "phpunit/phpunit": "*"
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.6-dev"
+    }
+  }
 }
