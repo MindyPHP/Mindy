@@ -7,12 +7,10 @@ if (php_sapi_name() !== 'cli') {
 
 // Check if a certain branch is given
 if (!isset($argv[1])) {
-
     if (!confirm('No specific branch selected, continue with master branch?')) {
         return;
     }
     $branch = 'master';
-
 } else {
     $branch = $argv[1];
 }
@@ -33,7 +31,6 @@ exec('git push origin ' . $branch);
 
 // Evaluate tag
 if (null !== $tag) {
-
     echo "> Creating tag " . $tag . " for main repository\n";
     echo 'git tag -a ' . $tag . ' -m "Version ' . $tag . '"' . "\n\n";
     exec('git tag -a ' . $tag . ' -m "Version ' . $tag . '"');
@@ -45,12 +42,10 @@ if (null !== $tag) {
     echo "> Deleting tag\n";
     echo 'git tag -d ' . $tag . "\n\n";
     exec('git tag -d ' . $tag);
-
 }
 
 // Push each component to its component repository
 foreach ($components as $component) {
-
     if (!is_dir(getcwd() . DIRECTORY_SEPARATOR . $component->path)) {
         echo "> Subtree '" . $component->path . "' not existing for component " . $component->path . ". Please check the component mappings.\n";
         continue;
@@ -62,7 +57,6 @@ foreach ($components as $component) {
 
     // Evaluate tag
     if (null !== $tag) {
-
         $temporaryBranch = 'component-split';
 
         echo "> Splitting component into a temporary branch '" . $temporaryBranch . "'\n";
@@ -84,16 +78,12 @@ foreach ($components as $component) {
         echo "> Removing tag\n";
         echo 'git tag -d ' . $tag . "\n\n";
         exec('git tag -d ' . $tag);
-
     }
-
 }
 
 function confirm($question)
 {
-
     while (true) {
-
         if (PHP_OS == 'WINNT') {
             echo '$> ' . $question . ' [Y/n] ';
             $line = strtolower(trim(stream_get_line(STDIN, 1024, PHP_EOL)));
@@ -106,7 +96,5 @@ function confirm($question)
         } elseif ($line == 'n') {
             return false;
         }
-
     }
-
 }

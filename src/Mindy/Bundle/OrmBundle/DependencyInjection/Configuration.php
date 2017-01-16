@@ -28,8 +28,12 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('connections')->info('Dbal connction parameters')
                     ->prototype('array')
                         ->beforeNormalization()
-                            ->ifTrue(function ($v) { return !is_array($v); })
-                            ->then(function ($v) { return array($v); })
+                            ->ifTrue(function ($v) {
+                                return !is_array($v);
+                            })
+                            ->then(function ($v) {
+                                return array($v);
+                            })
                         ->end()
 
                         ->prototype('scalar')->end()
