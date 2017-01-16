@@ -1,30 +1,26 @@
 {
-  "name": "mindy/pagination-bundle",
-  "type": "symfony-bundle",
-  "keywords": [
-    "pagination",
-    "pager"
-  ],
+  "name": "mindy/table-bundle",
   "license": "MIT",
   "authors": [
     {
       "name": "Falaleev Maxim",
-      "email": "max@studio107.ru"
+      "email": "max@mindy-cms.com"
     }
   ],
   "require": {
     "php": ">=5.5.9",
-    "mindy/pagination": "~3.0",
-    "symfony/http-kernel": "~3.0",
+    "mindy/table": "~3.0",
+    "symfony/dependency-injection": "~3.0",
     "symfony/config": "~3.0",
-    "symfony/dependency-injection": "~3.0"
+    "symfony/http-kernel": "~3.0",
+    "symfony/expression-language": "~3.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "5.3.4"
   },
   "autoload": {
     "psr-4": {
-      "Mindy\\Bundle\\PaginationBundle\\": ""
+      "Mindy\\Bundle\\TemplateBundle\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"

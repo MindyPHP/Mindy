@@ -1,19 +1,36 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
  * Time: 21:19.
  */
 
-namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
+namespace Mindy\Finder;
 
+/**
+ * Class ThemeTemplateFinder
+ */
 class ThemeTemplateFinder implements TemplateFinderInterface
 {
+    /**
+     * @var string
+     */
     protected $basePath;
+    /**
+     * @var string
+     */
     protected $theme;
+    /**
+     * @var string
+     */
     protected $templatesDir;
 
+    /**
+     * ThemeTemplateFinder constructor.
+     * @param $basePath
+     * @param $theme
+     * @param string $templatesDir
+     */
     public function __construct($basePath, $theme, $templatesDir = 'templates')
     {
         $this->basePath = $basePath;

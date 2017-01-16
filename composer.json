@@ -31,12 +31,15 @@
   },
   "replace": {
     "mindy/mindy-bundle": "self.version",
+    "mindy/table-bundle": "self.version",
     "mindy/orm-bundle": "self.version",
     "mindy/pagination-bundle": "self.version",
     "mindy/template-bundle": "self.version",
     "mindy/application": "self.version",
     "mindy/query-builder": "self.version",
     "mindy/thumb": "self.version",
+    "mindy/table": "self.version",
+    "mindy/finder": "self.version",
     "mindy/orm-nested-set": "self.version",
     "mindy/orm-slug-field": "self.version",
     "mindy/orm-file-field": "self.version",
@@ -62,5 +65,10 @@
     "league/flysystem": "^1.0",
     "imagine/imagine": "^0.6.3"
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.6-dev"
+    }
+  }
 }

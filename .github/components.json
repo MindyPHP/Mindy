@@ -52,6 +52,10 @@
     "git": "git@github.com:MindyPHP/Table.git"
   },
   {
+    "path": "src/Mindy/Finder",
+    "git": "git@github.com:MindyPHP/Finder.git"
+  },
+  {
     "path": "src/Mindy/Orm",
     "git": "git@github.com:MindyPHP/Orm.git"
   },

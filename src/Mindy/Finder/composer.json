@@ -1,11 +1,6 @@
 {
-  "name": "mindy/template-bundle",
-  "type": "symfony-bundle",
-  "description": "Mindy TemplateBundle",
-  "keywords": [
-    "template",
-    "templating"
-  ],
+  "name": "mindy/finder",
+  "type": "library",
   "homepage": "https://mindy-cms.com",
   "license": "MIT",
   "authors": [
@@ -15,20 +10,14 @@
     }
   ],
   "require": {
-    "php": ">=5.5.9",
-    "mindy/template": "~3.0",
-    "mindy/finder": "~3.0",
-    "symfony/dependency-injection": "~3.0",
-    "symfony/config": "~3.0",
-    "symfony/http-kernel": "~3.0",
-    "symfony/expression-language": "~3.0"
+    "php": ">=5.5.9"
   },
   "require-dev": {
     "phpunit/phpunit": "5.3.4"
   },
   "autoload": {
     "psr-4": {
-      "Mindy\\Bundle\\TemplateBundle\\": ""
+      "Mindy\\Finder\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"

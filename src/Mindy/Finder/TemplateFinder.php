@@ -1,16 +1,24 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
  * Time: 21:19.
  */
 
-namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
+namespace Mindy\Finder;
 
+/**
+ * Class TemplateFinder
+ */
 class TemplateFinder implements TemplateFinderInterface
 {
+    /**
+     * @var string
+     */
     protected $basePath;
+    /**
+     * @var string
+     */
     protected $templatesDir;
 
     /**
@@ -26,9 +34,7 @@ class TemplateFinder implements TemplateFinderInterface
     }
 
     /**
-     * @param $templatePath
-     *
-     * @return null|string absolute path of template if founded
+     * {@inheritdoc}
      */
     public function find($templatePath)
     {
@@ -41,7 +47,7 @@ class TemplateFinder implements TemplateFinderInterface
     }
 
     /**
-     * @return array of available template paths
+     * {@inheritdoc}
      */
     public function getPaths()
     {

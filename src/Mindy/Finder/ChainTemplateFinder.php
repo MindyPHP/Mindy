@@ -1,12 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
  * Time: 21:21.
  */
 
-namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
+namespace Mindy\Finder;
 
 /**
  * Class ChainTemplateFinder.
@@ -21,11 +20,11 @@ class ChainTemplateFinder implements TemplateFinderInterface
     /**
      * Finder constructor.
      *
-     * @param array $finders
+     * @param TemplateFinderInterface[] $finders
      */
     public function __construct(array $finders = [])
     {
-        $this->finders = $finders;
+        $this->finders = (array)$finders;
     }
 
     /**
@@ -37,9 +36,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
     }
 
     /**
-     * @param $templatePath
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function find($templatePath)
     {
@@ -55,7 +52,7 @@ class ChainTemplateFinder implements TemplateFinderInterface
     }
 
     /**
-     * @return array of string
+     * {@inheritdoc}
      */
     public function getPaths()
     {

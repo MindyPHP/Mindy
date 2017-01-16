@@ -1,12 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: max
  * Date: 05/10/2016
  * Time: 21:18.
  */
 
-namespace Mindy\Bundle\TemplateBundle\TemplateFinder;
+namespace Mindy\Finder;
 
 /**
  * Interface TemplateFinderInterface.

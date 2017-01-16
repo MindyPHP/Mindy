@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="template.finder.bundles" class="Mindy\Bundle\TemplateBundle\TemplateFinder\BundlesTemplateFinder">
+        <service id="template.finder.bundles" class="Mindy\Finder\BundlesTemplateFinder">
             <argument type="collection" key="bundles_dirs"></argument>
             <argument key="templates_dir">templates</argument>
         </service>

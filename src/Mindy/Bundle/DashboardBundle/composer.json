@@ -1,22 +1,16 @@
 {
-  "name": "mindy/orm-slug-field",
-  "homepage": "https://github.com/MindyPHP/OrmSlugField",
+  "name": "mindy/dashboard-bundle",
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Mindy\\Orm\\Fields\\": ""
+      "Mindy\\Bundle\\DashboardBundle\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
     ]
   },
   "require": {
-    "php": ">=5.5.9",
-    "mindy/orm": "~3.0",
-    "cocur/slugify": "~2.0"
-  },
-  "require-dev": {
-    "mindy/orm-nested-set": "~3.0"
+    "php": ">=5.5.9"
   },
   "authors": [
     {
@@ -25,9 +19,6 @@
       "homepage": "http://studio107.ru"
     }
   ],
-  "support": {
-    "issues": "https://github.com/MindyPHP/Mindy/issues?state=open"
-  },
   "minimum-stability": "dev",
   "extra": {
     "branch-alias": {

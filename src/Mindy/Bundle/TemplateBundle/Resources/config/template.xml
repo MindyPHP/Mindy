@@ -14,12 +14,12 @@
             </argument>
         </service>
 
-        <service id="template.finder.templates" class="Mindy\Bundle\TemplateBundle\TemplateFinder\TemplateFinder">
+        <service id="template.finder.templates" class="Mindy\Finder\TemplateFinder">
             <argument key="base_path">%kernel.root_dir%/Resources</argument>
             <argument key="templates_dir">templates</argument>
         </service>
 
-        <service id="template.finder.chain" class="Mindy\Bundle\TemplateBundle\TemplateFinder\ChainTemplateFinder">
+        <service id="template.finder.chain" class="Mindy\Finder\ChainTemplateFinder">
             <argument type="collection">
                 <argument type="service" id="template.finder.templates" />
             </argument>

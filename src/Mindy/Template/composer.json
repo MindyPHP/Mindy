@@ -31,5 +31,10 @@
       "email": "nramenta@gmail.com"
     }
   ],
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "3.6-dev"
+    }
+  }
 }
