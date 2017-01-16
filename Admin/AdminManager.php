@@ -40,7 +40,7 @@ class AdminManager
      *
      * @return AdminInterface
      */
-    public function createAdmin(string $bundleName, string $admin) : AdminInterface
+    public function createAdmin($bundleName, $admin)
     {
         $bundles = $this->kernel->getBundles();
         if (!array_key_exists($bundleName, $bundles)) {
@@ -69,7 +69,7 @@ class AdminManager
      *
      * @return Admin
      */
-    protected function initiateAdmin(Bundle $bundle, string $adminClass)
+    protected function initiateAdmin(Bundle $bundle, $adminClass)
     {
         /** @var Admin $instance */
         $instance = (new \ReflectionClass($adminClass))->newInstanceArgs([
