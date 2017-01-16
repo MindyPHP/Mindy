@@ -35,7 +35,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     /**
      * @return string
      */
-    public function classNameShort() : string
+    public function classNameShort()
     {
         return (new \ReflectionClass($this))->getShortName();
     }
