@@ -96,12 +96,13 @@ trait ImageProcess
     }
 
     /**
-     * @param $img ImageInterface
-     * @param $width
-     * @param $height
-     * @param $method
+     * @param ImageInterface $img
+     * @param int $width
+     * @param int $height
+     * @param string $method
+     * @return ImageInterface|static
      */
-    public function resize(ImageInterface $img, $width, $height, $method) : ImageInterface
+    public function resize(ImageInterface $img, $width, $height, $method)
     {
         $box = new Box($width, $height);
 
@@ -146,7 +147,7 @@ trait ImageProcess
      *
      * @return ImageInterface
      */
-    public function applyWatermark(ImageInterface $source, ImageInterface $watermark, string $position = 'center') : ImageInterface
+    public function applyWatermark(ImageInterface $source, ImageInterface $watermark, $position = 'center')
     {
         $x = 0;
         $y = 0;
@@ -263,7 +264,7 @@ trait ImageProcess
      *
      * @return array
      */
-    protected function imageScale(ImageInterface $source, $width = null, $height = null) : array
+    protected function imageScale(ImageInterface $source, $width = null, $height = null)
     {
         $size = $source->getSize();
         $ratio = $size->getWidth() / $size->getHeight();
