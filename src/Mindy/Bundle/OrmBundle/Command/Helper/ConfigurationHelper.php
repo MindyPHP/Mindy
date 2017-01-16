@@ -78,7 +78,7 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
      *
      * @return string
      */
-    public function normalizeName(string $name) : string
+    public function normalizeName($name)
     {
         $cleanName = str_replace('Bundle', '', $name);
         $normalizedName = trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $cleanName)), '_');

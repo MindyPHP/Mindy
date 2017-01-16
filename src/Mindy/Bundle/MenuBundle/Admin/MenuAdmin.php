@@ -19,7 +19,7 @@ class MenuAdmin extends AbstractModelAdmin
      */
     public $treeLinkColumn = 'name';
 
-    public function getCustomBreadrumbs(Request $request, ModelInterface $model, string $action)
+    public function getCustomBreadrumbs(Request $request, ModelInterface $model, $action)
     {
         $breadcrumbs = [];
         if ($model->getIsNewRecord()) {
