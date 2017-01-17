@@ -1,4 +1,4 @@
-{% extends request.isAjax ? "ajax.html" : 'admin/base.html' %}
+{% extends request.isXmlHttpRequest() ? "ajax.html" : 'admin/base.html' %}
 
 {% block title %}{{ t('admin.action.info') }} {{ model }}{% endblock %}
 

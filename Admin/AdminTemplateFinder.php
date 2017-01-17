@@ -55,6 +55,7 @@ class AdminTemplateFinder
      * @param $bundleName
      * @param $adminName
      * @param $template
+     * @return string|void
      */
     public function findTemplate($bundleName, $adminName, $template)
     {

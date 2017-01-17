@@ -9,27 +9,36 @@
 namespace Mindy\Bundle\AdminBundle\Admin;
 
 use Mindy\Bundle\MindyBundle\Controller\Controller;
+use RuntimeException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 abstract class AbstractAdmin extends Controller implements AdminInterface
 {
-    use BundleAwareTrait;
-
     const FLASH_SUCCESS = 'admin_success';
     const FLASH_NOTICE = 'admin_notice';
     const FLASH_WARNING = 'admin_warning';
     const FLASH_ERROR = 'admin_error';
 
-    protected $templateFinder;
+    /**
+     * @var string
+     */
+    protected $adminId;
+    /**
+     * @var EventDispatcher
+     */
+    protected $eventDispatcher;
 
     /**
-     * BaseAdmin constructor.
-     *
-     * @param AdminTemplateFinder $templateFinder
+     * @return EventDispatcher
      */
-    public function __construct(AdminTemplateFinder $templateFinder)
+    public function getEventDispatcher()
     {
-        $this->templateFinder = $templateFinder;
+        if (null === $this->eventDispatcher) {
+            $this->eventDispatcher = new EventDispatcher();
+        }
+        return $this->eventDispatcher;
     }
 
     /**
@@ -41,6 +50,14 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     }
 
     /**
+     * @param string $id
+     */
+    public function setAdminId($id)
+    {
+        $this->adminId = $id;
+    }
+
+    /**
      * @param $action
      * @param array $params
      *
@@ -49,8 +66,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     public function getAdminUrl($action, array $params = [])
     {
         return $this->generateUrl('admin_dispatch', array_merge($params, [
-            'bundle' => $this->bundle->getName(),
-            'admin' => $this->classNameShort(),
+            'admin' => $this->adminId,
             'action' => $action,
         ]));
     }
@@ -63,27 +79,19 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
      */
     public function findTemplate($template, $throw = true)
     {
-        $template = $this->templateFinder->findTemplate($this->bundle->getName(), $this->classNameShort(), $template);
+        $template = $this
+            ->get('admin.template.finder')
+            ->findTemplate($this->getBundle()->getName(), $this->classNameShort(), $template);
+
         if (null === $template && $throw) {
-            throw new \RuntimeException(sprintf('Template %s not found', $template));
+            throw new RuntimeException(sprintf('Template %s not found', $template));
         }
 
         return $template;
     }
 
     /**
-     * @param string   $view
-     * @param array    $parameters
-     * @param Response $response
-     *
-     * @return string
+     * @return Bundle
      */
-    public function render($view, array $parameters = array(), Response $response = null)
-    {
-        return parent::render($view, array_merge($parameters, [
-            'admin' => $this,
-            'bundle' => $this->bundle,
-            'adminMenu' => $this->container->get('admin.menu')->getMenu(),
-        ]), $response);
-    }
+    abstract protected function getBundle();
 }

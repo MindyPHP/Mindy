@@ -1,6 +1,7 @@
 'use strict';
 
-var gulp = require('gulp'),
+var path = require('path'),
+    gulp = require('gulp'),
     concat = require('gulp-concat'),
     clean = require('gulp-clean'),
     sass = require('gulp-sass'),
@@ -28,7 +29,12 @@ var paths = {
     views: '../templates/**/*'
 };
 
-let sassOptions = {};
+let sassOptions = {
+    outputStyle: 'nested',
+    includePaths: [
+        path.join(__dirname, 'node_modules', 'flexy-framework')
+    ]
+};
 
 gulp.task('ckeditor', function () {
     return gulp.src(paths.ckeditor)
