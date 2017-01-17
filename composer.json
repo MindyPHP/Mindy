@@ -18,6 +18,9 @@
     "require-dev": {
         "mindy/orm-nested-set": "~3.0"
     },
+    "suggested": {
+        "mindy/orm-nested-set": "Nested set for Mindy Orm"
+    },
     "authors": [
         {
             "name": "Maxim Falaleev",
