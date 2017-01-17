@@ -8,9 +8,9 @@
 
 namespace Mindy\Bundle\MetaBundle\Admin;
 
+use Mindy\Bundle\AdminBundle\Admin\AbstractModelAdmin;
 use Mindy\Bundle\MetaBundle\Form\TemplateForm;
 use Mindy\Bundle\MetaBundle\Model\Template;
-use Mindy\Bundle\MindyBundle\Admin\AbstractModelAdmin;
 
 class TemplateAdmin extends AbstractModelAdmin
 {

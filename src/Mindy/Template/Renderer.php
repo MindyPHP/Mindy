@@ -5,6 +5,6 @@ namespace Mindy\Template;
 /**
  * Class Renderer.
  */
-class Renderer extends Loader
+class Renderer extends Loader implements RendererInterface
 {
 }

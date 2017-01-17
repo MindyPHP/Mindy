@@ -1,4 +1,11 @@
-{% extends admin.findTemplate("base.html") %}
+{% extends request.isXmlHttpRequest() ? admin.findTemplate("ajax.html") : admin.findTemplate("base.html") %}
+
+{% block breadcrumbs %}
+    {% set breadcrumbs = [
+        ['name' => admin.getAdminNames(model)[0], 'url' => admin.getAdminUrl('list')]
+    ] %}
+    {% parent %}
+{% endblock %}
 
 {% block content %}
     <div class="b-content">

@@ -33,7 +33,8 @@ class TemplateExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('template.mode', $config['mode']);
-        $container->setParameter('template.helpers', $config['helpers']);
+        $container->setParameter('template.auto_escape', $config['auto_escape']);
+        $container->setParameter('template.cache_dir', $config['cache_dir']);
 
         if ($this->isConfigEnabled($container, $config['theme'])) {
             $this->registerThemeTemplateFinderConfiguration($config['theme'], $container, $loader);

@@ -9,7 +9,6 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8"/>
-    <meta http-equiv="Cache-Control" content="no-cache" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="robots" content="noindex, nofollow"/>
     <title>{%- block title -%}{% endblock %} - {{ t('admin.title') }} - {{ app.name }}</title>
@@ -17,18 +16,18 @@
     <link rel="stylesheet" href="/bundles/admin/css/admin.css"/>
     <script type='text/javascript' src="/bundles/admin/js/admin.js"></script>
 </head>
-<body class="login">
-<div id="wrapper" class="login">
-    <div class="main">
-        <div class="row">
-            <div class="columns small-12">
-                {% block flash %}
-                    {% include "admin/_flash.html" %}
-                {% endblock %}
-
-                {% block content %}{% endblock %}
-            </div>
+<body class="b-login__body">
+<div class="b-login">
+    <div class="b-login__container">
+        <div class="b-login__logo">
+            {% include "admin/logo.svg" %}
         </div>
+
+        {% block flash %}
+            {% include "admin/_flash.html" %}
+        {% endblock %}
+
+        {% block content %}{% endblock %}
     </div>
 </div>
 </body>

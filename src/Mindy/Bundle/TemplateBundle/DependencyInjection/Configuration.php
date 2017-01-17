@@ -23,27 +23,18 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('template');
 
-        $rootNode->children()->scalarNode('mode')->defaultValue(0)->end();
+        $rootNode
+            ->children()
+                ->scalarNode('mode')->defaultValue(0)->end()
+                ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%/templates')->end()
+                ->booleanNode('auto_escape')->defaultTrue()->end()
+        ;
 
-        $this->addHelpersSection($rootNode);
         $this->addThemeSection($rootNode);
         $this->addBundlesSection($rootNode);
         $this->addTemplatesSection($rootNode);
 
         return $treeBuilder;
-    }
-
-    /**
-     * @param $rootNode \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition|\Symfony\Component\Config\Definition\Builder\NodeDefinition
-     */
-    private function addHelpersSection($rootNode)
-    {
-        $rootNode
-            ->children()
-                ->arrayNode('helpers')
-                    ->prototype('variable')->end()
-                ->end()
-            ->end();
     }
 
     /**

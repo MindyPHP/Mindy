@@ -1,6 +1,17 @@
-@import "mindy/normalize";
+$flexy-grid-container-width: 1280px;
+
 @import "settings";
-@import "mindy/mindy";
+
+@import "flexy/flexy";
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+}
+
 @import "global";
 @import "mixins";
 
@@ -130,31 +141,6 @@ table {
     tr {
       th {
         text-align: left;
-      }
-    }
-  }
-}
-
-.b-table {
-  width: 100%;
-  border-collapse: collapse;
-
-  thead {
-    tr {
-      th, td {
-        color: $concrete;
-        font-size: 14px;
-      }
-    }
-  }
-
-  thead, tbody {
-    tr {
-      box-shadow: 0 1px 0 rgba(#000, 0.1);
-
-      th, td {
-        font-size: 14px;
-        padding: 4px;
       }
     }
   }
@@ -419,58 +405,6 @@ table {
   }
 }
 
-.b-breadcrumbs {
-  margin: 0;
-  list-style: none;
-  padding: 0 10px;
-  @include clearfix;
-
-  &__item {
-    float: left;
-    font-size: 1.1rem;
-
-    &_current {
-      color: $wet-asphalt;
-    }
-
-    &_arrow {
-      text-align: center;
-      width: 20px;
-      font-size: .75rem;
-      color: $asbestos;
-      cursor: default;
-      margin: 0 5px;
-    }
-
-    &:not(:last-child) {
-      &::after {
-        color: $asbestos;
-        font-size: 14px;
-        content: "\f054";
-        font-family: Icons;
-        padding: 0 10px;
-      }
-    }
-  }
-
-  &__link {
-    text-decoration: none;
-    color: $asbestos;
-    border-radius: 3px;
-    padding: 2px 4px;
-    transition: background-color .2s ease, color .2s ease;
-
-    &:hover {
-      color: #fff;
-      background-color: $button-color;
-    }
-
-    & > .icon {
-      margin: 0;
-    }
-  }
-}
-
 .b-flash-list {
   list-style: none;
   margin: 0;
@@ -524,3 +458,13 @@ table {
   font-weight: bold;
   font-style: normal;
 }
+
+
+.b_hide {
+  display: none !important;
+}
+
+@import "component/breadcrumb";
+@import "component/page";
+@import "component/login";
+@import "component/table";
