@@ -1,37 +1,37 @@
 {
-  "name": "mindy/orm-slug-field",
-  "homepage": "https://github.com/MindyPHP/OrmSlugField",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Mindy\\Orm\\Fields\\": ""
+    "name": "mindy/orm-slug-field",
+    "homepage": "https://github.com/MindyPHP/OrmSlugField",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Orm\\Fields\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
-    "exclude-from-classmap": [
-      "/Tests/"
-    ]
-  },
-  "require": {
-    "php": ">=5.5.9",
-    "mindy/orm": "~3.0",
-    "cocur/slugify": "~2.0"
-  },
-  "require-dev": {
-    "mindy/orm-nested-set": "~3.0"
-  },
-  "authors": [
-    {
-      "name": "Maxim Falaleev",
-      "email": "max@studio107.ru",
-      "homepage": "http://studio107.ru"
+    "require": {
+        "php": ">=5.5.9",
+        "mindy/orm": "~3.0",
+        "cocur/slugify": "~2.0"
+    },
+    "require-dev": {
+        "mindy/orm-nested-set": "~3.0"
+    },
+    "authors": [
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/MindyPHP/Mindy/issues?state=open"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.7-dev"
+        }
     }
-  ],
-  "support": {
-    "issues": "https://github.com/MindyPHP/Mindy/issues?state=open"
-  },
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "3.6-dev"
-    }
-  }
 }

@@ -1,29 +1,29 @@
 {
-  "name": "mindy/thumb",
-  "type": "library",
-  "description": "Mindy Thumb Generation Component",
-  "license": "MIT",
-  "homepage": "https://mindy-cms.com",
-  "autoload": {
-    "psr-4": {
-      "Mindy\\Thumb\\": ""
+    "name": "mindy/thumb",
+    "type": "library",
+    "description": "Mindy Thumb Generation Component",
+    "license": "MIT",
+    "homepage": "https://mindy-cms.com",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Thumb\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
-    "exclude-from-classmap": [
-      "/Tests/"
-    ]
-  },
-  "require": {
-    "php": ">=5.5.9"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "*",
-    "league/flysystem": "~1.0",
-    "imagine/imagine": "^0.6.3"
-  },
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "3.6-dev"
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "league/flysystem": "~1.0",
+        "imagine/imagine": "^0.6.3"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.7-dev"
+        }
     }
-  }
 }

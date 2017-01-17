@@ -1,40 +1,40 @@
 {
-  "name": "mindy/template",
-  "description": "Fast PHP templating engine",
-  "keywords": [
-    "template",
-    "templating"
-  ],
-  "type": "library",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Mindy\\Template\\": ""
+    "name": "mindy/template",
+    "description": "Fast PHP templating engine",
+    "keywords": [
+        "template",
+        "templating"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Template\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
-    "exclude-from-classmap": [
-      "/Tests/"
-    ]
-  },
-  "require": {
-    "php": ">=5.5.9"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "*"
-  },
-  "authors": [
-    {
-      "name": "Falaleev Maxim",
-      "email": "max@studio107.ru"
+    "require": {
+        "php": ">=5.5.9"
     },
-    {
-      "name": "Nofriandi Ramenta",
-      "email": "nramenta@gmail.com"
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@studio107.ru"
+        },
+        {
+            "name": "Nofriandi Ramenta",
+            "email": "nramenta@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.7-dev"
+        }
     }
-  ],
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "3.6-dev"
-    }
-  }
 }
