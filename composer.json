@@ -1,29 +1,29 @@
 {
-  "name": "mindy/file-bundle",
-  "license": "MIT",
-  "autoload": {
-    "psr-4": {
-      "Mindy\\Bundle\\FileBundle\\": ""
+    "name": "mindy/file-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Bundle\\FileBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
     },
-    "exclude-from-classmap": [
-      "/Tests/"
-    ]
-  },
-  "require": {
-    "php": ">=5.5.9",
-    "oneup/flysystem-bundle": "^1.7"
-  },
-  "authors": [
-    {
-      "name": "Maxim Falaleev",
-      "email": "max@studio107.ru",
-      "homepage": "http://studio107.ru"
+    "require": {
+        "php": ">=5.5.9",
+        "oneup/flysystem-bundle": "^1.7"
+    },
+    "authors": [
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.7-dev"
+        }
     }
-  ],
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "3.6-dev"
-    }
-  }
 }
