@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
+namespace Mindy\Sitemap\Entity;
 
 /**
  * Class VideoEntity.

@@ -16,6 +16,10 @@
     "git": "git@github.com:MindyPHP/MenuBundle.git"
   },
   {
+    "path": "src/Mindy/Sitemap",
+    "git": "git@github.com:MindyPHP/Sitemap.git"
+  },
+  {
     "path": "src/Mindy/Bundle/MetaBundle",
     "git": "git@github.com:MindyPHP/MetaBundle.git"
   },

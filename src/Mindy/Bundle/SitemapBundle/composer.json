@@ -10,7 +10,9 @@
         ]
     },
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=5.5.9",
+        "mindy/sitemap": "~3.0",
+        "symfony/console": "~3.0"
     },
     "authors": [
         {

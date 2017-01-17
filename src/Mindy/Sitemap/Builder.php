@@ -6,11 +6,11 @@
  * Time: 00:36.
  */
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap;
+namespace Mindy\Sitemap;
 
 use Exception;
-use Mindy\Bundle\SitemapBundle\Sitemap\Entity\SiteMapEntity;
-use Mindy\Bundle\SitemapBundle\Sitemap\Entity\SiteMapIndexEntity;
+use Mindy\Sitemap\Entity\SiteMapEntity;
+use Mindy\Sitemap\Entity\SiteMapIndexEntity;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

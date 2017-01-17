@@ -6,7 +6,7 @@
  * Time: 20:04.
  */
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap;
+namespace Mindy\Sitemap;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -44,6 +44,9 @@ abstract class AbstractSitemapProvider implements SitemapProviderInterface
      */
     protected function generateLoc($scheme, $host, $route, $parameters = array())
     {
+        if (null === $this->urlGenerator) {
+            throw new \RuntimeException('UrlGenerator interface is missing');
+        }
         $this->urlGenerator->getContext()->setHost($host);
         $this->urlGenerator->getContext()->setScheme($scheme);
 

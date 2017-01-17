@@ -1,6 +1,6 @@
 <?php
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap\Collection;
+namespace Mindy\Sitemap\Collection;
 
 /**
  * Class LocationCollection.

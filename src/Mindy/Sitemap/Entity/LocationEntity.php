@@ -1,10 +1,10 @@
 <?php
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
+namespace Mindy\Sitemap\Entity;
 
-use Mindy\Bundle\SitemapBundle\Sitemap\Collection\ImageCollection;
-use Mindy\Bundle\SitemapBundle\Sitemap\Collection\VideoCollection;
-use Mindy\Bundle\SitemapBundle\Sitemap\Collection\NewsCollection;
+use Mindy\Sitemap\Collection\ImageCollection;
+use Mindy\Sitemap\Collection\VideoCollection;
+use Mindy\Sitemap\Collection\NewsCollection;
 
 /**
  * Class LocationEntity.

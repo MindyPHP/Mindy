@@ -6,7 +6,7 @@
  * Time: 11:07.
  */
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap;
+namespace Mindy\Sitemap;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

@@ -6,7 +6,7 @@
  * Time: 01:01.
  */
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
+namespace Mindy\Sitemap\Entity;
 
 interface EntityInterface
 {

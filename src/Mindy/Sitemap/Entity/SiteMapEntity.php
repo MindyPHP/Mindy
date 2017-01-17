@@ -1,8 +1,8 @@
 <?php
 
-namespace Mindy\Bundle\SitemapBundle\Sitemap\Entity;
+namespace Mindy\Sitemap\Entity;
 
-use Mindy\Bundle\SitemapBundle\Sitemap\Collection\LocationCollection;
+use Mindy\Sitemap\Collection\LocationCollection;
 
 /**
  * Class SiteMapEntity.
