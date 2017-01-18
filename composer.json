@@ -11,5 +11,11 @@
   },
   "suggest": {
     "mindy/admin-bundle": "The Administrator panel for Mindy Framework"
+  },
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.1-dev"
+    }
   }
 }
