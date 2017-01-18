@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Mindy\\Bundle\\SmsBundle\\": ""
+      "Mindy\\Bundle\\PageBundle\\": ""
     },
     "exclude-from-classmap": [
       "/Tests/"
