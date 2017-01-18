@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: max
  * Date: 07/01/2017
- * Time: 16:44
+ * Time: 16:44.
  */
 
 namespace Mindy\Bundle\AdminBundle\View;
@@ -99,7 +99,7 @@ class ListView extends AbstractFormView
         $filterForm = $this->getFilterForm();
 
         $data = [
-            'filter_form' => $filterForm ? $filterForm->createView() : null
+            'filter_form' => $filterForm ? $filterForm->createView() : null,
         ];
         if ($this->container->has('pagination.factory')) {
             $pager = $this->container->get('pagination.factory')->createPagination(

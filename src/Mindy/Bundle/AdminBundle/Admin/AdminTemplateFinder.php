@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\AdminBundle\Admin;
 
-use Mindy\Bundle\TemplateBundle\TemplateFinder\TemplateFinderInterface;
+use Mindy\Finder\TemplateFinderInterface;
 
 /**
  * Class TemplateFinder.
@@ -55,6 +55,7 @@ class AdminTemplateFinder
      * @param $bundleName
      * @param $adminName
      * @param $template
+     *
      * @return string|void
      */
     public function findTemplate($bundleName, $adminName, $template)
