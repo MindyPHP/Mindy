@@ -12,6 +12,17 @@
   "suggest": {
     "mindy/admin-bundle": "The Administrator panel for Mindy Framework"
   },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mindy\\Bundle\\SmsBundle\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  },
   "minimum-stability": "dev",
   "extra": {
     "branch-alias": {
