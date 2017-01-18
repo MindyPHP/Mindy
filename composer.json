@@ -1,0 +1,15 @@
+{
+  "name": "mindy/page-bundle",
+  "license": "MIT",
+  "require": {
+    "mindy/finder": "~3.0",
+    "mindy/orm-file-field": "~3.0",
+    "mindy/pagination": "~3.0",
+    "mindy/pagination-bundle": "~3.0",
+    "mindy/mindy-bundle": "~3.0",
+    "egeloen/ckeditor-bundle": "~4.0"
+  },
+  "suggest": {
+    "mindy/admin-bundle": "The Administrator panel for Mindy Framework"
+  }
+}

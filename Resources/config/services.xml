@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="mindy.bundle.page.template.library" class="Mindy\Bundle\PageBundle\Library\PageLibrary">
+            <tag name="template.library" />
+        </service>
+
+        <service id="mindy.bundle.page.form.page_form" class="Mindy\Bundle\PageBundle\Form\PageForm">
+            <argument type="service" id="template.finder.chain" />
+            <argument type="service" id="translator" />
+            <tag name="form.type" />
+        </service>
+    </services>
+</container>

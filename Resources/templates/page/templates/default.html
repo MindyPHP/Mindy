@@ -1,0 +1,10 @@
+{%- extends request.isAjax ? "ajax.html" : "pages/base.html" -%}
+
+{%- block content -%}
+    <div class="page--container">
+        <h1>{{ model.name }}</h1>
+        <div class="page--content">
+            {{ model.content|safe }}
+        </div>
+    </div>
+{%- endblock -%}
