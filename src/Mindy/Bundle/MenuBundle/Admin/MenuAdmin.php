@@ -2,8 +2,8 @@
 
 namespace Mindy\Bundle\MenuBundle\Admin;
 
+use Mindy\Bundle\AdminBundle\Admin\AbstractModelAdmin;
 use Mindy\Bundle\MenuBundle\Form\MenuForm;
-use Mindy\Bundle\MindyBundle\Admin\AbstractModelAdmin;
 use Mindy\Orm\ModelInterface;
 use Mindy\Bundle\MenuBundle\Model\Menu;
 use Symfony\Component\HttpFoundation\Request;

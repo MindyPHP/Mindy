@@ -8,6 +8,7 @@
 
 namespace Mindy\Bundle\MetaBundle\Form;
 
+use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\MetaBundle\Model\Template;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,9 +35,7 @@ class TemplateForm extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Сохранить',
-            ]);
+            ->add('buttons', ButtonsType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

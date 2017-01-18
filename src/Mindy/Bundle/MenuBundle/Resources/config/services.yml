@@ -4,3 +4,8 @@ services:
         arguments: [ "@template" ]
         tags:
             - { name: template.library }
+
+    mindy.bundle.menu.admin.menu:
+        class: Mindy\Bundle\MenuBundle\Admin\MenuAdmin
+        tags:
+            - { name: admin.admin, slug: menu_menu }

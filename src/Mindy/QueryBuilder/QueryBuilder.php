@@ -893,7 +893,7 @@ class QueryBuilder
 
     public function buildHaving()
     {
-        return $this->getAdapter()->sqlHaving($this->_having);
+        return $this->getAdapter()->sqlHaving($this->_having, $this);
     }
 
     public function buildLimitOffset()
@@ -942,7 +942,7 @@ class QueryBuilder
         }
         $having->setLookupBuilder($this->getLookupBuilder());
         $having->setAdapter($this->getAdapter());
-        $this->having = $having;
+        $this->_having = $having;
 
         return $this;
     }
