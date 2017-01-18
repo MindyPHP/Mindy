@@ -94,7 +94,7 @@ class PaginationView
      */
     public function urlPageSize($pageSize)
     {
-        return $this->handler->getUrlForQueryParam($this->data['page_size_key']->getPageSizeKey(), $pageSize);
+        return $this->handler->getUrlForQueryParam($this->data['page_size_key'], $pageSize);
     }
 
     /**
