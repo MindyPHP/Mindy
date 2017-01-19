@@ -33,7 +33,7 @@ abstract class BasePagination
     /**
      * @var int default page size
      */
-    protected $pageSize;
+    protected $pageSize = 10;
 
     /**
      * @var string
