@@ -8,7 +8,7 @@
 
 namespace Mindy\Bundle\MindyBundle\Helper;
 
-use Mindy\Bundle\TemplateBundle\TemplateFinder\TemplateFinderInterface;
+use Mindy\Finder\TemplateFinderInterface;
 use Mindy\Template\Renderer;
 
 class Mail
