@@ -1,0 +1,41 @@
+/*
+background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)) left no-repeat, center no-repeat $backgroundColor;
+
+&:hover {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)) left no-repeat, center no-repeat darken($backgroundColor, 5%);
+  box-shadow: 0 1px 1px rgba(16, 22, 26, 0.2);
+}
+
+&:active {
+  border-color: rgba(16, 22, 26, 0.6) rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.2);
+  box-shadow: inset 0 1px 1px rgba(16, 22, 26, 0.2);
+  background-color: darken($backgroundColor, 10%);
+  background-image: none;
+}
+*/
+
+.b-button {
+  @include flexy-button() {
+    border-radius: 3px;
+    background: linear-gradient(to bottom, lighten($flexy-current-color, 5%), rgba(255, 255, 255, 0)) left no-repeat, center no-repeat $flexy-current-color;
+    color: flexy-button-color-detect($flexy-current-color);
+
+    &:hover, &:focus {
+      $hover-color: flexy-button-hover-color($flexy-current-color);
+      color: flexy-button-color-detect($flexy-current-color);
+      background: linear-gradient(to bottom, lighten($hover-color, 5%), rgba(255, 255, 255, 0)) left no-repeat, center no-repeat $hover-color;
+      border-color: rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.27) rgba(16, 22, 26, 0.2);
+      box-shadow: 0 1px 1px rgba(16, 22, 26, 0.1);
+      background-clip: padding-box;
+    }
+
+    &:active {
+      $active-color: flexy-button-active-color($flexy-current-color);
+      color: flexy-button-color-detect($flexy-current-color);
+      border-color: rgba(16, 22, 26, 0.6) rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.2) rgba(16, 22, 26, 0.2);
+      box-shadow: inset 0 1px 1px rgba(16, 22, 26, 0.2);
+      background-color: $active-color;
+      background-image: none;
+    }
+  }
+}
