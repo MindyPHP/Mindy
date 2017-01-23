@@ -32,7 +32,8 @@ var paths = {
 let sassOptions = {
     outputStyle: 'nested',
     includePaths: [
-        path.join(__dirname, 'node_modules', 'flexy-framework')
+        // path.join(__dirname, 'node_modules', 'flexy-framework'),
+        path.join(__dirname, 'flexy')
     ]
 };
 
@@ -72,6 +73,7 @@ gulp.task('watch', ['default'], function () {
     gulp.watch(dst.js).on('change', browserSync.reload);
     gulp.watch(paths.images, ['images']).on('change', browserSync.reload);
     gulp.watch(paths.css, ['css']);
+    gulp.watch('./flexy/flexy/**/*', ['css']);
     gulp.watch(paths.fonts, ['fonts']);
     gulp.watch(paths.views).on('change', browserSync.reload);
 });

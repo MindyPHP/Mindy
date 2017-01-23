@@ -1,8 +1,15 @@
+@import "flexy/reset/reset";
+
+$flexy-font: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $flexy-grid-container-width: 1280px;
+$flexy-color-schema: (
+  default: #2980B9,
+);
 
 @import "settings";
-
 @import "flexy/flexy";
+
+@import "theme/admin";
 
 html {
   height: 100%;

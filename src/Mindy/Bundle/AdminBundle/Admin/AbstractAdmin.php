@@ -38,6 +38,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
         if (null === $this->eventDispatcher) {
             $this->eventDispatcher = new EventDispatcher();
         }
+
         return $this->eventDispatcher;
     }
 
@@ -94,4 +95,14 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
      * @return Bundle
      */
     abstract protected function getBundle();
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function render($view, array $parameters = array(), Response $response = null)
+    {
+        return parent::render($view, array_merge($parameters, [
+            'admin' => $this,
+        ]), $response);
+    }
 }
