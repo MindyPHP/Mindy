@@ -3,70 +3,15 @@
   margin-left: 5px;
 }
 
-#{$text-inputs} {
-  width: 100%;
-  @include input_base;
-}
-
-select {
-  width: 100%;
-  @include input_base;
-}
-
-.buttons-block {
-  clear: both;
-  padding: 15px 0;
-}
-
-select {
-  -moz-appearance: none;
-  width: 100%;
-}
-
-.select-holder:not(.multiple) {
-  position: relative;
-  display: inline;
-
-  select {
-    padding-right: 18px;
-  }
-
-  &::after {
-    content: "▼";
-    position: absolute;
-    right: 10px;
-    color: #838383;
-    top: -1px;
-    font-size: .8rem;
-    pointer-events: none;
+.b-form {
+  &__row {
+    &:not(:last-child) {
+      margin-bottom: 15px;
+    }
   }
 }
 
 .form-row {
-  margin-bottom: 15px;
-
-  label {
-    color: #000;
-    display: inline-block;
-    font-size: .85rem;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: underline;
-    }
-
-    .required {
-      color: $pomegranate;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-  }
-
-  .form-hint-text {
-    margin: 0;
-    font-size: .85rem;
-    color: #838383;
-  }
 
   &.error {
     #{$text-inputs} {
