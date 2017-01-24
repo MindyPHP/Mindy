@@ -2,27 +2,32 @@
 
 {% block content %}
     {% if error %}
-        <div>{{ error.getMessage() }}</div>
+        {% set errorMessage = error.getMessage()|lower|replace('.', '')|replace(' ', '_') %}
+        <ul class="b-error-list">
+            <li class="b-error-list__item">{{ errorMessage|trans }}</li>
+        </ul>
     {% endif %}
 
     <form action="" method="post" class="form--main">
-        <div class="form-row">
-            <label for="username">{{ t('admin.username') }}:</label>
-            <input type="text" id="username" name="_username" value="{{ last_username }}"/>
+        <div class="b-form__row">
+            <label class="b-label" for="username">{{ t('admin.username') }}:</label>
+            <input class="b-input" type="text" id="username" name="_username" value="{{ last_username }}"/>
         </div>
 
-        <div class="form-row">
-            <label for="password">{{ t('admin.password') }}:</label>
-            <input type="password" id="password" name="_password"/>
+        <div class="b-form__row">
+            <label class="b-label" for="password">{{ t('admin.password') }}:</label>
+            <input class="b-input" type="password" id="password" name="_password"/>
         </div>
 
-        <div class="form-row">
-            <input type="checkbox" id="remember" name="_remember"/>
-            <label for="remember">{{ t('admin.remember_me') }}</label>
+        <div class="b-form__row">
+            <input type="checkbox" class="b-checkbox__input" id="remember" name="_remember"/>
+            <label for="remember" class="b-checkbox__label">{{ t('admin.remember_me') }}</label>
         </div>
 
         <input type="hidden" name="_target_path" value="{{ url('admin_index') }}"/>
 
-        <input type="submit" value="{{ t('admin.sign_in') }}" class="button"/>
+        <div class="b-form__row">
+            <input type="submit" value="{{ t('admin.sign_in') }}" class="b-button"/>
+        </div>
     </form>
 {% endblock %}

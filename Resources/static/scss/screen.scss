@@ -23,6 +23,8 @@ body {
 @import "mixins";
 
 @import "block/index";
+@import "block/body";
+@import "block/error-list";
 
 @import "bundle/shop/index";
 @import "bundle/file";
@@ -139,18 +141,6 @@ body {
 
 .actions--container {
   display: none;
-}
-
-table {
-  width: 100%;
-
-  thead {
-    tr {
-      th {
-        text-align: left;
-      }
-    }
-  }
 }
 
 .b-empty {
@@ -474,4 +464,3 @@ table {
 @import "component/breadcrumb";
 @import "component/page";
 @import "component/login";
-@import "component/table";
