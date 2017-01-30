@@ -10,18 +10,24 @@
 
     <form action="" method="post" class="form--main">
         <div class="b-form__row">
-            <label class="b-label" for="username">{{ t('admin.username') }}:</label>
-            <input class="b-input" type="text" id="username" name="_username" value="{{ last_username }}"/>
+            <div class="b-input">
+                <label class="b-input__label" for="username">{{ t('admin.username') }}:</label>
+                <input class="b-input__input" type="text" id="username" name="_username" value="{{ last_username }}"/>
+            </div>
         </div>
 
         <div class="b-form__row">
-            <label class="b-label" for="password">{{ t('admin.password') }}:</label>
-            <input class="b-input" type="password" id="password" name="_password"/>
+            <div class="b-input">
+                <label class="b-input__label" for="password">{{ t('admin.password') }}:</label>
+                <input class="b-input__input" type="password" id="password" name="_password"/>
+            </div>
         </div>
 
         <div class="b-form__row">
-            <input type="checkbox" class="b-checkbox__input" id="remember" name="_remember"/>
-            <label for="remember" class="b-checkbox__label">{{ t('admin.remember_me') }}</label>
+            <div class="b-checkbox">
+                <input type="checkbox" class="b-checkbox__checkbox" id="remember" name="_remember"/>
+                <label for="remember" class="b-checkbox__label">{{ t('admin.remember_me') }}</label>
+            </div>
         </div>
 
         <input type="hidden" name="_target_path" value="{{ url('admin_index') }}"/>

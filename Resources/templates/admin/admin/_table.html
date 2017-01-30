@@ -8,6 +8,7 @@
                 <input type="checkbox" id="check-all">
                 <label class="checkbox-state" for="check-all"></label>
             </th>
+            <th class="actions b-table__th b-table__th_thead" align="right"></th>
             {% if sortHandler %}
                 <th class="sorting b-table__th b-table__th_thead"></th>
             {% endif %}
@@ -15,7 +16,7 @@
                 <th class="th-{{ column }} b-table__th b-table__th_thead">
                     {% set orderUrl = orderHandler.generateUrl(column) %}
                     {% if orderUrl %}
-                        <a href="{{ orderHandler.generateUrl(column) }}">
+                        <a class="b-table__link b-table__link_th" href="{{ orderHandler.generateUrl(column) }}">
                             {% if request.query.has('order') %}
                                 <span class="float-right">
                                     {% if request.query.get('order') == column %}
@@ -33,26 +34,35 @@
                     {% endif %}
                 </th>
             {%- endfor -%}
-            <th class="actions b-table__th b-table__th_thead" align="right"></th>
         </tr>
         </thead>
         <tbody id="sortable" class="b-table__tbody">
         {% if models|length %}
             {% for model in models %}
-                <tr data-pk="{{ model.pk }}">
+                <tr data-pk="{{ model.pk }}" class="b-table__tr b-table__tr_tbody">
                     {% for column in columns %}
                         {% if loop.first %}
                             <td class="b-check_all check b-table__td b-table__td_tbody" align="left">
-                                <input type="checkbox" name="models[]" id="check-{{ loop.counter }}" value="{{ model.pk }}">
+                                <input type="checkbox" name="models[]" id="check-{{ loop.counter }}"
+                                       value="{{ model.pk }}">
                                 <label class="checkbox-state" for="check-{{ loop.counter }}"></label>
                             </td>
                             {% if sortHandler %}
-                                <td class="sorting b-table__td b-table__td_tbody>
+                                <td class="sorting b-table__td b-table__td_tbody">
                                     <span class="sorting--container">
                                         <i class="icon content" aria-hidden="true"></i>
                                     </span>
                                 </td>
                             {% endif %}
+
+                            <td class="b-table__td b-table__td_tbody b-table__td_actions" align="right">
+                                <div class="b-dropdown b-dropdown_dark b-dropdown_large">
+                                    <i class="icon ellipsis horizontal"></i>
+                                    <ul class="b-dropdown__container">
+                                        {% include admin.findTemplate('_actions.html') %}
+                                    </ul>
+                                </div>
+                            </td>
                         {% endif %}
 
                         <td class="td-{{ column }} b-table__td b-table__td_tbody">
@@ -64,18 +74,14 @@
                                 {{ admin.renderCell(column, model)|safe }}
                             {% endif %}
                         </td>
-
-                        {% if loop.last %}
-                            <td class="actions b-table__td b-table__td_tbody" align="right">
-                                {% include admin.findTemplate('_actions.html') %}
-                            </td>
-                        {% endif %}
                     {% endfor %}
                 </tr>
             {% endfor %}
         {% else %}
             <tr class="b-table__tr b-table__tr_tbody">
-                <td class="b-table__td b-table__td_tbody" colspan="{{ columns|length + (sorting ? 3 : 2) }}">Записи отсутствуют</td>
+                <td class="b-table__td b-table__td_tbody" colspan="{{ columns|length + (sorting ? 3 : 2) }}">Записи
+                    отсутствуют
+                </td>
             </tr>
         {% endif %}
         </tbody>
