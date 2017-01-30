@@ -1,11 +1,11 @@
-<table class="table--information">
-    <tbody>
+<table class="b-table">
+    <tbody class="b-table__tbody">
     {% for name, field in fields %}
         {% if field.className == 'Mindy\\Orm\\Fields\\JsonField' %}
             {% continue %}
         {% endif %}
-        <tr>
-            <th>
+        <tr class="b-table__tr b-table__tr_tbody">
+            <th class="b-table__th b-table__th_tbody">
                 {% if field.verboseName %}
                     {{ field.verboseName }}
                 {% else %}
@@ -16,7 +16,7 @@
                     {% endif %}
                 {% endif %}
             </th>
-            <td>
+            <td class="b-table__td b-table__td_tbody">
                 {% set value = model[name] %}
                 {% if field.choices %}
                     {{ field.choices[value] }}
@@ -45,8 +45,8 @@
                         {{ value }}
                     {% endif %}
                 {% endif %}
-                </td>
-                </tr>
+            </td>
+        </tr>
     {% endfor %}
     </tbody>
 </table>

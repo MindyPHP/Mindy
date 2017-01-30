@@ -1,5 +1,3 @@
-@import "flexy/reset/reset";
-
 $flexy-font: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
 $flexy-grid-container-width: 1280px;
 $flexy-color-schema: (
@@ -202,16 +200,7 @@ body {
       & > table {
         thead, tbody {
           tr {
-            &:not(:last-child) {
-              border-bottom: 1px solid #f1f1f1;
-            }
-
             th, td {
-              a {
-                display: block;
-                color: #000;
-              }
-
               &.check {
                 width: 32px;
                 text-align: center;
@@ -242,29 +231,12 @@ body {
                   color: #000;
                 }
               }
-
-              &.actions {
-                &:hover {
-                  background: {
-                    color: transparent;
-                  }
-                }
-
-                a {
-                  display: inline-block;
-                  text-decoration: none;
-                  color: #ccc;
-                  font-size: 1.1rem;
-                }
-              }
             }
 
             &:hover {
               th, td {
                 &.actions {
-                  a {
-                    color: $base-color;
-                  }
+
                 }
 
                 &.sorting {
@@ -276,44 +248,14 @@ body {
             }
           }
         }
-
-        tbody {
-          tr {
-            &:hover {
-              background: {
-                color: rgba($belize-hole, 0.057);
-              }
-            }
-          }
-        }
-
-        thead {
-          tr {
-            th {
-              a {
-                text-decoration: none;
-              }
-
-              &:hover {
-                background: {
-                  color: #f4f4f4;
-                }
-              }
-            }
-
-            th, td {
-              text-align: left;
-
-              &, a {
-                color: #838383;
-                font-weight: normal;
-              }
-            }
-          }
-        }
       }
     }
   }
+}
+
+.b-table__td_actions {
+  width: 32px;
+  text-align: center;
 }
 
 .b-pager {

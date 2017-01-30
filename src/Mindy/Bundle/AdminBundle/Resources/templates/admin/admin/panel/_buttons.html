@@ -1,46 +1,40 @@
-{% if admin.can('create') or admin.can('export') or admin.searchFields|length > 0 %}
-    <div class="b-list-buttons">
+<div class="b-container">
+    <div class="b-group">
         {% if admin.can('create') %}
-            <div class="b-list-buttons__panel">
-                <a href="{{ admin.getAdminUrl('create') }}" class="b-button b-button_primary">
-                    {{ t('admin.action.create') }}
-                </a>
-            </div>
+            <a href="{{ admin.getAdminUrl('create') }}" class="b-button b-button_primary">
+                {{ t('admin.action.create') }}
+            </a>
         {% endif %}
 
         {% if filterForm %}
-            <div class="b-list-buttons__panel">
-                <a href="#" class="b-button b-filter-button">
-                    <i class="icon filter"></i>
-                </a>
-            </div>
+            <a href="#" class="b-button b-filter-button">
+                <i class="icon filter"></i>
+            </a>
         {% endif %}
+    </div>
 
+    <div class="b-group">
         {% if searchHandler %}
-            <div class="b-list-buttons__panel">
-                <form action="" method="get" class="b-search-form">
-                    <input type="text" name="search"
-                           placeholder="{{ t('admin.search.placeholder') }}"
-                           class="b-input b-search-form__input"
-                           value="{{ searchHandler.getValue() }}"/>
-                    <button type="submit"
-                            class="b-button b-search-form__submit"
-                            value="{{ t('admin.search.placeholder') }}">
-                        <i class="icon search"></i>
-                    </button>
-                </form>
-            </div>
+            <form action="" method="get" class="b-group">
+                <input type="text" name="search"
+                       placeholder="{{ t('admin.search.placeholder') }}"
+                       class="b-input__input"
+                       value="{{ searchHandler.getValue() }}"/>
+                <button type="submit"
+                        class="b-button"
+                        value="{{ t('admin.search.placeholder') }}">
+                    <i class="icon search"></i>
+                </button>
+            </form>
         {% endif %}
 
         {% if admin.can('export') %}
-            <div class="b-list-buttons__panel">
-                <a href="{{ admin.getAdminUrl('export') }}" target="_blank" class="b-button">
-                    {{ t('admin.export') }}
-                </a>
-            </div>
+            <a href="{{ admin.getAdminUrl('export') }}" target="_blank" class="b-button">
+                {{ t('admin.export') }}
+            </a>
         {% endif %}
     </div>
-{% endif %}
+</div>
 
 {% if filterForm %}
     <div class="b-filter-form">
