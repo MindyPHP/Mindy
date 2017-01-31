@@ -11,6 +11,7 @@
     },
     "require": {
         "php": ">=5.5.9",
+        "liip/imagine-bundle": "^1.7",
         "oneup/flysystem-bundle": "^1.7"
     },
     "authors": [
