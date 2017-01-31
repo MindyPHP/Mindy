@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 05/10/2016
- * Time: 20:50.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\TemplateBundle\DependencyInjection;
@@ -64,12 +66,7 @@ class TemplateExtension extends Extension
         $bundlesDefinition->replaceArgument('bundles_dirs', $dirs);
 
         $definition = $container->findDefinition('template.finder.chain');
-        $definition->addMethodCall('addFinder', array(new Reference('template.finder.bundles')));
-
-        $this->addClassesToCompile(array(
-            'Mindy\\Bundle\\TemplateBundle\\TemplateFinder\\BundlesTemplateFinder',
-            $container->findDefinition('template.finder.bundles')->getClass(),
-        ));
+        $definition->addMethodCall('addFinder', [new Reference('template.finder.bundles')]);
     }
 
     protected function registerThemeTemplateFinderConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
@@ -77,13 +74,8 @@ class TemplateExtension extends Extension
         $loader->load('theme_finder.xml');
 
         $definition = $container->findDefinition('template.finder.chain');
-        $definition->addMethodCall('addFinder', array(new Reference('template.finder.theme')));
+        $definition->addMethodCall('addFinder', [new Reference('template.finder.theme')]);
 
         $container->setParameter('template.theme', $config['theme']);
-
-        $this->addClassesToCompile(array(
-            'Mindy\\Bundle\\TemplateBundle\\TemplateFinder\\ThemeTemplateFinder',
-            $container->findDefinition('template.finder.theme')->getClass(),
-        ));
     }
 }

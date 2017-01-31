@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 09/10/2016
- * Time: 22:09.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\TemplateBundle\VariableProvider;
@@ -33,9 +35,9 @@ class AppVariableProvider implements VariableProviderInterface, ContainerAwareIn
     /**
      * Get a user from the Security Token Storage.
      *
-     * @return mixed
-     *
      * @throws \LogicException If SecurityBundle is not available
+     *
+     * @return mixed
      *
      * @see TokenInterface::getUser()
      */
