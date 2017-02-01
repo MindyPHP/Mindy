@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Sitemap\Entity;
 
 /**
@@ -26,7 +34,7 @@ class VideoEntity extends AbstractEntity
     /**
      * @var array
      */
-    protected $playerLoc = array('url' => null, 'allowEmbed' => false, 'autoPlay' => null);
+    protected $playerLoc = ['url' => null, 'allowEmbed' => false, 'autoPlay' => null];
     /**
      * @var string
      */
@@ -62,15 +70,15 @@ class VideoEntity extends AbstractEntity
     /**
      * @var array
      */
-    protected $restriction = array('countries' => null, 'relationship' => 'allow');
+    protected $restriction = ['countries' => null, 'relationship' => 'allow'];
     /**
      * @var array
      */
-    protected $galleryLoc = array('url' => null, 'title' => null);
+    protected $galleryLoc = ['url' => null, 'title' => null];
     /**
      * @var array
      */
-    protected $price = array('price' => null, 'currency' => null);
+    protected $price = ['price' => null, 'currency' => null];
     /**
      * @var bool
      */
@@ -78,11 +86,11 @@ class VideoEntity extends AbstractEntity
     /**
      * @var array
      */
-    protected $uploader = array('name' => null, 'info' => null);
+    protected $uploader = ['name' => null, 'info' => null];
     /**
      * @var array
      */
-    protected $platform = array('code' => null, 'relationship' => 'allow');
+    protected $platform = ['code' => null, 'relationship' => 'allow'];
     /**
      * @var bool
      */

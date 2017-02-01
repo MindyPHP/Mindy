@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 12/12/2016
- * Time: 00:36.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Sitemap;
@@ -55,9 +57,9 @@ class Builder
      * @param string $filePath
      * @param string $fileContent
      *
-     * @return $this
-     *
      * @throws Exception
+     *
+     * @return $this
      */
     public function saveFile($filePath, $fileContent)
     {
