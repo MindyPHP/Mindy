@@ -25,13 +25,13 @@ class Version20170201172503 extends AbstractMigration
     public function up(Schema $schema)
     {
         $table = $schema->createTable(Meta::tableName());
-        $table->addColumn('id', 'integer', ['unsigned' => true]);
+        $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $table->addColumn('host', 'string', ['length' => 255]);
         $table->addColumn('title', 'string', ['length' => 60]);
         $table->addColumn('url', 'string', ['length' => 255]);
-        $table->addColumn('keywords', 'string', ['length' => 60]);
-        $table->addColumn('canonical', 'string', ['length' => 60]);
-        $table->addColumn('description', 'string', ['length' => 160]);
+        $table->addColumn('keywords', 'string', ['length' => 60, 'notnull' => false]);
+        $table->addColumn('canonical', 'string', ['length' => 60, 'notnull' => false]);
+        $table->addColumn('description', 'string', ['length' => 160, 'notnull' => false]);
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['url'], 'url_uniq');
     }
