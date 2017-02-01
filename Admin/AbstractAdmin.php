@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 13/11/2016
- * Time: 20:53.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -99,7 +101,7 @@ abstract class AbstractAdmin extends Controller implements AdminInterface
     /**
      * {@inheritdoc}
      */
-    protected function render($view, array $parameters = array(), Response $response = null)
+    protected function render($view, array $parameters = [], Response $response = null)
     {
         return parent::render($view, array_merge($parameters, [
             'admin' => $this,

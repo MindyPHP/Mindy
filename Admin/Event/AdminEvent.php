@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 22:44
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin\Event;
@@ -13,7 +15,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Class AdminEvent
- * @package Mindy\Bundle\AdminBundle\Admin\Event
  */
 class AdminEvent extends Event
 {
@@ -24,6 +25,7 @@ class AdminEvent extends Event
 
     /**
      * AdminEvent constructor.
+     *
      * @param ModelInterface $instance
      */
     public function __construct(ModelInterface $instance)

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 19:55
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin\Handler;
@@ -28,10 +30,11 @@ class SearchHandler implements AdminHandlerInterface
     /**
      * @var array
      */
-    protected $fields = array();
+    protected $fields = [];
 
     /**
      * SearchHandler constructor.
+     *
      * @param Request $request
      * @param string $name
      * @param array $fields
@@ -45,6 +48,7 @@ class SearchHandler implements AdminHandlerInterface
 
     /**
      * @param QuerySet|Manager $qs
+     *
      * @return array
      */
     protected function getFields($qs)
@@ -54,7 +58,7 @@ class SearchHandler implements AdminHandlerInterface
             $modelFields = $qs->getModel()->getMeta()->getFields();
             $allowed = [
                 CharField::class,
-                TextField::class
+                TextField::class,
             ];
 
             foreach ($modelFields as $name => $field) {
@@ -88,11 +92,11 @@ class SearchHandler implements AdminHandlerInterface
                 $lookup = $temp;
             }
 
-            $filters[] = [$field . '__' . $lookup => $value];
+            $filters[] = [$field.'__'.$lookup => $value];
         }
 
         $qs->filter([
-            new QOr($filters)
+            new QOr($filters),
         ]);
     }
 

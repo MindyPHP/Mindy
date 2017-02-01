@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 05/10/2016
- * Time: 20:36.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Controller;
@@ -17,6 +19,7 @@ class AdminController extends Controller
 {
     /**
      * @param Response $response
+     *
      * @return Response
      */
     protected function preventCache(Response $response)
@@ -25,6 +28,7 @@ class AdminController extends Controller
         $response->headers->addCacheControlDirective('max-age', 0);
         $response->headers->addCacheControlDirective('must-revalidate', true);
         $response->headers->addCacheControlDirective('no-store', true);
+
         return $response;
     }
 
@@ -37,6 +41,7 @@ class AdminController extends Controller
             'dashboard' => $this->has('dashboard') ? $this->get('dashboard') : null,
             'adminMenu' => $this->get('admin.menu')->getMenu(),
         ]);
+
         return $this->preventCache($response);
     }
 
@@ -47,9 +52,10 @@ class AdminController extends Controller
             throw new NotFoundHttpException('Unknown admin class');
         }
 
-        $response = $this->forward(sprintf("%s:%sAction", $id, $action), [
-            'request' => $request
+        $response = $this->forward(sprintf('%s:%sAction', $id, $action), [
+            'request' => $request,
         ], $request->query->all());
+
         return $this->preventCache($response);
     }
 

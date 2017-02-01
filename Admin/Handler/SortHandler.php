@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 20:45
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin\Handler;
@@ -36,6 +38,7 @@ class SortHandler implements AdminHandlerInterface
 
     /**
      * OrderHandler constructor.
+     *
      * @param Request $request
      * @param string $name
      * @param string $column
@@ -64,11 +67,11 @@ class SortHandler implements AdminHandlerInterface
                 } else {
                     $qs->order([$this->column]);
                 }
+
                 return;
-            } else {
-                $method = $isTree ? 'sortNestedSet' : 'sortFlat';
-                call_user_func_array([$this, $method], [$qs, $value]);
             }
+            $method = $isTree ? 'sortNestedSet' : 'sortFlat';
+            call_user_func_array([$this, $method], [$qs, $value]);
         }
     }
 
@@ -147,9 +150,8 @@ class SortHandler implements AdminHandlerInterface
                     $model->moveAfter($target);
                 }
                 throw new NotFoundHttpException('Target not found');
-            } else {
-                throw new NotFoundHttpException('Missing required parameter insertAfter or insertBefore');
             }
+            throw new NotFoundHttpException('Missing required parameter insertAfter or insertBefore');
         }
     }
 
