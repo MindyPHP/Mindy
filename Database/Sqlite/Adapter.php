@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/06/16
- * Time: 17:17.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\Database\Sqlite;
@@ -92,9 +94,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $tableName
      * @param $column
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlDropColumn($tableName, $column)
     {
@@ -106,9 +108,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $oldName
      * @param $newName
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlRenameColumn($tableName, $oldName, $newName)
     {
@@ -119,9 +121,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $tableName
      * @param $name
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlDropForeignKey($tableName, $name)
     {
@@ -137,9 +139,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param null $delete
      * @param null $update
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlAddForeignKey($tableName, $name, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
@@ -151,9 +153,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $column
      * @param $type
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlAlterColumn($tableName, $column, $type)
     {
@@ -165,9 +167,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $name
      * @param $columns
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlAddPrimaryKey($tableName, $name, $columns)
     {
@@ -178,9 +180,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $tableName
      * @param $name
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlDropPrimaryKey($tableName, $name)
     {

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/06/16
- * Time: 10:39.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\LookupBuilder;
@@ -18,29 +20,28 @@ class LookupBuilder extends Base
         if (substr_count($rawLookup, $this->separator) > 1) {
             if (empty($this->callback)) {
                 throw new Exception('Unknown lookup: '.$rawLookup);
-            } else {
-                return $this->runCallback($queryBuilder, explode($this->separator, $rawLookup), $value);
             }
+
+            return $this->runCallback($queryBuilder, explode($this->separator, $rawLookup), $value);
         }
 
         if (substr_count($rawLookup, $this->separator) == 0) {
             $rawLookup = $this->fetchColumnName($rawLookup);
 
             return [$this->default, $rawLookup, $value];
-        } else {
-            $lookupNodes = explode($this->separator, $rawLookup);
-            if ($this->hasLookup(end($lookupNodes)) && substr_count($rawLookup, $this->separator) == 1) {
-                list($column, $lookup) = explode($this->separator, $rawLookup);
-                if ($this->hasLookup($lookup) == false) {
-                    throw new Exception('Unknown lookup:'.$lookup);
-                }
-                $column = $this->fetchColumnName($column);
-
-                return [$lookup, $column, $value];
-            } else {
-                return $this->runCallback($queryBuilder, $lookupNodes, $value);
-            }
         }
+        $lookupNodes = explode($this->separator, $rawLookup);
+        if ($this->hasLookup(end($lookupNodes)) && substr_count($rawLookup, $this->separator) == 1) {
+            list($column, $lookup) = explode($this->separator, $rawLookup);
+            if ($this->hasLookup($lookup) == false) {
+                throw new Exception('Unknown lookup:'.$lookup);
+            }
+            $column = $this->fetchColumnName($column);
+
+            return [$lookup, $column, $value];
+        }
+
+        return $this->runCallback($queryBuilder, $lookupNodes, $value);
     }
 
     public function buildJoin(QueryBuilder $queryBuilder, $lookup)

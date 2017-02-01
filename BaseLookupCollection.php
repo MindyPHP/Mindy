@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/06/16
- * Time: 15:38.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder;
@@ -94,9 +96,9 @@ class BaseLookupCollection implements ILookupCollection
                 /** @var $adapter \Mindy\QueryBuilder\BaseAdapter */
                 if (in_array($adapter->getSqlType($value), ['TRUE', 'FALSE', 'NULL'])) {
                     return $adapter->quoteColumn($column).' IS NOT '.$adapter->getSqlType($value);
-                } else {
-                    return $adapter->quoteColumn($column).'!='.$adapter->quoteValue($value);
                 }
+
+                    return $adapter->quoteColumn($column).'!='.$adapter->quoteValue($value);
 
             case 'isnull':
                 return $adapter->quoteColumn($column).' '.((bool) $value ? 'IS NULL' : 'IS NOT NULL');

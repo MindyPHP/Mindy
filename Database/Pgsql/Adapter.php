@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 22/06/16
- * Time: 11:08.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\Database\Pgsql;
@@ -27,9 +29,9 @@ class Adapter extends BaseAdapter implements IAdapter
             return 'FALSE';
         } elseif ($str === null || $str === 'null') {
             return 'NULL';
-        } else {
-            return parent::quoteValue($str);
         }
+
+        return parent::quoteValue($str);
     }
 
     /**
@@ -64,9 +66,9 @@ class Adapter extends BaseAdapter implements IAdapter
      * @param mixed  $value        the value for the primary key of the next new row inserted. If this is not set,
      *                             the next new row's primary key will have a value 1.
      *
-     * @return string the SQL statement for resetting sequence
+     * @throws Exception if the table does not exist or there is no sequence associated with the table
      *
-     * @throws Exception if the table does not exist or there is no sequence associated with the table.
+     * @return string the SQL statement for resetting sequence
      */
     public function sqlResetSequence($sequenceName, $value)
     {
@@ -98,9 +100,9 @@ class Adapter extends BaseAdapter implements IAdapter
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
      *
-     * @param bool   $check  whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table  the table name.
+     * @param bool   $check  whether to turn on or off the integrity check
+     * @param string $schema the schema of the tables
+     * @param string $table  the table name
      *
      * @return string the SQL statement for checking integrity
      */
@@ -128,7 +130,7 @@ class Adapter extends BaseAdapter implements IAdapter
      *                       in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
      *                       will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
      *
-     * @return string the SQL statement for changing the definition of a column.
+     * @return string the SQL statement for changing the definition of a column
      */
     public function sqlAlterColumn($table, $column, $type)
     {

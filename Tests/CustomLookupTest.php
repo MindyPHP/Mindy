@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 22/06/16
- * Time: 12:46.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\Tests;
@@ -30,9 +32,9 @@ class LookupLibrary implements ILookupCollection
      * @param $column
      * @param $value
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function process(IAdapter $adapter, $lookup, $column, $value)
     {

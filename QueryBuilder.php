@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/06/16
- * Time: 10:17.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder;
@@ -11,15 +13,15 @@ namespace Mindy\QueryBuilder;
 use Doctrine\DBAL\Connection;
 use Exception;
 use Mindy\QueryBuilder\Aggregation\Aggregation;
+use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
+use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
+use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
 use Mindy\QueryBuilder\Interfaces\ILookupBuilder;
 use Mindy\QueryBuilder\Interfaces\ILookupCollection;
 use Mindy\QueryBuilder\Interfaces\ISQLGenerator;
 use Mindy\QueryBuilder\LookupBuilder\LookupBuilder;
 use Mindy\QueryBuilder\Q\Q;
 use Mindy\QueryBuilder\Q\QAnd;
-use Mindy\QueryBuilder\Database\Mysql\Adapter as MysqlAdapter;
-use Mindy\QueryBuilder\Database\Sqlite\Adapter as SqliteAdapter;
-use Mindy\QueryBuilder\Database\Pgsql\Adapter as PgsqlAdapter;
 
 class QueryBuilder
 {
@@ -134,9 +136,9 @@ class QueryBuilder
     /**
      * @param Connection $connection
      *
-     * @return QueryBuilder
-     *
      * @throws Exception
+     *
+     * @return QueryBuilder
      */
     public static function getInstance(Connection $connection)
     {
@@ -274,9 +276,8 @@ class QueryBuilder
                 return $this->quoteSql($columns->toSQL());
             } elseif (strpos($columns, '(') !== false) {
                 return $this->quoteSql($columns);
-            } else {
-                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
             }
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
@@ -501,9 +502,9 @@ class QueryBuilder
      * @param array  $on    link columns
      * @param string $alias string
      *
-     * @return $this
-     *
      * @throws Exception
+     *
+     * @return $this
      */
     public function join($joinType, $tableName = '', $on = [], $alias = '')
     {
@@ -634,9 +635,9 @@ class QueryBuilder
             $operator = strtoupper($operatorRaw);
 
             return $this->buildAndCondition($operator, $condition, $params);
-        } else {
-            return $this->parseCondition($condition);
         }
+
+        return $this->parseCondition($condition);
     }
 
     public function getJoinAlias($tableName)
@@ -697,9 +698,9 @@ class QueryBuilder
 
         if (count($parts) === 1) {
             return $parts[0];
-        } else {
-            return '('.implode(') AND (', $parts).')';
         }
+
+        return '('.implode(') AND (', $parts).')';
     }
 
     public function buildAndCondition($operator, $operands, &$params)
@@ -717,9 +718,9 @@ class QueryBuilder
         }
         if (!empty($parts)) {
             return '('.implode(') '.$operator.' (', $parts).')';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -873,9 +874,9 @@ class QueryBuilder
     }
 
     /**
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function toSQL()
     {
@@ -1019,9 +1020,9 @@ class QueryBuilder
             strpos($column, 'SELECT') === false
         ) {
             return $tableAlias.'.'.$column;
-        } else {
-            return $column;
         }
+
+        return $column;
     }
 
     protected function applyTableAlias($column)
@@ -1031,9 +1032,9 @@ class QueryBuilder
             $tableAlias = $this->getAlias();
 
             return empty($tableAlias) ? $column : $tableAlias.'.'.$column;
-        } else {
-            return $column;
         }
+
+        return $column;
     }
 
     public function buildJoin()
@@ -1066,11 +1067,10 @@ class QueryBuilder
         $newOrder = $this->getLookupBuilder()->buildJoin($this, $order);
         if ($newOrder === false) {
             return [$order, $direction];
-        } else {
-            list($alias, $column) = $newOrder;
-
-            return [$alias.'.'.$column, $direction];
         }
+        list($alias, $column) = $newOrder;
+
+        return [$alias.'.'.$column, $direction];
     }
 
     public function getOrder()
@@ -1104,9 +1104,9 @@ class QueryBuilder
                 $temp = explode(' ', $column);
                 if (count($temp) == 2) {
                     return $this->getAdapter()->quoteColumn($temp[0]).' '.$temp[1];
-                } else {
-                    return $this->getAdapter()->quoteColumn($column);
                 }
+
+                return $this->getAdapter()->quoteColumn($column);
             }, $columns);
             $order = implode(', ', $order);
         } else {
