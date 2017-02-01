@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 14/11/2016
- * Time: 20:40.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\DashboardBundle\DependencyInjection\Compiler;
@@ -28,9 +30,9 @@ class DashboardPass implements CompilerPassInterface
         $definition = $container->getDefinition('dashboard');
         if ($definition) {
             foreach ($container->findTaggedServiceIds('dashboard.widget') as $id => $attributes) {
-                $definition->addMethodCall('addWidget', array(
+                $definition->addMethodCall('addWidget', [
                     new Reference($id),
-                ));
+                ]);
             }
         }
     }
