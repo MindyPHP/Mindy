@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/09/16
- * Time: 14:03.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Thumb;
@@ -85,9 +87,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
     /**
      * @param array $options
      *
-     * @return array
-     *
      * @throws Exception
+     *
+     * @return array
      */
     protected function findOptionsByConfigPart(array $options)
     {
@@ -121,9 +123,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      * @param string $value
      * @param array  $config
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function path($value, array $config = [])
     {
@@ -167,9 +169,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      * @param ImageInterface $image
      * @param null           $prefix
      *
-     * @return $this
-     *
      * @throws Exception
+     *
+     * @return $this
      */
     public function processSource($path, ImageInterface $image, $prefix = null)
     {
@@ -183,7 +185,6 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
         ];
 
         foreach ($this->getSizes() as $config) {
-
             /*
              * Skip unused sizes
              */
@@ -257,9 +258,9 @@ class ImageProcessor extends AbstractProcessor implements ImageProcessorInterfac
      * @param string $path
      * @param null   $prefix
      *
-     * @return $this
-     *
      * @throws Exception
+     *
+     * @return $this
      */
     public function process($path, $prefix = null)
     {

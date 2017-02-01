@@ -1,12 +1,11 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Controller;
@@ -24,7 +23,7 @@ abstract class Controller extends BaseController
      *
      * @return Pagination
      */
-    protected function createPagination($source, array $parameters = array())
+    protected function createPagination($source, array $parameters = [])
     {
         if ($this->container->has('pagination.factory')) {
             return $this->container->get('pagination.factory')->createPagination(
@@ -38,7 +37,7 @@ abstract class Controller extends BaseController
     /**
      * {@inheritdoc}
      */
-    protected function renderTemplate($view, array $parameters = array())
+    protected function renderTemplate($view, array $parameters = [])
     {
         if ($this->container->has('template')) {
             return $this->container->get('template')->render($view, $parameters);
@@ -49,7 +48,7 @@ abstract class Controller extends BaseController
     /**
      * {@inheritdoc}
      */
-    protected function render($view, array $parameters = array(), Response $response = null)
+    protected function render($view, array $parameters = [], Response $response = null)
     {
         if (null === $response) {
             $response = new Response();
@@ -63,7 +62,7 @@ abstract class Controller extends BaseController
     /**
      * {@inheritdoc}
      */
-    protected function stream($view, array $parameters = array(), StreamedResponse $response = null)
+    protected function stream($view, array $parameters = [], StreamedResponse $response = null)
     {
         if ($this->container->has('template')) {
             $template = $this->container->get('template');

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 27/11/2016
- * Time: 23:01.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Component\Table;
@@ -49,7 +51,7 @@ class TableFactory implements TableFactoryInterface
      *
      * @return TableBuilder
      */
-    public function createBuilder($type = AbstractTableType::class, $data = null, array $options = array())
+    public function createBuilder($type = AbstractTableType::class, $data = null, array $options = [])
     {
         $type = $this->registry->getTable($type);
         $builder = new TableBuilder($this, $options);

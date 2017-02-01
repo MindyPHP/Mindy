@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 27/11/2016
- * Time: 20:26.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\TableBundle\DependencyInjection\Compiler;
@@ -22,7 +24,7 @@ class TablePass implements CompilerPassInterface
         $definition = $container->getDefinition('table.registry');
 
         // Builds an array with fully-qualified type class names as keys and service IDs as values
-        $types = array();
+        $types = [];
         foreach ($container->findTaggedServiceIds('table.table') as $serviceId => $tag) {
             $serviceDefinition = $container->getDefinition($serviceId);
             if (!$serviceDefinition->isPublic()) {
@@ -35,7 +37,7 @@ class TablePass implements CompilerPassInterface
         $definition->replaceArgument(0, $types);
 
         // Builds an array with fully-qualified type class names as keys and service IDs as values
-        $columns = array();
+        $columns = [];
         foreach ($container->findTaggedServiceIds('table.column') as $serviceId => $tag) {
             $serviceDefinition = $container->getDefinition($serviceId);
             if (!$serviceDefinition->isPublic()) {

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 30/11/16
- * Time: 18:03.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\FileBundle\Controller;
@@ -39,29 +41,27 @@ class FileController extends Controller
                 'status' => false,
                 'message' => $this->get('translator')->trans('file.directory.incorrect_name_error'),
             ]);
-        } else {
-            $fs = $this->getFilesystem();
-            $dirPath = implode('/', [$path, $directoryName]);
+        }
+        $fs = $this->getFilesystem();
+        $dirPath = implode('/', [$path, $directoryName]);
 
-            if ($fs->has($dirPath)) {
-                return $this->json([
+        if ($fs->has($dirPath)) {
+            return $this->json([
                     'status' => false,
                     'message' => $this->get('translator')->trans('file.directory.exist_error'),
                 ]);
-            } else {
-                if ($fs->createDir($dirPath)) {
-                    return $this->json([
+        }
+        if ($fs->createDir($dirPath)) {
+            return $this->json([
                         'status' => true,
                         'message' => $this->get('translator')->trans('file.directory.create_success'),
                     ]);
-                } else {
-                    return $this->json([
+        }
+
+        return $this->json([
                         'status' => true,
                         'message' => $this->get('translator')->trans('file.directory.create_error'),
                     ]);
-                }
-            }
-        }
     }
 
     public function listAction(Request $request)
@@ -114,9 +114,9 @@ class FileController extends Controller
             }
 
             return $this->json(['status' => true]);
-        } else {
-            return $this->json(['status' => false, 'error' => 'Path not found']);
         }
+
+        return $this->json(['status' => false, 'error' => 'Path not found']);
     }
 
     public function uploadAction(Request $request)

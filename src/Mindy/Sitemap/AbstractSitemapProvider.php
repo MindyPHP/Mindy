@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 12/12/2016
- * Time: 20:04.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Sitemap;
@@ -42,7 +44,7 @@ abstract class AbstractSitemapProvider implements SitemapProviderInterface
      *
      * @return string
      */
-    protected function generateLoc($scheme, $host, $route, $parameters = array())
+    protected function generateLoc($scheme, $host, $route, $parameters = [])
     {
         if (null === $this->urlGenerator) {
             throw new \RuntimeException('UrlGenerator interface is missing');

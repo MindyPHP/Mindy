@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 19:55
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin\Handler;
@@ -29,6 +31,7 @@ class OrderHandler implements AdminHandlerInterface
 
     /**
      * OrderHandler constructor.
+     *
      * @param Request $request
      * @param $name
      * @param array $defaultOrder
@@ -72,16 +75,18 @@ class OrderHandler implements AdminHandlerInterface
 
     /**
      * @param $column
+     *
      * @return string
      */
     public function generateUrl($column)
     {
         $order = $this->getValue();
         if ($order == $column) {
-            $column = '-' . $column;
+            $column = '-'.$column;
         }
         $queryString = http_build_query(array_merge($this->request->query->all(), [$this->name => $column]));
-        return strtok($this->request->getUri(), '?') . '?' . $queryString;
+
+        return strtok($this->request->getUri(), '?').'?'.$queryString;
     }
 
     /**

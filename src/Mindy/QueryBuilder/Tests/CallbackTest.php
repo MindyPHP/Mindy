@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\QueryBuilder\Tests;
 
 use Exception;
@@ -62,9 +70,8 @@ class CallbackTestTwoCallback
 
         if (isset($column)) {
             return [$lookup, $column, $value];
-        } else {
-            throw new Exception('Unknown column');
         }
+        throw new Exception('Unknown column');
     }
 }
 

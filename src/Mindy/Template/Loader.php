@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template;
 
 use InvalidArgumentException;
@@ -24,23 +32,23 @@ class Loader
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
     /**
      * @var array|VariableProviderInterface[]
      */
-    protected $variableProviders = array();
+    protected $variableProviders = [];
     /**
      * @var array
      */
-    protected $paths = array();
+    protected $paths = [];
     /**
      * @var array
      */
-    protected $cache = array();
+    protected $cache = [];
     /**
      * @var array
      */
-    protected $libraries = array();
+    protected $libraries = [];
 
     /**
      * Loader constructor.
@@ -66,13 +74,13 @@ class Loader
         if ($source instanceof \Closure) {
             $source = $source->__invoke();
         }
-        $options += array(
+        $options += [
             'mode' => self::RECOMPILE_NORMAL,
             'mkdir' => 0777,
-            'helpers' => array(),
-            'globals' => array(),
+            'helpers' => [],
+            'globals' => [],
             'autoEscape' => true,
-        );
+        ];
 
         if (!isset($options['adapter'])) {
             $options['adapter'] = new FileAdapter($source);
@@ -87,7 +95,7 @@ class Loader
             }
         }
 
-        $this->options = array(
+        $this->options = [
             'source' => is_array($source) ? $source : [$source],
             'target' => $target,
             'mode' => $options['mode'],
@@ -95,10 +103,10 @@ class Loader
             'helpers' => $options['helpers'],
             'globals' => $options['globals'],
             'autoEscape' => $options['autoEscape'],
-        );
+        ];
 
-        $this->paths = array();
-        $this->cache = array();
+        $this->paths = [];
+        $this->cache = [];
 
         $this->addLibrary(new DefaultLibrary());
     }
@@ -125,15 +133,14 @@ class Loader
                 'loader' => $this,
             ]);
             die();
-        } else {
-            throw $exception;
         }
+        throw $exception;
     }
 
     public function normalizePath($path)
     {
         $path = preg_replace('#/{2,}#', '/', strtr($path, '\\', '/'));
-        $parts = array();
+        $parts = [];
         foreach (explode('/', $path) as $i => $part) {
             if ($part === '..') {
                 if (!empty($parts)) {
@@ -237,11 +244,11 @@ class Loader
      * @param $template
      * @param string $from
      *
-     * @return Template
-     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      * @throws \Exception
+     *
+     * @return Template
      */
     public function load($template, $from = '')
     {
@@ -310,10 +317,10 @@ class Loader
     /**
      * @param $template
      *
-     * @return Template
-     *
      * @throws \InvalidArgumentException
      * @throws \Exception
+     *
+     * @return Template
      */
     public function loadFromString($template)
     {

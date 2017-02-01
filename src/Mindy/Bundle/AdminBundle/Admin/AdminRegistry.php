@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 14/11/2016
- * Time: 19:57.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -12,7 +14,6 @@ use Exception;
 
 /**
  * Class AdminRegistry
- * @package Mindy\Bundle\AdminBundle\Admin
  */
 class AdminRegistry
 {
@@ -24,6 +25,7 @@ class AdminRegistry
     /**
      * @param $id
      * @param $slug
+     *
      * @throws Exception
      */
     public function addAdmin($id, $slug)
@@ -38,6 +40,7 @@ class AdminRegistry
 
     /**
      * @param $slug
+     *
      * @return string|void
      */
     public function resolveAdmin($slug)
@@ -45,7 +48,5 @@ class AdminRegistry
         if (isset($this->controllers[$slug])) {
             return $this->controllers[$slug];
         }
-
-        return;
     }
 }

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 16:45
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\View;
@@ -28,6 +30,7 @@ abstract class AbstractView implements ViewInterface
 
     /**
      * AbstractView constructor.
+     *
      * @param RendererInterface $renderer
      */
     public function __construct(RendererInterface $renderer)
@@ -38,7 +41,7 @@ abstract class AbstractView implements ViewInterface
     /**
      * {@inheritdoc}
      */
-    public function renderTemplate(array $parameters = array())
+    public function renderTemplate(array $parameters = [])
     {
         return $this->renderer->render($this->template, array_merge($this->getContextData(), $parameters));
     }
@@ -46,7 +49,7 @@ abstract class AbstractView implements ViewInterface
     /**
      * {@inheritdoc}
      */
-    public function render(array $parameters = array(), $response = null)
+    public function render(array $parameters = [], $response = null)
     {
         if (null === $response) {
             $response = new Response();

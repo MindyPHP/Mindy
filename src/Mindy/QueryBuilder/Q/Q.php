@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 27/06/16
- * Time: 11:59.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\Q;
@@ -141,9 +143,9 @@ abstract class Q
     /**
      * @param $part
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     protected function parsePart(QueryBuilder $queryBuilder, $part, $operator = null)
     {
@@ -182,8 +184,7 @@ abstract class Q
             return $part->toSQL($queryBuilder);
         } elseif ($part instanceof QueryBuilder) {
             return $part->toSQL();
-        } else {
-            throw new Exception('Unknown sql part type');
         }
+        throw new Exception('Unknown sql part type');
     }
 }

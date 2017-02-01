@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template;
 
 use Countable;
@@ -13,7 +21,7 @@ class Helper
 {
     public static $encoding = 'UTF-8';
 
-    public static function method_exists($obj = null, $method)
+    public static function method_exists($obj, $method)
     {
         if ($obj === null) {
             return false;
@@ -22,7 +30,7 @@ class Helper
         return method_exists($obj, $method);
     }
 
-    public static function implode($obj = null, $glue)
+    public static function implode($obj, $glue)
     {
         if ($obj === null) {
             return [];
@@ -31,7 +39,7 @@ class Helper
         return implode($glue, $obj);
     }
 
-    public static function explode($obj = null, $delimiter)
+    public static function explode($obj, $delimiter)
     {
         if ($obj === null) {
             return [];
@@ -45,23 +53,21 @@ class Helper
         return abs(intval($obj));
     }
 
-    public static function slice($obj = null, $start, $length)
+    public static function slice($obj, $start, $length)
     {
         if (is_array($obj)) {
             return array_slice($obj, $start, $length);
         } elseif (is_string($obj)) {
             return mb_substr($obj, $start, $length, self::$encoding);
         }
-
-        return;
     }
 
-    public static function startswith($obj = null, $needle)
+    public static function startswith($obj, $needle)
     {
         return mb_strpos((string) $obj, $needle, 0, self::$encoding) === 0;
     }
 
-    public static function contains($obj = null, $needle)
+    public static function contains($obj, $needle)
     {
         return mb_strpos((string) $obj, $needle, 0, self::$encoding) !== false;
     }
@@ -78,11 +84,10 @@ class Helper
             $obj = number_format($obj / 1073741824, $decimals, $dec, $sep);
 
             return "$obj GB";
-        } else {
-            $obj = number_format($obj / 1024, $decimals, $dec, $sep);
-
-            return "$obj KB";
         }
+        $obj = number_format($obj / 1024, $decimals, $dec, $sep);
+
+        return "$obj KB";
     }
 
     public static function capitalize($obj)
@@ -181,9 +186,9 @@ class Helper
             return count($obj) ? false : true;
         } elseif ($obj instanceof Traversable) {
             return iterator_count($obj);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public static function is_even($obj = null)
@@ -233,8 +238,6 @@ class Helper
         } elseif ($obj instanceof Traversable) {
             return array_keys(iterator_to_array($obj));
         }
-
-        return;
     }
 
     public static function last($obj = null, $default = null)
@@ -259,8 +262,6 @@ class Helper
             return count($obj);
         } elseif ($obj instanceof Traversable) {
             return iterator_count($obj);
-        } else {
-            return;
         }
     }
 
@@ -293,9 +294,9 @@ class Helper
     {
         if ($regex) {
             return preg_replace($search, $replace, (string) $obj);
-        } else {
-            return str_replace($search, $replace, (string) $obj);
         }
+
+        return str_replace($search, $replace, (string) $obj);
     }
 
     public static function strip_tags($obj = null, $allowableTags = '')
@@ -337,7 +338,7 @@ class Helper
         return htmlspecialchars_decode((string) $obj, ENT_QUOTES);
     }
 
-    public static function chunk($obj = null, $by)
+    public static function chunk($obj, $by)
     {
         return $obj ? array_chunk($obj, $by) : null;
     }
@@ -376,12 +377,12 @@ class Helper
         return (int) $obj;
     }
 
-    public static function has_key($obj = null, $key)
+    public static function has_key($obj, $key)
     {
         return array_key_exists($key, (array) $obj);
     }
 
-    public static function call($obj = null, $method, array $args = [])
+    public static function call($obj, $method, array $args = [])
     {
         return call_user_func_array([$obj, $method], $args);
     }
@@ -407,8 +408,8 @@ class Helper
             return (int) $obj;
         } elseif (is_string($obj) && in_array((string) $obj, ['true', 'false'])) {
             return (bool) $obj;
-        } else {
-            return (string) $obj;
         }
+
+        return (string) $obj;
     }
 }

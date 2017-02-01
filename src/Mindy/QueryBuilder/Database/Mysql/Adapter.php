@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/06/16
- * Time: 13:06.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\QueryBuilder\Database\Mysql;
@@ -68,10 +70,10 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
      *
-     * @param string $name  the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
+     * @param string $name  the name of the primary key constraint to be removed
+     * @param string $table the table that the primary key constraint will be removed from
      *
-     * @return string the SQL statement for removing a primary key constraint from an existing table.
+     * @return string the SQL statement for removing a primary key constraint from an existing table
      */
     public function sqlDropPrimaryKey($table, $name)
     {
@@ -109,9 +111,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
     {
         if (gettype($value) === 'boolean') {
             return (int) $value;
-        } else {
-            return $value ? 1 : 0;
         }
+
+        return $value ? 1 : 0;
     }
 
     protected function formatDateTime($value, $format)
@@ -210,9 +212,9 @@ class Adapter extends BaseAdapter implements IAdapter, ISQLGenerator
      * @param $oldName
      * @param $newName
      *
-     * @return string
-     *
      * @throws Exception
+     *
+     * @return string
      */
     public function sqlRenameColumn($tableName, $oldName, $newName)
     {

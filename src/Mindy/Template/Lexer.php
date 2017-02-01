@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template;
 
 /**
@@ -50,7 +58,7 @@ class Lexer
         $this->char = 1;
         $this->cursor = 0;
         $this->position = self::POSITION_TEXT;
-        $this->queue = array();
+        $this->queue = [];
         $this->end = strlen($this->source);
         $this->trim = false;
     }
@@ -75,7 +83,6 @@ class Lexer
         }
 
         switch ($this->position) {
-
             case self::POSITION_TEXT:
                 $this->queue = $this->lexText();
                 break;
@@ -105,7 +112,7 @@ class Lexer
     protected function lexText()
     {
         $match = null;
-        $tokens = array();
+        $tokens = [];
 
         $pattern = '/(.*?)('.
             preg_quote(self::COMMENT_START_TRIM).'|'.
@@ -152,7 +159,6 @@ class Lexer
         $this->adjustLineChar($match[1]);
 
         switch ($token) {
-
             case self::COMMENT_START_TRIM:
             case self::COMMENT_START:
                 if (preg_match('/.*?('.
@@ -215,7 +221,6 @@ class Lexer
                 $this->adjustLineChar($token);
                 $this->position = self::POSITION_OUTPUT;
                 break;
-
         }
 
         return $tokens;
@@ -223,7 +228,7 @@ class Lexer
 
     protected function lexBlock()
     {
-        $tokens = array();
+        $tokens = [];
         $match = null;
 
         $pattern = '/(\s*)('.
@@ -248,7 +253,7 @@ class Lexer
 
     protected function lexOutput()
     {
-        $tokens = array();
+        $tokens = [];
         $match = null;
 
         if (preg_match('/(\s*)('.
@@ -275,7 +280,7 @@ class Lexer
 
     protected function lexExpression()
     {
-        $tokens = array();
+        $tokens = [];
         $match = null;
 
         // eat whitespace

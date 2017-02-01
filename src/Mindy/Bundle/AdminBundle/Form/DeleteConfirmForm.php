@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 22:22
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Form;
@@ -19,11 +21,11 @@ class DeleteConfirmForm extends AbstractType
     {
         $builder
             ->add('confirm', CheckboxType::class, [
-                'label' => 'Подтверждаю удаление'
+                'label' => 'Подтверждаю удаление',
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Подтвердить удаление',
-                'attr' => ['class' => 'b-button']
+                'attr' => ['class' => 'b-button'],
             ]);
     }
 }

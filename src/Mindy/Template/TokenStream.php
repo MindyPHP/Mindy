@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template;
 
 /**
@@ -17,7 +25,7 @@ class TokenStream
     {
         $this->tokens = $tokens;
         $this->currentToken = null;
-        $this->queue = array();
+        $this->queue = [];
         $this->cursor = 0;
         $this->eos = false;
         $this->next();
@@ -80,9 +88,8 @@ class TokenStream
             }
             if ($token->getType() === Token::EOF) {
                 throw new SyntaxError('unexpected end of file', $token);
-            } else {
-                throw new SyntaxError(sprintf('unexpected "%s", expecting %s', str_replace("\n", '\n', $token->getValue()), $expecting), $token);
             }
+            throw new SyntaxError(sprintf('unexpected "%s", expecting %s', str_replace("\n", '\n', $token->getValue()), $expecting), $token);
         }
         $this->next();
 
@@ -109,9 +116,9 @@ class TokenStream
             $this->expect($primary, $secondary);
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function isEOS()

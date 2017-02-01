@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Thumb;
 
 use Exception;
@@ -29,7 +37,7 @@ trait ImageProcess
     public static $DRIVER_GMAGICK = 'gmagick';
 
     /**
-     * @var ImagineInterface instance.
+     * @var ImagineInterface instance
      */
     private static $_imagine;
 
@@ -50,9 +58,9 @@ trait ImageProcess
     /**
      * Creates an `Imagine` object based on the specified [[driver]].
      *
-     * @return ImagineInterface the new `Imagine` object
+     * @throws Exception if [[driver]] is unknown or the system doesn't support any [[driver]]
      *
-     * @throws Exception if [[driver]] is unknown or the system doesn't support any [[driver]].
+     * @return ImagineInterface the new `Imagine` object
      */
     protected static function createImagine()
     {
@@ -100,6 +108,7 @@ trait ImageProcess
      * @param int $width
      * @param int $height
      * @param string $method
+     *
      * @return ImageInterface|static
      */
     public function resize(ImageInterface $img, $width, $height, $method)

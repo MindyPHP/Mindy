@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 14/11/2016
- * Time: 00:08.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -63,22 +65,18 @@ class AdminValueFetcher
             $field = $model->getField($column);
             if ($field instanceof ManyToManyField || $field instanceof HasManyField) {
                 return get_class($model->{$column});
-            } else {
-                $value = $model->{$column};
+            }
+            $value = $model->{$column};
 
-                if ($model->getField($column) instanceof BooleanField) {
-                    return $value ? $booleanHtml : '';
-                } else {
-                    return $value;
-                }
+            if ($model->getField($column) instanceof BooleanField) {
+                return $value ? $booleanHtml : '';
             }
-        } else {
-            $method = 'get'.ucfirst($column);
-            if (method_exists($model, $method)) {
-                return $model->{$method}();
-            }
+
+            return $value;
         }
-
-        return;
+        $method = 'get'.ucfirst($column);
+        if (method_exists($model, $method)) {
+            return $model->{$method}();
+        }
     }
 }

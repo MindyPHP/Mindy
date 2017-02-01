@@ -1,15 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 30/11/16
- * Time: 18:30.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Library;
 
 use Mindy\Bundle\AdminBundle\Admin\AdminMenu;
-use Mindy\Orm\TreeModel;
 use Mindy\Template\Library;
 use Mindy\Template\Renderer;
 
@@ -34,7 +35,7 @@ class AdminLibrary extends Library
                 return $this->renderer->render($template, [
                     'adminMenu' => $this->adminMenu->getMenu(),
                 ]);
-            }
+            },
         ];
     }
 

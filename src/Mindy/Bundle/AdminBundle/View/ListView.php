@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 16:44.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\View;
@@ -23,11 +25,12 @@ class ListView extends AbstractFormView
     /**
      * @var array
      */
-    protected $paginationParameters = array();
+    protected $paginationParameters = [];
     /**
      * @var FilterFormInterface|FormInterface
      */
     protected $filterForm;
+
     /**
      * @param $qs
      */
@@ -77,7 +80,7 @@ class ListView extends AbstractFormView
     /**
      * @param array $parameters
      */
-    public function setPaginationParameters(array $parameters = array())
+    public function setPaginationParameters(array $parameters = [])
     {
         $this->paginationParameters = $parameters;
     }

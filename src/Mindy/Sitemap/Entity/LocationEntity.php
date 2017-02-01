@@ -1,10 +1,18 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Sitemap\Entity;
 
 use Mindy\Sitemap\Collection\ImageCollection;
-use Mindy\Sitemap\Collection\VideoCollection;
 use Mindy\Sitemap\Collection\NewsCollection;
+use Mindy\Sitemap\Collection\VideoCollection;
 
 /**
  * Class LocationEntity.
@@ -44,9 +52,6 @@ class LocationEntity extends AbstractEntity
      */
     protected $newsCollection;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->imageCollection = new ImageCollection();

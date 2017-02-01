@@ -1,15 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 20/10/2016
- * Time: 20:35.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
 
-use Symfony\Component\Asset\Packages;
 use Mindy\Template\Library;
+use Symfony\Component\Asset\Packages;
 
 class AssetLibrary extends Library
 {

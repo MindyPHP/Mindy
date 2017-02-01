@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 07/01/2017
- * Time: 16:53
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\View;
@@ -35,6 +37,7 @@ class DeleteView extends AbstractView
                     'method' => 'POST',
                 ]);
         }
+
         return $this->formInstance;
     }
 
@@ -56,11 +59,13 @@ class DeleteView extends AbstractView
 
     /**
      * @param Request $request
+     *
      * @return $this
      */
     public function handleRequest(Request $request)
     {
         $this->getForm()->handleRequest($request);
+
         return $this;
     }
 
@@ -70,7 +75,7 @@ class DeleteView extends AbstractView
     public function getContextData()
     {
         return [
-            'form' => $this->getForm()->createView()
+            'form' => $this->getForm()->createView(),
         ];
     }
 }

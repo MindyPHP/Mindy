@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 13/11/2016
- * Time: 21:06.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -75,7 +77,6 @@ abstract class AbstractModelAdmin extends AbstractAdmin
      */
     public function getFilterFormType()
     {
-        return;
     }
 
     /**
@@ -128,9 +129,9 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             return $names[$column];
         } elseif ($model->hasField($column)) {
             return $model->getField($column)->getVerboseName();
-        } else {
-            return $column;
         }
+
+        return $column;
     }
 
     /**
@@ -152,9 +153,9 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 'column' => $column,
                 'value' => $value,
             ]);
-        } else {
-            return $value;
         }
+
+        return $value;
     }
 
     public function getColumns()
@@ -270,7 +271,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         foreach ($parents as $parent) {
             $breadcrumbs[] = [
                 'url' => $this->getAdminUrl('list', ['parent_id' => $parent->pk]),
-                'name' => (string)$parent,
+                'name' => (string) $parent,
                 'items' => [],
             ];
         }
@@ -309,7 +310,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 break;
             case 'info':
                 $breadcrumbs[] = [
-                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string)$model], sprintf('%s.admin', $bundleName)),
+                    'name' => $this->get('translator')->trans('admin.breadcrumbs.info', ['%name%' => (string) $model], sprintf('%s.admin', $bundleName)),
                     'url' => $this->getAdminUrl('list'),
                 ];
                 break;
@@ -347,13 +348,15 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return [
             $trans->trans(sprintf('%s.admin.%s.list', $bundleName, $model)),
             $trans->trans(sprintf('%s.admin.%s.create', $bundleName, $model)),
-            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string)$instance]),
+            $trans->trans(sprintf('%s.admin.%s.update', $bundleName, $model), ['%name%' => (string) $instance]),
         ];
     }
 
     /**
      * TODO
+     *
      * @param Request $request
+     *
      * @return string
      */
     public function infoAction(Request $request)
@@ -423,6 +426,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                 $this->getEventDispatcher()->dispatch(self::EVENT_AFTER_CREATE, new AdminEvent($instance));
 
                 $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+
                 return $this->getNextRoute($form->get('buttons'), $instance);
             }
         }
@@ -478,6 +482,7 @@ abstract class AbstractModelAdmin extends AbstractAdmin
     /**
      * @param FormInterface|ButtonsType $buttons
      * @param ModelInterface $instance
+     *
      * @return string url for redirect
      */
     public function getNextRoute(FormInterface $buttons, ModelInterface $instance)
@@ -547,19 +552,21 @@ abstract class AbstractModelAdmin extends AbstractAdmin
                     $this->getEventDispatcher()->dispatch(self::EVENT_AFTER_DELETE, new AdminEvent($instance));
 
                     $this->addFlash(self::FLASH_SUCCESS, $this->get('translator')->trans('admin.flash.success'));
+
                     return $this->redirect($this->getAdminUrl('list'));
                 }
             }
         }
 
         return $view->render([
-            'admin' => $this
+            'admin' => $this,
         ]);
     }
 
     protected function getBundle()
     {
         $name = call_user_func([$this->getModelClass(), 'getBundleName']);
+
         return $this->get('kernel')->getBundle($name);
     }
 }

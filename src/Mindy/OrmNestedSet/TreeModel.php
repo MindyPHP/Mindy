@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Orm;
 
 use Exception;
@@ -82,7 +90,7 @@ abstract class TreeModel extends Model
     /**
      * Determines if node is leaf.
      *
-     * @return bool whether the node is leaf.
+     * @return bool whether the node is leaf
      */
     public function getIsLeaf()
     {
@@ -92,7 +100,7 @@ abstract class TreeModel extends Model
     /**
      * Determines if node is root.
      *
-     * @return bool whether the node is root.
+     * @return bool whether the node is root
      */
     public function getIsRoot()
     {
@@ -111,7 +119,7 @@ abstract class TreeModel extends Model
      *
      * @throws \Exception
      *
-     * @return bool whether the saving succeeds.
+     * @return bool whether the saving succeeds
      */
     public function save(array $fields = [])
     {
@@ -123,29 +131,28 @@ abstract class TreeModel extends Model
             }
 
             return parent::save($fields);
-        } else {
-            if (in_array('parent_id', $this->getDirtyAttributes())) {
-                if ($saved = parent::save($fields)) {
-                    if ($this->parent) {
-                        $this->moveAsLast($this->parent);
-                    } elseif ($this->isRoot() == false) {
-                        $this->moveAsRoot();
-                    }
+        }
+        if (in_array('parent_id', $this->getDirtyAttributes())) {
+            if ($saved = parent::save($fields)) {
+                if ($this->parent) {
+                    $this->moveAsLast($this->parent);
+                } elseif ($this->isRoot() == false) {
+                    $this->moveAsRoot();
+                }
                     /** @var array $parent */
                     $parent = $this->objects()->asArray()->get(['pk' => $this->pk]);
-                    if ($parent !== null) {
-                        $this->setAttributes($parent);
-                        $this->setIsNewRecord(false);
-                    }
-
-                    return $saved;
+                if ($parent !== null) {
+                    $this->setAttributes($parent);
+                    $this->setIsNewRecord(false);
                 }
 
                 return $saved;
-            } else {
-                return parent::save($fields);
             }
+
+            return $saved;
         }
+
+        return parent::save($fields);
     }
 
     public function saveRebuild()
@@ -179,9 +186,9 @@ abstract class TreeModel extends Model
     /**
      * Deletes node and it's descendants.
      *
-     * @throws \Exception.
+     * @throws \Exception
      *
-     * @return bool whether the deletion is successful.
+     * @return bool whether the deletion is successful
      */
     public function delete()
     {
@@ -201,9 +208,9 @@ abstract class TreeModel extends Model
     /**
      * Prepends node to target as first child.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the prepending succeeds.
+     * @return bool whether the prepending succeeds
      */
     public function prependTo(TreeModel $target)
     {
@@ -213,9 +220,9 @@ abstract class TreeModel extends Model
     /**
      * Prepends target to node as first child.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the prepending succeeds.
+     * @return bool whether the prepending succeeds
      */
     public function prepend(TreeModel $target)
     {
@@ -225,9 +232,9 @@ abstract class TreeModel extends Model
     /**
      * Appends node to target as last child.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the appending succeeds.
+     * @return bool whether the appending succeeds
      */
     public function appendTo(TreeModel $target)
     {
@@ -237,9 +244,9 @@ abstract class TreeModel extends Model
     /**
      * Appends target to node as last child.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the appending succeeds.
+     * @return bool whether the appending succeeds
      */
     public function append(TreeModel $target)
     {
@@ -249,11 +256,11 @@ abstract class TreeModel extends Model
     /**
      * Inserts node as previous sibling of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
      * @throws \Exception
      *
-     * @return bool whether the inserting succeeds.
+     * @return bool whether the inserting succeeds
      */
     public function insertBefore(TreeModel $target)
     {
@@ -263,9 +270,9 @@ abstract class TreeModel extends Model
     /**
      * Inserts node as next sibling of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the inserting succeeds.
+     * @return bool whether the inserting succeeds
      */
     public function insertAfter(TreeModel $target)
     {
@@ -275,9 +282,9 @@ abstract class TreeModel extends Model
     /**
      * Move node as previous sibling of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the moving succeeds.
+     * @return bool whether the moving succeeds
      */
     public function moveBefore(TreeModel $target)
     {
@@ -287,9 +294,9 @@ abstract class TreeModel extends Model
     /**
      * Move node as next sibling of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the moving succeeds.
+     * @return bool whether the moving succeeds
      */
     public function moveAfter(TreeModel $target)
     {
@@ -299,9 +306,9 @@ abstract class TreeModel extends Model
     /**
      * Move node as first child of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the moving succeeds.
+     * @return bool whether the moving succeeds
      */
     public function moveAsFirst(TreeModel $target)
     {
@@ -311,9 +318,9 @@ abstract class TreeModel extends Model
     /**
      * Move node as last child of target.
      *
-     * @param TreeModel $target the target.
+     * @param TreeModel $target the target
      *
-     * @return bool whether the moving succeeds.
+     * @return bool whether the moving succeeds
      */
     public function moveAsLast(TreeModel $target)
     {
@@ -323,10 +330,10 @@ abstract class TreeModel extends Model
     /**
      * Move node as new root.
      *
-     * @throws Exception.
-     * @throws \Exception.
+     * @throws Exception
+     * @throws \Exception
      *
-     * @return bool whether the moving succeeds.
+     * @return bool whether the moving succeeds
      */
     public function moveAsRoot()
     {
@@ -366,9 +373,9 @@ abstract class TreeModel extends Model
     /**
      * Determines if node is descendant of subject node.
      *
-     * @param TreeModel $subj the subject node.
+     * @param TreeModel $subj the subject node
      *
-     * @return bool whether the node is descendant of subject node.
+     * @return bool whether the node is descendant of subject node
      */
     public function isDescendantOf($subj)
     {
@@ -378,7 +385,7 @@ abstract class TreeModel extends Model
     /**
      * Determines if node is leaf.
      *
-     * @return bool whether the node is leaf.
+     * @return bool whether the node is leaf
      */
     public function isLeaf()
     {
@@ -388,7 +395,7 @@ abstract class TreeModel extends Model
     /**
      * Determines if node is root.
      *
-     * @return bool whether the node is root.
+     * @return bool whether the node is root
      */
     public function isRoot()
     {
@@ -398,7 +405,7 @@ abstract class TreeModel extends Model
     /**
      * Returns if the current node is deleted.
      *
-     * @return bool whether the node is deleted.
+     * @return bool whether the node is deleted
      */
     public function getIsDeletedRecord()
     {
@@ -408,7 +415,7 @@ abstract class TreeModel extends Model
     /**
      * Sets if the current node is deleted.
      *
-     * @param bool $value whether the node is deleted.
+     * @param bool $value whether the node is deleted
      */
     public function setIsDeletedRecord($value)
     {
@@ -484,9 +491,9 @@ abstract class TreeModel extends Model
     }
 
     /**
-     * @throws \Exception.
+     * @throws \Exception
      *
-     * @return $this.
+     * @return $this
      */
     private function makeRoot()
     {
@@ -499,14 +506,14 @@ abstract class TreeModel extends Model
     }
 
     /**
-     * @param TreeModel $target  .
-     * @param int       $key     .
-     * @param int       $levelUp .
+     * @param TreeModel $target
+     * @param int       $key
+     * @param int       $levelUp
      *
-     * @throws Exception.
-     * @throws \Exception.
+     * @throws Exception
+     * @throws \Exception
      *
-     * @return boolean.
+     * @return boolean
      */
     private function moveNode(TreeModel $target, $key, $levelUp)
     {

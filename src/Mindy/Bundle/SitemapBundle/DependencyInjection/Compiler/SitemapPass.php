@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 12/12/2016
- * Time: 00:38.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\SitemapBundle\DependencyInjection\Compiler;
@@ -27,7 +29,7 @@ class SitemapPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('sitemap.builder');
         foreach ($container->findTaggedServiceIds('sitemap.provider') as $id => $params) {
-            $definition->addMethodCall('addProvider', array(new Reference($id)));
+            $definition->addMethodCall('addProvider', [new Reference($id)]);
         }
     }
 }
