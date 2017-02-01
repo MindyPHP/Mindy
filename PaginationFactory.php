@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 05/12/2016
- * Time: 21:34.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Pagination;
@@ -29,7 +31,7 @@ class PaginationFactory
      *
      * @return Pagination
      */
-    public function createPagination($source, array $parameters = array(), PaginationHandlerInterface $handler)
+    public function createPagination($source, array $parameters, PaginationHandlerInterface $handler)
     {
         $handler = $handler ? $handler : new NativePaginationHandler();
 

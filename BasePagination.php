@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Pagination;
 
 use Mindy\Pagination\DataSource\DataSourceInterface;
@@ -77,7 +85,7 @@ abstract class BasePagination
      * @param PaginationHandlerInterface $handler
      * @param DataSourceInterface        $dataSource
      */
-    public function __construct($source, array $config = [], PaginationHandlerInterface $handler, DataSourceInterface $dataSource)
+    public function __construct($source, array $config, PaginationHandlerInterface $handler, DataSourceInterface $dataSource)
     {
         ++self::$_id;
         $this->id = self::$_id;
@@ -212,9 +220,9 @@ abstract class BasePagination
     {
         if ($this->pageKey === null) {
             return sprintf('Pager_%s', $this->id);
-        } else {
-            return $this->pageKey;
         }
+
+        return $this->pageKey;
     }
 
     /**
