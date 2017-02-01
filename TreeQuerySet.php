@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Orm;
 
 use Doctrine\DBAL\Connection;
@@ -19,7 +27,7 @@ class TreeQuerySet extends QuerySet
      * Named scope. Gets descendants for node.
      *
      * @param bool $includeSelf
-     * @param int  $depth       the depth.
+     * @param int  $depth       the depth
      *
      * @return QuerySet
      */
@@ -62,7 +70,7 @@ class TreeQuerySet extends QuerySet
      * Named scope. Gets ancestors for node.
      *
      * @param bool $includeSelf
-     * @param int  $depth       the depth.
+     * @param int  $depth       the depth
      *
      * @return QuerySet
      */
@@ -308,10 +316,10 @@ class TreeQuerySet extends QuerySet
     }
 
     /**
-     * @param int   $key   .
-     * @param int   $delta .
-     * @param int   $root  .
-     * @param array $data  .
+     * @param int   $key
+     * @param int   $delta
+     * @param int   $root
+     * @param array $data
      *
      * @return array
      */
