@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 22/11/2016
- * Time: 20:44.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\FileBundle\Form\DataTransformer;
@@ -53,18 +55,17 @@ class FileDataTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the original representation
      *
-     * @return mixed The value in the transformed representation
+     * @throws TransformationFailedException when the transformation fails
      *
-     * @throws TransformationFailedException When the transformation fails.
+     * @return mixed The value in the transformed representation
      */
     public function transform($value)
     {
         if ($this->filesystem->has($value)) {
             $meta = $this->filesystem->getMetadata($value);
+
             return new File($meta['path'], false);
         }
-        
-        return;
     }
 
     /**
@@ -87,9 +88,9 @@ class FileDataTransformer implements DataTransformerInterface
      *
      * @param mixed $value The value in the transformed representation
      *
-     * @return mixed The value in the original representation
+     * @throws TransformationFailedException when the transformation fails
      *
-     * @throws TransformationFailedException When the transformation fails.
+     * @return mixed The value in the original representation
      */
     public function reverseTransform($value)
     {

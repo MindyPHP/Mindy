@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 30/09/16
- * Time: 17:49.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\FileBundle\Library;
@@ -11,9 +13,9 @@ namespace Mindy\Bundle\FileBundle\Library;
 use Exception;
 use Imagine\Image\ImageInterface;
 use League\Flysystem\FilesystemInterface;
-use Mindy\Thumb\ImageProcess;
-use Mindy\Template\Library;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Mindy\Template\Library;
+use Mindy\Thumb\ImageProcess;
 
 /**
  * Class ImageLibrary.
@@ -62,7 +64,7 @@ class ImageLibrary extends Library
 
                 return $newPath;
             },
-            'imagine_filter' => function ($path, $filter, array $runtimeConfig = array(), $resolver = null) {
+            'imagine_filter' => function ($path, $filter, array $runtimeConfig = [], $resolver = null) {
                 return $this->cacheManager->getBrowserPath($path, $filter, $runtimeConfig, $resolver);
             },
         ];
@@ -84,7 +86,7 @@ class ImageLibrary extends Library
         ], $options);
 
         if (!in_array($method, $resizeMethods)) {
-            throw new Exception('Unknown resize method: ' . $method);
+            throw new Exception('Unknown resize method: '.$method);
         }
 
         $file = $this->filesystem->get($path);
@@ -123,9 +125,9 @@ class ImageLibrary extends Library
     public function generateFilename($path, array $options = [])
     {
         $hash = md5(json_encode($options));
-        $newFilename = implode('_', [pathinfo($path, PATHINFO_FILENAME), $hash]) . '.' . pathinfo($path, PATHINFO_EXTENSION);
+        $newFilename = implode('_', [pathinfo($path, PATHINFO_FILENAME), $hash]).'.'.pathinfo($path, PATHINFO_EXTENSION);
 
-        return pathinfo($path, PATHINFO_DIRNAME) . '/' . $newFilename;
+        return pathinfo($path, PATHINFO_DIRNAME).'/'.$newFilename;
     }
 
     /**
