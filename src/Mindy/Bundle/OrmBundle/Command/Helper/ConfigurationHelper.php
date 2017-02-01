@@ -49,7 +49,7 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
      */
     public function getMigrationConfig(InputInterface $input, OutputWriter $outputWriter)
     {
-        $connection = $this->container->get('db')->getConnection($input->getOption('connection'));
+        $connection = $this->container->get('orm.connection_manager')->getConnection($input->getOption('connection'));
 
         $configuration = new Configuration($connection);
         $bundleName = $input->getOption('bundle');
