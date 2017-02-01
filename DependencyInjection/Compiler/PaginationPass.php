@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 06/12/16
- * Time: 11:22.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\PaginationBundle\DependencyInjection\Compiler;
@@ -27,7 +29,7 @@ class PaginationPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('pagination.factory');
         foreach ($container->findTaggedServiceIds('pagination.data_source') as $id => $params) {
-            $definition->addMethodCall('addDataSource', array(new Reference($id)));
+            $definition->addMethodCall('addDataSource', [new Reference($id)]);
         }
     }
 }
