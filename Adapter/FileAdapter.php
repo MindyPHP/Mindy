@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template\Adapter;
 
 use RuntimeException;
@@ -26,9 +34,9 @@ class FileAdapter implements Adapter
             if (!$path) {
                 throw new RuntimeException(sprintf('source directory %s not found', $source));
             }
-            $paths = array($path);
+            $paths = [$path];
         } else {
-            $paths = array();
+            $paths = [];
             foreach ($source as $path) {
                 if ($absPath = realpath($path)) {
                     $paths[] = $absPath;
@@ -68,8 +76,6 @@ class FileAdapter implements Adapter
                 return filemtime($source.'/'.$path);
             }
         }
-
-        return;
     }
 
     /**
@@ -84,7 +90,5 @@ class FileAdapter implements Adapter
                 return file_get_contents($source.'/'.$path);
             }
         }
-
-        return;
     }
 }

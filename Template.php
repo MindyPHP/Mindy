@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template;
 
 use Closure;
@@ -61,7 +69,7 @@ abstract class Template
     /**
      * @var array|VariableProviderInterface[]
      */
-    protected $variableProviders = array();
+    protected $variableProviders = [];
 
     /**
      * Template constructor.
@@ -70,16 +78,16 @@ abstract class Template
      * @param array                             $helpers
      * @param array|VariableProviderInterface[] $variablesProviders
      */
-    public function __construct(Loader $loader, $helpers = array(), $variablesProviders = array())
+    public function __construct(Loader $loader, $helpers = [], $variablesProviders = [])
     {
         $this->loader = $loader;
         $this->helpers = $helpers;
         $this->variableProviders = $variablesProviders;
         $this->parent = null;
-        $this->blocks = array();
-        $this->macros = array();
-        $this->imports = array();
-        $this->stack = array();
+        $this->blocks = [];
+        $this->macros = [];
+        $this->imports = [];
+        $this->stack = [];
     }
 
     public function loadExtends($template)
@@ -156,7 +164,7 @@ abstract class Template
     public function pushContext(&$context, $name)
     {
         if (!array_key_exists($name, $this->stack)) {
-            $this->stack[$name] = array();
+            $this->stack[$name] = [];
         }
         array_push($this->stack[$name], isset($context[$name]) ? $context[$name] : null);
 
@@ -189,26 +197,24 @@ abstract class Template
                 return isset($lines[$line]) ? $lines[$line] : null;
             }
         }
-
-        return;
     }
 
     /**
      * @param $name
      * @param array $args
      *
-     * @return mixed
-     *
      * @throws \RuntimeException
+     *
+     * @return mixed
      */
-    public function helper($name, $args = array())
+    public function helper($name, $args = [])
     {
         $args = func_get_args();
         $name = array_shift($args);
 
         if (isset($this->helpers[$name]) && is_callable($this->helpers[$name])) {
             return call_user_func_array($this->helpers[$name], $args);
-        } elseif (($helper = array($this->helperClassName, $name)) && is_callable($helper)) {
+        } elseif (($helper = [$this->helperClassName, $name]) && is_callable($helper)) {
             return call_user_func_array($helper, $args);
         } elseif (function_exists($name) && in_array($name, $this->internalHelpers)) {
             if (isset($args[0])) {
@@ -229,7 +235,7 @@ abstract class Template
      *
      * @return string
      */
-    abstract public function display($context = array(), $blocks = array(), $macros = array(), $imports = array());
+    abstract public function display($context = [], $blocks = [], $macros = [], $imports = []);
 
     /**
      * @param array $context
@@ -239,7 +245,7 @@ abstract class Template
      *
      * @return string
      */
-    public function render($context = array(), $blocks = array(), $macros = array(), $imports = array())
+    public function render($context = [], $blocks = [], $macros = [], $imports = [])
     {
         ob_start();
         $this->display($this->mergeContext($context), $blocks, $macros, $imports);
@@ -252,7 +258,7 @@ abstract class Template
      *
      * @return array
      */
-    protected function mergeContext($context = array())
+    protected function mergeContext($context = [])
     {
         foreach ($this->variableProviders as $variableProvider) {
             $context = array_merge($context, $variableProvider->getData());
@@ -289,7 +295,7 @@ abstract class Template
         return $this->imports;
     }
 
-    public function getAttr($obj, $attr, $args = array())
+    public function getAttr($obj, $attr, $args = [])
     {
         if (is_array($obj)) {
             if (isset($obj[$attr])) {
@@ -297,38 +303,34 @@ abstract class Template
                     if (is_array($args)) {
                         array_unshift($args, $obj);
                     } else {
-                        $args = array($obj);
+                        $args = [$obj];
                     }
 
                     return call_user_func_array($obj[$attr], $args);
-                } else {
-                    return $obj[$attr];
                 }
-            } else {
-                return;
+
+                return $obj[$attr];
             }
+
+            return;
         } elseif (is_object($obj)) {
             if (is_array($args)) {
-                $callable = array($obj, $attr);
+                $callable = [$obj, $attr];
 
                 return is_callable($callable) ? call_user_func_array($callable, $args) : null;
-            } else {
-                $members = array_keys(get_object_vars($obj));
-                $methods = get_class_methods(get_class($obj));
-                if (in_array($attr, $members)) {
-                    return @$obj->$attr;
-                } elseif (in_array('__call', $methods) && method_exists($obj, $attr)) {
-                    return call_user_func_array([$obj, $attr], is_array($args) ? $args : []);
-                } elseif (in_array('__get', $methods)) {
-                    return $obj->__get($attr);
-                } else {
-                    $callable = array($obj, $attr);
-
-                    return is_callable($callable) ? call_user_func($callable) : null;
-                }
             }
-        } else {
-            return;
+            $members = array_keys(get_object_vars($obj));
+            $methods = get_class_methods(get_class($obj));
+            if (in_array($attr, $members)) {
+                return @$obj->$attr;
+            } elseif (in_array('__call', $methods) && method_exists($obj, $attr)) {
+                return call_user_func_array([$obj, $attr], is_array($args) ? $args : []);
+            } elseif (in_array('__get', $methods)) {
+                return $obj->__get($attr);
+            }
+            $callable = [$obj, $attr];
+
+            return is_callable($callable) ? call_user_func($callable) : null;
         }
     }
 
@@ -350,21 +352,20 @@ abstract class Template
                     return;
                 } elseif (property_exists($class, $attr)) {
                     throw new RuntimeException("inaccessible '$attr' object attribute");
-                } else {
-                    if ($attr === null || $attr === false || $attr === '') {
-                        if ($attr === null) {
-                            $token = 'null';
-                        }
-                        if ($attr === false) {
-                            $token = 'false';
-                        }
-                        if ($attr === '') {
-                            $token = 'empty string';
-                        }
-                        throw new RuntimeException(sprintf('invalid object attribute (%s) in %s line %d', $token, static::NAME, $this->getLineTrace()));
-                    }
-                    $obj->{$attr} = null;
                 }
+                if ($attr === null || $attr === false || $attr === '') {
+                    if ($attr === null) {
+                        $token = 'null';
+                    }
+                    if ($attr === false) {
+                        $token = 'false';
+                    }
+                    if ($attr === '') {
+                        $token = 'empty string';
+                    }
+                    throw new RuntimeException(sprintf('invalid object attribute (%s) in %s line %d', $token, static::NAME, $this->getLineTrace()));
+                }
+                $obj->{$attr} = null;
             }
             if (!isset($obj->$attr)) {
                 $obj->$attr = null;
@@ -372,7 +373,7 @@ abstract class Template
             $this->setAttr($obj->$attr, $attrs, $value);
         } else {
             if (!is_array($obj)) {
-                $obj = array();
+                $obj = [];
             }
             $this->setAttr($obj[$attr], $attrs, $value);
         }

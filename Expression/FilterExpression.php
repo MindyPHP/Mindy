@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template\Expression;
 
 use Mindy\Template\Compiler;
@@ -50,10 +58,10 @@ class FilterExpression extends Expression
 
     public function compile(Compiler $compiler, $indent = 0)
     {
-        static $rawNames = array('raw', 'safe');
+        static $rawNames = ['raw', 'safe'];
 
         $safe = false;
-        $postponed = array();
+        $postponed = [];
 
         foreach ($this->filters as $i => $filter) {
             if (in_array($filter[0], $rawNames)) {
@@ -63,7 +71,7 @@ class FilterExpression extends Expression
         }
 
         if ($this->autoEscape && !$safe) {
-            $this->appendFilter(array('escape', array()));
+            $this->appendFilter(['escape', []]);
         }
 
         for ($i = count($this->filters) - 1; $i >= 0; --$i) {

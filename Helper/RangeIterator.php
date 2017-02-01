@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Template\Helper;
 
 use Iterator;
@@ -30,9 +38,9 @@ class RangeIterator implements Iterator
     {
         if ($this->upper >= $this->lower) {
             return $n >= $this->lower && $n <= $this->upper;
-        } else {
-            return $n <= $this->lower && $n >= $this->upper;
         }
+
+        return $n <= $this->lower && $n >= $this->upper;
     }
 
     public function random($seed = null)
@@ -60,9 +68,9 @@ class RangeIterator implements Iterator
     {
         if ($this->upper >= $this->lower) {
             return $this->current >= $this->lower && $this->current <= $this->upper;
-        } else {
-            return $this->current <= $this->lower && $this->current >= $this->upper;
         }
+
+        return $this->current <= $this->lower && $this->current >= $this->upper;
     }
 
     public function next()
