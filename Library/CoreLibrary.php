@@ -1,10 +1,11 @@
 <?php
-/**
- * Author: Falaleev Maxim
- * Email: max@studio107.ru
- * Company: http://en.studio107.ru
- * Date: 18/02/16
- * Time: 12:26.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
@@ -38,8 +39,6 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                         }
                     }
                 }
-
-                return;
             },
             'is_granted' => function ($attributes, $object = null) {
                 if (!$this->container->has('security.authorization_checker')) {
@@ -48,10 +47,10 @@ class CoreLibrary extends Library implements ContainerAwareInterface
 
                 return $this->container->get('security.authorization_checker')->isGranted($attributes, $object);
             },
-            'path' => function ($route, array $parameters = array()) {
+            'path' => function ($route, array $parameters = []) {
                 return $this->container->get('router')->generate($route, $parameters);
             },
-            'url' => function ($route, array $parameters = array()) {
+            'url' => function ($route, array $parameters = []) {
                 return $this->container->get('router')->generate($route, $parameters);
             },
             'rand' => function ($min, $max) {
@@ -61,13 +60,13 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                 dump(func_get_args());
                 die();
             },
-            't' => function ($id, array $parameters = array(), $domain = null, $locale = null) {
+            't' => function ($id, array $parameters = [], $domain = null, $locale = null) {
                 return $this->container->get('translator')->trans($id, $parameters, $domain, $locale);
             },
-            'trans' => function ($id, array $parameters = array(), $domain = null, $locale = null) {
+            'trans' => function ($id, array $parameters = [], $domain = null, $locale = null) {
                 return $this->container->get('translator')->trans($id, $parameters, $domain, $locale);
             },
-            'transChoice' => function ($id, $number, array $parameters = array(), $domain = null, $locale = null) {
+            'transChoice' => function ($id, $number, array $parameters = [], $domain = null, $locale = null) {
                 return $this->container->get('translator')->transChoice($id, $number, $parameters, $domain, $locale);
             },
         ];
@@ -86,7 +85,7 @@ class CoreLibrary extends Library implements ContainerAwareInterface
     public function parseUrl($token)
     {
         $name = null;
-        $params = array();
+        $params = [];
         $route = $this->parser->parseExpression();
         while (
             (
@@ -118,9 +117,8 @@ class CoreLibrary extends Library implements ContainerAwareInterface
                 ) {
                     $params = $expression;
                     break;
-                } else {
-                    $params[] = $expression;
                 }
+                $params[] = $expression;
             } else {
                 $params[] = $this->parser->parseExpression();
             }

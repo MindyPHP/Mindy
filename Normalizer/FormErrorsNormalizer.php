@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 09/11/2016
- * Time: 00:16.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Normalizer;
@@ -19,13 +21,13 @@ class FormErrorsNormalizer extends SerializerAwareNormalizer implements Normaliz
     /**
      * {@inheritdoc}
      */
-    public function normalize($object, $format = null, array $context = array())
+    public function normalize($object, $format = null, array $context = [])
     {
         if ($object instanceof FormErrorIterator) {
             return $this->iterateFormErrors($object);
-        } else {
-            return $this->iterateFormErrors($object->getErrors(true, false));
         }
+
+        return $this->iterateFormErrors($object->getErrors(true, false));
     }
 
     protected function iterateFormErrors($iterator)

@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 13/10/16
- * Time: 09:56.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Helper;
@@ -53,9 +55,9 @@ class Mail
      * @param array $data
      * @param array $attachments
      *
-     * @return \Swift_Message
-     *
      * @throws \Exception
+     *
+     * @return \Swift_Message
      */
     protected function getMessage($subject, $to, $template, array $data = [], array $attachments = [])
     {
@@ -96,9 +98,9 @@ class Mail
      * @param array $data
      * @param array $attachments
      *
-     * @return int
-     *
      * @throws \Exception
+     *
+     * @return int
      */
     public function send($subject, $to, $template, array $data = [], array $attachments = [])
     {
