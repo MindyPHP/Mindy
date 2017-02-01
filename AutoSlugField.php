@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Orm\Fields;
 
 use Mindy\Orm\ModelInterface;
@@ -45,9 +53,9 @@ class AutoSlugField extends AbstractSlugField
     {
         if (strpos($slug, '/') === false) {
             return $slug;
-        } else {
-            return substr($slug, strrpos($slug, '/', -1) + 1);
         }
+
+        return substr($slug, strrpos($slug, '/', -1) + 1);
     }
 
     /**
@@ -59,9 +67,9 @@ class AutoSlugField extends AbstractSlugField
     {
         if (strpos($slug, '/') === false) {
             return $slug;
-        } else {
-            return substr($slug, 0, strrpos($slug, '/', -1));
         }
+
+        return substr($slug, 0, strrpos($slug, '/', -1));
     }
 
     /**
