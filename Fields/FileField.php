@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
 namespace Mindy\Orm\Fields;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -206,10 +214,10 @@ class FileField extends CharField
     {
         if (is_callable($this->uploadTo)) {
             return $this->uploadTo->__invoke();
-        } else {
-            $model = $this->getModel();
+        }
+        $model = $this->getModel();
 
-            return strtr($this->uploadTo, [
+        return strtr($this->uploadTo, [
                 '%Y' => date('Y'),
                 '%m' => date('m'),
                 '%d' => date('d'),
@@ -219,7 +227,6 @@ class FileField extends CharField
                 '%O' => $model->classNameShort(),
                 '%M' => $model->getBundleName(),
             ]);
-        }
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
