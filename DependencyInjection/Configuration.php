@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 10/10/2016
- * Time: 21:51.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\OrmBundle\DependencyInjection;
@@ -32,7 +34,7 @@ class Configuration implements ConfigurationInterface
                                 return !is_array($v);
                             })
                             ->then(function ($v) {
-                                return array($v);
+                                return [$v];
                             })
                         ->end()
 
