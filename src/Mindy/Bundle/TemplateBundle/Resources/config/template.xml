@@ -5,7 +5,9 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="template" class="Mindy\Template\Renderer">
+        <service id="template" alias="templating.engine.mindy" />
+
+        <service id="templating.engine.mindy" class="Mindy\Template\Renderer">
             <argument type="collection">
                 <argument key="source" type="expression">container.get('template.finder.chain').getPaths()</argument>
                 <argument key="target">%kernel.cache_dir%/templates</argument>
