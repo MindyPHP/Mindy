@@ -62,8 +62,9 @@ class ConfigurationHelper extends BaseConfigurationHelper implements ContainerAw
 
         $configuration->setName($bundle->getName());
         $configuration->setMigrationsTableName($this->normalizeName($bundleName));
+        $reflect = new \ReflectionClass($bundle);
         $configuration->setMigrationsNamespace(sprintf(
-            'Mindy\Bundle\%s\Migrations', $bundle->getName()
+            '%s\Migrations', $reflect->getNamespaceName()
         ));
 
         $dir = sprintf('%s/Migrations', $bundle->getPath());
