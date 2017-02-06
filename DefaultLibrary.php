@@ -17,7 +17,19 @@ class DefaultLibrary extends Library
      */
     public function getHelpers()
     {
-        return [];
+        return [
+            'is_array' => 'is_array',
+            'is_object' => 'is_object',
+            'is_string' => 'is_string',
+            'number_format' => 'number_format',
+            'nl2br' => 'nl2br',
+            'substr_count' => 'substr_count',
+            'dirname' => 'dirname',
+            'basename' => 'basename',
+            'time' => 'time',
+            'strtotime' => 'strtotime',
+            'strtr' => 'strtr',
+        ];
     }
 
     /**
