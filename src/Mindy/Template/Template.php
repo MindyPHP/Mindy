@@ -24,21 +24,6 @@ abstract class Template
      */
     public $helperClassName = '\Mindy\Template\Helper';
     /**
-     * @var array
-     */
-    public $internalHelpers = [
-        'is_array',
-        'is_object',
-        'is_string',
-        'number_format',
-        'nl2br',
-        'substr_count',
-        'dirname',
-        'basename',
-        'time',
-        'strtotime',
-    ];
-    /**
      * @var Loader
      */
     protected $loader;
@@ -216,12 +201,6 @@ abstract class Template
             return call_user_func_array($this->helpers[$name], $args);
         } elseif (($helper = [$this->helperClassName, $name]) && is_callable($helper)) {
             return call_user_func_array($helper, $args);
-        } elseif (function_exists($name) && in_array($name, $this->internalHelpers)) {
-            if (isset($args[0])) {
-                $args[0] = (string) $args[0];
-            }
-
-            return call_user_func_array($name, $args);
         }
 
         throw new RuntimeException(sprintf('undefined helper "%s" in %s line %d', $name, static::NAME, $this->getLineTrace()));
