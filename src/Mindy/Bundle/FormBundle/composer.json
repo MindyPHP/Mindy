@@ -1,35 +1,35 @@
 {
-  "name": "mindy/form-bundle",
-  "type": "symfony-bundle",
-  "description": "Mail bundle",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Falaleev Maxim",
-      "email": "max@studio107.ru"
+    "name": "mindy/form-bundle",
+    "type": "symfony-bundle",
+    "description": "Mail bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@studio107.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/form": "~3.0",
+        "mindy/template-bundle": "~3.0"
+    },
+    "suggest": {
+        "symfony/serializer": "Symfony Serializer Component",
+        "mindy/orm-bundle": "Mindy Orm Bundle"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Bundle\\FormBundle\\": ""
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.5-dev"
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.5.9",
-    "symfony/form": "~3.0",
-    "mindy/template-bundle": "~3.0"
-  },
-  "suggest": {
-    "symfony/serializer": "Symfony Serializer Component",
-    "mindy/orm-bundle": "Mindy Orm Bundle"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Mindy\\Bundle\\FormBundle\\": ""
-    }
-  },
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-alias": {
-      "dev-master": "3.6.4-dev"
-    }
-  }
 }
