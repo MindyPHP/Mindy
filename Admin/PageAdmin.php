@@ -20,7 +20,7 @@ class PageAdmin extends AbstractModelAdmin
 {
     public $treeLinkColumn = 'name';
 
-    public $columns = ['name', 'is_published', 'is_index'];
+    public $columns = ['name', 'url', 'is_published', 'published_at', 'is_index'];
 
     public $searchFields = ['name', 'id'];
 

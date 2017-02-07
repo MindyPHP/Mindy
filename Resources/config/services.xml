@@ -13,9 +13,15 @@
             <tag name="admin.admin" slug="page_page" />
         </service>
 
+        <service id="mindy.bundle.page.template_loader"
+                 public="false"
+                 class="Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoader">
+            <argument>%kernel.root_dir%</argument>
+            <argument type="service" id="template.finder.chain"/>
+        </service>
+
         <service id="mindy.bundle.page.form.page_form" class="Mindy\Bundle\PageBundle\Form\PageForm">
-            <argument type="service" id="template.finder.chain" />
-            <argument type="service" id="translator" />
+            <argument type="service" id="mindy.bundle.page.template_loader" />
             <tag name="form.type" />
         </service>
     </services>

@@ -2,6 +2,11 @@
 
 namespace Mindy\Bundle\PageBundle\Model;
 
+use Mindy\Bundle\MetaBundle\Meta\GenericGenerator;
+use Mindy\Bundle\MetaBundle\Meta\MetaGeneratorInterface;
+use Mindy\Bundle\MetaBundle\Meta\MetaSourceInterface;
+use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlInterface;
+use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlTrait;
 use Mindy\Orm\Fields\AutoSlugField;
 use Mindy\Orm\Fields\BooleanField;
 use Mindy\Orm\Fields\CharField;
@@ -27,8 +32,10 @@ use Mindy\Orm\TreeModel;
  * @method static \Mindy\Bundle\PageBundle\Model\PageManager objects($instance = null)
  * @method static \Mindy\Bundle\PageBundle\PageBundle getBundle()
  */
-class Page extends TreeModel
+class Page extends TreeModel implements AbsoluteUrlInterface, MetaSourceInterface
 {
+    use AbsoluteUrlTrait;
+
     public static function getFields()
     {
         return array_merge(parent::getFields(), [
@@ -94,10 +101,10 @@ class Page extends TreeModel
     public static function getSortingChoices()
     {
         return [
-            'published_at' => 'page.page.time_asc',
-            '-published_at' => 'page.page.time_desc',
-            'lft' => 'page.page.position_asc',
-            '-lft' => 'page.page.position_desc',
+            'published_at' => 'Дата публикации (По возрастанию)',
+            '-published_at' => 'Дата публикации (По убыванию)',
+            'lft' => 'Порядок (По возрастанию)',
+            '-lft' => 'Порядок (По убыванию)',
         ];
     }
 
@@ -114,7 +121,7 @@ class Page extends TreeModel
     public function findView() : string
     {
         if (empty($this->view) == false) {
-            return $this->view;
+            return sprintf("page/templates/%s", $this->view);
         }
 
         /** @var Page $parent */
@@ -126,8 +133,9 @@ class Page extends TreeModel
             ])
             ->limit(1)
             ->get();
+
         if ($parent) {
-            return $parent->view_children;
+            return sprintf("page/templates/%s", $parent->view_children);
         } elseif ($this->getIsLeaf()) {
             return 'page/view.html';
         } else {
@@ -154,7 +162,7 @@ class Page extends TreeModel
             ->limit(1)
             ->get();
 
-        return $model ? $model->view_children : null;
+        return $model ? sprintf("page/templates/%s", $model->view_children) : null;
     }
 
     /**
@@ -179,11 +187,27 @@ class Page extends TreeModel
         }
 
         if ($owner->is_published) {
-            if (empty($owner->published_at)) {
-                $owner->published_at = time();
-            } else {
-                $owner->published_at = strtotime($owner->published_at);
-            }
+            $owner->published_at = $this->getAdapter()->getDateTime($owner->published_at);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAbsoluteUrl()
+    {
+        return $this->generateUrl('page_view', ['url' => $this->url]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMetaGenerator()
+    {
+        return new GenericGenerator($this, [
+            'title' => 'name',
+            'keywords' => 'content',
+            'description' => 'content'
+        ]);
     }
 }
