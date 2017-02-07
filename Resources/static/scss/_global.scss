@@ -1,33 +1,11 @@
 $sidebar-width: 320px;
 
-p {
-  margin: 0;
-  padding: 0;
-}
-
 a {
   color: $base-color;
 }
 
-.heading {
-  h1, h2, h3, h4, h5, h6 {
-    margin: 0 0 20px 0;
-  }
-}
-
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -.5px;
-  @include antialias;
-
-  a {
-    font-weight: normal;
-  }
-}
-
-@for $i from 1 through 6 {
-  h#{$i} {
-    font-size: 1.5rem - ($i * 0.10rem);
-  }
+@include flexy-heading() {
+  margin-bottom: .5em;
 }
 
 @mixin inline-title {
