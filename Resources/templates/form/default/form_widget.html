@@ -1,0 +1,5 @@
+{%- if compound -%}
+    {{ form_block(form, 'form_widget_compound')|safe }}
+{%- else -%}
+    {{ form_block(form, 'form_widget_simple')|safe }}
+{%- endif -%}

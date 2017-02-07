@@ -1,0 +1,1 @@
+{%- for k, v in attr -%}{% if v === true %} {{ k }}="{{ v }}"{% elif v !== false %} {{ k }}="{{ v }}"{% endif %}{%- endfor -%}

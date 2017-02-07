@@ -1,0 +1,15 @@
+{% if required and null === placeholder and placeholder_in_choices === false and multiple === false and attr['size'] <= 1 %}
+    {% set required = false %}
+{% endif %}
+<select {{ form_block(form, 'widget_attributes', ['required' => required])|safe }}{% if multiple %} multiple="multiple"{% endif %}>
+    {% if null !== placeholder %}
+        <option value=""{% if required and value|is_empty and '0' !== value %} selected="selected"{% endif %}{% if '' != placeholder %}{{ false !== translation_domain ? translator.trans(placeholder, [], translation_domain) : placeholder }}{% endif %}></option>
+    {% endif %}
+    {% if preferred_choices|length > 0 %}
+        {{ form_block(form, 'choice_widget_options', ['choices' => preferred_choices])|safe }}
+        {% if choices|length > 0 and null !== separator %}
+            <option disabled="disabled">{{ separator }}</option>
+        {% endif %}
+    {% endif %}
+    {{ form_block(form, 'choice_widget_options', ['choices' => choices])|safe }}
+</select>

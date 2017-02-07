@@ -1,0 +1,11 @@
+{% if widget == 'country_choice' %}
+    <div class="b-input-group" {{ form_block(form, 'widget_container_attributes')|safe }}>
+        {{ form_widget(form.children.country)|safe }}
+        {{ form_widget(form.children.number)|safe }}
+    </div>
+{% else -%}
+    <div class="b-input-group">
+        <div class="b-input-helper">+7</div>
+        {{ form_block(form, 'form_widget_simple')|safe }}
+    </div>
+{%- endif %}
