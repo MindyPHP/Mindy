@@ -23,7 +23,7 @@
     "checkboxes.js": "^1.0.7",
     "easy-storage": "^1.0.4",
     "expose-loader": "^0.7.1",
-    "flexy-framework": "^1.0.2",
+    "flexy-framework": "^3.0.6",
     "globule": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",

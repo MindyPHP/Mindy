@@ -10,6 +10,7 @@
 
 namespace Mindy\Bundle\MetaBundle\Form;
 
+use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\MetaBundle\Model\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -72,9 +73,7 @@ class MetaFormType extends AbstractType
 
         if (!$options['inline']) {
             $builder
-                ->add('submit', SubmitType::class, [
-                    'label' => 'Сохранить',
-                ]);
+                ->add('buttons', ButtonsType::class);
         }
     }
 

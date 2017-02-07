@@ -1,0 +1,9 @@
+<div class="b-group">
+    <div class="b-input-group">
+        {{ form_widget(form.children.save, ['attr' => ['class' =>'b-button_primary']])|safe }}
+    </div>
+    <div class="b-input-group">
+        {{ form_widget(form.children.save_and_return, ['attr' => ['class' => 'b-button_gray']])|safe }}
+        {{ form_widget(form.children.save_and_create, ['attr' => ['class' => 'b-button_gray']])|safe }}
+    </div>
+</div>

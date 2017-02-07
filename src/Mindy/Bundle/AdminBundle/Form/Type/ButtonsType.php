@@ -22,15 +22,12 @@ class ButtonsType extends AbstractType
         $builder
             ->add('save', SubmitType::class, [
                 'label' => 'Сохранить',
-                'attr' => ['class' => 'b-button'],
             ])
             ->add('save_and_return', SubmitType::class, [
                 'label' => 'Сохранить и вернуться',
-                'attr' => ['class' => 'b-button'],
             ])
             ->add('save_and_create', SubmitType::class, [
                 'label' => 'Сохранить и создать',
-                'attr' => ['class' => 'b-button'],
             ]);
     }
 
