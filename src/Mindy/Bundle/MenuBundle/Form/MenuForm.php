@@ -27,7 +27,7 @@ class MenuForm extends AbstractType
         $builder
             ->add('parent', ChoiceType::class, [
                 'required' => false,
-                'choices' => Menu::objects()->all(),
+                'choices' => Menu::objects()->order(['root', 'lft'])->all(),
                 'choice_label' => function ($menu) {
                     return sprintf("%s %s", str_repeat('-', $menu->level - 1), $menu);
                 },
