@@ -3,27 +3,27 @@
 {% block title %}{{ t('admin.action.info') }} {{ model }}{% endblock %}
 
 {% macro buttons %}
-    <div class="b-container">
-        <div class="b-group">
+    <div class="b-group">
+        <div class="b-input-group">
             <a href="{{ admin.getAdminUrl('print') }}?pk={{ model.pk }}" target="_blank"
-               class="window-open b-button">
-                <i class="icon print"></i> {{ t('admin.print') }}
+               class="window-open b-button b-button_icon">
+                <i class="icon print"></i>
             </a>
             {% if method_exists(model, 'getAbsoluteUrl') %}
                 <a href="{{ model.getAbsoluteUrl() }}" target="_blank"
                    class="b-button">
-                    {{ t('admin.open_at_site') }}
+                    Открыть на сайте
                 </a>
             {% endif %}
         </div>
 
-        <div class="b-group">
+        <div class="b-input-group b-input-group_right">
             <a href="{{ admin.getAdminUrl('update', ['pk' => model.pk]) }}"
                class="b-button">
-                {{ t('admin.action.update') }}
+                Изменить
             </a>
             <a href="{{ admin.getAdminUrl('delete', ['pk' => model.pk]) }}"
-               class="b-button">
+               class="b-button b-button_icon">
                 <i class="icon trash"></i>
             </a>
         </div>
@@ -31,13 +31,13 @@
 {% endmacro %}
 
 {% block content %}
-    <div class="b-content">
-        <h1 class="b-title">{{ t('admin.action.info') }} {{ model }}</h1>
+<div class="b-content">
+    <h1 class="b-title">{{ t('admin.action.info') }} {{ model }}</h1>
 
-        {{ @buttons }}
+    {{ @buttons }}
 
-        {% include admin.findTemplate("_info_table.html") %}
+    {% include admin.findTemplate("_info_table.html") %}
 
-        {{ @buttons }}
-    </div>
+    {{ @buttons }}
+</div>
 {% endblock %}

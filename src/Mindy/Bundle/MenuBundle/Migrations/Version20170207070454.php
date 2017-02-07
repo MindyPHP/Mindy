@@ -19,8 +19,8 @@ class Version20170207070454 extends AbstractMigration
         $table = $schema->createTable(Menu::tableName());
         $table->addColumn('id', 'integer', ['unsigned' => true, 'autoincrement' => true]);
         $table->addColumn('name', 'string', ['length' => 255]);
-        $table->addColumn('slug', 'string', ['length' => 255]);
-        $table->addColumn('url', 'string', ['length' => 255]);
+        $table->addColumn('slug', 'string', ['length' => 255, 'notnull' => false]);
+        $table->addColumn('url', 'string', ['length' => 255, 'notnull' => false]);
         $table->addColumn('lft', 'integer', ['length' => 11, 'unsigned' => true]);
         $table->addColumn('rgt', 'integer', ['length' => 11, 'unsigned' => true]);
         $table->addColumn('level', 'integer', ['length' => 11, 'unsigned' => true]);

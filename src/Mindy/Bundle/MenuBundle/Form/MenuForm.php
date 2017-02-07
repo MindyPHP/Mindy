@@ -13,6 +13,7 @@ namespace Mindy\Bundle\MenuBundle\Form;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\MenuBundle\Model\Menu;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +22,20 @@ class MenuForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $instance = $builder->getData();
+
         $builder
+            ->add('parent', ChoiceType::class, [
+                'required' => false,
+                'choices' => Menu::objects()->all(),
+                'choice_label' => function ($menu) {
+                    return sprintf("%s %s", str_repeat('-', $menu->level - 1), $menu);
+                },
+                'choice_value' => 'id',
+                'choice_attr' => function($menu) use ($instance) {
+                    return $menu->pk == $instance->pk ? ['disabled' => 'disabled'] : [];
+                },
+            ])
             ->add('name', TextType::class, [
                 'label' => 'Название'
             ])
