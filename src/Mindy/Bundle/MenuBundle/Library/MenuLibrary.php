@@ -4,26 +4,27 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
- *
- * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MenuBundle\Library;
 
 use Mindy\Bundle\MenuBundle\Model\Menu;
 use Mindy\Template\Library;
-use Mindy\Template\Renderer;
+use Mindy\Template\RendererInterface;
 
 class MenuLibrary extends Library
 {
+    /**
+     * @var RendererInterface
+     */
     protected $template;
 
     /**
      * MenuLibrary constructor.
      *
-     * @param Renderer $template
+     * @param RendererInterface $template
      */
-    public function __construct(Renderer $template)
+    public function __construct(RendererInterface $template)
     {
         $this->template = $template;
     }
@@ -34,15 +35,11 @@ class MenuLibrary extends Library
     public function getHelpers()
     {
         return [
-            'get_menu' => function ($slug, $template = 'menu/menu.html') {
-                $menu = Menu::objects()->get(['slug' => $slug]);
-                if ($menu === null) {
-                    return '';
-                }
-
-                return $this->template->render($template, [
-                    'items' => $menu->objects()->descendants()->asTree()->all(),
-                ]);
+            'render_menu' => function ($slug, $template = 'menu/menu.html') {
+                return $this->renderMenu($slug, $template);
+            },
+            'get_menu' => function ($slug) {
+                return $this->getMenu($slug);
             },
         ];
     }
@@ -53,5 +50,42 @@ class MenuLibrary extends Library
     public function getTags()
     {
         return [];
+    }
+
+    /**
+     * @param string $slug
+     * @return null
+     */
+    protected function getMenu($slug)
+    {
+        $menu = Menu::objects()->get(['slug' => $slug]);
+        if ($menu === null) {
+            return [];
+        }
+
+        return $menu
+            ->objects()
+            ->descendants()
+            ->asTree()
+            ->all();
+    }
+
+    /**
+     * @param string $slug
+     * @param string $template
+     *
+     * @return null|string
+     */
+    protected function renderMenu($slug, $template = 'menu/menu.html')
+    {
+        $items = $this->getMenu($slug);
+
+        if (empty($items)) {
+            return null;
+        }
+
+        return $this->template->render($template, [
+            'items' => $items,
+        ]);
     }
 }

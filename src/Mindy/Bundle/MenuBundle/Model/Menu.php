@@ -29,10 +29,6 @@ class Menu extends TreeModel
             'slug' => [
                 'class' => CharField::class,
                 'null' => true,
-                'validators' => [
-                    new Alphanumeric(),
-                ],
-                'helpText' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.',
             ],
             'name' => [
                 'class' => CharField::class,
@@ -40,8 +36,6 @@ class Menu extends TreeModel
             'url' => [
                 'class' => CharField::class,
                 'null' => true,
-                'default' => '#',
-                'helpText' => 'Ссылка может быть абсолютной, относительной или любым js кодом',
             ],
         ]);
     }
