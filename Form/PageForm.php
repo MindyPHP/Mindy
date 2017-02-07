@@ -4,6 +4,8 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\PageBundle\Form;
@@ -11,10 +13,8 @@ namespace Mindy\Bundle\PageBundle\Form;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\FormBundle\Form\DataTransformer\DateTimeTransformer;
-use Mindy\Bundle\MetaBundle\Form\MetaFormType;
-use Mindy\Bundle\MetaBundle\Form\MetaInlineFormType;
-use Mindy\Bundle\MetaBundle\Meta\MetaSourceInterface;
-use Mindy\Bundle\MetaBundle\Model\Meta;
+use Mindy\Bundle\SeoBundle\EventListener\SeoEventSubscriber;
+use Mindy\Bundle\SeoBundle\Form\SeoInlineFormType;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoaderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -24,8 +24,6 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PageForm extends AbstractType
@@ -36,13 +34,20 @@ class PageForm extends AbstractType
     protected $templateLoader;
 
     /**
+     * @var SeoEventSubscriber
+     */
+    protected $eventSubscriber;
+
+    /**
      * PageForm constructor.
      *
      * @param PageTemplateLoaderInterface $templateLoader
+     * @param SeoEventSubscriber $eventSubscriber
      */
-    public function __construct(PageTemplateLoaderInterface $templateLoader)
+    public function __construct(PageTemplateLoaderInterface $templateLoader, SeoEventSubscriber $eventSubscriber)
     {
         $this->templateLoader = $templateLoader;
+        $this->eventSubscriber = $eventSubscriber;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -107,13 +112,12 @@ class PageForm extends AbstractType
                     return $instance->view_children == $item;
                 },
             ])
-            ->add('meta', MetaInlineFormType::class, [
-                'data' => new Meta,
-                'source' => $instance
-            ])
+            ->add('seo', SeoInlineFormType::class)
             ->add('buttons', ButtonsType::class);
 
         $builder->get('published_at')->addModelTransformer(new DateTimeTransformer());
+
+        $builder->addEventSubscriber($this->eventSubscriber);
     }
 
     public function configureOptions(OptionsResolver $resolver)

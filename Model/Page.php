@@ -2,9 +2,6 @@
 
 namespace Mindy\Bundle\PageBundle\Model;
 
-use Mindy\Bundle\MetaBundle\Meta\GenericGenerator;
-use Mindy\Bundle\MetaBundle\Meta\MetaGeneratorInterface;
-use Mindy\Bundle\MetaBundle\Meta\MetaSourceInterface;
 use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlInterface;
 use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlTrait;
 use Mindy\Orm\Fields\AutoSlugField;
@@ -32,7 +29,7 @@ use Mindy\Orm\TreeModel;
  * @method static \Mindy\Bundle\PageBundle\Model\PageManager objects($instance = null)
  * @method static \Mindy\Bundle\PageBundle\PageBundle getBundle()
  */
-class Page extends TreeModel implements AbsoluteUrlInterface, MetaSourceInterface
+class Page extends TreeModel implements AbsoluteUrlInterface
 {
     use AbsoluteUrlTrait;
 
@@ -197,17 +194,5 @@ class Page extends TreeModel implements AbsoluteUrlInterface, MetaSourceInterfac
     public function getAbsoluteUrl()
     {
         return $this->generateUrl('page_view', ['url' => $this->url]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetaGenerator()
-    {
-        return new GenericGenerator($this, [
-            'title' => 'name',
-            'keywords' => 'content',
-            'description' => 'content'
-        ]);
     }
 }

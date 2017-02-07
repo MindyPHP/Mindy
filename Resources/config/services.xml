@@ -20,8 +20,14 @@
             <argument type="service" id="template.finder.chain"/>
         </service>
 
+        <service id="mindy.bundle.page.meta_generator.page"
+                 class="Mindy\Bundle\PageBundle\Meta\PageGenerator">
+            <tag name="meta.generator"/>
+        </service>
+
         <service id="mindy.bundle.page.form.page_form" class="Mindy\Bundle\PageBundle\Form\PageForm">
             <argument type="service" id="mindy.bundle.page.template_loader" />
+            <argument type="service" id="mindy.bundle.seo.event_subscriber.seo" />
             <tag name="form.type" />
         </service>
     </services>
