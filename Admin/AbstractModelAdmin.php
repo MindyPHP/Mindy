@@ -192,16 +192,9 @@ abstract class AbstractModelAdmin extends AbstractAdmin
             $view->setTemplate($this->findTemplate('list.html'));
         }
 
-        // TODO
         if ($tree) {
-            if ($request->query->has('parent_id') && ($pk = $request->query->getInt('parent_id'))) {
-                $clone = clone $qs;
-                $parent = $clone->get(['pk' => $pk]);
+            if ($pk = $request->query->getInt('parent_id')) {
                 $qs->filter(['parent_id' => $pk]);
-
-                if (null === $parent) {
-                    throw new NotFoundHttpException();
-                }
             } else {
                 $qs->roots();
             }
