@@ -21,6 +21,7 @@ class DefaultLibrary extends Library
             'is_array' => 'is_array',
             'is_object' => 'is_object',
             'is_string' => 'is_string',
+            'is_numeric' => 'is_numeric',
             'number_format' => 'number_format',
             'nl2br' => 'nl2br',
             'substr_count' => 'substr_count',

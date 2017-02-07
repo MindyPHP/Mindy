@@ -23,7 +23,7 @@ class TemplatePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (false === $container->hasDefinition('template')) {
+        if (false === $container->hasDefinition('templating.engine.mindy')) {
             return;
         }
 
@@ -34,7 +34,7 @@ class TemplatePass implements CompilerPassInterface
             }
         }
 
-        $definition = $container->getDefinition('template');
+        $definition = $container->getDefinition('templating.engine.mindy');
         if ($definition) {
             foreach ($container->findTaggedServiceIds('template.library') as $id => $attributes) {
                 $definition->addMethodCall('addLibrary', [new Reference($id)]);
