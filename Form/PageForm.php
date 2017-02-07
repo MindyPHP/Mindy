@@ -3,6 +3,7 @@
 namespace Mindy\Bundle\PageBundle\Form;
 
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
+use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Finder\ChainTemplateFinder;
 use Symfony\Component\Finder\Finder;
@@ -32,6 +33,17 @@ class PageForm extends AbstractType
         $instance = $builder->getData();
 
         $builder
+            ->add('parent', ChoiceType::class, [
+                'required' => false,
+                'choices' => Page::objects()->order(['root', 'lft'])->all(),
+                'choice_label' => function ($page) {
+                    return sprintf("%s %s", str_repeat('-', $page->level - 1), $menu);
+                },
+                'choice_value' => 'id',
+                'choice_attr' => function($page) use ($instance) {
+                    return $page->pk == $instance->pk ? ['disabled' => 'disabled'] : [];
+                },
+            ])
             ->add('name', TextType::class, [
                 'label' => 'Название',
             ])
@@ -72,9 +84,7 @@ class PageForm extends AbstractType
                     return $instance->view_children == $item;
                 },
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Сохранить',
-            ]);
+            ->add('buttons', ButtonsType::class);
     }
 
     public function getTemplates()

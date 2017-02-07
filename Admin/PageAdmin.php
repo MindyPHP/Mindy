@@ -1,17 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: max
- * Date: 06/10/16
- * Time: 11:29.
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\PageBundle\Admin;
 
-use Mindy\Bundle\MindyBundle\Admin\AbstractModelAdmin;
-use Mindy\Bundle\PageBundle\Form\PageFormType;
+use Mindy\Bundle\AdminBundle\Admin\AbstractModelAdmin;
+use Mindy\Bundle\PageBundle\Form\PageForm;
 use Mindy\Bundle\PageBundle\Model\Page;
-use function Mindy\trans;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class PageAdmin.
@@ -35,14 +35,14 @@ class PageAdmin extends AbstractModelAdmin
     public function getActions()
     {
         return array_merge(parent::getActions(), [
-            'publish' => trans('page.admin.publish'),
-            'unpublish' => trans('page.admin.unpublish'),
+            'publish' => 'Опубликовать',
+            'unpublish' => 'Снять с публикации',
         ]);
     }
 
-    public function actionUnpublish()
+    public function actionUnpublish(Request $request)
     {
-        $models = $this->getRequest()->request->get('models', []);
+        $models = $request->get('models', []);
         if ($models) {
             Page::objects()->filter(['pk' => $_POST['models']])->update(['is_published' => false]);
         }
@@ -50,9 +50,9 @@ class PageAdmin extends AbstractModelAdmin
         return $this->redirect($this->getAdminUrl('list'));
     }
 
-    public function actionPublish()
+    public function actionPublish(Request $request)
     {
-        $models = $this->getRequest()->request->get('models', []);
+        $models = $request->get('models', []);
         if ($models) {
             Page::objects()->filter(['pk' => $_POST['models']])->update(['is_published' => true]);
         }
@@ -62,6 +62,6 @@ class PageAdmin extends AbstractModelAdmin
 
     public function getFormType()
     {
-        return PageFormType::class;
+        return PageForm::class;
     }
 }

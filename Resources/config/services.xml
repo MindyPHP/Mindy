@@ -9,6 +9,10 @@
             <tag name="template.library" />
         </service>
 
+        <service id="mindy.bundle.page.admin.page" class="Mindy\Bundle\PageBundle\Admin\PageAdmin">
+            <tag name="admin.admin" slug="page_page" />
+        </service>
+
         <service id="mindy.bundle.page.form.page_form" class="Mindy\Bundle\PageBundle\Form\PageForm">
             <argument type="service" id="template.finder.chain" />
             <argument type="service" id="translator" />
