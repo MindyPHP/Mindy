@@ -8,6 +8,12 @@ services:
         tags:
             - { name: form.type }
 
+    meta.meta.inline_form:
+        class: Mindy\Bundle\MetaBundle\Form\MetaInlineFormType
+        arguments: [ '@request_stack' ]
+        tags:
+            - { name: form.type }
+
     meta.template.meta.library:
         class: Mindy\Bundle\MetaBundle\Library\MetaLibrary
         arguments: [ '@request_stack', '@meta.meta_provider', '@template' ]
