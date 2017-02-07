@@ -1,0 +1,7 @@
+<div {{ form_block(form, 'widget_container_attributes')|safe }}>
+    {%- if not form.parent and errors|length > 0 -%}
+        {{ form.errors()|safe }}
+    {%- endif -%}
+    {{ form_block(form, 'dateinterval_rows')|safe }}
+    {{ form_rest(form)|safe }}
+</div>

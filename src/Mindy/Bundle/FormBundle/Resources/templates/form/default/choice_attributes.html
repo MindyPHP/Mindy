@@ -1,0 +1,1 @@
+{% if disabled %}disabled="disabled" {% endif %}{% for k, v in choice_attr %}{% if v === true %}{{ k }}="{{ v }}" {% elif v !== false %}{{ k }}="{{ v }}" {% endif %}{% endfor %}
