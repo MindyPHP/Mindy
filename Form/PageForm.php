@@ -13,8 +13,6 @@ namespace Mindy\Bundle\PageBundle\Form;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\FormBundle\Form\DataTransformer\DateTimeTransformer;
-use Mindy\Bundle\SeoBundle\EventListener\SeoEventSubscriber;
-use Mindy\Bundle\SeoBundle\Form\SeoInlineFormType;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoaderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -34,20 +32,13 @@ class PageForm extends AbstractType
     protected $templateLoader;
 
     /**
-     * @var SeoEventSubscriber
-     */
-    protected $eventSubscriber;
-
-    /**
      * PageForm constructor.
      *
      * @param PageTemplateLoaderInterface $templateLoader
-     * @param SeoEventSubscriber $eventSubscriber
      */
-    public function __construct(PageTemplateLoaderInterface $templateLoader, SeoEventSubscriber $eventSubscriber)
+    public function __construct(PageTemplateLoaderInterface $templateLoader)
     {
         $this->templateLoader = $templateLoader;
-        $this->eventSubscriber = $eventSubscriber;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -112,12 +103,9 @@ class PageForm extends AbstractType
                     return $instance->view_children == $item;
                 },
             ])
-            ->add('seo', SeoInlineFormType::class)
             ->add('buttons', ButtonsType::class);
 
         $builder->get('published_at')->addModelTransformer(new DateTimeTransformer());
-
-        $builder->addEventSubscriber($this->eventSubscriber);
     }
 
     public function configureOptions(OptionsResolver $resolver)
