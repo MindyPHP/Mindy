@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="robots" content="noindex, nofollow"/>
-    <title>{%- block title -%}{% endblock %} - {{ trans('admin.title') }} - {{ app.name }}</title>
+    <title>{%- block title -%}{% if title %}{{ title }} - {% endif %}{% endblock %}Панель администратора - Mindy</title>
 
     <link rel="stylesheet" href="/bundles/admin/css/admin.css"/>
     <script type='text/javascript' src="/bundles/admin/js/vendor.admin.js"></script>

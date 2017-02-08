@@ -6,4 +6,9 @@
         {{ form_widget(form.children.save_and_return, ['attr' => ['class' => 'b-button_gray']])|safe }}
         {{ form_widget(form.children.save_and_create, ['attr' => ['class' => 'b-button_gray']])|safe }}
     </div>
+    {% if link %}
+        <div class="b-input-group">
+            <a href="{{ link }}" target="_blank" class="b-button">Открыть на сайте</a>
+        </div>
+    {% endif %}
 </div>

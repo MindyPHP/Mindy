@@ -4,8 +4,6 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
- *
- * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\AdminBundle\Admin;
@@ -17,6 +15,7 @@ use Mindy\Bundle\AdminBundle\Admin\Handler\SortHandler;
 use Mindy\Bundle\AdminBundle\Form\DeleteConfirmForm;
 use Mindy\Bundle\AdminBundle\Form\FilterFormInterface;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
+use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlInterface;
 use Mindy\Orm\ModelInterface;
 use Mindy\Orm\TreeManager;
 use Mindy\Orm\TreeModel;
@@ -556,10 +555,27 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         ]);
     }
 
+    /**
+     * @return \Symfony\Component\HttpKernel\Bundle\BundleInterface|\Symfony\Component\HttpKernel\Bundle\BundleInterface[]
+     */
     protected function getBundle()
     {
         $name = call_user_func([$this->getModelClass(), 'getBundleName']);
 
         return $this->get('kernel')->getBundle($name);
+    }
+
+    /**
+     * @param ModelInterface $model
+     *
+     * @return null|string
+     */
+    public function getAbsoluteUrl(ModelInterface $model)
+    {
+        if ($model instanceof AbsoluteUrlInterface) {
+            return $model->getAbsoluteUrl();
+        }
+
+        return null;
     }
 }
