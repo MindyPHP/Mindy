@@ -2,7 +2,7 @@
     <div class="b-input-group">
         {% if admin.can('create') %}
             <a href="{{ admin.getAdminUrl('create') }}" class="b-button b-button_primary">
-                {{ t('admin.action.create') }}
+                Создать
             </a>
         {% endif %}
 
@@ -16,7 +16,7 @@
     {% if searchHandler %}
         <form action="" method="get" class="b-input-group">
             <input type="text" name="search"
-                   placeholder="{{ t('admin.search.placeholder') }}"
+                   placeholder="Поиск..."
                    class="b-input"
                    value="{{ searchHandler.getValue() }}"/>
             <button type="submit"
