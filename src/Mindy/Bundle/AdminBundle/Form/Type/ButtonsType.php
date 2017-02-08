@@ -10,9 +10,14 @@
 
 namespace Mindy\Bundle\AdminBundle\Form\Type;
 
+use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ButtonsType extends AbstractType
@@ -29,6 +34,14 @@ class ButtonsType extends AbstractType
             ->add('save_and_create', SubmitType::class, [
                 'label' => 'Сохранить и создать',
             ]);
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $instance = $form->getParent()->getData();
+        if ($instance->getIsNewRecord() === false && $instance instanceof AbsoluteUrlInterface) {
+            $view->vars['link'] = $instance->getAbsoluteUrl();
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
