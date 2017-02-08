@@ -32,6 +32,7 @@ class Version20170201172503 extends AbstractMigration
         $table->addColumn('keywords', 'string', ['length' => 60, 'notnull' => false]);
         $table->addColumn('canonical', 'string', ['length' => 60, 'notnull' => false]);
         $table->addColumn('description', 'string', ['length' => 160, 'notnull' => false]);
+        $table->addColumn('is_auto', 'smallint', ['length' => 1, 'default' => 1]);
         $table->setPrimaryKey(['id']);
         $table->addUniqueIndex(['url'], 'url_uniq');
     }
