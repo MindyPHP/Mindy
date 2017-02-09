@@ -8,32 +8,5 @@
         </ul>
     {% endif %}
 
-    <form action="" method="post" class="form--main">
-        <div class="b-form__row">
-            <div class="b-input">
-                <label class="b-input__label" for="username">{{ t('admin.username') }}:</label>
-                <input class="b-input__input" type="text" id="username" name="_username" value="{{ last_username }}"/>
-            </div>
-        </div>
-
-        <div class="b-form__row">
-            <div class="b-input">
-                <label class="b-input__label" for="password">{{ t('admin.password') }}:</label>
-                <input class="b-input__input" type="password" id="password" name="_password"/>
-            </div>
-        </div>
-
-        <div class="b-form__row">
-            <div class="b-checkbox">
-                <input type="checkbox" class="b-checkbox__checkbox" id="remember" name="_remember"/>
-                <label for="remember" class="b-checkbox__label">{{ t('admin.remember_me') }}</label>
-            </div>
-        </div>
-
-        <input type="hidden" name="_target_path" value="{{ url('admin_index') }}"/>
-
-        <div class="b-form__row">
-            <input type="submit" value="{{ t('admin.sign_in') }}" class="b-button"/>
-        </div>
-    </form>
+    {{ form_render(form)|safe }}
 {% endblock %}

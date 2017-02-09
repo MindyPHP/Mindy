@@ -1,4 +1,11 @@
 services:
+    mindy.bundle.admin.form.auth:
+        class: Mindy\Bundle\AdminBundle\Form\AuthForm
+        arguments:
+            - '@router'
+        tags:
+            - { name: form.type }
+
     admin.registry:
         class: Mindy\Bundle\AdminBundle\Admin\AdminRegistry
 

@@ -10,6 +10,7 @@
 
 namespace Mindy\Bundle\AdminBundle\Controller;
 
+use Mindy\Bundle\AdminBundle\Form\AuthForm;
 use Mindy\Bundle\MindyBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,8 +70,14 @@ class AdminController extends Controller
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        $form = $this->createForm(AuthForm::class, [], [
+            'method' => 'POST',
+            'action' => $this->generateUrl('admin_login')
+        ]);
+
         return $this->render('admin/_login.html', [
             'last_username' => $lastUsername,
+            'form' => $form->createView(),
             'error' => $error,
         ]);
     }

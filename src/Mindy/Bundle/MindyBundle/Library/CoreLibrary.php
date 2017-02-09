@@ -4,6 +4,8 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MindyBundle\Library;
@@ -11,6 +13,8 @@ namespace Mindy\Bundle\MindyBundle\Library;
 use Mindy\Template\Library;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 
 class CoreLibrary extends Library implements ContainerAwareInterface
@@ -47,8 +51,8 @@ class CoreLibrary extends Library implements ContainerAwareInterface
             'path' => function ($route, array $parameters = []) {
                 return $this->container->get('router')->generate($route, $parameters);
             },
-            'url' => function ($route, array $parameters = []) {
-                return $this->container->get('router')->generate($route, $parameters);
+            'url' => function ($route, array $parameters = [], $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
+                return $this->container->get('router')->generate($route, $parameters, $referenceType);
             },
             'rand' => function ($min, $max) {
                 return rand($min, $max);
