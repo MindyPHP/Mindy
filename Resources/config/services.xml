@@ -29,5 +29,10 @@
             <argument type="service" id="mindy.bundle.page.template_loader" />
             <tag name="form.type" />
         </service>
+
+        <service id="mindy.bundle.page.sitemap.page"
+                 class="Mindy\Bundle\PageBundle\Sitemap\PageSitemapProvider">
+            <tag name="sitemap.provider" />
+        </service>
     </services>
 </container>
