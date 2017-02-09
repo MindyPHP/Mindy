@@ -1,33 +1,39 @@
 <div class="b-pager">
     <ul class="b-pager__list">
         {% if pager.getPagesCount() > 1 %}
-
+            <li class="b-pager__item b-pager__item_prev">
+                {% if pager.hasPrevPage() %}
+                    <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage() - 1) }}">&larr;</a>
+                {% else %}
+                    <span class="b-pager__link b-pager__link_disabled">&larr;</span>
+                {% endif %}
+            </li>
 
             {% if pager.hasPrevPage() %}
                 {% for page in pager.iterPrevPage() %}
-                    <li>
-                        <a href="{{ pager.getUrl(page) }}">{{ page }}</a>
+                    <li class="b-pager__item">
+                        <a class="b-pager__link" href="{{ pager.getUrl(page) }}">{{ page }}</a>
                     </li>
                 {% endfor %}
             {% endif %}
 
-            <li>
-                <span class="current">{{ pager.getPage() }}</span>
+            <li class="b-pager__item b-pager__item_current">
+                <span class="b-pager__link b-pager__link_disabled">{{ pager.getPage() }}</span>
             </li>
 
             {% if pager.hasNextPage() %}
                 {% for page in pager.iterNextPage() %}
-                    <li>
-                        <a href="{{ pager.getUrl(page) }}">{{ page }}</a>
+                    <li class="b-pager__item">
+                        <a class="b-pager__link" href="{{ pager.getUrl(page) }}">{{ page }}</a>
                     </li>
                 {% endfor %}
             {% endif %}
 
-            <li class="next">
+            <li class="b-pager__item b-pager__item_next">
                 {% if pager.hasNextPage %}
-                    <a href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
+                    <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
                 {% else %}
-                    <span class="next">&rarr;</span>
+                    <span class="b-pager__link b-pager__link_disabled">&rarr;</span>
                 {% endif %}
             </li>
         {% endif %}
@@ -38,8 +44,8 @@
 
         <div class="b-pager__size">
             {% set pageSizes = pager.getPageSizes() %}
-            <div class="b-select-container">
-                <select name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
+            <div class="b-select">
+                <select class="b-select__select" name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
                     <option value=""></option>
                     {% for pageSize in pageSizes %}
                         <option value="{{ pager.urlPageSize(pageSize) }}" {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
