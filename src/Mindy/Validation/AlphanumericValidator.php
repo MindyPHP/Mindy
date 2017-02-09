@@ -17,7 +17,7 @@ class AlphanumericValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (!empty($value) && !preg_match('/^[a-zA-Z0-9]+$/', $value, $matches)) {
+        if (!empty($value) && !preg_match('/^[a-zA-Z0-9-_]+$/', $value, $matches)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('%string%', $value)
                 ->addViolation();

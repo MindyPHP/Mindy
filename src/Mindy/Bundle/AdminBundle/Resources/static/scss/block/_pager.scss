@@ -1,0 +1,53 @@
+.b-pager {
+  display: flex;
+  margin: 20px 0;
+  padding: 10px 0;
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1 0 auto;
+  }
+
+  &__link {
+    box-sizing: border-box;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-decoration: none;
+
+    &_disabled {
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      background-color: map-get($flexy-theme-colors, primary);
+      color: #fff;
+    }
+  }
+
+  &__item {
+    margin: 0 5px;
+
+    &_next {
+
+    }
+
+    &_prev {
+
+    }
+
+    &_current {
+
+    }
+  }
+
+  &__total {
+    color: #aaa;
+  }
+
+  &__size {
+    padding-left: 15px;
+  }
+}
