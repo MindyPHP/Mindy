@@ -27,7 +27,7 @@ class Version20170207110538 extends AbstractMigration
         $table->addColumn('root', 'integer', ['length' => 11, 'unsigned' => true, 'notnull' => false]);
         $table->addColumn('content', 'text', ['notnull' => false]);
         $table->addColumn('content_short', 'text', ['notnull' => false]);
-        $table->addColumn('file', 'string', ['length' => 255, 'notnull' => false]);
+        $table->addColumn('image', 'string', ['length' => 255, 'notnull' => false]);
         $table->addColumn('view', 'string', ['length' => 255, 'notnull' => false]);
         $table->addColumn('view_children', 'string', ['length' => 255, 'notnull' => false]);
         $table->addColumn('sorting', 'string', ['length' => 255, 'notnull' => false]);

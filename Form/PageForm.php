@@ -4,8 +4,6 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
- *
- * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\PageBundle\Form;
@@ -13,6 +11,9 @@ namespace Mindy\Bundle\PageBundle\Form;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\FormBundle\Form\DataTransformer\DateTimeTransformer;
+use Mindy\Bundle\FormBundle\Form\Type\SlugType;
+use Mindy\Bundle\FormBundle\Form\Type\FileType;
+use Mindy\Bundle\FormBundle\Validator\Image;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoaderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -23,6 +24,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class PageForm extends AbstractType
 {
@@ -60,7 +62,7 @@ class PageForm extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'Название',
             ])
-            ->add('url', TextType::class, [
+            ->add('url', SlugType::class, [
                 'label' => 'Слаг',
                 'required' => false,
             ])
@@ -76,6 +78,22 @@ class PageForm extends AbstractType
                 'label' => 'Дата публикации',
                 'required' => false,
                 'widget' => 'single_text',
+            ])
+            ->add('image', FileType::class, [
+                'label' => 'Изображение',
+                'required' => false,
+                'constraints' => [
+                    new Image([
+                        'maxHeight' => 1280,
+                        'maxWidth' => 1920,
+                        'minHeight' => 100,
+                        'minWidth' => 100,
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                        ]
+                    ])
+                ]
             ])
             ->add('is_index', CheckboxType::class, [
                 'label' => 'Главная страница',

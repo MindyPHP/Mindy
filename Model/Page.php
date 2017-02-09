@@ -24,6 +24,7 @@ use Mindy\Orm\TreeModel;
  * @property bool|int $is_index
  * @property string $view
  * @property string $url
+ * @property string|null $image
  * @property string $sorting
  *
  * @method static \Mindy\Bundle\PageBundle\Model\PageManager objects($instance = null)
@@ -53,7 +54,7 @@ class Page extends TreeModel implements AbsoluteUrlInterface
                 'class' => TextField::class,
                 'null' => true,
             ],
-            'file' => [
+            'image' => [
                 'class' => ImageField::class,
                 'null' => true,
             ],
