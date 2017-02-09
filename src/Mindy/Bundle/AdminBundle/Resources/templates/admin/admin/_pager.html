@@ -44,16 +44,14 @@
 
         <div class="b-pager__size">
             {% set pageSizes = pager.getPageSizes() %}
-            <div class="b-select">
-                <select class="b-select__select" name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
-                    <option value=""></option>
-                    {% for pageSize in pageSizes %}
-                        <option value="{{ pager.urlPageSize(pageSize) }}" {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
-                            {{ pageSize }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+            <select class="b-input b-input_select" name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
+                <option value=""></option>
+                {% for pageSize in pageSizes %}
+                    <option value="{{ pager.urlPageSize(pageSize) }}" {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
+                        {{ pageSize }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
     {% endif %}
 </div>
