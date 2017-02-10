@@ -43,13 +43,16 @@ class AuthForm extends AbstractType
                 'data' => $this->router->generate('admin_index'),
             ])
             ->add('_username', TextType::class, [
-                'label' => 'Номер телефона',
+                'label' => 'Имя пользователя',
+                'required' => true,
             ])
             ->add('_password', PasswordType::class, [
                 'label' => 'Пароль',
+                'required' => true,
             ])
             ->add('_remember', CheckboxType::class, [
                 'label' => 'Запомнить',
+                'required' => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Вход',
