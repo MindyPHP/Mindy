@@ -11,7 +11,9 @@ namespace Mindy\Bundle\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType as BaseFileType;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class FileType extends AbstractType
 {
@@ -23,11 +25,16 @@ class FileType extends AbstractType
         return 'mfile';
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $resolver->setDefaults([
-            'empty_data' => '____ignore____'
-        ]);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($builder) {
+            if ($event->getData() === null) {
+                $event->getForm()->getParent()->remove($builder->getName());
+            }
+        });
     }
 
     public function getParent()
