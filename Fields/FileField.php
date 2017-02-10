@@ -26,8 +26,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class FileField extends CharField
 {
-    const IGNORE = '____ignore____';
-
     /**
      * Upload to template, you can use these variables:
      * %Y - Current year (4 digits)
@@ -164,6 +162,10 @@ class FileField extends CharField
 
     public function setValue($value)
     {
+        if (is_string($value) && $value === self::IGNORE) {
+            return;
+        }
+
         if (
             is_array($value) &&
             isset($value['error']) &&
@@ -233,14 +235,6 @@ class FileField extends CharField
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if ($value === self::IGNORE) {
-            // Symfony form fix
-            $oldValue = $this->getModel()->getOldAttribute($this->getAttributeName());
-            if (!empty($oldValue)) {
-                return $oldValue;
-            }
-        }
-
         if ($value instanceof UploadedFile) {
             $value = $this->saveUploadedFile($value);
         } elseif ($value instanceof File) {
