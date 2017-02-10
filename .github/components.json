@@ -28,8 +28,8 @@
     "git": "git@github.com:MindyPHP/Sitemap.git"
   },
   {
-    "path": "src/Mindy/Bundle/MetaBundle",
-    "git": "git@github.com:MindyPHP/MetaBundle.git"
+    "path": "src/Mindy/Bundle/SeoBundle",
+    "git": "git@github.com:MindyPHP/SeoBundle.git"
   },
   {
     "path": "src/Mindy/Bundle/MindyBundle",
