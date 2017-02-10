@@ -13,7 +13,6 @@ use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\FormBundle\Form\DataTransformer\DateTimeTransformer;
 use Mindy\Bundle\FormBundle\Form\Type\SlugType;
 use Mindy\Bundle\FormBundle\Form\Type\FileType;
-use Mindy\Bundle\FormBundle\Validator\Image;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoaderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -83,7 +82,7 @@ class PageForm extends AbstractType
                 'label' => 'Изображение',
                 'required' => false,
                 'constraints' => [
-                    new Image([
+                    new Assert\Image([
                         'maxHeight' => 1280,
                         'maxWidth' => 1920,
                         'minHeight' => 100,
