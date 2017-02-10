@@ -11,13 +11,15 @@
 namespace Mindy\Bundle\FileBundle\Controller;
 
 use League\Flysystem\FilesystemInterface;
-use Mindy\Bundle\FileBundle\Components\UploadHandler;
 use Mindy\Bundle\MindyBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileController extends Controller
 {
+    const UPLOAD_NAME = 'files';
+
     /**
      * @return FilesystemInterface
      */
@@ -47,21 +49,21 @@ class FileController extends Controller
 
         if ($fs->has($dirPath)) {
             return $this->json([
-                    'status' => false,
-                    'message' => $this->get('translator')->trans('file.directory.exist_error'),
-                ]);
+                'status' => false,
+                'message' => $this->get('translator')->trans('file.directory.exist_error'),
+            ]);
         }
         if ($fs->createDir($dirPath)) {
             return $this->json([
-                        'status' => true,
-                        'message' => $this->get('translator')->trans('file.directory.create_success'),
-                    ]);
+                'status' => true,
+                'message' => $this->get('translator')->trans('file.directory.create_success'),
+            ]);
         }
 
         return $this->json([
-                        'status' => true,
-                        'message' => $this->get('translator')->trans('file.directory.create_error'),
-                    ]);
+            'status' => true,
+            'message' => $this->get('translator')->trans('file.directory.create_error'),
+        ]);
     }
 
     public function listAction(Request $request)
@@ -71,7 +73,7 @@ class FileController extends Controller
         $objects = [];
         foreach ($this->getFilesystem()->listContents($path) as $object) {
             $objects[] = [
-                'path' => '/'.$object['path'],
+                'path' => '/' . $object['path'],
                 'name' => basename($object['path']),
                 'date' => isset($object['timestamp']) ? date(DATE_W3C, $object['timestamp']) : null,
                 'is_dir' => $object['type'] === 'dir',
@@ -90,7 +92,7 @@ class FileController extends Controller
         foreach (array_filter(explode('/', $path)) as $part) {
             $prev[] = $part;
 
-            $query = ['path' => '/'.implode('/', $prev)];
+            $query = ['path' => '/' . implode('/', $prev)];
             $url = $this->generateUrl('file_list', $query);
             $breadcrumbs[] = ['url' => $url, 'name' => $part];
         }
@@ -121,14 +123,18 @@ class FileController extends Controller
 
     public function uploadAction(Request $request)
     {
-        $media = $this->getParameter('storage.media_dir');
         $path = $request->query->get('path', '/');
 
-        $handler = new UploadHandler([
-            'image_versions' => [],
-            'upload_dir' => $media.DIRECTORY_SEPARATOR.trim($path, '/').DIRECTORY_SEPARATOR,
-        ]);
-
+        $filesystem = $this->getFilesystem();
+        $files = $request->files->get(self::UPLOAD_NAME);
+        foreach ($files as $file) {
+            /** @var UploadedFile $file */
+            if ($file->isValid()) {
+                $stream = fopen($file->getRealPath(), 'r+');
+                $filesystem->writeStream(sprintf('%s/%s', $path, $file->getClientOriginalName()), $stream);
+                fclose($stream);
+            }
+        }
         return new Response('');
     }
 }
