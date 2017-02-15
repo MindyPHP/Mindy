@@ -39,7 +39,7 @@ class ImageLibrary extends Library
      * @param FilesystemInterface $filesystem
      * @param CacheManager $cacheManager
      */
-    public function __construct(FilesystemInterface $filesystem, CacheManager $cacheManager)
+    public function __construct(FilesystemInterface $filesystem, CacheManager $cacheManager = null)
     {
         $this->filesystem = $filesystem;
         $this->cacheManager = $cacheManager;
@@ -65,6 +65,9 @@ class ImageLibrary extends Library
                 return $newPath;
             },
             'imagine_filter' => function ($path, $filter, array $runtimeConfig = [], $resolver = null) {
+                if (null === $this->cacheManager) {
+                    throw new \RuntimeException('Missing CacheManager');
+                }
                 return $this->cacheManager->getBrowserPath($path, $filter, $runtimeConfig, $resolver);
             },
         ];
