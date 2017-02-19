@@ -8,7 +8,7 @@
  * Author: Maxim Falaleev <max@studio107.ru>
  */
 
-namespace Mindy\Bundle\MindyBundle\DependencyInjection;
+namespace Mindy\Bundle\AdminBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
