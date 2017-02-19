@@ -14,7 +14,7 @@
                  alias="mail">
             <argument type="service" id="mailer" />
             <argument type="service" id="template.finder.chain" />
-            <argument type="service" id="template.engine.mindy" />
+            <argument type="service" id="templating.engine.mindy" />
             <argument>%mindy.mail.default_from%</argument>
         </service>
     </services>
