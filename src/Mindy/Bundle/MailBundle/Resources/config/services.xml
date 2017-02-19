@@ -10,8 +10,7 @@
 
     <services>
         <service id="mindy.bundle.mail.helper.mail"
-                 class="Mindy\Bundle\MailBundle\Helper\Mail"
-                 alias="mail">
+                 class="Mindy\Bundle\MailBundle\Helper\Mail">
             <argument type="service" id="mailer" />
             <argument type="service" id="template.finder.chain" />
             <argument type="service" id="templating.engine.mindy" />
