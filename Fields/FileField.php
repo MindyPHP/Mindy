@@ -85,9 +85,20 @@ class FileField extends CharField
     protected function getDefaultNameHasher()
     {
         return function ($filePath) {
-            $meta = $this->getFilesystem()->getMetadata($filePath);
+            $uploadTo = $this->getUploadTo();
+            $fs = $this->getFilesystem();
 
-            return md5($meta['filename']).'.'.$meta['extension'];
+            $filename = md5(mt_rand(1, 100000).time().pathinfo($filePath, PATHINFO_FILENAME));
+            $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+
+            $i = 0;
+            $name = sprintf('%s_%d.%s', $filename, $i, $ext);
+            while ($fs->has($uploadTo.'/'.$name)) {
+                ++$i;
+                $name = sprintf('%s_%d.%s', $filename, $i, $ext);
+            }
+
+            return $uploadTo.'/'.$name;
         };
     }
 
@@ -162,10 +173,6 @@ class FileField extends CharField
 
     public function setValue($value)
     {
-        if (is_string($value) && $value === self::IGNORE) {
-            return;
-        }
-
         if (
             is_array($value) &&
             isset($value['error']) &&
@@ -222,15 +229,15 @@ class FileField extends CharField
         $model = $this->getModel();
 
         return strtr($this->uploadTo, [
-                '%Y' => date('Y'),
-                '%m' => date('m'),
-                '%d' => date('d'),
-                '%H' => date('H'),
-                '%i' => date('i'),
-                '%s' => date('s'),
-                '%O' => $model->classNameShort(),
-                '%M' => $model->getBundleName(),
-            ]);
+            '%Y' => date('Y'),
+            '%m' => date('m'),
+            '%d' => date('d'),
+            '%H' => date('H'),
+            '%i' => date('i'),
+            '%s' => date('s'),
+            '%O' => $model->classNameShort(),
+            '%M' => $model->getBundleName(),
+        ]);
     }
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
@@ -260,33 +267,26 @@ class FileField extends CharField
 
     public function saveUploadedFile(UploadedFile $file)
     {
-        $path = $this->getUploadTo().DIRECTORY_SEPARATOR;
+        $contents = file_get_contents($file->getRealPath());
 
-        $fs = $this->getFilesystem();
-        if ($fs->has($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName())) {
-            $fs->delete($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName());
-        }
-        if (!$fs->write($path.DIRECTORY_SEPARATOR.$file->getClientOriginalName(), file_get_contents($file->getRealPath()))) {
+        $path = $this->getNameHasher()->__invoke($file->getRealPath());
+        if (!$this->getFilesystem()->write($path, $contents)) {
             throw new Exception('Failed to save file');
         }
 
-        return $path.DIRECTORY_SEPARATOR.$file->getClientOriginalName();
+        return $path;
     }
 
     public function saveFile(File $file)
     {
         $contents = file_get_contents($file->getRealPath());
-        $value = $this->getUploadTo().DIRECTORY_SEPARATOR.$file->getFilename();
-        $fs = $this->getFilesystem();
-        if ($fs->has($value)) {
-            $fs->delete($value);
-        }
 
-        if (!$fs->write($value, $contents)) {
+        $path = $this->getNameHasher()->__invoke($file->getRealPath());
+        if (!$this->getFilesystem()->write($path, $contents)) {
             throw new Exception('Failed to save file');
         }
 
-        return $value;
+        return $path;
     }
 
     public function setFilesystem(FilesystemInterface $filesystem)
