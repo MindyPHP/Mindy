@@ -42,32 +42,32 @@
             </ul>
 
             {% if objects|length %}
-                <table class="file-manager__table">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>{{ t('file.column.name') }}</th>
-                        <th align="right" class="file-manager__table-actions">{{ t('file.column.actions') }}</th>
+                <table class="b-table file-manager__table">
+                    <thead class="b-table__thead">
+                    <tr class="b-table__tr">
+                        <th class="b-table__th"></th>
+                        <th class="b-table__th">{{ t('file.column.name') }}</th>
+                        <th align="right" class="b-table__th file-manager__table-actions">{{ t('file.column.actions') }}</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="b-table__tbody">
                     {% for entry in objects %}
-                        <tr>
-                            <td class="file-manager__table-icon">
+                        <tr class="b-table__tr">
+                            <td class="b-table__td file-manager__table-icon">
                                 {% if entry.is_dir %}
                                     <i class="icon folder"></i>
                                 {% else %}
                                     <i class="icon file outline"></i>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="b-table__td">
                                 {% if entry.is_dir %}
                                     <a href="{{ url('file_list', ['path' => entry.path, 'wysiwyg' => wysiwyg]) }}">{{ entry.name }}</a>
                                 {% else %}
                                     <a href="{{ asset(entry.url, 'media') }}" target="_blank">{{ entry.name }}</a>
                                 {% endif %}
                             </td>
-                            <td align="right" class="file-manager__table-actions">
+                            <td align="right" class="b-table__td file-manager__table-actions">
                                 {% if not entry.is_dir %}
                                     <input type="text" value="{{ entry.url }}" class="file-manager__table-input" readonly>
                                     <a href="#"
