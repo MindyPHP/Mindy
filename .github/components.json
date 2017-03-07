@@ -12,6 +12,10 @@
     "git": "git@github.com:MindyPHP/FileBundle.git"
   },
   {
+    "path": "src/Mindy/Bundle/MenuBundle",
+    "git": "git@github.com:MindyPHP/MenuBundle.git"
+  },
+  {
     "path": "src/Mindy/Bundle/MailBundle",
     "git": "git@github.com:MindyPHP/MailBundle.git"
   },
