@@ -8,9 +8,7 @@
  * Author: Maxim Falaleev <max@studio107.ru>
  */
 
-namespace Mindy\OrmNestedSet\Tests;
-
-use Mindy\Orm\Tests\OrmDatabaseTestCase;
+namespace Mindy\Orm\Tests;
 
 abstract class TreeModelTest extends OrmDatabaseTestCase
 {

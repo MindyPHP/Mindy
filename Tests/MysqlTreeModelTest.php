@@ -8,7 +8,7 @@
  * Author: Maxim Falaleev <max@studio107.ru>
  */
 
-namespace Mindy\OrmNestedSet\Tests;
+namespace Mindy\Orm\Tests;
 
 class MysqlTreeModelTest extends TreeModelTest
 {

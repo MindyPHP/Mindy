@@ -8,7 +8,7 @@
  * Author: Maxim Falaleev <max@studio107.ru>
  */
 
-namespace Mindy\OrmNestedSet\Tests;
+namespace Mindy\Orm\Tests;
 
 use Mindy\Orm\Fields\CharField;
 use Mindy\Orm\TreeModel;

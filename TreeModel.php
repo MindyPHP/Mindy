@@ -12,7 +12,7 @@ namespace Mindy\Orm;
 
 use Exception;
 use Mindy\Orm\Fields\IntField;
-use Mindy\Orm\Fields\TreeForeignField;
+use Mindy\Orm\Fields\ForeignField;
 use Mindy\QueryBuilder\Expression;
 
 /**
@@ -33,25 +33,29 @@ abstract class TreeModel extends Model
     {
         return [
             'parent' => [
-                'class' => TreeForeignField::class,
+                'class' => ForeignField::class,
                 'modelClass' => get_called_class(),
                 'null' => true,
             ],
             'lft' => [
                 'class' => IntField::class,
                 'editable' => false,
+                'null' => true,
             ],
             'rgt' => [
                 'class' => IntField::class,
                 'editable' => false,
+                'null' => true,
             ],
             'level' => [
                 'class' => IntField::class,
                 'editable' => false,
+                'null' => true,
             ],
             'root' => [
                 'class' => IntField::class,
                 'editable' => false,
+                'null' => true,
             ],
         ];
     }
