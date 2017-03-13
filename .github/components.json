@@ -36,6 +36,10 @@
     "git": "git@github.com:MindyPHP/SentryBundle.git"
   },
   {
+    "path": "src/Mindy/Bundle/CKEditorBundle",
+    "git": "git@github.com:MindyPHP/CKEditorBundle.git"
+  },
+  {
     "path": "src/Mindy/Bundle/MindyBundle",
     "git": "git@github.com:MindyPHP/MindyBundle.git"
   },
