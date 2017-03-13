@@ -20,6 +20,7 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 ## Сообщество
 
 [![Gitter](https://badges.gitter.im/MindyPHP/Mindy.svg)](https://gitter.im/MindyPHP/Mindy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![Gitter](https://mc.yandex.ru/watch/43423684)
 
 ---
 
