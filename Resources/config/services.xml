@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="mindy.mail.default_from">user@example.com</parameter>
         <parameter key="mindy.mail.default_name">%mindy.mail.default_from%</parameter>
+        <parameter key="mindy.mail.default_subject_prefix">[MY_SUPER_SITE]</parameter>
     </parameters>
 
     <services>
@@ -21,6 +22,12 @@
                  class="Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSenderPlugin">
             <argument>%mindy.mail.default_from%</argument>
             <argument>%mindy.mail.default_name%</argument>
+            <tag name="swiftmailer.default.plugin"/>
+        </service>
+
+        <service id="mindy.bundle.mail.swift_mailer.plugin.default_prefix"
+                 class="Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSubjectPrefixPlugin">
+            <argument>%mindy.mail.default_subject_prefix%%</argument>
             <tag name="swiftmailer.default.plugin"/>
         </service>
     </services>
