@@ -84,18 +84,22 @@ class FileField extends CharField
      */
     protected function getDefaultNameHasher()
     {
-        return function ($filePath) {
+        return function ($filePath, $fileName = null) {
             $uploadTo = $this->getUploadTo();
             $fs = $this->getFilesystem();
 
-            $filename = md5(mt_rand(1, 100000).time().pathinfo($filePath, PATHINFO_FILENAME));
-            $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+            if (empty($fileName)) {
+                $fileName = pathinfo($filePath, PATHINFO_FILENAME);
+            }
+
+            $hash = md5(mt_rand(1, 100000).time().$fileName);
+            $ext = pathinfo($fileName, PATHINFO_EXTENSION);
 
             $i = 0;
-            $name = sprintf('%s_%d.%s', $filename, $i, $ext);
+            $name = sprintf('%s_%d.%s', $hash, $i, $ext);
             while ($fs->has($uploadTo.'/'.$name)) {
                 ++$i;
-                $name = sprintf('%s_%d.%s', $filename, $i, $ext);
+                $name = sprintf('%s_%d.%s', $hash, $i, $ext);
             }
 
             return $uploadTo.'/'.$name;
@@ -269,7 +273,7 @@ class FileField extends CharField
     {
         $contents = file_get_contents($file->getRealPath());
 
-        $path = $this->getNameHasher()->__invoke($file->getRealPath());
+        $path = $this->getNameHasher()->__invoke($file->getRealPath(), $file->getClientOriginalName());
         if (!$this->getFilesystem()->write($path, $contents)) {
             throw new Exception('Failed to save file');
         }
