@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Mindy\Bundle\SentryBundle\Test\EventListener;
+namespace Mindy\Bundle\SentryBundle\Tests\EventListener;
 
 use Mindy\Bundle\SentryBundle\DependencyInjection\SentryExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

@@ -10,8 +10,7 @@
 
 namespace Mindy\Bundle\SentryBundle\EventListener;
 
-use Sentry\SentryBundle;
-use Sentry\SentryBundle\SentrySymfonyClient;
+use Mindy\Bundle\SentryBundle\SentrySymfonyClient;
 use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -26,16 +25,24 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class ExceptionListener
 {
-    /** @var TokenStorageInterface */
+    /**
+     * @var TokenStorageInterface
+     */
     private $tokenStorage;
 
-    /** @var AuthorizationCheckerInterface */
+    /**
+     * @var AuthorizationCheckerInterface
+     */
     private $authorizationChecker;
 
-    /** @var \Raven_Client */
+    /**
+     * @var \Raven_Client
+     */
     protected $client;
 
-    /** @var string[] */
+    /**
+     * @var string[]
+     */
     protected $skipCapture;
 
     /**

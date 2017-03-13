@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Mindy\Bundle\SentryBundle\Test\DependencyInjection;
+namespace Mindy\Bundle\SentryBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\SentryBundle\DependencyInjection\SentryExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
