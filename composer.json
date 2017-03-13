@@ -11,7 +11,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mindy\\Bundle\\MenuBundle\\Tests\\": ""
+            "Mindy\\Bundle\\MenuBundle\\Tests\\": "./Tests/"
         }
     },
     "require": {
