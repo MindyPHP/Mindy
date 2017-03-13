@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="mindy.bundle.menu.admin.menu" class="Mindy\Bundle\MenuBundle\Admin\MenuAdmin">
+            <tag name="admin.admin" slug="menu_menu" />
+        </service>
+
+        <service id="mindy.bundle.menu.template_library.menu" public="false"
+                 class="Mindy\Bundle\MenuBundle\Library\MenuLibrary">
+            <argument type="service" id="templating.engine.mindy" />
+            <tag name="template.library" />
+        </service>
+    </services>
+</container>
