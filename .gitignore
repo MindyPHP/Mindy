@@ -5,3 +5,4 @@
 *.log
 phpunit.xml
 *.iml
+php-cs-fixer
