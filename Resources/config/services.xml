@@ -6,6 +6,7 @@
 
     <parameters>
         <parameter key="mindy.mail.default_from">user@example.com</parameter>
+        <parameter key="mindy.mail.default_name">%mindy.mail.default_from%</parameter>
     </parameters>
 
     <services>
@@ -14,7 +15,13 @@
             <argument type="service" id="mailer" />
             <argument type="service" id="template.finder.chain" />
             <argument type="service" id="templating.engine.mindy" />
+        </service>
+
+        <service id="mindy.bundle.mail.swift_mailer.plugin.default_from"
+                 class="Mindy\Bundle\MailBundle\SwiftMailer\Plugins\DefaultSenderPlugin">
             <argument>%mindy.mail.default_from%</argument>
+            <argument>%mindy.mail.default_name%</argument>
+            <tag name="swiftmailer.default.plugin"/>
         </service>
     </services>
 </container>

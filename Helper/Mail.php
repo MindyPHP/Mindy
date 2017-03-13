@@ -20,10 +20,6 @@ class Mail
      */
     protected $mailer;
     /**
-     * @var string
-     */
-    protected $defaultFrom;
-    /**
      * @var TemplateFinderInterface
      */
     protected $finder;
@@ -45,7 +41,6 @@ class Mail
         $this->mailer = $mailer;
         $this->finder = $finder;
         $this->template = $template;
-        $this->defaultFrom = $defaultFrom;
     }
 
     /**
@@ -64,7 +59,6 @@ class Mail
         $message = \Swift_Message::newInstance();
 
         $message->setSubject($subject);
-        $message->setFrom($this->defaultFrom);
         $message->setTo($to);
 
         if ($this->finder->find($template.'.html')) {
