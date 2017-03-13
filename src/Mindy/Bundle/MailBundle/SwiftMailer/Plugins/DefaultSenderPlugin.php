@@ -2,6 +2,7 @@
 
 namespace Mindy\Bundle\MailBundle\SwiftMailer\Plugins;
 
+use Swift_Events_SendEvent;
 use Swift_Events_SendListener;
 
 /*
