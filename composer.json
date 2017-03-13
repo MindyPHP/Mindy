@@ -20,9 +20,8 @@
     "require-dev": {
         "symfony/http-foundation": "~2.8|~3.0",
         "symfony/routing": "~2.8|~3.0",
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "~6.0"
     },
-    "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "3.6.8-dev"
