@@ -12,9 +12,8 @@ namespace Mindy\Orm\Fields\Tests;
 
 use Mindy\Orm\Fields\PositionField;
 use Mindy\Orm\ModelInterface;
-use PHPUnit\Framework\TestCase;
 
-class PositionFieldTest extends TestCase
+class PositionFieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testPositionField()
     {
