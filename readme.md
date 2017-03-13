@@ -32,3 +32,5 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 ---
 
 **Mindy legacy**: Оригинальный репозиторий перенесен в https://github.com/MindyPHP/MindyLegacy
+
+![yandex][https://mc.yandex.ru/watch/43423684]
