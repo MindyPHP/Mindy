@@ -32,6 +32,10 @@
     "git": "git@github.com:MindyPHP/SeoBundle.git"
   },
   {
+    "path": "src/Mindy/Bundle/SentryBundle",
+    "git": "git@github.com:MindyPHP/SentryBundle.git"
+  },
+  {
     "path": "src/Mindy/Bundle/MindyBundle",
     "git": "git@github.com:MindyPHP/MindyBundle.git"
   },
