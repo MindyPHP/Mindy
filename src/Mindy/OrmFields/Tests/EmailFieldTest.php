@@ -11,9 +11,8 @@
 namespace Mindy\Orm\Fields\Tests;
 
 use Mindy\Orm\Fields\EmailField;
-use PHPUnit\Framework\TestCase;
 
-class EmailFieldTest extends TestCase
+class EmailFieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testEmail()
     {

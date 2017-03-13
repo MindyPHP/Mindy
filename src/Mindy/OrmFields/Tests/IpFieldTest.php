@@ -11,9 +11,8 @@
 namespace Mindy\Orm\Fields\Tests;
 
 use Mindy\Orm\Fields\IpField;
-use PHPUnit\Framework\TestCase;
 
-class IpFieldTest extends TestCase
+class IpFieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testIpV4()
     {
