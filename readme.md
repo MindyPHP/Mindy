@@ -22,6 +22,13 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 [![Gitter](https://badges.gitter.im/MindyPHP/Mindy.svg)](https://gitter.im/MindyPHP/Mindy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![Gitter](https://mc.yandex.ru/watch/43423684)
 
+
+## Статус
+
+| Компонент     | Статус        |
+| ------------- |:-------------:|
+| OrmFields      | [![Build Status](https://travis-ci.org/MindyPHP/OrmFields.svg?branch=master)](https://travis-ci.org/MindyPHP/OrmFields) |
+
 ---
 
 **Mindy legacy**: Оригинальный репозиторий перенесен в https://github.com/MindyPHP/MindyLegacy
