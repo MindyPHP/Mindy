@@ -17,6 +17,10 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 
 Мы рады любому содействию проекту. Если вы нашли ошибку или у вас есть предложение, пожалуйста [сообщите о нем в issue](https://github.com/MindyPHP/Mindy/issues/new)
 
+## Сообщество
+
+[![Gitter](https://badges.gitter.im/MindyPHP/Mindy.svg)](https://gitter.im/MindyPHP/Mindy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ---
 
 **Mindy legacy**: Оригинальный репозиторий перенесен в https://github.com/MindyPHP/MindyLegacy

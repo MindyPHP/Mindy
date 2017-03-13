@@ -11,8 +11,9 @@
 namespace Mindy\Orm\Fields\Tests;
 
 use Mindy\Orm\Fields\JsonField;
+use PHPUnit\Framework\TestCase;
 
-class JsonFieldTest extends \PHPUnit_Framework_TestCase
+class JsonFieldTest extends TestCase
 {
     public function testEncodeDecode()
     {

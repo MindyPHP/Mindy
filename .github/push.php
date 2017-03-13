@@ -36,8 +36,8 @@ if (null !== $tag) {
     exec('git tag -a ' . $tag . ' -m "Version ' . $tag . '"');
 
     echo "> Pushing tag to main repository\n";
-    echo "git push origin --tags\n\n";
-    exec('git push origin --tags');
+    echo "git push origin refs/tags/" . $tag . "\n\n";
+    exec('git push origin refs/tags/' . $tag);
 
     echo "> Deleting tag\n";
     echo 'git tag -d ' . $tag . "\n\n";
@@ -68,8 +68,8 @@ foreach ($components as $component) {
         exec('git tag -a ' . $tag . ' -m "Version ' . $tag . '" ' . $temporaryBranch);
 
         echo "> Pushing tag to component repository\n";
-        echo 'git push ' . $component->git . " --tags\n\n";
-        exec('git push ' . $component->git . ' --tags');
+        echo 'git push ' . $component->git . " refs/tags/" . $tag . "\n\n";
+        exec('git push ' . $component->git . " refs/tags/" . $tag);
 
         echo "> Removing temporary branch '" . $temporaryBranch . "'\n";
         echo 'git branch -D ' . $temporaryBranch . "\n\n";
