@@ -1,11 +1,11 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of MenuBundle.
+ * (c) 2017 Maxim Falaleev
  *
- * Author: Maxim Falaleev <max@studio107.ru>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\MenuBundle\Form;
@@ -29,20 +29,20 @@ class MenuForm extends AbstractType
                 'required' => false,
                 'choices' => Menu::objects()->order(['root', 'lft'])->all(),
                 'choice_label' => function ($menu) {
-                    return sprintf("%s %s", str_repeat('-', $menu->level - 1), $menu);
+                    return sprintf('%s %s', str_repeat('-', $menu->level - 1), $menu);
                 },
                 'choice_value' => 'id',
-                'choice_attr' => function($menu) use ($instance) {
+                'choice_attr' => function ($menu) use ($instance) {
                     return $menu->pk == $instance->pk ? ['disabled' => 'disabled'] : [];
                 },
             ])
             ->add('name', TextType::class, [
-                'label' => 'Название'
+                'label' => 'Название',
             ])
             ->add('slug', TextType::class, [
                 'label' => 'Слаг',
                 'required' => false,
-                'help' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.'
+                'help' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.',
             ])
             ->add('url', TextType::class, [
                 'label' => 'Адрес',
