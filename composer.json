@@ -6,12 +6,20 @@
             "Mindy\\Bundle\\MenuBundle\\": ""
         },
         "exclude-from-classmap": [
-            "/Tests/"
+            "./Tests/"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Bundle\\MenuBundle\\Tests\\": ""
+        }
     },
     "require": {
         "php": ">=5.5.9",
-        "mindy/orm-bundle": "~3.0"
+        "mindy/orm-bundle": "~3.0",
+        "mindy/admin-bundle": "~3.0",
+        "mindy/orm-nested-set": "~3.0",
+        "mindy/form-bundle": "~3.0"
     },
     "authors": [
         {
@@ -25,5 +33,13 @@
         "branch-alias": {
             "dev-master": "3.6.8-dev"
         }
+    },
+    "require-dev": {
+        "symfony/dependency-injection": "~3.0",
+        "phpunit/phpunit": "~4.0",
+        "symfony/config": "~3.0",
+        "symfony/property-access": "~3.0",
+        "symfony/validator": "~3.0",
+        "mindy/validation": "~3.0"
     }
 }

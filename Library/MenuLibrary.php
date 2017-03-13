@@ -56,6 +56,8 @@ class MenuLibrary extends Library
 
     /**
      * @param string $slug
+     *
+     * @return array
      */
     protected function getMenu($slug)
     {

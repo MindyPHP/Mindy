@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Mindy\Bundle\MenuBundle\Form;
+namespace Mindy\Bundle\MenuBundle\Form\Admin;
 
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\MenuBundle\Model\Menu;
@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class MenuForm extends AbstractType
 {
@@ -38,15 +39,16 @@ class MenuForm extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'label' => 'Название',
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('slug', TextType::class, [
                 'label' => 'Слаг',
-                'required' => false,
                 'help' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.',
             ])
             ->add('url', TextType::class, [
                 'label' => 'Адрес',
-                'required' => false,
                 'help' => 'Ссылка может быть абсолютной, относительной или любым js кодом',
             ])
             ->add('buttons', ButtonsType::class);
