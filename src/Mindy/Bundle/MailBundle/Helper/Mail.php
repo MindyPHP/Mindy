@@ -4,8 +4,6 @@
  * (c) Studio107 <mail@studio107.ru> http://studio107.ru
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
- *
- * Author: Maxim Falaleev <max@studio107.ru>
  */
 
 namespace Mindy\Bundle\MailBundle\Helper;
@@ -31,12 +29,11 @@ class Mail
     /**
      * Mail constructor.
      *
-     * @param \Swift_Mailer           $mailer
+     * @param \Swift_Mailer $mailer
      * @param TemplateFinderInterface $finder
-     * @param Renderer                $template
-     * @param $defaultFrom
+     * @param Renderer $template
      */
-    public function __construct(\Swift_Mailer $mailer, TemplateFinderInterface $finder, Renderer $template, $defaultFrom)
+    public function __construct(\Swift_Mailer $mailer, TemplateFinderInterface $finder, Renderer $template)
     {
         $this->mailer = $mailer;
         $this->finder = $finder;
