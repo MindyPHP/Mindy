@@ -26,8 +26,7 @@ class JsonFieldTest extends \PHPUnit_Framework_TestCase
     public function testValidation()
     {
         $field = new JsonField();
-        $field->setValue(new class() {
-        });
+        $field->setValue(new \stdClass());
         $this->assertFalse($field->isValid());
     }
 }

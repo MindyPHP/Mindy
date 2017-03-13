@@ -20,7 +20,7 @@
     "require-dev": {
         "symfony/http-foundation": "~2.8|~3.0",
         "symfony/routing": "~2.8|~3.0",
-        "phpunit/phpunit": "~5.0"
+        "phpunit/phpunit": "~4.0"
     },
     "extra": {
         "branch-alias": {
