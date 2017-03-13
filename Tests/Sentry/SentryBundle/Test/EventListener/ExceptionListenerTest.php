@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of SentryBundle.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\SentryBundle\Test\EventListener;
 
-use Sentry\SentryBundle\DependencyInjection\SentryExtension;
+use Mindy\Bundle\SentryBundle\DependencyInjection\SentryExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
@@ -56,7 +64,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $containerBuilder->set('sentry.client', $this->mockSentryClient);
 
         $extension = new SentryExtension();
-        $extension->load(array(), $containerBuilder);
+        $extension->load([], $containerBuilder);
 
         $this->containerBuilder = $containerBuilder;
     }
@@ -66,7 +74,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $this->containerBuilder->compile();
         $listener = $this->containerBuilder->get('sentry.exception_listener');
 
-        $this->assertInstanceOf('Sentry\SentryBundle\EventListener\ExceptionListener', $listener);
+        $this->assertInstanceOf('Mindy\Bundle\SentryBundle\EventListener\ExceptionListener', $listener);
     }
 
     public function test_that_user_data_is_not_set_on_subrequest()
@@ -342,7 +350,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
     public function test_that_username_is_set_from_user_interface_if_token_present_and_user_set_object_with_to_string()
     {
         $mockUser = $this->getMockBuilder('stdClass')
-            ->setMethods(array('__toString'))
+            ->setMethods(['__toString'])
             ->getMock()
         ;
 
@@ -488,8 +496,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $mockEvent
             ->expects($this->once())
             ->method('getCommand')
-            ->willReturn($mockCommand)
-        ;
+            ->willReturn($mockCommand);
 
         $this
             ->mockSentryClient
@@ -497,14 +504,13 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
             ->method('captureException')
             ->with(
                 $this->identicalTo($reportableException),
-                $this->identicalTo(array(
-                    'tags' => array(
+                $this->identicalTo([
+                    'tags' => [
                         'command' => 'cmd name',
-                        'status_code' => 10
-                    )
-                ))
-            )
-        ;
+                        'status_code' => 10,
+                    ],
+                ])
+            );
 
         $this->containerBuilder->compile();
         $listener = $this->containerBuilder->get('sentry.exception_listener');
@@ -516,35 +522,30 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $replacementClient = $this
             ->getMockBuilder('Raven_Client')
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $reportableException = new \Exception();
 
         $mockEvent = $this
             ->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent')
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
 
         $mockEvent
             ->expects($this->once())
             ->method('getException')
-            ->willReturn($reportableException)
-        ;
+            ->willReturn($reportableException);
 
         $this
             ->mockSentryClient
             ->expects($this->never())
             ->method('captureException')
-            ->withAnyParameters()
-        ;
+            ->withAnyParameters();
 
         $replacementClient
             ->expects($this->once())
             ->method('captureException')
-            ->with($this->identicalTo($reportableException))
-        ;
+            ->with($this->identicalTo($reportableException));
 
         $this->containerBuilder->compile();
         $listener = $this->containerBuilder->get('sentry.exception_listener');

@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of SentryBundle.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\SentryBundle\Test\DependencyInjection;
 
-use Sentry\SentryBundle\DependencyInjection\SentryExtension;
+use Mindy\Bundle\SentryBundle\DependencyInjection\SentryExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ExtensionTest extends \PHPUnit_Framework_TestCase
@@ -21,11 +29,11 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_uses_app_path_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'app_path' => 'sentry/app/path',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             'sentry/app/path',
@@ -48,18 +56,18 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer();
 
         $this->assertSame(
-            'Sentry\SentryBundle\SentrySymfonyClient',
+            'Mindy\Bundle\SentryBundle\SentrySymfonyClient',
             $container->getParameter('sentry.client')
         );
     }
 
     public function test_that_it_uses_client_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'client' => 'clientClass',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             'clientClass',
@@ -79,11 +87,11 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_uses_environment_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'environment' => 'custom_env',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             'custom_env',
@@ -103,11 +111,11 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_uses_dsn_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'dsn' => 'custom_dsn',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             'custom_dsn',
@@ -117,13 +125,13 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_uses_options_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
-                'options' => array(
-                    'http_proxy' => 'http://user:password@host:port'
-                ),
-            ),
-        ));
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
+                'options' => [
+                    'http_proxy' => 'http://user:password@host:port',
+                ],
+            ],
+        ]);
 
         $options = $container->getParameter('sentry.options');
 
@@ -138,18 +146,18 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer();
 
         $this->assertSame(
-            'Sentry\SentryBundle\EventListener\ExceptionListener',
+            'Mindy\Bundle\SentryBundle\EventListener\ExceptionListener',
             $container->getParameter('sentry.exception_listener')
         );
     }
 
     public function test_that_it_uses_exception_listener_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'exception_listener' => 'exceptionListenerClass',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             'exceptionListenerClass',
@@ -162,26 +170,26 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer();
 
         $this->assertSame(
-            array(
+            [
                 'Symfony\Component\HttpKernel\Exception\HttpExceptionInterface',
-            ),
+            ],
             $container->getParameter('sentry.skip_capture')
         );
     }
 
     public function test_that_it_uses_skipped_capture_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
-                'skip_capture' => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
+                'skip_capture' => [
                     'classA',
                     'classB',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertSame(
-            array('classA', 'classB'),
+            ['classA', 'classB'],
             $container->getParameter('sentry.skip_capture')
         );
     }
@@ -198,11 +206,11 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_uses_release_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
                 'release' => '1.0',
-            ),
-        ));
+            ],
+        ]);
 
         $this->assertSame(
             '1.0',
@@ -215,24 +223,24 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainer();
 
         $this->assertSame(
-            array('kernel/root/..'),
+            ['kernel/root/..'],
             $container->getParameter('sentry.prefixes')
         );
     }
 
     public function test_that_it_uses_prefixes_value()
     {
-        $container = $this->getContainer(array(
-            static::CONFIG_ROOT => array(
-                'prefixes' => array(
+        $container = $this->getContainer([
+            static::CONFIG_ROOT => [
+                'prefixes' => [
                     'dirA',
                     'dirB',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
 
         $this->assertSame(
-            array('dirA', 'dirB'),
+            ['dirA', 'dirB'],
             $container->getParameter('sentry.prefixes')
         );
     }
@@ -240,35 +248,35 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
     public function test_that_it_has_sentry_client_service_and_it_defaults_to_symfony_client()
     {
         $client = $this->getContainer()->get('sentry.client');
-        $this->assertInstanceOf('Sentry\SentryBundle\SentrySymfonyClient', $client);
+        $this->assertInstanceOf('Mindy\Bundle\SentryBundle\SentrySymfonyClient', $client);
     }
 
     public function test_that_it_has_sentry_exception_listener_and_it_defaults_to_default_exception_listener()
     {
         $client = $this->getContainer()->get('sentry.exception_listener');
-        $this->assertInstanceOf('Sentry\SentryBundle\EventListener\ExceptionListener', $client);
+        $this->assertInstanceOf('Mindy\Bundle\SentryBundle\EventListener\ExceptionListener', $client);
     }
 
     public function test_that_it_has_proper_event_listener_tags_for_exception_listener()
     {
         $containerBuilder = new ContainerBuilder();
         $extension = new SentryExtension();
-        $extension->load(array(), $containerBuilder);
+        $extension->load([], $containerBuilder);
 
         $definition = $containerBuilder->getDefinition('sentry.exception_listener');
         $tags = $definition->getTag('kernel.event_listener');
 
         $this->assertSame(
-            array(
-                array('event' => 'kernel.request', 'method' => 'onKernelRequest'),
-                array('event' => 'kernel.exception', 'method' => 'onKernelException'),
-                array('event' => 'console.exception', 'method' => 'onConsoleException'),
-            ),
+            [
+                ['event' => 'kernel.request', 'method' => 'onKernelRequest'],
+                ['event' => 'kernel.exception', 'method' => 'onKernelException'],
+                ['event' => 'console.exception', 'method' => 'onConsoleException'],
+            ],
             $tags
         );
     }
 
-    private function getContainer(array $options = array())
+    private function getContainer(array $options = [])
     {
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->setParameter('kernel.root_dir', 'kernel/root');

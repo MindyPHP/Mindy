@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of SentryBundle.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\SentryBundle\Test;
 
-use Sentry\SentryBundle\SentryBundle;
-use Sentry\SentryBundle\SentrySymfonyClient;
+use Mindy\Bundle\SentryBundle\SentryBundle;
+use Mindy\Bundle\SentryBundle\SentrySymfonyClient;
 
 class SentrySymfonyClientTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,9 +27,9 @@ class SentrySymfonyClientTest extends \PHPUnit_Framework_TestCase
 
     public function test_that_it_forwards_options()
     {
-        $client = new SentrySymfonyClient('https://a:b@app.getsentry.com/project', array(
-            'name' => 'test'
-        ));
+        $client = new SentrySymfonyClient('https://a:b@app.getsentry.com/project', [
+            'name' => 'test',
+        ]);
 
         $data = $client->get_default_data();
 

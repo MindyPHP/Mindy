@@ -1,8 +1,16 @@
 <?php
 
+/*
+ * This file is part of SentryBundle.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\SentryBundle\Test;
 
-use Sentry\SentryBundle\ErrorTypesParser;
+use Mindy\Bundle\SentryBundle\ErrorTypesParser;
 
 class ErrorTypesParserTest extends \PHPUnit_Framework_TestCase
 {

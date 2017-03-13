@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * This file is part of SentryBundle.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\SentryBundle\EventListener;
 
 use Sentry\SentryBundle;
 use Sentry\SentryBundle\SentrySymfonyClient;
+use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -11,32 +20,31 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\AuthenticatedVoter;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Console\Event\ConsoleExceptionEvent;
 
 /**
  * Class ExceptionListener
- * @package Sentry\SentryBundle\EventListener
  */
 class ExceptionListener
 {
-    /** @var  TokenStorageInterface */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
 
-    /** @var  AuthorizationCheckerInterface */
+    /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
 
     /** @var \Raven_Client */
     protected $client;
 
-    /** @var  string[] */
+    /** @var string[] */
     protected $skipCapture;
 
     /**
      * ExceptionListener constructor.
-     * @param TokenStorageInterface $tokenStorage
+     *
+     * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param \Raven_Client $client
-     * @param array $skipCapture
+     * @param \Raven_Client                 $client
+     * @param array                         $skipCapture
      */
     public function __construct(
         TokenStorageInterface $tokenStorage = null,
@@ -107,12 +115,12 @@ class ExceptionListener
         $command = $event->getCommand();
         $exception = $event->getException();
 
-        $data = array(
-            'tags' => array(
+        $data = [
+            'tags' => [
                 'command' => $command->getName(),
                 'status_code' => $event->getExitCode(),
-            ),
-        );
+            ],
+        ];
 
         $this->client->captureException($exception, $data);
     }
@@ -124,11 +132,13 @@ class ExceptionListener
     {
         if ($user instanceof UserInterface) {
             $this->client->set_user_data($user->getUsername());
+
             return;
         }
 
         if (is_string($user)) {
             $this->client->set_user_data($user);
+
             return;
         }
 
