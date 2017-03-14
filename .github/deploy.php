@@ -230,7 +230,7 @@ switch ($command) {
             'git subtree push --prefix={path} {name} master',
         ];
 
-        $i = 0;
+        $i = 1;
         foreach ($subtrees as $name => $subtree) {
             echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
 
@@ -260,7 +260,7 @@ switch ($command) {
             'git subtree pull --prefix={path} {name} master',
         ];
 
-        $i = 0;
+        $i = 1;
         foreach ($subtrees as $name => $subtree) {
             echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
 
