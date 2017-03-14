@@ -304,11 +304,48 @@ switch ($command) {
             if ($target == 'all' || $target == $name) {
                 $json = json_decode(file_get_contents($subtree['path']), true);
                 $json['extra']['branch-alias']['dev-master'] = sprintf("%s-dev", $tag);
-                $newJson = json_encode($json, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+                $newJson = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                 file_put_contents(sprintf("%s/composer.json", $subtree['path']), $newJson);
             }
         }
         echo "\n\nComposer.json updated in all subtrees. Work directory unclear. Please commit and push changes.\n\n";
+
+        return;
+    case 'composer_check_versions':
+        foreach ($subtrees as $name => $subtree) {
+            $url = sprintf("https://packagist.org/packages/mindy/%s.json", $name);
+            $json = json_decode(file_get_contents($url), true);
+            foreach ($json['package']['versions'] as $version => $params) {
+                if (strpos($version, 'dev') === 0) {
+                    continue;
+                }
+
+                echo sprintf("%s: %s\n", $name, $version);
+                break;
+            }
+        }
+        return;
+    case 'composer_push_update':
+        $username = 'max107';
+        $token = getenv('PACKAGIST_TOKEN');
+        if (empty($token)) {
+            echo 'Empty PACKAGIST_TOKEN environment variable' . PHP_EOL;
+            return;
+        }
+        $url = sprintf('https://packagist.org/api/update-package?username=%s&apiToken=%s', $username, $token);
+
+        foreach ($subtrees as $name => $subtree) {
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_POST => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+                CURLOPT_POSTFIELDS => json_encode(['repository' => ['url' => $subtree['remote_url']]])
+            ]);
+            $response = curl_exec($ch);
+
+            echo $name . ' ' . print_r($response, true) . PHP_EOL;
+        }
 
         return;
     case 'release':
@@ -468,7 +505,7 @@ TXT;
                     '{year}' => date('Y'),
                 ]);
                 file_put_contents(sprintf('%s/LICENSE', $subtree['path']), $licenseDoc);
-                file_put_contents(sprintf('%s/.php_cs', $subtree['path']), file_get_contents(__DIR__.'/.php_cs'));
+                file_put_contents(sprintf('%s/.php_cs', $subtree['path']), file_get_contents(__DIR__ . '/.php_cs'));
             }
         }
         return;
