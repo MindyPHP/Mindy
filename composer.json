@@ -9,10 +9,19 @@
             "/Tests/"
         ]
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Bundle\\FileBundle\\Tests\\": ""
+        }
+    },
     "require": {
         "php": ">=5.5.9",
-        "liip/imagine-bundle": "^1.7",
-        "oneup/flysystem-bundle": "^1.7"
+        "league/flysystem-aws-s3-v3": "~1.0",
+        "liip/imagine-bundle": "~1.0",
+        "oneup/flysystem-bundle": "~1.0",
+        "symfony/expression-language": "^3.2",
+        "mindy/mindy-bundle": "3.6.7.5",
+        "mindy/template-bundle": "3.6.7.5"
     },
     "authors": [
         {
@@ -26,5 +35,10 @@
         "branch-alias": {
             "dev-master": "3.6.8-dev"
         }
+    },
+    "require-dev": {
+        "symfony/dependency-injection": "~3.0",
+        "symfony/config": "~3.0",
+        "phpunit/phpunit": "~4.0"
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
- * Author: Maxim Falaleev <max@studio107.ru>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\FileBundle\Controller;
@@ -73,7 +73,7 @@ class FileController extends Controller
         $objects = [];
         foreach ($this->getFilesystem()->listContents($path) as $object) {
             $objects[] = [
-                'path' => '/' . $object['path'],
+                'path' => '/'.$object['path'],
                 'name' => basename($object['path']),
                 'date' => isset($object['timestamp']) ? date(DATE_W3C, $object['timestamp']) : null,
                 'is_dir' => $object['type'] === 'dir',
@@ -92,7 +92,7 @@ class FileController extends Controller
         foreach (array_filter(explode('/', $path)) as $part) {
             $prev[] = $part;
 
-            $query = ['path' => '/' . implode('/', $prev)];
+            $query = ['path' => '/'.implode('/', $prev)];
             $url = $this->generateUrl('file_list', $query);
             $breadcrumbs[] = ['url' => $url, 'name' => $part];
         }
@@ -135,6 +135,7 @@ class FileController extends Controller
                 fclose($stream);
             }
         }
+
         return new Response('');
     }
 }
