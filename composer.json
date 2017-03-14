@@ -52,18 +52,18 @@
         "php": ">=5.5.9"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "~4.0",
         "symfony/config": "~3.0",
         "symfony/dependency-injection": "~3.0",
         "symfony/framework-bundle": "~3.0",
         "symfony/routing": "~3.0",
         "symfony/http-kernel": "~3.0",
-        "symfony/expression-language": "^3.2",
-        "doctrine/dbal": "^2.5",
-        "symfony/validator": "^3.2",
-        "cocur/slugify": "^2.3",
-        "league/flysystem": "^1.0",
-        "imagine/imagine": "^0.6.3"
+        "symfony/expression-language": "~3.0",
+        "doctrine/dbal": "~2.0",
+        "symfony/validator": "~3.0",
+        "cocur/slugify": "~2.0",
+        "league/flysystem": "~1.0",
+        "imagine/imagine": "~0.6"
     },
     "minimum-stability": "dev",
     "extra": {
