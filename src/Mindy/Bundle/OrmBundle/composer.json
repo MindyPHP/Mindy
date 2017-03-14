@@ -1,0 +1,48 @@
+{
+    "name": "mindy/orm-bundle",
+    "type": "symfony-bundle",
+    "description": "Mindy OrmBundle",
+    "keywords": [
+        "orm"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@studio107.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "mindy/orm": "~3.0",
+        "mindy/orm-nested-set": "~3.0",
+        "mindy/orm-slug-field": "~3.0",
+        "mindy/orm-fields": "~3.0",
+        "mindy/orm-file-field": "~3.0",
+        "doctrine/migrations": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "symfony/config": "~3.0",
+        "symfony/dependency-injection": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Bundle\\OrmBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Bundle\\OrmBundle\\Tests\\": "./Tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    }
+}
