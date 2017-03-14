@@ -1,0 +1,7 @@
+/vendor
+*.lock
+.php_cs.cache
+.DS_Store
+phpunit.xml
+.idea
+*.iml
