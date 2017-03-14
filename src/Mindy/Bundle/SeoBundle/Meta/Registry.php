@@ -1,0 +1,43 @@
+<?php
+
+/*
+ * (c) Studio107 <mail@studio107.ru> http://studio107.ru
+ * For the full copyright and license information, please view
+ * the LICENSE file that was distributed with this source code.
+ *
+ * Author: Maxim Falaleev <max@studio107.ru>
+ */
+
+namespace Mindy\Bundle\SeoBundle\Meta;
+
+class Registry
+{
+    /**
+     * @var MetaGeneratorInterface[]
+     */
+    protected $generators = [];
+
+    /**
+     * @param MetaGeneratorInterface $generator
+     */
+    public function addGenerator(MetaGeneratorInterface $generator)
+    {
+        $this->generators[] = $generator;
+    }
+
+    /**
+     * @param MetaSourceInterface $metaSource
+     *
+     * @return array|null
+     */
+    public function build(MetaSourceInterface $metaSource)
+    {
+        foreach ($this->generators as $generator) {
+            if ($generator->support($metaSource)) {
+                return $generator->build($metaSource);
+            }
+        }
+
+        return null;
+    }
+}
