@@ -30,14 +30,14 @@
         <whitelist>
             <directory>./src/Mindy/</directory>
             <exclude>
+                <directory>./src/Mindy/Bridge/*/Tests</directory>
                 <directory>./src/Mindy/Component/*/Tests</directory>
                 <directory>./src/Mindy/Component/*/*/Tests</directory>
                 <directory>./src/Mindy/Bundle/*/Tests</directory>
-
                 <directory>./src/Mindy/Bundle/*/Resources</directory>
                 <directory>./src/Mindy/Component/*/Resources</directory>
                 <directory>./src/Mindy/Component/*/*/Resources</directory>
-
+                <directory>./src/Mindy/Bridge/*/vendor</directory>
                 <directory>./src/Mindy/Bundle/*/vendor</directory>
                 <directory>./src/Mindy/Component/*/vendor</directory>
                 <directory>./src/Mindy/Component/*/*/vendor</directory>

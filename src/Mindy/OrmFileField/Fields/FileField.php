@@ -13,6 +13,9 @@ namespace Mindy\Orm\Fields;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Exception;
 use League\Flysystem\FilesystemInterface;
+use Mindy\Orm\FileNameHasher\DefaultHasher;
+use Mindy\Orm\FileNameHasher\FileNameHasherInterface;
+use Mindy\Orm\FileNameHasher\MD5NameHasher;
 use Mindy\Orm\Files\File;
 use Mindy\Orm\Files\LocalFile;
 use Mindy\Orm\Files\ResourceFile;
@@ -68,42 +71,23 @@ class FileField extends CharField
     protected $filesystem;
 
     /**
-     * @return callable|\Closure
+     * @param FileNameHasherInterface $nameHasher
      */
-    protected function getNameHasher()
+    public function setNameHasher(FileNameHasherInterface $nameHasher)
     {
-        if ($this->nameHasher === null) {
-            $this->nameHasher = $this->getDefaultNameHasher();
-        }
-
-        return $this->nameHasher;
+        $this->nameHasher = $nameHasher;
     }
 
     /**
-     * @return \Closure
+     * @return FileNameHasherInterface
      */
-    protected function getDefaultNameHasher()
+    public function getNameHasher()
     {
-        return function ($filePath, $fileName = null) {
-            $uploadTo = $this->getUploadTo();
-            $fs = $this->getFilesystem();
+        if ($this->nameHasher === null) {
+            $this->nameHasher = new MD5NameHasher();
+        }
 
-            if (empty($fileName)) {
-                $fileName = pathinfo($filePath, PATHINFO_FILENAME);
-            }
-
-            $hash = md5(mt_rand(1, 100000).time().$fileName);
-            $ext = pathinfo($fileName, PATHINFO_EXTENSION);
-
-            $i = 0;
-            $name = sprintf('%s_%d.%s', $hash, $i, $ext);
-            while ($fs->has($uploadTo.'/'.$name)) {
-                ++$i;
-                $name = sprintf('%s_%d.%s', $hash, $i, $ext);
-            }
-
-            return $uploadTo.'/'.$name;
-        };
+        return $this->nameHasher;
     }
 
     /**
@@ -219,7 +203,7 @@ class FileField extends CharField
      */
     public function toArray()
     {
-        return empty($this->value) ? null : ['url' => $this->url()];
+        return empty($this->value) ? null : $this->getValue();
     }
 
     /**
@@ -273,7 +257,11 @@ class FileField extends CharField
     {
         $contents = file_get_contents($file->getRealPath());
 
-        $path = $this->getNameHasher()->__invoke($file->getRealPath(), $file->getClientOriginalName());
+        $path = $this->getNameHasher()->resolveUploadPath(
+            $this->getFilesystem(),
+            $this->getUploadTo(),
+            $file->getClientOriginalName()
+        );
         if (!$this->getFilesystem()->write($path, $contents)) {
             throw new Exception('Failed to save file');
         }
@@ -285,7 +273,11 @@ class FileField extends CharField
     {
         $contents = file_get_contents($file->getRealPath());
 
-        $path = $this->getNameHasher()->__invoke($file->getRealPath());
+        $path = $this->getNameHasher()->resolveUploadPath(
+            $this->getFilesystem(),
+            $this->getUploadTo(),
+            $file->getFilename()
+        );
         if (!$this->getFilesystem()->write($path, $contents)) {
             throw new Exception('Failed to save file');
         }
