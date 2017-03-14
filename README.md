@@ -1,5 +1,7 @@
 # CKEditor Bundle
 
+[![Build Status](https://travis-ci.org/MindyPHP/CKEditorBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/CKEditorBundle)
+
 ```yaml
 ivory_ck_editor:
     configs:
