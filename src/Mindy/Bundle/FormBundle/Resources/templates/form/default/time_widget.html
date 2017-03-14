@@ -1,0 +1,8 @@
+{% if widget == 'single_text' %}
+    {{ form_block(form, 'form_widget_simple')|safe }}
+{% else %}
+    {% set vars = widget == 'text' ? ['attr' => ['size' => 1]] : [] %}
+    <div {{ form_block(form, 'widget_container_attributes')|safe }}>
+        {{ form_widget(form.children.hour, vars)|safe }}{% if with_minutes %}:{{ form_widget(form.children.minute, vars)|safe }}{% endif %}{% if with_seconds %}:{{ form_widget(form.children.second, vars)|safe }}{% endif %}
+    </div>
+{% endif %}

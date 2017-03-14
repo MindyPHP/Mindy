@@ -1,0 +1,7 @@
+<div class="b-group">
+{% for child in form %}
+    <div class="b-input-group">
+        {{ form_row(child)|safe }}
+    </div>
+{% endfor %}
+</div>

@@ -1,0 +1,2 @@
+{% set attr['class'] = attr['class'] ? attr['class'] ~ ' b-button' : 'b-button' %}
+id="{{ id }}" name="{{ full_name }}" {% if disabled %}disabled="disabled" {% endif %}{% for k, v in attr %}{% if k in ['placeholder', 'title'] %} {{ k }}="{{ translation_domain ? translator.trans(v, [], translation_domain) : v }}"{% elseif v === true %} {{ k }}="{{ v }}"{% elseif v !== false %} {{ k }}="{{ v }}"{% endif %}{% endfor %}

@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="mindy.bundle.form.template_library.form"
+                 class="Mindy\Bundle\FormBundle\Library\FormLibrary">
+            <argument type="service" id="mindy.bundle.form.templating.form.renderer" />
+            <tag name="template.library" />
+        </service>
+
+        <service id="mindy.bundle.form.templating.form.engine"
+                 class="Mindy\Bundle\FormBundle\Templating\Engine">
+            <argument type="service" id="templating.engine.mindy" />
+            <argument type="service" id="template.finder.chain" />
+        </service>
+
+        <service id="mindy.bundle.form.templating.form.templating_engine"
+                 class="Mindy\Bundle\FormBundle\Templating\TemplatingRendererEngine">
+            <argument type="service" id="mindy.bundle.form.templating.form.engine" />
+            <argument>%form.themes%</argument>
+        </service>
+
+        <service id="mindy.bundle.form.templating.form.renderer"
+                 class="Symfony\Component\Form\FormRenderer">
+            <argument type="service" id="mindy.bundle.form.templating.form.templating_engine" />
+            <argument type="service" id="security.csrf.token_manager" />
+        </service>
+
+        <service id="mindy.bundle.form.extension.help"
+            class="Mindy\Bundle\FormBundle\Form\Extension\HelpExtension">
+            <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\FormType" />
+        </service>
+
+        <service id="mindy.bundle.form.extension.tooltip"
+            class="Mindy\Bundle\FormBundle\Form\Extension\TooltipExtension">
+            <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\FormType" />
+        </service>
+
+        <service id="mindy.bundle.form.extension.checkbox_type"
+                 class="Mindy\Bundle\FormBundle\Form\Extension\CheckboxExtension">
+            <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\CheckboxType" />
+        </service>
+    </services>
+</container>

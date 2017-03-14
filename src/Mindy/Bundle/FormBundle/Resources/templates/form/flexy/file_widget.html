@@ -1,0 +1,1 @@
+<input class="b-input b-input_file" type="{{ type ? type : 'file' }}" {{ form_block(form, 'widget_attributes')|safe }}{% if not value|is_empty or value|is_numeric %} value="{{ value }}"{% endif %} />
