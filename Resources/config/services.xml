@@ -14,7 +14,6 @@
         </service>
 
         <service id="mindy.bundle.page.template_loader"
-                 public="false"
                  class="Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoader">
             <argument>%kernel.root_dir%</argument>
             <argument type="service" id="template.finder.chain"/>

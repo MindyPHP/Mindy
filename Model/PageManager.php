@@ -1,15 +1,11 @@
 <?php
 
-/**
- * All rights reserved.
- * 
- * @author Falaleev Maxim
- * @email max@studio107.ru
+/*
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
- * @version 1.0
- * @company Studio107
- * @site http://studio107.ru
- * @date 27/08/14.08.2014 17:33
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\PageBundle\Model;

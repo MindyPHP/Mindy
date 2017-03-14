@@ -1,9 +1,11 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\PageBundle\Form;
@@ -11,8 +13,8 @@ namespace Mindy\Bundle\PageBundle\Form;
 use Ivory\CKEditorBundle\Form\Type\CKEditorType;
 use Mindy\Bundle\AdminBundle\Form\Type\ButtonsType;
 use Mindy\Bundle\FormBundle\Form\DataTransformer\DateTimeTransformer;
-use Mindy\Bundle\FormBundle\Form\Type\SlugType;
 use Mindy\Bundle\FormBundle\Form\Type\FileType;
+use Mindy\Bundle\FormBundle\Form\Type\SlugType;
 use Mindy\Bundle\PageBundle\Model\Page;
 use Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoaderInterface;
 use Symfony\Component\Form\AbstractType;
@@ -90,9 +92,9 @@ class PageForm extends AbstractType
                         'mimeTypes' => [
                             'image/jpeg',
                             'image/png',
-                        ]
-                    ])
-                ]
+                        ],
+                    ]),
+                ],
             ])
             ->add('is_index', CheckboxType::class, [
                 'label' => 'Главная страница',

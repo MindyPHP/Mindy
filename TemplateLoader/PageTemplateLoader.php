@@ -1,9 +1,11 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\PageBundle\TemplateLoader;
@@ -26,7 +28,7 @@ class PageTemplateLoader implements PageTemplateLoaderInterface
     /**
      * PageTemplateLoader constructor.
      *
-     * @param string $basePath
+     * @param string                  $basePath
      * @param TemplateFinderInterface $templateFinder
      */
     public function __construct($basePath, TemplateFinderInterface $templateFinder)

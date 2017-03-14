@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Mindy\Bundle\PageBundle\Model;
 
 use Mindy\Bundle\MindyBundle\Traits\AbsoluteUrlInterface;
@@ -116,10 +124,10 @@ class Page extends TreeModel implements AbsoluteUrlInterface
      *
      * @return string
      */
-    public function findView() : string
+    public function findView(): string
     {
         if (empty($this->view) == false) {
-            return sprintf("page/templates/%s", $this->view);
+            return sprintf('page/templates/%s', $this->view);
         }
 
         /** @var Page $parent */
@@ -133,12 +141,12 @@ class Page extends TreeModel implements AbsoluteUrlInterface
             ->get();
 
         if ($parent) {
-            return sprintf("page/templates/%s", $parent->view_children);
+            return sprintf('page/templates/%s', $parent->view_children);
         } elseif ($this->getIsLeaf()) {
             return 'page/view.html';
-        } else {
-            return 'page/list.html';
         }
+
+        return 'page/list.html';
     }
 
     /**
@@ -160,7 +168,7 @@ class Page extends TreeModel implements AbsoluteUrlInterface
             ->limit(1)
             ->get();
 
-        return $model ? sprintf("page/templates/%s", $model->view_children) : null;
+        return $model ? sprintf('page/templates/%s', $model->view_children) : null;
     }
 
     /**
