@@ -459,6 +459,7 @@ TXT;
                     '{year}' => date('Y'),
                 ]);
                 file_put_contents(sprintf('%s/LICENSE', $subtree['path']), $licenseDoc);
+                file_put_contents(sprintf('%s/.php_cs', $subtree['path']), file_get_contents(__DIR__.'/.php_cs'));
             }
         }
         return;
