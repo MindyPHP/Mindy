@@ -27,6 +27,9 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 
 | Компонент / Bundle     | Статус        |
 | ------------- |:-------------:|
+| OrmBundle | [![Build Status](https://travis-ci.org/MindyPHP/OrmBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/OrmBundle) |
+| CKEditorBundle | [![Build Status](https://travis-ci.org/MindyPHP/CKEditorBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/CKEditorBundle) |
+| PageBundle | [![Build Status](https://travis-ci.org/MindyPHP/PageBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/PageBundle) |
 | Orm | [![Build Status](https://travis-ci.org/MindyPHP/Orm.svg?branch=master)](https://travis-ci.org/MindyPHP/Orm) |
 | Finder | [![Build Status](https://travis-ci.org/MindyPHP/Finder.svg?branch=master)](https://travis-ci.org/MindyPHP/Finder) |
 | Application | [![Build Status](https://travis-ci.org/MindyPHP/Application.svg?branch=master)](https://travis-ci.org/MindyPHP/Application) |
