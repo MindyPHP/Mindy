@@ -1,5 +1,19 @@
-# Flow - Fast PHP Templating Engine
+# Template Component
 
-[![Build Status](https://travis-ci.org/studio107/Mindy_Template.svg?branch=master)](https://travis-ci.org/studio107/Mindy_Template)
-[![Coverage Status](https://coveralls.io/repos/studio107/Mindy_Template/badge.png)](https://coveralls.io/r/studio107/Mindy_Template)
+[![Build Status](https://travis-ci.org/MindyPHP/Template.svg?branch=master)](https://travis-ci.org/MindyPHP/Template)
+[![Coverage Status](https://img.shields.io/coveralls/MindyPHP/Template.svg)](https://coveralls.io/r/MindyPHP/Template)
+[![Latest Stable Version](https://poser.pugx.org/mindy/template/v/stable.svg)](https://packagist.org/packages/mindy/template)
+[![Total Downloads](https://poser.pugx.org/mindy/template/downloads.svg)](https://packagist.org/packages/mindy/template)
 
+The Template Component
+
+Resources
+---------
+
+  * [Documentation](https://mindy-cms.com/doc/current/components/template/index.html)
+  * [Contributing](https://mindy-cms.com/doc/current/contributing/index.html)
+  * [Report issues](https://github.com/MindyPHP/mindy/issues) and
+    [send Pull Requests](https://github.com/MindyPHP/mindy/pulls)
+    in the [main Mindy repository](https://github.com/MindyPHP/mindy)
+
+![yandex](https://mc.yandex.ru/watch/43423684 "yandex")
