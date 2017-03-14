@@ -9,4 +9,3 @@ package.tar
 /.phpunit
 /report
 node_modules
-deploy.php

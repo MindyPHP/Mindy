@@ -25,7 +25,7 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 
 ## Статус
 
-| Компонент / Bundle     | Статус        |
+| Компонент / Бандл     | Статус        |
 | ------------- |:-------------:|
 | SitemapBundle | [![Build Status](https://travis-ci.org/MindyPHP/SitemapBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/SitemapBundle) |
 | PaginationBundle | [![Build Status](https://travis-ci.org/MindyPHP/PaginationBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/PaginationBundle) |
