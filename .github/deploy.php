@@ -229,7 +229,11 @@ switch ($command) {
         $commands = [
             'git subtree push --prefix={path} {name} master',
         ];
+
+        $i = 0;
         foreach ($subtrees as $name => $subtree) {
+            echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
+
             if ($target == 'all' || $target == $name) {
                 foreach ($commands as $command) {
                     cmd(strtr($command, [
@@ -238,6 +242,8 @@ switch ($command) {
                     ]));
                 }
             }
+
+            $i++;
         }
         return;
     case 'pull':
