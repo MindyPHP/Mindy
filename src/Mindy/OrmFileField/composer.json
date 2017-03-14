@@ -1,0 +1,35 @@
+{
+    "name": "mindy/orm-file-field",
+    "type": "library",
+    "description": "The Mindy Orm File and Image Fields",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@mindy-cms.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Orm\\": ""
+        },
+        "exclude-from-classmap": [
+            "**/Tests/"
+        ]
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "mindy/orm": "~3.0",
+        "symfony/validator": "~3.0",
+        "league/flysystem": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    }
+}
