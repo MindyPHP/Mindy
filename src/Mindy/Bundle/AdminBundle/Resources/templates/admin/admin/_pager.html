@@ -1,0 +1,57 @@
+<div class="b-pager">
+    <ul class="b-pager__list">
+        {% if pager.getPagesCount() > 1 %}
+            <li class="b-pager__item b-pager__item_prev">
+                {% if pager.hasPrevPage() %}
+                    <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage() - 1) }}">&larr;</a>
+                {% else %}
+                    <span class="b-pager__link b-pager__link_disabled">&larr;</span>
+                {% endif %}
+            </li>
+
+            {% if pager.hasPrevPage() %}
+                {% for page in pager.iterPrevPage() %}
+                    <li class="b-pager__item">
+                        <a class="b-pager__link" href="{{ pager.getUrl(page) }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+
+            <li class="b-pager__item b-pager__item_current">
+                <span class="b-pager__link b-pager__link_disabled">{{ pager.getPage() }}</span>
+            </li>
+
+            {% if pager.hasNextPage() %}
+                {% for page in pager.iterNextPage() %}
+                    <li class="b-pager__item">
+                        <a class="b-pager__link" href="{{ pager.getUrl(page) }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+
+            <li class="b-pager__item b-pager__item_next">
+                {% if pager.hasNextPage %}
+                    <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
+                {% else %}
+                    <span class="b-pager__link b-pager__link_disabled">&rarr;</span>
+                {% endif %}
+            </li>
+        {% endif %}
+    </ul>
+
+    {% if pager.getPagesCount() > 1 %}
+        <div class="b-pager__total">Всего: {{ pager.getTotal() }}</div>
+
+        <div class="b-pager__size">
+            {% set pageSizes = pager.getPageSizes() %}
+            <select class="b-input b-input_select" name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
+                <option value=""></option>
+                {% for pageSize in pageSizes %}
+                    <option value="{{ pager.urlPageSize(pageSize) }}" {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
+                        {{ pageSize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    {% endif %}
+</div>

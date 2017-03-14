@@ -1,0 +1,14 @@
+.b-login {
+  min-width: 300px;
+  padding: 25px;
+
+  &__logo {
+    margin: 20px auto;
+    text-align: center;
+
+    svg {
+      width: 64px;
+      height: auto;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+services:
+    mindy.bundle.admin.form.auth:
+        class: Mindy\Bundle\AdminBundle\Form\AuthForm
+        arguments:
+            - '@router'
+        tags:
+            - { name: form.type }
+
+    admin.registry:
+        class: Mindy\Bundle\AdminBundle\Admin\AdminRegistry
+
+    admin.menu:
+        class: Mindy\Bundle\AdminBundle\Admin\AdminMenu
+        arguments: [ "%admin.menu%" ]
+
+    admin.template.finder:
+        class: Mindy\Bundle\AdminBundle\Admin\AdminTemplateFinder
+        arguments: [ '@template.finder.chain' ]
+
+    template.admin.library:
+        class: Mindy\Bundle\AdminBundle\Library\AdminLibrary
+        arguments: [ '@admin.menu', '@template' ]
+        tags:
+            - { name: template.library }
+
+    admin.dashboard.admin_menu:
+        class: Mindy\Bundle\AdminBundle\Dashboard\AdminMenuWidget
+        arguments: [ '@admin.menu' ]
+        tags:
+            - { name: admin.dashboard.widget }
+
+    admin.view.list:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminListView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.create:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminCreateView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.update:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminUpdateView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
+
+    admin.view.delete:
+        class: Mindy\Bundle\AdminBundle\Admin\View\AdminDeleteView
+        arguments: [ '@template' ]
+        calls:
+            - [ setContainer, [ '@service_container' ] ]
