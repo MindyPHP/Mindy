@@ -1,0 +1,31 @@
+{% extends "admin/admin/create.html" %}
+
+{% block form %}
+    {{ form_start(form)|safe }}
+    <div class="row">
+        <div class="columns small-8">
+            <div class="row">
+                <div class="columns small-8">
+                    {{ form_row(form.children.name)|safe }}
+                </div>
+                <div class="columns small-4">
+                    {{ form_row(form.children.url)|safe }}
+                </div>
+            </div>
+            {{ form_row(form.children.content_short)|safe }}
+            {{ form_row(form.children.content)|safe }}
+        </div>
+        <div class="columns small-4">
+            {{ form_row(form.children.is_index)|safe }}
+            <hr>
+            {{ form_row(form.children.is_published)|safe }}
+            {{ form_row(form.children.published_at)|safe }}
+            <hr>
+            {{ form_row(form.children.sorting)|safe }}
+            <hr>
+            {{ form_row(form.children.view)|safe }}
+            {{ form_row(form.children.view_children)|safe }}
+        </div>
+    </div>
+    {{ form_end(form)|safe }}
+{% endblock %}
