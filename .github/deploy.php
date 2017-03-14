@@ -71,11 +71,11 @@ function gitStatus() {
 }
 
 if (gitStatus()) {
-//    foreach ($packages as $part) {
-//        if ($part['remote_name'] == $package) {
-//            recreateSubtree($part, $branch);
-//        }
-//    }
+    foreach ($packages as $part) {
+        if ($part['remote_name'] == $package) {
+            recreateSubtree($part, $branch);
+        }
+    }
 } else {
     echo "Commit your working tree" . PHP_EOL;
 }
