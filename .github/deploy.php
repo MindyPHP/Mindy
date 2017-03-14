@@ -357,24 +357,24 @@ switch ($command) {
         foreach ($subtrees as $name => $subtree) {
             $url = sprintf("https://packagist.org/packages/mindy/%s.json", $name);
             $json = json_decode(file_get_contents($url), true);
+            $versions = [];
             foreach ($json['package']['versions'] as $version => $params) {
-                if (strpos($version, 'dev') === 0) {
-                    continue;
-                }
-
-                echo sprintf("%s: %s\n", $name, $version);
-                break;
+                $versions[] = $version;
             }
+            echo sprintf('%s: %s', $name, implode(', ', $versions)) . PHP_EOL;
         }
         return;
     case 'composer_push_update':
-        $username = 'max107';
-        $token = getenv('PACKAGIST_TOKEN');
-        if (empty($token)) {
+        $json = json_decode(file_get_contents(__DIR__ . '/packagist.json'), true);
+        if (empty($json)) {
             echo 'Empty PACKAGIST_TOKEN environment variable' . PHP_EOL;
             return;
         }
-        $url = sprintf('https://packagist.org/api/update-package?username=%s&apiToken=%s', $username, $token);
+        $url = sprintf(
+            'https://packagist.org/api/update-package?username=%s&apiToken=%s',
+            $json['username'],
+            $json['token']
+        );
 
         foreach ($subtrees as $name => $subtree) {
             $ch = curl_init($url);
