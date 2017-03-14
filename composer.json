@@ -18,7 +18,6 @@
         "php": ">=5.5.9",
         "mindy/orm-bundle": "~3.0",
         "mindy/admin-bundle": "~3.0",
-        "mindy/orm-nested-set": "~3.0",
         "mindy/form-bundle": "~3.0"
     },
     "authors": [
