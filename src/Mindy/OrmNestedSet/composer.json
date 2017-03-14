@@ -1,0 +1,38 @@
+{
+    "name": "mindy/orm-nested-set",
+    "type": "library",
+    "description": "The Mindy Orm File and Image Fields",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@mindy-cms.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Orm\\": ""
+        },
+        "exclude-from-classmap": [
+            "**/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Orm\\Tests\\": ""
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "mindy/orm": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    }
+}
