@@ -232,9 +232,27 @@ switch ($command) {
             $target = $argv[2];
         }
 
+        $tag = null;
+        if (isset($argv[3])) {
+            $tag = $argv[3];
+        }
+
         $commands = [
             'git subtree push --prefix={path} {name} master',
         ];
+
+        if (false === empty($tag)) {
+            $parentCommands = [
+                'git tag -a {tag} -m "Version {tag}"',
+                'git push origin --tags',
+                'git tag -d {tag}',
+            ];
+            foreach ($parentCommands as $command) {
+                cmd(strtr($command, [
+                    '{tag}' => $tag
+                ]));
+            }
+        }
 
         $i = 1;
         foreach ($subtrees as $name => $subtree) {
@@ -247,10 +265,34 @@ switch ($command) {
                         '{path}' => $subtree['path']
                     ]));
                 }
+
+                if (false === empty($tag)) {
+                    echo sprintf("\n\nPush tag: %s\n\n", $tag);
+
+                    $tagCommands = [
+                        'git subtree split --prefix={path} -b {temp_name}',
+                        'git tag -a {tag} -m "Version {tag}" {temp_name}',
+                        'git push {name} --tags',
+                        'git branch -D {temp_name}',
+                        'git tag -d {tag}',
+                    ];
+
+                    foreach ($tagCommands as $command) {
+                        cmd(strtr($command, [
+                            '{name}' => sprintf("%s-subtree", $name),
+                            '{temp_name}' => sprintf("%s-subtree-%s", $name, $tag),
+                            '{path}' => $subtree['path'],
+                            '{tag}' => $tag
+                        ]));
+                    }
+                }
             }
 
             $i++;
         }
+
+        cmd('git gc --prune=now');
+
         return;
     case 'pull':
         if (!isset($argv[2])) {
@@ -345,68 +387,6 @@ switch ($command) {
             $response = curl_exec($ch);
 
             echo $name . ' ' . print_r($response, true) . PHP_EOL;
-        }
-
-        return;
-    case 'release':
-        if (!isset($argv[2])) {
-            if (!confirm('Missing subtree name. You want to run git pull in all subtrees?')) {
-                return;
-            }
-            $target = 'all';
-        } else {
-            $target = $argv[2];
-        }
-
-        if (!isset($argv[3])) {
-            echo 'Missing tag name' . PHP_EOL;
-            exit(1);
-        } else {
-            $tag = $argv[3];
-        }
-
-        $parentCommands = [
-            'git tag -a {tag} -m "Version {tag}"',
-            'git push origin --tags',
-            'git tag -d {tag}',
-        ];
-        foreach ($parentCommands as $command) {
-            cmd(strtr($command, [
-                '{tag}' => $tag
-            ]));
-        }
-
-        $commands = [
-            'git subtree split --prefix={path} -b {temp_name}',
-            'git tag -a {tag} -m "Version {tag}" {temp_name}',
-            'git push {name} --tags',
-            'git branch -D {temp_name}',
-            'git tag -d {tag}',
-        ];
-        $i = 1;
-        foreach ($subtrees as $name => $subtree) {
-            if ($target == 'all' || $target == $name) {
-                echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
-
-                foreach ($commands as $command) {
-                    cmd(strtr($command, [
-                        '{name}' => sprintf("%s-subtree", $name),
-                        '{temp_name}' => sprintf("%s-subtree-%s", $name, $tag),
-                        '{path}' => $subtree['path'],
-                        '{tag}' => $tag
-                    ]));
-                }
-            }
-            $i++;
-        }
-
-        $parentCommands = [
-            'git gc --prune=now'
-        ];
-        foreach ($parentCommands as $command) {
-            cmd(strtr($command, [
-                '{tag}' => $tag
-            ]));
         }
 
         return;
