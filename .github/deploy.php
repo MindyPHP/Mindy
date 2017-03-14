@@ -5,6 +5,11 @@ $packages = [
         'remote_url' => 'git@github.com:MindyPHP/FileBundle.git',
         'remote_name' => 'file-bundle',
         'path' => 'src/Mindy/Bundle/FileBundle',
+    ],
+    [
+        'remote_url' => 'git@github.com:MindyPHP/AdminBundle.git',
+        'remote_name' => 'admin-bundle',
+        'path' => 'src/Mindy/Bundle/AdminBundle',
     ]
 ];
 
