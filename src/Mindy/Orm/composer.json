@@ -1,0 +1,50 @@
+{
+    "name": "mindy/orm",
+    "homepage": "https://github.com/MindyPHP/Orm",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Orm\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Orm\\Tests\\": ""
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "doctrine/dbal": "~2.0",
+        "symfony/validator": "~3.0",
+        "mindy/query_builder": "~3.0"
+    },
+    "suggested": {
+        "league/flysystem": "For storing files",
+        "mindy/orm-fields": "Collection of extra fields: IpField, JsonField",
+        "mindy/orm-file-field": "For FileField and ImageField",
+        "mindy/orm-slug-field": "For Slug and AutoSlug fields",
+        "mindy/orm-nested-set": "Nested set for Mindy Orm"
+    },
+    "authors": [
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/MindyPHP/Mindy/issues?state=open"
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
+    }
+}
