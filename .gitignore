@@ -1,5 +1,7 @@
 .idea
-Tests/runtime
-vendor/
+/Tests/runtime
+/vendor/
 composer.lock
 phpunit.xml
+*.iml
+.DS_Store
