@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: max
- * Date: 14/03/2017
- * Time: 19:59
+
+/*
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Orm\Tests;
@@ -40,7 +42,7 @@ class NameHasherTest extends \PHPUnit_Framework_TestCase
     public function testDefaultNameHasherAvailable()
     {
         $path = sys_get_temp_dir();
-        $expectedName = sprintf("%s/NameHasherTest.php", ltrim($path, '/'));
+        $expectedName = sprintf('%s/NameHasherTest.php', ltrim($path, '/'));
         $resolvedName = (new DefaultHasher())->resolveUploadPath($this->filesystem, $path, basename(__FILE__));
         $this->assertSame($expectedName, $resolvedName);
         $this->assertFalse($this->filesystem->has($resolvedName));
@@ -50,11 +52,11 @@ class NameHasherTest extends \PHPUnit_Framework_TestCase
     {
         $resolvedName = (new DefaultHasher())->resolveUploadPath($this->filesystem, '/', basename(__FILE__));
         $this->assertSame(
-            "/NameHasherTest.php",
+            '/NameHasherTest.php',
             $resolvedName
         );
 
-        $this->filesystem->write("/NameHasherTest.php", '123');
+        $this->filesystem->write('/NameHasherTest.php', '123');
         $this->filesystem->has('/NameHasherTest.php');
 
         $resolvedName = (new DefaultHasher())->resolveUploadPath($this->filesystem, '/', basename(__FILE__));
@@ -68,8 +70,8 @@ class NameHasherTest extends \PHPUnit_Framework_TestCase
     {
         $hasher = new MD5NameHasher();
         $this->assertSame(
-            "/6f997ff817ae3852abfaa147e5d63aa7.php",
-            $hasher->resolveUploadPath($this->filesystem, '/', md5(basename(__FILE__)) . '.php')
+            '/6f997ff817ae3852abfaa147e5d63aa7.php',
+            $hasher->resolveUploadPath($this->filesystem, '/', md5(basename(__FILE__)).'.php')
         );
     }
 }

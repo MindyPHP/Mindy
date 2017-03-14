@@ -1,9 +1,11 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: max
- * Date: 14/03/2017
- * Time: 20:00
+
+/*
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Orm\FileNameHasher;
@@ -36,11 +38,11 @@ class DefaultHasher implements FileNameHasherInterface
 
         $i = 0;
         $resolvedName = sprintf('%s.%s', $hash, $ext);
-        while ($filesystem->has($uploadTo . '/' . $resolvedName)) {
+        while ($filesystem->has($uploadTo.'/'.$resolvedName)) {
             ++$i;
             $resolvedName = sprintf('%s_%d.%s', $hash, $i, $ext);
         }
 
-        return $uploadTo . '/' . $resolvedName;
+        return $uploadTo.'/'.$resolvedName;
     }
 }

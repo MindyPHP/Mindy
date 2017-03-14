@@ -1,11 +1,11 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
- * Author: Maxim Falaleev <max@studio107.ru>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Orm\Tests;
@@ -34,8 +34,8 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->filesystem = new Filesystem(new Local(__DIR__ . '/temp'));
-        file_put_contents(__DIR__ . '/test.txt', '123');
+        $this->filesystem = new Filesystem(new Local(__DIR__.'/temp'));
+        file_put_contents(__DIR__.'/test.txt', '123');
 
         $field = new FileField([
             'name' => 'file',
@@ -66,10 +66,10 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
     {
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
         $file = new UploadedFile(
-            __DIR__ . '/test.txt',
+            __DIR__.'/test.txt',
             'test.txt',
             'plain/text',
-            filesize(__DIR__ . '/test.txt'),
+            filesize(__DIR__.'/test.txt'),
             null,
             true
         );
@@ -77,18 +77,18 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . '/test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'/test.txt'));
     }
 
     public function testLocalFile()
     {
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
-        $file = new LocalFile(__DIR__ . '/test.txt');
+        $file = new LocalFile(__DIR__.'/test.txt');
         $this->field->saveFile($file);
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . '/test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'/test.txt'));
     }
 
     public function testResourceFile()
@@ -99,7 +99,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertEquals('123', file_get_contents(__DIR__ . '/temp/' . $path . '/test.txt'));
+        $this->assertEquals('123', file_get_contents(__DIR__.'/temp/'.$path.'/test.txt'));
     }
 
     public function testRemoteFile()
@@ -113,7 +113,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertTrue(is_file(__DIR__ . '/temp/' . $path . '/readme.md'));
+        $this->assertTrue(is_file(__DIR__.'/temp/'.$path.'/readme.md'));
     }
 
     public function testFileFieldValidation()
@@ -121,7 +121,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->field->isValid());
         $this->assertEquals(['This value should not be blank.'], $this->field->getErrors());
 
-        $path = __DIR__ . '/test.txt';
+        $path = __DIR__.'/test.txt';
         file_put_contents($path, '123');
 
         // $path, $originalName, $mimeType = null, $size = null, $error = null, $test = false
@@ -162,7 +162,7 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertTrue(is_file(__DIR__ . '/temp/' . $path . '/test.php'));
+        $this->assertTrue(is_file(__DIR__.'/temp/'.$path.'/test.php'));
     }
 
     public function testResourceFieldNoHasher()
@@ -175,6 +175,6 @@ class FileFieldTest extends \PHPUnit_Framework_TestCase
 
         $path = $this->field->getUploadTo();
         $this->assertEquals(sprintf('foo/FileModel/%s', date('Y-m-d')), $path);
-        $this->assertTrue(is_file(__DIR__ . '/temp/' . $path . '/test.php'));
+        $this->assertTrue(is_file(__DIR__.'/temp/'.$path.'/test.php'));
     }
 }
