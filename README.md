@@ -1,3 +1,3 @@
-# Mail bundle
+# Page bundle
 
-[![Build Status](https://travis-ci.org/MindyPHP/MailBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/MailBundle)
+[![Build Status](https://travis-ci.org/MindyPHP/PageBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/PageBundle)
