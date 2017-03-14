@@ -1,6 +1,0 @@
-<div {{ form_block(form, 'widget_container_attributes')|safe }}>
-    {% for child in form %}
-        {{ form_widget(child)|safe }}
-        {{ form_label(child, null, ['translation_domain' => choice_translation_domain])|safe }}
-    {% endfor %}
-</div>

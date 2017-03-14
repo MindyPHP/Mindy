@@ -1,8 +1,0 @@
-{% if widget == 'single_text' %}
-    {{ form_block(form, 'form_widget_simple')|safe }}
-{% else %}
-    <div class="b-group" {{ form_block(form, 'widget_container_attributes')|safe }}>
-        {{ form_widget(form.children.date)|safe }}
-        {{ form_widget(form.children.time)|safe }}
-    </div>
-{% endif %}

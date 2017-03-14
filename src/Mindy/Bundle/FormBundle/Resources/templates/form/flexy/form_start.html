@@ -1,7 +1,0 @@
-{% set method = method|upper %}
-{% set formMethod = method === 'GET' or method === 'POST' ? method : 'POST' %}
-{% set attr['class'] = attr['class'] ? attr['class'] ~ ' b-form' : 'b-form' %}
-<form name="{{ name }}" method="{{ formMethod }}"{% if action !== '' %} action="{{ action }}"{% endif %}{% for k, v in attr %} {{ k }}="{{ v }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %}>
-{% if formMethod !== method %}
-<input type="hidden" name="_method" value="{{ method }}" />
-{% endif %}

@@ -1,6 +1,0 @@
-{%- if not label -%}
-    {%- set label = label_format ? label_format|strtr(['%name%' => name, '%id%' => id]) : form_humanize(name) -%}
-{%- endif -%}
-<button type="{{ type ? type : 'button' }}" {{ form_block(form, 'button_attributes')|safe }}>
-    {{ translation_domain ? translator.trans(label, [], translation_domain) : label }}
-</button>
