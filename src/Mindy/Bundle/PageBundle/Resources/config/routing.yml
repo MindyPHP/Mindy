@@ -1,0 +1,5 @@
+page_view:
+    path: /{url}
+    defaults: { _controller: "PageBundle:Page:view" }
+    requirements:
+        url: .*

@@ -1,0 +1,45 @@
+{
+    "name": "mindy/menu-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Bundle\\MenuBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "./Tests/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Bundle\\MenuBundle\\Tests\\": "./Tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "mindy/orm-bundle": "~3.0",
+        "mindy/admin-bundle": "~3.0",
+        "mindy/orm-nested-set": "~3.0",
+        "mindy/form-bundle": "~3.0"
+    },
+    "authors": [
+        {
+            "name": "Maxim Falaleev",
+            "email": "max@studio107.ru",
+            "homepage": "http://studio107.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    },
+    "require-dev": {
+        "symfony/dependency-injection": "~3.0",
+        "phpunit/phpunit": "~4.0",
+        "symfony/config": "~3.0",
+        "symfony/property-access": "~3.0",
+        "symfony/validator": "~3.0",
+        "mindy/validation": "~3.0"
+    }
+}

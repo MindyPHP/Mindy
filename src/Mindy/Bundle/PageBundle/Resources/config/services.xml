@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="mindy.bundle.page.template.library" class="Mindy\Bundle\PageBundle\Library\PageLibrary">
+            <tag name="template.library" />
+        </service>
+
+        <service id="mindy.bundle.page.admin.page" class="Mindy\Bundle\PageBundle\Admin\PageAdmin">
+            <tag name="admin.admin" slug="page_page" />
+        </service>
+
+        <service id="mindy.bundle.page.template_loader"
+                 class="Mindy\Bundle\PageBundle\TemplateLoader\PageTemplateLoader">
+            <argument>%kernel.root_dir%</argument>
+            <argument type="service" id="template.finder.chain"/>
+        </service>
+
+        <service id="mindy.bundle.page.meta_generator.page"
+                 class="Mindy\Bundle\PageBundle\Meta\PageGenerator">
+            <tag name="meta.generator"/>
+        </service>
+
+        <service id="mindy.bundle.page.form.page_form" class="Mindy\Bundle\PageBundle\Form\PageForm">
+            <argument type="service" id="mindy.bundle.page.template_loader" />
+            <tag name="form.type" />
+        </service>
+
+        <service id="mindy.bundle.page.sitemap.page"
+                 class="Mindy\Bundle\PageBundle\Sitemap\PageSitemapProvider">
+            <tag name="sitemap.provider" />
+        </service>
+    </services>
+</container>

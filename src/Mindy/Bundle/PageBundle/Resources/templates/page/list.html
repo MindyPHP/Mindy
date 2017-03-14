@@ -1,0 +1,30 @@
+{%- extends "page/base.html" -%}
+
+{%- block heading -%}
+   <h1>{{ model.name }}</h1>
+{%- endblock -%}
+
+{%- block content -%}
+    <div class="page-container">
+        {%- if model.content -%}
+            <div>
+                {{ model.content|safe }}
+            </div>
+        {%- endif -%}
+
+        <div class="page-children-list">
+            {% for child in children %}
+                <div class="row">
+                    <div class="column large-12">
+                        <h2><a href="{{ url('page_view', ['url' => child.url]) }}">{{ child.name }}</a></h2>
+                        {{ child.content_short }}
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="pager-holder">
+                {{ pagination_render(pager)|safe }}
+            </div>
+        </div>
+    </div>
+{%- endblock -%}
