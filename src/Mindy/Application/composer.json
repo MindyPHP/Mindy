@@ -21,7 +21,7 @@
         "symfony/console": "^3.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "~4.0"
     },
     "minimum-stability": "dev",
     "extra": {

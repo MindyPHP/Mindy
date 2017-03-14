@@ -1,14 +1,16 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
- * Author: Maxim Falaleev <max@studio107.ru>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Application;
+
+@trigger_error('The '.__NAMESPACE__.' class is deprecated since version 3.0 and will be removed in 4.0.', E_USER_DEPRECATED);
 
 /**
  * Class LegacyMethodsTrait.
