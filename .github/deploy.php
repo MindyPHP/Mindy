@@ -30,7 +30,10 @@ if (!isset($argv[2])) {
 
 function cmd($command) {
     echo $command . PHP_EOL;
-    exec($command);
+    $out = [];
+    exec($command, $out, $return);
+    echo implode("\n", $out);
+    return $return;
 }
 
 function recreateSubtree($part, $branch = 'master') {
@@ -63,8 +66,16 @@ function recreateSubtree($part, $branch = 'master') {
     }
 }
 
-foreach ($packages as $part) {
-    if ($part['remote_name'] == $package) {
-        recreateSubtree($part, $branch);
+function gitStatus() {
+    return cmd('git diff-index --quiet HEAD --') == 0;
+}
+
+if (gitStatus()) {
+    foreach ($packages as $part) {
+        if ($part['remote_name'] == $package) {
+            recreateSubtree($part, $branch);
+        }
     }
+} else {
+    echo "Commit your working tree" . PHP_EOL;
 }
