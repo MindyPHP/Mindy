@@ -1,20 +1,19 @@
-# ResponseListener
+# Mindy Bundle
 
-```yaml
-services:
-    core.response_auto_listener:
-        class: Mindy\Bundle\CoreBundle\EventListener\ResponseListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.view, method: onKernelView }
-```
+[![Build Status](https://travis-ci.org/MindyPHP/MindyBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/MindyBundle)
+[![Coverage Status](https://img.shields.io/coveralls/MindyPHP/MindyBundle.svg)](https://coveralls.io/r/MindyPHP/MindyBundle)
+[![Latest Stable Version](https://poser.pugx.org/mindy/mindy-bundle/v/stable.svg)](https://packagist.org/packages/mindy/mindy-bundle)
+[![Total Downloads](https://poser.pugx.org/mindy/mindy-bundle/downloads.svg)](https://packagist.org/packages/mindy/mindy-bundle)
 
-# ExceltionListener
+The Mindy Bundle
 
-```yaml
-services:
-    mindy.bundle.mindy.example:
-        class: Mindy\Bundle\MindyBundle\EventListener\ExceptionListener
-        arguments: [ "@template", "@logger", "mindy/error/%s.html" ]
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-```
+Resources
+---------
+
+  * [Documentation](https://mindy-cms.com/doc/current/bundles/mindy/index.html)
+  * [Contributing](https://mindy-cms.com/doc/current/contributing/index.html)
+  * [Report issues](https://github.com/MindyPHP/mindy/issues) and
+    [send Pull Requests](https://github.com/MindyPHP/mindy/pulls)
+    in the [main Mindy repository](https://github.com/MindyPHP/mindy)
+
+![yandex](https://mc.yandex.ru/watch/43423684 "yandex")
