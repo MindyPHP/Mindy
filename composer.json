@@ -2,12 +2,12 @@
   "name": "mindy/page-bundle",
   "license": "MIT",
   "require": {
-    "mindy/finder": "~3.0",
-    "mindy/orm-file-field": "~3.0",
-    "mindy/pagination": "~3.0",
+    "mindy/orm-bundle": "~3.0",
     "mindy/pagination-bundle": "~3.0",
+    "mindy/sitemap-bundle": "~3.0",
+    "mindy/template-bundle": "~3.0",
     "mindy/mindy-bundle": "~3.0",
-    "egeloen/ckeditor-bundle": "~4.0"
+    "mindy/ckeditor-bundle": "~3.0"
   },
   "suggest": {
     "mindy/admin-bundle": "The Administrator panel for Mindy Framework"
@@ -22,6 +22,11 @@
     "exclude-from-classmap": [
       "/Tests/"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Mindy\\Bundle\\PageBundle\\Tests\\": "./Tests/"
+    }
   },
   "minimum-stability": "dev",
   "extra": {
