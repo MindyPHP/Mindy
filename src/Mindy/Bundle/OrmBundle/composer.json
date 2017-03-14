@@ -15,10 +15,16 @@
     "require": {
         "php": ">=5.5.9",
         "mindy/orm": "~3.0",
-        "doctrine/migrations": "^1.4"
+        "mindy/orm-nested-set": "~3.0",
+        "mindy/orm-slug-field": "~3.0",
+        "mindy/orm-fields": "~3.0",
+        "mindy/orm-file-field": "~3.0",
+        "doctrine/migrations": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.3.4"
+        "phpunit/phpunit": "~4.0",
+        "symfony/config": "~3.0",
+        "symfony/dependency-injection": "~3.0"
     },
     "autoload": {
         "psr-4": {
@@ -27,6 +33,11 @@
         "exclude-from-classmap": [
             "/Tests/"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mindy\\Bundle\\OrmBundle\\Tests\\": "./Tests/"
+        }
     },
     "minimum-stability": "dev",
     "extra": {
