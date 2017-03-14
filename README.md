@@ -27,6 +27,7 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 
 | Компонент / Bundle     | Статус        |
 | ------------- |:-------------:|
+| Application | [![Build Status](https://travis-ci.org/MindyPHP/Application.svg?branch=master)](https://travis-ci.org/MindyPHP/Application) |
 | MenuBundle | [![Build Status](https://travis-ci.org/MindyPHP/MenuBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/MenuBundle) |
 | SentryBundle | [![Build Status](https://travis-ci.org/MindyPHP/SentryBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/SentryBundle) |
 | QueryBuilder | [![Build Status](https://travis-ci.org/MindyPHP/QueryBuilder.svg?branch=master)](https://travis-ci.org/MindyPHP/QueryBuilder) |
