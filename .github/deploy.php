@@ -205,8 +205,12 @@ switch ($command) {
             'git commit -am "clean {name} subtree"',
             'git subtree add --prefix={path} {name} master'
         ];
+
+        $i = 1;
         foreach ($subtrees as $name => $subtree) {
             if ($target == 'all' || $target == $name) {
+                echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
+
                 foreach ($commands as $command) {
                     cmd(strtr($command, [
                         '{name}' => sprintf("%s-subtree", $name),
@@ -214,6 +218,8 @@ switch ($command) {
                     ]));
                 }
             }
+
+            $i++;
         }
         return;
     case 'push':
@@ -232,9 +238,9 @@ switch ($command) {
 
         $i = 1;
         foreach ($subtrees as $name => $subtree) {
-            echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
-
             if ($target == 'all' || $target == $name) {
+                echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
+
                 foreach ($commands as $command) {
                     cmd(strtr($command, [
                         '{name}' => sprintf("%s-subtree", $name),
@@ -262,9 +268,9 @@ switch ($command) {
 
         $i = 1;
         foreach ($subtrees as $name => $subtree) {
-            echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
-
             if ($target == 'all' || $target == $name) {
+                echo sprintf("\n\n%s: %s of %s\n\n", $name, $i, count($subtrees));
+
                 foreach ($commands as $command) {
                     cmd(strtr($command, [
                         '{name}' => sprintf("%s-subtree", $name),
