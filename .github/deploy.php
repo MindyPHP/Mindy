@@ -330,7 +330,8 @@ switch ($command) {
 
         $parentCommands = [
             'git tag -a {tag} -m "Version {tag}"',
-            'git push origin refs/tags/{tag}',
+            'git push origin --tags',
+            'git tag -d {tag}',
         ];
         foreach ($parentCommands as $command) {
             cmd(strtr($command, [
@@ -340,8 +341,10 @@ switch ($command) {
 
         $commands = [
             'git subtree split --prefix={path} -b {temp_name}',
-            'git push {name} refs/tags/{tag}',
+            'git tag -a {tag} -m "Version {tag}" {temp_name}',
+            'git push {name} --tags',
             'git branch -D {temp_name}',
+            'git tag -d {tag}',
         ];
         $i = 1;
         foreach ($subtrees as $name => $subtree) {
