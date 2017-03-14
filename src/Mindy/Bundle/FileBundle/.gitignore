@@ -1,6 +1,0 @@
-.DS_Store
-.idea
-*.iml
-*.lock
-/vendor
-.php_cs.cache
