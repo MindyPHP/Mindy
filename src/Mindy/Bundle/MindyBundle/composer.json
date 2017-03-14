@@ -1,0 +1,34 @@
+{
+    "name": "mindy/mindy-bundle",
+    "type": "symfony-bundle",
+    "description": "Mindy base bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Falaleev Maxim",
+            "email": "max@studio107.ru"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~3.0",
+        "symfony/swiftmailer-bundle": "~2.4",
+        "mindy/template-bundle": "~3.0",
+        "symfony/asset": "~3.0",
+        "mindy/orm-bundle": "~3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mindy\\Bundle\\MindyBundle\\": ""
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.6.8-dev"
+        }
+    }
+}
