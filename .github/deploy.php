@@ -8,6 +8,26 @@ $packages = [
     ]
 ];
 
+// Check if a certain branch is given
+if (!isset($argv[1])) {
+    if (!confirm('No specific package selected')) {
+        return;
+    }
+    $package = 'master';
+} else {
+    $package = $argv[1];
+}
+
+// Check if a certain branch is given
+if (!isset($argv[2])) {
+    if (!confirm('No specific branch selected, continue with master branch?')) {
+        return;
+    }
+    $branch = 'master';
+} else {
+    $branch = $argv[2];
+}
+
 function cmd($command) {
     echo $command . PHP_EOL;
     exec($command);
@@ -22,6 +42,7 @@ function recreateSubtree($part, $branch = 'master') {
 
         "\n\necho Create\n\n",
         // Create
+        'git checkout -b {branch}',
         'git remote add {remote_name} {remote_url}',
         'git fetch {remote_name}',
         'git checkout -b {remote_name} {remote_name}/master',
@@ -43,5 +64,7 @@ function recreateSubtree($part, $branch = 'master') {
 }
 
 foreach ($packages as $part) {
-    recreateSubtree($part, 'subtree');
+    if ($part['remote_name'] == $package) {
+        recreateSubtree($part, $branch);
+    }
 }
