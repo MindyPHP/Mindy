@@ -17,19 +17,17 @@ interface PaginationHandlerInterface
 {
     /**
      * @param $key
-     * @param $defaultPageSize
      *
      * @return int
      */
-    public function getPageSize($key, $defaultPageSize);
+    public function getPageSize($key);
 
     /**
      * @param $key
-     * @param int $defaultPage
      *
      * @return int
      */
-    public function getPage($key, $defaultPage = 1);
+    public function getPage($key);
 
     /**
      * @param $key
