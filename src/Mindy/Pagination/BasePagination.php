@@ -102,11 +102,7 @@ abstract class BasePagination
         $this->handler = $handler;
 
         if (null === $this->page) {
-            $page = $handler->getPage($this->getPageKey());
-            if (empty($page) || $page < 1) {
-                $page = 1;
-            }
-            $this->page = $page;
+            $this->page = $handler->getPage($this->getPageKey());
         }
 
         $pageSize = (int)$handler->getPageSize($this->getPageSizeKey());
