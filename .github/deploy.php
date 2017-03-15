@@ -110,7 +110,7 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/Pagination.git',
         'path' => 'src/Mindy/Pagination',
     ],
-    'query_builder' => [
+    'query-builder' => [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
         'path' => 'src/Mindy/QueryBuilder',
     ],
