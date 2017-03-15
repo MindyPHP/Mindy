@@ -25,27 +25,17 @@ class NativePaginationHandler implements PaginationHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPageSize($key, $defaultPageSize)
+    public function getPageSize($key)
     {
-        $pageSize = isset($_GET[$key]) ? (int) $_GET[$key] : $defaultPageSize;
-        if (empty($pageSize) || $pageSize < 1) {
-            $pageSize = $defaultPageSize;
-        }
-
-        return (int) $pageSize;
+        return isset($_GET[$key]) ? (int) $_GET[$key] : null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPage($key, $defaultPage = 1)
+    public function getPage($key)
     {
-        $page = isset($_GET[$key]) ? (int) $_GET[$key] : 1;
-        if (empty($page) || $page < 1) {
-            $page = $defaultPage;
-        }
-
-        return (int) $page;
+        return isset($_GET[$key]) ? (int) $_GET[$key] : null;
     }
 
     /**

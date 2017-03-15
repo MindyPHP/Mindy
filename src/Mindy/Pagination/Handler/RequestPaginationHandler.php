@@ -50,14 +50,9 @@ class RequestPaginationHandler implements PaginationHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPageSize($key, $defaultPageSize)
+    public function getPageSize($key)
     {
-        $pageSize = $this->request->query->getInt($key);
-        if (empty($pageSize) || $pageSize < 1) {
-            return $defaultPageSize;
-        }
-
-        return (int) $pageSize;
+        return $this->request->query->getInt($key);
     }
 
     /**
@@ -65,12 +60,7 @@ class RequestPaginationHandler implements PaginationHandlerInterface
      */
     public function getPage($key, $defaultPage = 1)
     {
-        $page = $this->request->query->getInt($key);
-        if (empty($page) || $page < 1) {
-            $page = $defaultPage;
-        }
-
-        return (int) $page;
+        return $this->request->query->getInt($key);
     }
 
     /**
