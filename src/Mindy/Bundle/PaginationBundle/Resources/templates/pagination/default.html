@@ -4,8 +4,6 @@
             <li class="b-pager__item b-pager__item_prev">
                 {% if pager.hasPrevPage() %}
                     <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage() - 1) }}">&larr;</a>
-                {% else %}
-                    <span class="b-pager__link b-pager__link_disabled">&larr;</span>
                 {% endif %}
             </li>
 
@@ -30,10 +28,8 @@
             {% endif %}
 
             <li class="b-pager__item b-pager__item_next">
-                {% if pager.hasNextPage %}
+                {% if pager.hasNextPage() %}
                     <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
-                {% else %}
-                    <span class="b-pager__link b-pager__link_disabled">&rarr;</span>
                 {% endif %}
             </li>
         {% endif %}
