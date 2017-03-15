@@ -1,11 +1,11 @@
 <div class="b-pager">
     <ul class="b-pager__list">
         {% if pager.getPagesCount() > 1 %}
-            <li class="b-pager__item b-pager__item_prev">
-                {% if pager.hasPrevPage() %}
+            {% if pager.hasPrevPage() %}
+                <li class="b-pager__item b-pager__item_prev">
                     <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage() - 1) }}">&larr;</a>
-                {% endif %}
-            </li>
+                </li>
+            {% endif %}
 
             {% if pager.hasPrevPage() %}
                 {% for page in pager.iterPrevPage() %}
@@ -27,11 +27,11 @@
                 {% endfor %}
             {% endif %}
 
-            <li class="b-pager__item b-pager__item_next">
-                {% if pager.hasNextPage() %}
+            {% if pager.hasNextPage() %}
+                <li class="b-pager__item b-pager__item_next">
                     <a class="b-pager__link" href="{{ pager.getUrl(pager.getPage()+1) }}">&rarr;</a>
-                {% endif %}
-            </li>
+                </li>
+            {% endif %}
         {% endif %}
     </ul>
 
@@ -41,10 +41,12 @@
         <div class="b-pager__size">
             {% set pageSizes = pager.getPageSizes() %}
             <div class="b-select">
-                <select class="b-select__select" name="{{ pager.getPageSizeKey() }}" id="pageSize" onchange="window.location=this.value">
+                <select class="b-select__select" name="{{ pager.getPageSizeKey() }}" id="pageSize"
+                        onchange="window.location=this.value">
                     <option value=""></option>
                     {% for pageSize in pageSizes %}
-                        <option value="{{ pager.urlPageSize(pageSize) }}" {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
+                        <option value="{{ pager.urlPageSize(pageSize) }}"
+                                {% if pager.getPageSize() == pageSize %}selected="selected"{% endif %}>
                             {{ pageSize }}
                         </option>
                     {% endfor %}
