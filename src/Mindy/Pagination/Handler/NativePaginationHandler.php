@@ -35,7 +35,11 @@ class NativePaginationHandler implements PaginationHandlerInterface
      */
     public function getPage($key)
     {
-        return isset($_GET[$key]) ? (int) $_GET[$key] : null;
+        if (isset($_GET[$key])) {
+            return (int) $_GET[$key];
+        }
+
+        return null;
     }
 
     /**

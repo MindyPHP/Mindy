@@ -103,6 +103,9 @@ abstract class BasePagination
 
         if (null === $this->page) {
             $this->page = $handler->getPage($this->getPageKey());
+            if ($this->page === null) {
+                $this->page = 1;
+            }
         }
 
         $pageSize = (int)$handler->getPageSize($this->getPageSizeKey());
@@ -201,7 +204,11 @@ abstract class BasePagination
     public function paginate()
     {
         $this->total = $this->dataSource->getTotal($this->source);
-        if ($this->getPage() > $this->getPagesCount() || $this->getPage() <= 0) {
+
+        if (
+            ($this->getPagesCount() > 0 && $this->getPage() > $this->getPagesCount()) ||
+            $this->getPage() <= 0
+        ) {
             $this->handler->wrongPageCallback();
         }
 

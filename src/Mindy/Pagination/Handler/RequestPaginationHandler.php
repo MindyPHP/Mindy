@@ -58,9 +58,13 @@ class RequestPaginationHandler implements PaginationHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function getPage($key, $defaultPage = 1)
+    public function getPage($key)
     {
-        return $this->request->query->getInt($key);
+        if ($this->request->query->has($key)) {
+            return $this->request->query->getInt($key);
+        }
+
+        return null;
     }
 
     /**
