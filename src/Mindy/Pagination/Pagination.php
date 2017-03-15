@@ -15,5 +15,4 @@ namespace Mindy\Pagination;
  */
 class Pagination extends BasePagination
 {
-
 }
