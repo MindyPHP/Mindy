@@ -11,7 +11,7 @@
 namespace Mindy\Bundle\MenuBundle\Admin;
 
 use Mindy\Bundle\AdminBundle\Admin\AbstractModelAdmin;
-use Mindy\Bundle\MenuBundle\Form\MenuForm;
+use Mindy\Bundle\MenuBundle\Form\Admin\MenuForm;
 use Mindy\Bundle\MenuBundle\Model\Menu;
 use Mindy\Orm\ModelInterface;
 use Symfony\Component\HttpFoundation\Request;
