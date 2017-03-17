@@ -20,7 +20,7 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 ## Сообщество
 
 [![Gitter](https://badges.gitter.im/MindyPHP/Mindy.svg)](https://gitter.im/MindyPHP/Mindy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Telegram](https://raw.githubusercontent.com/Patrolavia/telegram-badge/master/chat.svg)](https://t.me/mindyphp)
+[![Telegram](https://img.shields.io/badge/join-telegram-blue.svg?maxAge=2592000)](https://t.me/mindyphp)
 
 
 ## Статус
