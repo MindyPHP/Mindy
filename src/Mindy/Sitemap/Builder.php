@@ -103,7 +103,7 @@ class Builder
      *
      * @return array
      */
-    public function build($scheme, $host, $path)
+    public function build($scheme, $host, $path, $name = 'sitemap.xml')
     {
         $sitemaps = [];
 
@@ -125,14 +125,14 @@ class Builder
             }
 
             $this->saveFile(
-                sprintf('%s/sitemap.xml', $path),
+                sprintf('%s/%s', $path, $name),
                 $sitemapIndex->getXml()
             );
         } else {
-            $this->saveSitemap(sprintf('%s/sitemap.xml', $path), $entities);
+            $this->saveSitemap(sprintf('%s/%s', $path, $name), $entities);
         }
 
-        $sitemaps[] = sprintf('%s/sitemap.xml', rtrim($host, '/'));
+        $sitemaps[] = sprintf('%s/%s', rtrim($host, '/'), $name);
 
         return $sitemaps;
     }
