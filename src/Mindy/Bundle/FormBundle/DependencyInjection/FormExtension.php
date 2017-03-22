@@ -32,13 +32,5 @@ class FormExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('form.themes', $config['themes']);
-
-        if ($container->hasDefinition('serializer')) {
-            $loader->load('normalizer.xml');
-        }
-
-        if ($container->hasDefinition('orm.connection_manager')) {
-            $loader->load('orm.xml');
-        }
     }
 }
