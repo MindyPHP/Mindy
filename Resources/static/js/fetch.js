@@ -15,6 +15,7 @@ const doMethod = (method, url, data = {}, params = {}, headers = {}) => {
     if (!isGet) {
         headers = {
             "Accept": 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             ...headers
         }
