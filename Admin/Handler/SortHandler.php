@@ -34,6 +34,10 @@ class SortHandler implements AdminHandlerInterface
     /**
      * @var string
      */
+    protected $field;
+    /**
+     * @var string
+     */
     protected $defaultOrder = [];
 
     /**
