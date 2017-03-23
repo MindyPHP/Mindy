@@ -24,6 +24,7 @@ class TreeManager extends Manager
             $this->qs = new TreeQuerySet([
                 'model' => $this->getModel(),
                 'modelClass' => get_class($this->getModel()),
+                'connection' => $this->getModel()->getConnection(),
             ]);
             $this->qs->order(['lft']);
         }
