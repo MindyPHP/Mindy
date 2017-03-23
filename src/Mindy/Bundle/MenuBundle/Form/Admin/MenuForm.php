@@ -46,10 +46,12 @@ class MenuForm extends AbstractType
             ->add('slug', TextType::class, [
                 'label' => 'Слаг',
                 'help' => 'Ключ для выбора меню. Может содержать только латинские символы и цифры.',
+                'required' => false,
             ])
             ->add('url', TextType::class, [
                 'label' => 'Адрес',
                 'help' => 'Ссылка может быть абсолютной, относительной или любым js кодом',
+                'required' => false,
             ])
             ->add('buttons', ButtonsType::class);
     }
