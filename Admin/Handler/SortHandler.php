@@ -13,6 +13,7 @@ namespace Mindy\Bundle\AdminBundle\Admin\Handler;
 use Mindy\Orm\Manager;
 use Mindy\Orm\QuerySet;
 use Mindy\Orm\TreeManager;
+use Mindy\Orm\TreeModel;
 use Mindy\Orm\TreeQuerySet;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -74,6 +75,7 @@ class SortHandler implements AdminHandlerInterface
 
                 return;
             }
+
             $method = $isTree ? 'sortNestedSet' : 'sortFlat';
             call_user_func_array([$this, $method], [$qs, $value]);
         }
@@ -85,16 +87,18 @@ class SortHandler implements AdminHandlerInterface
      */
     public function sortFlat($qs, array $ids)
     {
+        $cloneQs = clone $qs;
+
         /*
          * Pager-independent sorting
          */
-        $oldPositions = $qs
+        $oldPositions = $cloneQs
             ->filter(['pk__in' => $ids])
             ->valuesList([$this->column], true);
         asort($oldPositions);
 
         foreach ($ids as $id) {
-            $qs
+            (clone $qs)
                 ->filter(['pk' => $id])
                 ->update([
                     $this->column => array_shift($oldPositions),
@@ -115,46 +119,60 @@ class SortHandler implements AdminHandlerInterface
         $pk = $this->request->query->getInt('pk');
 
         /** @var \Mindy\Orm\TreeModel $model */
-        $model = $qs->get(['pk' => $pk]);
+        $model = (clone $qs)->get(['pk' => $pk]);
         if (null === $model) {
             throw new NotFoundHttpException('Model not found');
         }
 
         if ($model->getIsRoot()) {
-            $roots = $qs->roots()->filter(['pk__in' => $ids])->all();
+            $roots = $model
+                ->objects()
+                ->roots()
+                ->filter(['pk__in' => $ids])
+                ->all();
+
             $newPositions = array_flip($ids);
 
             foreach ($roots as $root) {
-                $descendants = $root->objects()->descendants()->filter([
-                    'level__gt' => 1,
-                ])->valuesList(['pk'], true);
+                /** @var TreeModel $root */
+                $descendantIds = $root
+                    ->objects()
+                    ->descendants()
+                    ->filter(['level__gt' => 1])
+                    ->valuesList(['pk'], true);
 
-                if (count($descendants) > 0) {
-                    $qs->filter([
-                        'pk__in' => $descendants,
-                    ])->update(['root' => $newPositions[$root->pk]]);
+                if (count($descendantIds) > 0) {
+                    $model
+                        ->objects()
+                        ->filter(['pk__in' => $descendantIds])
+                        ->update(['root' => $newPositions[$root->pk]]);
                 }
             }
 
             foreach ($newPositions as $pk => $position) {
-                $qs->filter([
-                    'pk' => $pk,
-                ])->update(['root' => $position]);
+                $model
+                    ->objects()
+                    ->filter(['pk' => $pk])
+                    ->update(['root' => $position]);
             }
         } else {
+            /** @var TreeModel $target */
             if (isset($data['insertBefore'])) {
-                $target = $qs->get(['pk' => $data['insertBefore']]);
-                if ($target) {
-                    $model->moveBefore($target);
+                $target = $model->objects()->get(['pk' => $data['insertBefore']]);
+                if (null === $target) {
+                    throw new NotFoundHttpException('Target not found');
                 }
-                throw new NotFoundHttpException('Target not found');
+
+                $model->moveBefore($target);
             } elseif (isset($data['insertAfter'])) {
-                $target = $qs->get(['pk' => $data['insertAfter']]);
-                if ($target) {
-                    $model->moveAfter($target);
+                $target = $model->objects()->get(['pk' => $data['insertAfter']]);
+                if (null === $target) {
+                    throw new NotFoundHttpException('Target not found');
                 }
-                throw new NotFoundHttpException('Target not found');
+
+                $model->moveAfter($target);
             }
+
             throw new NotFoundHttpException('Missing required parameter insertAfter or insertBefore');
         }
     }
