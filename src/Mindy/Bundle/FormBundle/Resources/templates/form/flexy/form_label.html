@@ -11,10 +11,10 @@
     {% set label_text = translation_domain ? translator.trans(label, [], translation_domain) : label %}
     <label class="b-label" {% for k, v in label_attr %} {{ k }}="{{ v }}"{% endfor %}>
         {{ label_text }}
-    {% if tooltip %}
-        <span class="b-label-help b-tooltip b-tooltip_top" aria-label="{{ tooltip }}">
-            <i class="icon question"></i>
-        </span>
-    {% endif %}
+        {% if tooltip %}
+            <span class="b-label-help b-tooltip b-tooltip_top" data-tooltip="{{ tooltip }}">
+                <i class="icon question"></i>
+            </span>
+        {% endif %}
     </label>
 {% endif %}
