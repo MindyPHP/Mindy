@@ -43,5 +43,20 @@
                  class="Mindy\Bundle\FormBundle\Form\Extension\CheckboxExtension">
             <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\CheckboxType" />
         </service>
+
+        <service id="mindy.bundle.form.data_transformer.query_set"
+                 public="false"
+                 class="Mindy\Bundle\FormBundle\Form\DataTransformer\QuerySetTransformer"/>
+
+        <service id="mindy.bundle.form.extension.query_set_type"
+                 class="Mindy\Bundle\FormBundle\Form\Extension\QuerySetExtension">
+            <argument type="service" id="mindy.bundle.form.data_transformer.query_set"/>
+            <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\ChoiceType"/>
+        </service>
+
+        <service id="mindy.bundle.form.serializer.normalizer"
+                 class="Mindy\Bundle\FormBundle\Normalizer\FormErrorsNormalizer">
+            <tag name="serializer.normalizer" />
+        </service>
     </services>
 </container>

@@ -10,14 +10,12 @@
 
 namespace Mindy\Orm;
 
-use ArrayAccess;
 use Doctrine\DBAL\Connection;
-use IteratorAggregate;
 
 /**
  * Class ManagerBase.
  */
-abstract class ManagerBase implements ManagerInterface, IteratorAggregate, ArrayAccess
+abstract class ManagerBase implements ManagerInterface
 {
     /**
      * @var \Mindy\Orm\QuerySet
@@ -50,8 +48,21 @@ abstract class ManagerBase implements ManagerInterface, IteratorAggregate, Array
         $this->init();
     }
 
+    /**
+     * Init method
+     */
     protected function init()
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        if ($this->qs) {
+            $this->qs = clone $this->qs;
+        }
     }
 
     /**
@@ -94,6 +105,7 @@ abstract class ManagerBase implements ManagerInterface, IteratorAggregate, Array
         if ($this->qs === null) {
             $this->qs = new QuerySet([
                 'model' => $this->getModel(),
+                'connection' => $this->getModel()->getConnection(),
             ]);
         }
 
@@ -103,7 +115,7 @@ abstract class ManagerBase implements ManagerInterface, IteratorAggregate, Array
     /**
      * {@inheritdoc}
      */
-    public function setConnection($connection)
+    public function setConnection(Connection $connection)
     {
         $this->getQuerySet()->setConnection($connection);
 
@@ -190,6 +202,10 @@ abstract class ManagerBase implements ManagerInterface, IteratorAggregate, Array
         return $this->getQuerySet()->each($batchSize);
     }
 
+    /**
+     * @param $having
+     * @return $this
+     */
     public function having($having)
     {
         $this->getQuerySet()->having($having);

@@ -33,7 +33,7 @@ class CheckboxExtension extends AbstractTypeExtension
                 return (bool) $value;
             },
             function ($value) {
-                return (string) $value;
+                return (int) $value;
             }
         ));
     }

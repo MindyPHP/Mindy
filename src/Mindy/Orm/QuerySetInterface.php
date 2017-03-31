@@ -10,17 +10,24 @@
 
 namespace Mindy\Orm;
 
-use Doctrine\Dbal\Connection;
+use ArrayAccess;
+use IteratorAggregate;
+use Mindy\Orm\Exception\MultipleObjectsReturned;
+use Mindy\QueryBuilder\ConnectionAwareInterface;
 
 /**
  * Interface QuerySetInterface.
  */
-interface QuerySetInterface
+interface QuerySetInterface extends ConnectionAwareInterface, IteratorAggregate, ArrayAccess
 {
     /**
+     * Executes query and returns a single row of result.
+     *
      * @param $conditions
      *
-     * @return array|ModelInterface
+     * @return array|ModelInterface|null
+     *
+     * @throws MultipleObjectsReturned
      */
     public function get($conditions = []);
 
@@ -58,6 +65,15 @@ interface QuerySetInterface
     public function all();
 
     /**
+     * Update records.
+     *
+     * @param array $attributes
+     *
+     * @return int updated records
+     */
+    public function update(array $attributes);
+
+    /**
      * @param string $q
      *
      * @return int
@@ -70,18 +86,6 @@ interface QuerySetInterface
      * @return $this
      */
     public function order($columns);
-
-    /**
-     * @param string|Connection $connection
-     *
-     * @return $this
-     */
-    public function setConnection($connection);
-
-    /**
-     * @return Connection
-     */
-    public function getConnection();
 
     /**
      * @param int $batchSize

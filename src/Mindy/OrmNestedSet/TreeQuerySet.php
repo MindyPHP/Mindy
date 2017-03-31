@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of Mindy Orm.
+ * This file is part of Mindy Framework.
  * (c) 2017 Maxim Falaleev
  *
  * For the full copyright and license information, please view the LICENSE
@@ -10,10 +10,8 @@
 
 namespace Mindy\Orm;
 
-use Doctrine\DBAL\Connection;
 use Mindy\QueryBuilder\Expression;
 use Mindy\QueryBuilder\Q\QAndNot;
-use Mindy\QueryBuilder\QueryBuilder;
 
 /**
  * Class TreeQuerySet.
@@ -164,6 +162,11 @@ class TreeQuerySet extends QuerySet
         return ($max = $this->max('root')) ? $max + 1 : 1;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
     public function asTree($key = 'items')
     {
         $this->asArray(true);
@@ -173,6 +176,9 @@ class TreeQuerySet extends QuerySet
         return $this->order(['root', 'lft']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function all()
     {
         $data = parent::all();
@@ -193,8 +199,10 @@ class TreeQuerySet extends QuerySet
      *
      * Problem: we have nested1 with lft 2 and rgt 3 without root.
      * Need find it and delete.
+     *
+     * @param $table
      */
-    protected function deleteBranchWithoutRoot(Connection $db, $table)
+    protected function deleteBranchWithoutRoot($table)
     {
         $subQuery = clone $this->getQueryBuilder();
         $subQuery->clear()->setTypeSelect()->from($table)->select('root')->where(['parent_id__isnull' => true]);
@@ -205,11 +213,11 @@ class TreeQuerySet extends QuerySet
             new QAndNot(['root__in' => $subQuery]),
         ]);
 
-        $ids = $db->query($query->toSQL())->fetchColumn();
+        $ids = $this->getConnection()->query($query->toSQL())->fetchColumn();
         if ($ids && count($ids) > 0) {
             $deleteQuery = clone $this->getQueryBuilder();
             $deleteQuery->clear()->setTypeDelete()->from($table)->where(['id__in' => $ids]);
-            $db->query($deleteQuery->toSQL())->execute();
+            $this->getConnection()->query($deleteQuery->toSQL())->execute();
         }
     }
 
@@ -224,8 +232,10 @@ class TreeQuerySet extends QuerySet
      *
      * Problem: we have nested2 with lft 3 and rgt 4 without parent node.
      * Need find it and delete.
+     *
+     * @param $table
      */
-    protected function deleteBranchWithoutParent(Connection $db, $table)
+    protected function deleteBranchWithoutParent($table)
     {
         /*
         $query = new Query([
@@ -242,7 +252,7 @@ class TreeQuerySet extends QuerySet
             new QAndNot(['parent_id__in' => $subQuery]),
         ]);
 
-        $rows = $db->query($query->toSQL())->fetchAll();
+        $rows = $this->getConnection()->query($query->toSQL())->fetchAll();
         foreach ($rows as $row) {
             $deleteQuery = clone $this->getQueryBuilder();
             $deleteQuery->clear()->setTypeDelete()->from($table)->where([
@@ -250,7 +260,7 @@ class TreeQuerySet extends QuerySet
                 'rgt__lte' => $row['rgt'],
                 'root' => $row['root'],
             ]);
-            $db->query($deleteQuery->toSQL())->execute();
+            $this->getConnection()->query($deleteQuery->toSQL())->execute();
         }
     }
 
@@ -269,19 +279,19 @@ class TreeQuerySet extends QuerySet
      * )
      * ORDER BY rgt DESC
      */
-    protected function rebuildLftRgt(Connection $db, $table)
+    protected function rebuildLftRgt($table)
     {
         $subQuery = 'SELECT [[tt]].[[parent_id]] FROM '.$table.' AS [[tt]] WHERE [[tt]].[[parent_id]]=[[t]].[[id]]';
         $where = 'NOT [[lft]]=([[rgt]]-1) AND NOT [[id]] IN ('.$subQuery.')';
         $sql = 'SELECT [[id]], [[root]], [[lft]], [[rgt]], [[rgt]]-[[lft]]-1 AS [[move]] FROM '.$table.' AS [[t]] WHERE '.$where.' ORDER BY [[rgt]] ASC';
-        $adapter = QueryBuilder::getInstance($db)->getAdapter();
+        $adapter = $this->getAdapter();
 
-        $rows = $db->query($adapter->quoteSql($sql))->fetchAll();
+        $rows = $this->getConnection()->query($adapter->quoteSql($sql))->fetchAll();
         foreach ($rows as $row) {
             $sql = 'UPDATE '.$table.' SET [[lft]]=[[lft]]-'.$row['move'].', [[rgt]]=[[rgt]]-'.$row['move'].' WHERE [[root]]='.$row['root'].' AND [[lft]]>'.$row['rgt'];
-            $db->query($adapter->quoteSql($sql))->execute();
+            $this->getConnection()->query($adapter->quoteSql($sql))->execute();
             $sql = 'UPDATE '.$table.' SET [[rgt]]=[[rgt]]-'.$row['move'].' WHERE [[root]]='.$row['root'].' AND [[lft]]<[[rgt]] AND [[rgt]]>='.$row['rgt'];
-            $db->query($adapter->quoteSql($sql))->execute();
+            $this->getConnection()->query($adapter->quoteSql($sql))->execute();
         }
     }
 
@@ -296,9 +306,9 @@ class TreeQuerySet extends QuerySet
         $model = $this->getModel();
         $db = $model->getConnection();
         $table = $model->tableName();
-        $this->deleteBranchWithoutRoot($db, $table);
-        $this->deleteBranchWithoutParent($db, $table);
-        $this->rebuildLftRgt($db, $table);
+        $this->deleteBranchWithoutRoot($table);
+        $this->deleteBranchWithoutParent($table);
+        $this->rebuildLftRgt($table);
     }
 
     /**

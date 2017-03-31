@@ -534,13 +534,31 @@ class QueryBuilder
     }
 
     /**
-     * @param array $columns columns
+     * @param string|array $columns columns
      *
      * @return $this
      */
     public function group($columns)
     {
+        if (!is_array($columns)) {
+            $columns = [$columns];
+        }
         $this->_group = $columns;
+
+        return $this;
+    }
+
+    /**
+     * @param string|array $columns columns
+     *
+     * @return $this
+     */
+    public function addGroupBy($columns)
+    {
+        if (!is_array($columns)) {
+            $columns = [$columns];
+        }
+        $this->_group = array_merge($this->_group, $columns);
 
         return $this;
     }
