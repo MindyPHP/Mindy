@@ -235,6 +235,10 @@ class FileField extends CharField
             $value = $this->saveFile($value);
         }
 
+        if ($value === false) {
+            $value = null;
+        }
+
         if (is_string($value)) {
             $value = $this->normalizeValue($value);
         }
@@ -254,6 +258,10 @@ class FileField extends CharField
 
     public function saveUploadedFile(UploadedFile $file)
     {
+        if (false === $file->isValid()) {
+            return false;
+        }
+
         $contents = file_get_contents($file->getRealPath());
 
         $path = $this->getNameHasher()->resolveUploadPath(
