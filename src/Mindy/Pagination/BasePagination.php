@@ -93,7 +93,7 @@ abstract class BasePagination
         $this->source = $source;
         $this->dataSource = $dataSource;
 
-        foreach (['page', 'pageSize', 'pageSizes'] as $key) {
+        foreach (['page', 'pageKey', 'pageSize', 'pageSizes'] as $key) {
             if (array_key_exists($key, $config)) {
                 $this->{$key} = $config[$key];
             }
