@@ -120,7 +120,7 @@
                     $next = $to.next(),
                     data = $(this).sortable('toArray', { attribute: 'data-pk' });
 
-                fetch.post('{{ admin.getAdminUrl('list', ['pk' => request.query.get('pk')]) }}', {}, {
+                fetch.post('{{ admin.getAdminUrl('sort', ['pk' => request.query.get('pk')]) }}', {}, {
                     parent_id: '{{ request.query.get('parent_id') }}',
                     models: data,
                     pk: $to.data('pk'),
