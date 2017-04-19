@@ -178,6 +178,45 @@ abstract class AbstractModelAdmin extends AbstractAdmin
         return call_user_func([$this->getModelClass(), 'objects']);
     }
 
+    public function sortAction(Request $request)
+    {
+        $qs = $this->getQuerySet();
+        $tree = $qs instanceof TreeManager || $qs instanceof TreeQuerySet;
+
+        $view = $this->get('admin.view.list');
+        $view->setTemplate($this->findTemplate('_table.html'));
+
+        if ($tree) {
+            if ($pk = $request->query->getInt('parent_id')) {
+                $qs->filter(['parent_id' => $pk]);
+            } else {
+                $qs->roots();
+            }
+        }
+
+        $view->setQuerySet($qs);
+        $view->setPaginationParameters($this->pager);
+
+        $view->setSearchHandler(new SearchHandler($request, 'search', $this->searchFields));
+        $view->setOrderHandler(new OrderHandler($request, 'order', $this->defaultOrder));
+
+        if ($this->sorting) {
+            $view->setSortHandler(new SortHandler($request, 'models', $this->sorting, $this->sorting));
+        }
+
+        $view->handleRequest($request);
+
+        $instance = (new \ReflectionClass($this->getModelClass()))->newInstance();
+
+        return $view->render([
+            'admin' => $this,
+            'tree' => $tree,
+            'breadcrumbs' => $this->fetchBreadcrumbs($request, $instance, 'list'),
+            'linkColumn' => $this->linkColumn,
+            'columns' => $this->getColumns(),
+        ]);
+    }
+
     public function listAction(Request $request)
     {
         $qs = $this->getQuerySet();
