@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MenuAdmin extends AbstractModelAdmin
 {
+    public $sorting = true;
+
     public $columns = ['name', 'slug', 'url'];
 
     public $searchFields = ['name'];

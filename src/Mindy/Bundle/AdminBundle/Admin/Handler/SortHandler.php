@@ -119,7 +119,7 @@ class SortHandler implements AdminHandlerInterface
         $pk = $this->request->query->getInt('pk');
 
         /** @var \Mindy\Orm\TreeModel $model */
-        $model = (clone $qs)->get(['pk' => $pk]);
+        $model = $qs->getModel()->objects()->get(['pk' => $pk]);
         if (null === $model) {
             throw new NotFoundHttpException('Model not found');
         }
@@ -157,23 +157,27 @@ class SortHandler implements AdminHandlerInterface
             }
         } else {
             /** @var TreeModel $target */
-            if (isset($data['insertBefore'])) {
-                $target = $model->objects()->get(['pk' => $data['insertBefore']]);
+            if ($this->request->query->has('insertBefore')) {
+                $target = $model->objects()->get([
+                    'pk' => $this->request->query->get('insertBefore')
+                ]);
                 if (null === $target) {
                     throw new NotFoundHttpException('Target not found');
                 }
 
                 $model->moveBefore($target);
-            } elseif (isset($data['insertAfter'])) {
-                $target = $model->objects()->get(['pk' => $data['insertAfter']]);
+            } elseif ($this->request->query->has('insertAfter')) {
+                $target = $model->objects()->get([
+                    'pk' => $this->request->query->get('insertAfter')
+                ]);
                 if (null === $target) {
                     throw new NotFoundHttpException('Target not found');
                 }
 
                 $model->moveAfter($target);
+            } else {
+                throw new NotFoundHttpException('Missing required parameter insertAfter or insertBefore');
             }
-
-            throw new NotFoundHttpException('Missing required parameter insertAfter or insertBefore');
         }
     }
 
