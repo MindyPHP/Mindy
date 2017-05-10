@@ -61,6 +61,15 @@ abstract class TreeModel extends Model
     }
 
     /**
+     * @param array $item
+     * @return array
+     */
+    public function toTree(array $item)
+    {
+        return $item;
+    }
+
+    /**
      * @param null $instance
      *
      * @return TreeManager

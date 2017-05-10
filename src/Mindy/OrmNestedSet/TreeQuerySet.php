@@ -376,12 +376,12 @@ class TreeQuerySet extends QuerySet
                 if ($l == 0) {
                     // Assigning the root node
                     $i = count($trees);
-                    $trees[$i] = $item;
+                    $trees[$i] = $this->getModel()->toTree($item);;
                     $stack[] = &$trees[$i];
                 } else {
                     // Add node to parent
                     $i = count($stack[$l - 1][$this->treeKey]);
-                    $stack[$l - 1][$this->treeKey][$i] = $item;
+                    $stack[$l - 1][$this->treeKey][$i] = $this->getModel()->toTree($item);;
                     $stack[] = &$stack[$l - 1][$this->treeKey][$i];
                 }
             }
