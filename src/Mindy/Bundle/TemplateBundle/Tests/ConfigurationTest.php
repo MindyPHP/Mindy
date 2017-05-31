@@ -28,7 +28,8 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'mode' => Renderer::RECOMPILE_NORMAL,
-            'helpers' => [],
+            'cache_dir' => '%kernel.cache_dir%/templates',
+            'auto_escape' => true,
             'bundles' => [
                 'enabled' => true,
                 'templatesDir' => 'templates',
