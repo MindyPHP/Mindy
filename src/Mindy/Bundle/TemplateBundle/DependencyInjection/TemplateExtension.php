@@ -34,9 +34,9 @@ class TemplateExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('template.mode', $config['mode']);
-        $container->setParameter('template.auto_escape', $config['auto_escape']);
-        $container->setParameter('template.cache_dir', $config['cache_dir']);
+        $container->setParameter('mindy.template.mode', $config['mode']);
+        $container->setParameter('mindy.template.auto_escape', $config['auto_escape']);
+        $container->setParameter('mindy.template.cache_dir', $config['cache_dir']);
 
         if ($this->isConfigEnabled($container, $config['theme'])) {
             $this->registerThemeTemplateFinderConfiguration($config['theme'], $container, $loader);
@@ -52,7 +52,7 @@ class TemplateExtension extends Extension
         $bundlesDefinition = $container->findDefinition('template.finder.bundles');
 
         $dirs = [];
-        $templatesDir = $bundlesDefinition->getArgument('$templatesDir');
+        $templatesDir = $container->getParameterBag()->resolveValue($bundlesDefinition->getArgument('$templatesDir'));
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
             $reflection = new \ReflectionClass($class);
             if (is_dir($dir = dirname($reflection->getFileName()))) {

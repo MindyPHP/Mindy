@@ -48,4 +48,19 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $defaultFinder = $this->container->get('template.finder.templates');
         $this->assertInstanceOf('Mindy\Finder\TemplateFinder', $defaultFinder);
     }
+
+    public function testParameters()
+    {
+        // An extension is only loaded in the container if a configuration is provided for it.
+        // Then, we need to explicitely load it.
+        $this->container->loadFromExtension($this->extension->getAlias());
+        $this->container->compile();
+
+        $this->assertSame(0, $this->container->getParameter('mindy.template.mode'));
+        $this->assertSame('templates', $this->container->getParameter('mindy.template.dir'));
+        $this->assertSame('default', $this->container->getParameter('mindy.template.theme'));
+        $this->assertSame(__DIR__.'/Resources', $this->container->getParameter('mindy.template.base_path'));
+        $this->assertSame(__DIR__.'/cache/templates', $this->container->getParameter('mindy.template.cache_dir'));
+        $this->assertTrue($this->container->getParameter('mindy.template.auto_escape'));
+    }
 }
