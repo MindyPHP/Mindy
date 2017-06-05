@@ -42,12 +42,23 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
             $this->container,
             new FileLocator(__DIR__ . '/../Resources/config')
         );
-        $loader->load('template.xml');
+        $loader->load('services.xml');
 
         $engine = $this->container->get('template');
         $this->assertInstanceOf('Mindy\Template\Renderer', $engine);
 
         $defaultFinder = $this->container->get('template.finder.templates');
         $this->assertInstanceOf('Mindy\Finder\TemplateFinder', $defaultFinder);
+    }
+
+    public function testCompile()
+    {
+        $loader = new XmlFileLoader(
+            $this->container,
+            new FileLocator(__DIR__ . '/../Resources/config')
+        );
+        $loader->load('services.xml');
+
+        $this->container->compile();
     }
 }

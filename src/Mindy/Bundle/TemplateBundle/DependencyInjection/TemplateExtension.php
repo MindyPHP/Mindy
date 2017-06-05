@@ -29,7 +29,7 @@ class TemplateExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('template.xml');
+        $loader->load('services.xml');
 
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
@@ -49,8 +49,6 @@ class TemplateExtension extends Extension
 
     protected function registerBundlesTemplateFinderConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
-        $loader->load('bundles_finder.xml');
-
         $bundlesDefinition = $container->findDefinition('template.finder.bundles');
 
         $dirs = [];
@@ -71,8 +69,6 @@ class TemplateExtension extends Extension
 
     protected function registerThemeTemplateFinderConfiguration(array $config, ContainerBuilder $container, XmlFileLoader $loader)
     {
-        $loader->load('theme_finder.xml');
-
         $definition = $container->findDefinition('template.finder.chain');
         $definition->addMethodCall('addFinder', [new Reference('template.finder.theme')]);
 
