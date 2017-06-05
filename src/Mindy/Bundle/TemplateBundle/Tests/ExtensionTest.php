@@ -31,6 +31,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
         $this->extension = new TemplateExtension();
 
         $this->container = new ContainerBuilder();
+        $this->container->setParameter('kernel.bundles', []);
         $this->container->setParameter('kernel.cache_dir', __DIR__.'/cache');
         $this->container->setParameter('kernel.root_dir', __DIR__);
         $this->container->registerExtension($this->extension);
@@ -38,27 +39,15 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
     public function testServices()
     {
-        $loader = new XmlFileLoader(
-            $this->container,
-            new FileLocator(__DIR__.'/../Resources/config')
-        );
-        $loader->load('services.xml');
+        // An extension is only loaded in the container if a configuration is provided for it.
+        // Then, we need to explicitely load it.
+        $this->container->loadFromExtension($this->extension->getAlias());
+        $this->container->compile();
 
         $engine = $this->container->get('template');
         $this->assertInstanceOf('Mindy\Template\Renderer', $engine);
 
         $defaultFinder = $this->container->get('template.finder.templates');
         $this->assertInstanceOf('Mindy\Finder\TemplateFinder', $defaultFinder);
-    }
-
-    public function testCompile()
-    {
-        $loader = new XmlFileLoader(
-            $this->container,
-            new FileLocator(__DIR__.'/../Resources/config')
-        );
-        $loader->load('services.xml');
-
-        $this->container->compile();
     }
 }

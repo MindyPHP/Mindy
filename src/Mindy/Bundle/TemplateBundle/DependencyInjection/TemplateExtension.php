@@ -52,7 +52,7 @@ class TemplateExtension extends Extension
         $bundlesDefinition = $container->findDefinition('template.finder.bundles');
 
         $dirs = [];
-        $templatesDir = $bundlesDefinition->getArgument('templates_dir');
+        $templatesDir = $bundlesDefinition->getArgument('$templatesDir');
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
             $reflection = new \ReflectionClass($class);
             if (is_dir($dir = dirname($reflection->getFileName()))) {
@@ -61,7 +61,7 @@ class TemplateExtension extends Extension
                 }
             }
         }
-        $bundlesDefinition->replaceArgument('bundles_dirs', $dirs);
+        $bundlesDefinition->replaceArgument('$bundlesDirs', $dirs);
 
         $definition = $container->findDefinition('template.finder.chain');
         $definition->addMethodCall('addFinder', [new Reference('template.finder.bundles')]);
