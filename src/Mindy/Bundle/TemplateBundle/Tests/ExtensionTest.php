@@ -40,7 +40,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $loader = new XmlFileLoader(
             $this->container,
-            new FileLocator(__DIR__ . '/../Resources/config')
+            new FileLocator(__DIR__.'/../Resources/config')
         );
         $loader->load('services.xml');
 
@@ -55,7 +55,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $loader = new XmlFileLoader(
             $this->container,
-            new FileLocator(__DIR__ . '/../Resources/config')
+            new FileLocator(__DIR__.'/../Resources/config')
         );
         $loader->load('services.xml');
 
