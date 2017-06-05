@@ -1,7 +1,7 @@
 # Template Bundle
 
 [![Build Status](https://travis-ci.org/MindyPHP/TemplateBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/TemplateBundle)
-[![Coverage Status](https://img.shields.io/coveralls/MindyPHP/TemplateBundle.svg)](https://coveralls.io/r/MindyPHP/TemplateBundle)
+[![Coverage Status](https://img.shields.io/codeclimate/coverage/github/MindyPHP/TemplateBundle.svg)](https://codeclimate.com/github/MindyPHP/TemplateBundle/coverage)
 [![Latest Stable Version](https://poser.pugx.org/mindy/template-bundle/v/stable.svg)](https://packagist.org/packages/mindy/template-bundle)
 [![Total Downloads](https://poser.pugx.org/mindy/template-bundle/downloads.svg)](https://packagist.org/packages/mindy/template-bundle)
 
