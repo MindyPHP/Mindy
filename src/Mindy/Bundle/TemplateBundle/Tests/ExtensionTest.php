@@ -11,9 +11,7 @@
 namespace Mindy\Bundle\TemplateBundle\Tests\DependencyInjection;
 
 use Mindy\Bundle\TemplateBundle\DependencyInjection\TemplateExtension;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class ExtensionTest extends \PHPUnit_Framework_TestCase
 {
