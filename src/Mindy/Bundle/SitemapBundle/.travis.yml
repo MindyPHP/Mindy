@@ -1,0 +1,31 @@
+sudo: false
+language: php
+
+php:
+    - 5.6
+    - 7.0
+    - 7.1
+
+matrix:
+    fast_finish: true
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+before_install:
+    - composer self-update
+    - wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O php-cs-fixer
+
+install: travis_retry composer install --no-interaction --prefer-source
+
+addons:
+    code_climate:
+        repo_token: $CODECLIMATE_TOKEN
+
+script:
+    - php ./php-cs-fixer fix --config=.php_cs --using-cache=no --verbose --diff --dry-run
+    - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_success:
+  - vendor/bin/test-reporter

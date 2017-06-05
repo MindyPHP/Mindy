@@ -26,5 +26,9 @@
         "branch-alias": {
             "dev-master": "3.6.8-dev"
         }
+    },
+    "require-dev": {
+        "codeclimate/php-test-reporter": "^0.4.4",
+        "phpunit/phpunit": "~5.0"
     }
 }
