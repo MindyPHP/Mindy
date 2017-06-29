@@ -8,9 +8,7 @@
     {% if not label %}
         {% set label = label_format ? label_format|strtr(['%name%' => name, '%id%' => id]) : form_humanize(name) %}
     {% endif %}
-    {% if not name|is_numeric %}
-        <label {% for k, v in label_attr %} {{ k }}="{{ v }}"{% endfor %}>
-            {{ translation_domain ? translator.trans(label, [], translation_domain) : label }}
-        </label>
-    {% endif %}
+    <label {% for k, v in label_attr %} {{ k }}="{{ v }}"{% endfor %}>
+        {{ translation_domain ? translator.trans(label, [], translation_domain) : label }}
+    </label>
 {% endif %}
