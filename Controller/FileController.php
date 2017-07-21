@@ -100,12 +100,7 @@ class FileController extends Controller
 
         $objects = array_merge($directories, $files);
 
-        $breadcrumbs = [
-            [
-                'url' => $this->generateUrl('file_list'),
-                'name' => $this->get('translator')->trans('admin.file.name'),
-            ],
-        ];
+        $breadcrumbs = [];
         $prev = [];
         foreach (array_filter(explode('/', $path)) as $part) {
             $prev[] = $part;
@@ -115,10 +110,12 @@ class FileController extends Controller
             $breadcrumbs[] = ['url' => $url, 'name' => $part];
         }
 
-        return $this->render('file/list.html', [
-            'breadcrumbs' => $breadcrumbs,
+        $data = [
+            'fileBreadcrumbs' => $breadcrumbs,
             'objects' => $objects,
-        ]);
+        ];
+
+        return $request->isXmlHttpRequest() ? $this->render('file/_list.html', $data) : $this->render('file/list.html', $data);
     }
 
     public function deleteAction(Request $request)
