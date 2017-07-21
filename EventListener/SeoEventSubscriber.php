@@ -1,17 +1,15 @@
 <?php
 
 /*
- * (c) Studio107 <mail@studio107.ru> http://studio107.ru
- * For the full copyright and license information, please view
- * the LICENSE file that was distributed with this source code.
+ * This file is part of Mindy Framework.
+ * (c) 2017 Maxim Falaleev
  *
- * Author: Maxim Falaleev <max@studio107.ru>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Mindy\Bundle\SeoBundle\EventListener;
 
-use Mindy\Bundle\SeoBundle\Meta\MetaSourceInterface;
-use Mindy\Bundle\SeoBundle\Model\Seo;
 use Mindy\Bundle\SeoBundle\Provider\SeoProvider;
 use Mindy\Orm\ModelInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,7 +31,7 @@ class SeoEventSubscriber implements EventSubscriberInterface
     /**
      * MetaEventSubscriber constructor.
      *
-     * @param SeoProvider $metaProvider
+     * @param SeoProvider  $metaProvider
      * @param RequestStack $requestStack
      */
     public function __construct(SeoProvider $metaProvider, RequestStack $requestStack = null)
@@ -79,6 +77,7 @@ class SeoEventSubscriber implements EventSubscriberInterface
         // выполняется следующим шагом на уровне
         // $model = $form->getData();
         // $model->save();
-        dump(['onPostSubmit' => $event]);die;
+        dump(['onPostSubmit' => $event]);
+        die;
     }
 }

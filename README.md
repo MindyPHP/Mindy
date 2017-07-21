@@ -16,4 +16,18 @@ Resources
     [send Pull Requests](https://github.com/MindyPHP/mindy/pulls)
     in the [main Mindy repository](https://github.com/MindyPHP/mindy)
 
-![yandex](https://mc.yandex.ru/watch/43423684 "yandex")
+## Admin
+
+```yml
+-
+    name: SEO
+    menu:
+        -
+            name: Мета информация
+            route: admin_dispatch
+            defaults: { admin: seo_seo }
+        -
+            name: Мета шаблоны
+            route: admin_dispatch
+            defaults: { admin: seo_template }
+```
