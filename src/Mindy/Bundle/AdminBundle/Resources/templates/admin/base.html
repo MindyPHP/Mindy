@@ -7,6 +7,7 @@
     <title>{%- block title -%}Рабочий стол{% endblock %} - Панель администратора - Mindy</title>
 
     <link rel="stylesheet" href="/bundles/admin/css/admin.bundle.css"/>
+    <script type='text/javascript' src="{{ asset('/bundles/admin/js/admin.bundle.js') }}"></script>
 
     {% block css %}{% endblock %}
 </head>
@@ -57,7 +58,6 @@
         </div>
     </footer>
 </div>
-<script type='text/javascript' src="{{ asset('/bundles/admin/js/admin.bundle.js') }}"></script>
 {% block javascript %}{% endblock %}
 </body>
 </html>

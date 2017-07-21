@@ -1,11 +1,7 @@
 import $ from "jquery";
-
 import "jquery-ui/ui/widget.js";
 import "jquery-ui/ui/widgets/sortable.js";
-
-// todo fixme
 import 'checkboxes.js/src/jquery.checkboxes.js';
-
 import './sidebar';
 import './file/index';
 
