@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { cookie } from 'easy-storage';
 
 const cookieName = '__sidebar_pin';
@@ -48,11 +49,12 @@ class Sidebar {
     }
 
     toggle() {
-        if ($(".b-sidebar").hasClass("b-sidebar_pin")) {
+        let $sidebar = $(".b-sidebar");
+        if ($sidebar.hasClass("b-sidebar_pin")) {
             return;
         }
 
-        if ($(".b-sidebar").hasClass("b-sidebar_open")) {
+        if ($sidebar.hasClass("b-sidebar_open")) {
             this.hide();
         } else {
             this.show();

@@ -1,13 +1,3 @@
-$flexy-font: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
-$flexy-grid-container-width: 1280px;
-$flexy-theme-colors: (
-        default: #96a8b2,
-        gray: #96a8b2,
-        error: #dd162d,
-        success: #4caf50,
-        primary: #2196f3
-);
-
 @import "settings";
 @import "flexy/flexy";
 @import "flexy/theme/default";
@@ -30,13 +20,14 @@ body {
 @import "block/form";
 @import "block/body";
 @import "block/pager";
+@import "block/icon";
 @import "block/dashboard";
 @import "block/error-list";
 @import "block/components/tabs";
 @import "block/components/trash";
 
 @import "bundle/shop/index";
-@import "bundle/file";
+@import "bundle/filemanager";
 
 .b-image-list {
   list-style: none;
