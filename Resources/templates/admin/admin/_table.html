@@ -1,12 +1,11 @@
 <div class="table--container__main">
     {{ pagination_render(pager, admin.findTemplate('_pager.html'))|safe }}
 
-    <table id="table-main" data-toggle="checkboxes" data-range="true" class="b-table">
+    <table id="table-main" class="b-table">
         <thead class="b-table__thead">
         <tr class="b-table__tr b-table__tr_thead">
-            <th class="b-check_all check all b-table__th b-table__th_thead">
-                <input type="checkbox" id="check-all">
-                <label class="checkbox-state" for="check-all"></label>
+            <th class="b-check_all check all b-table__th b-table__th_thead b-check__th">
+                <input type="checkbox" id="check-all"/>
             </th>
             <th class="actions b-table__th b-table__th_thead" align="right"></th>
             {% if sortHandler %}
@@ -17,17 +16,14 @@
                     {% set orderUrl = orderHandler.generateUrl(column) %}
                     {% if orderUrl %}
                         <a class="b-table__link b-table__link_th" href="{{ orderHandler.generateUrl(column) }}">
-                            {% if request.query.has('order') %}
-                                <span class="float-right">
-                                    {% if request.query.get('order') == column %}
-                                        <i class="icon chevron down"></i>
-                                    {% elif request.query.get('order') == ('-' ~ column) %}
-                                        <i class="icon chevron up"></i>
-                                    {% endif %}
-                                </span>
-                            {% endif %}
-
                             {{ admin.getVerboseName(column) }}
+                            {% if request.query.has('order') %}
+                                {% if request.query.get('order') == column %}
+                                    <i class="b-icon">&#xE5C5;</i>
+                                    {% elif request.query.get('order') == ('-' ~ column) %}
+                                    <i class="b-icon">&#xE5C7;</i>
+                                {% endif %}
+                            {% endif %}
                         </a>
                     {% else %}
                         {{ admin.getVerboseName(column) }}
@@ -42,10 +38,9 @@
                 <tr data-pk="{{ model.pk }}" class="b-table__tr b-table__tr_tbody">
                     {% for column in columns %}
                         {% if loop.first %}
-                            <td class="b-check_all check b-table__td b-table__td_tbody" align="left">
-                                <input type="checkbox" name="models[]" id="check-{{ loop.counter }}"
-                                       value="{{ model.pk }}">
-                                <label class="checkbox-state" for="check-{{ loop.counter }}"></label>
+                            <td class="b-check_all check b-table__td b-table__td_tbody b-check__td" align="left">
+                                <input type="checkbox" name="models[]" id="check-{{ model.id }}"
+                                       value="{{ model.pk }}"/>
                             </td>
                             {% if sortHandler %}
                                 <td class="sorting b-table__td b-table__td_tbody">
@@ -135,7 +130,16 @@
                 });
             }
         });
-
-        $('table').checkboxes('range', true);
     </script>
 {% endif %}
+
+<script type="text/javascript">
+    $(document)
+        .on('change', '#check-all', function (e) {
+            $('#table-main').checkboxes('toggle');
+            var $target = $(e.target);
+            $target.prop('checked', !$target.prop('checked'));
+        });
+
+    $('#table-main').checkboxes('range', true);
+</script>
