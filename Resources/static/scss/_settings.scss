@@ -1,6 +1,18 @@
 @import "mindy/colors/flat";
 @import "mindy/fonts";
 
+$flexy-font: Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+$flexy-grid-container-width: 1280px;
+$flexy-theme-colors: (
+        default: #2196f3,
+        gray: #96a8b2,
+        dark: #353535,
+        divider: #f1f1f1,
+        error: #dd162d,
+        success: #4caf50,
+        primary: #2196f3
+);
+
 $main-color: $sun;
 $row-width: 2500px !default;
 $body-bg: #F2F4FA;

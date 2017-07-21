@@ -6,9 +6,7 @@
     <meta name="robots" content="noindex, nofollow"/>
     <title>{%- block title -%}Рабочий стол{% endblock %} - Панель администратора - Mindy</title>
 
-    <link rel="stylesheet" href="/bundles/admin/css/admin.css"/>
-    <script type='text/javascript' src="/bundles/admin/js/vendor.admin.js"></script>
-    <script type='text/javascript' src="/bundles/admin/js/admin.js"></script>
+    <link rel="stylesheet" href="/bundles/admin/css/admin.bundle.css"/>
 
     {% block css %}{% endblock %}
 </head>
@@ -17,11 +15,11 @@
 
 <div class="b-sidebar-buttons {{ open_sidebar ? 'b-sidebar-buttons_open' : '' }}">
     <a class="b-sidebar-buttons__button b-sidebar-buttons__button_toggle" href="#">
-        <i class="icon content"></i>
+        <i class="b-icon">&#xE5D2;</i>
     </a>
     <a class="b-sidebar-buttons__button b-sidebar-buttons__button_pin {{ open_sidebar ? 'b-sidebar-buttons__button_pinned' : '' }}"
        href="#">
-        <i class="icon pin"></i>
+        <i class="b-icon">&#xE915;</i>
     </a>
 </div>
 
@@ -59,7 +57,7 @@
         </div>
     </footer>
 </div>
-<script type='text/javascript' src="{{ asset('/bundles/admin/js/admin.js') }}"></script>
+<script type='text/javascript' src="{{ asset('/bundles/admin/js/admin.bundle.js') }}"></script>
 {% block javascript %}{% endblock %}
 </body>
 </html>
