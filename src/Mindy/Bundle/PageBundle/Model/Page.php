@@ -48,58 +48,71 @@ class Page extends TreeModel implements AbsoluteUrlInterface
             'name' => [
                 'class' => CharField::class,
                 'required' => true,
+                'verboseName' => 'Название',
             ],
             'url' => [
                 'class' => AutoSlugField::class,
                 'source' => 'name',
                 'unique' => true,
+                'verboseName' => 'Ссылка',
             ],
             'content' => [
                 'class' => TextField::class,
                 'null' => true,
+                'verboseName' => 'Описание',
             ],
             'content_short' => [
                 'class' => TextField::class,
                 'null' => true,
+                'verboseName' => 'Краткое описание',
             ],
             'image' => [
                 'class' => ImageField::class,
                 'null' => true,
+                'verboseName' => 'Изображение',
             ],
             'created_at' => [
                 'class' => DateTimeField::class,
                 'autoNowAdd' => true,
                 'editable' => false,
+                'verboseName' => 'Дата создания',
             ],
             'updated_at' => [
                 'class' => DateTimeField::class,
                 'autoNow' => true,
                 'null' => true,
                 'editable' => false,
+                'verboseName' => 'Дата изменения',
             ],
             'published_at' => [
                 'class' => DateTimeField::class,
                 'null' => true,
+                'verboseName' => 'Дата публикации',
             ],
             'view' => [
                 'class' => CharField::class,
                 'null' => true,
+                'verboseName' => 'Шаблон',
             ],
             'view_children' => [
                 'class' => CharField::class,
                 'null' => true,
+                'verboseName' => 'Шаблон для дочерних страниц',
             ],
             'is_index' => [
                 'class' => BooleanField::class,
+                'verboseName' => 'Главная страница',
             ],
             'is_published' => [
                 'class' => BooleanField::class,
                 'default' => true,
+                'verboseName' => 'Опубликовано',
             ],
             'sorting' => [
                 'class' => CharField::class,
                 'null' => true,
                 'choices' => self::getSortingChoices(),
+                'verboseName' => 'Сортировка',
             ],
         ]);
     }
