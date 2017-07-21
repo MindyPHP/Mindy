@@ -70,20 +70,35 @@ class FileController extends Controller
     {
         $path = urldecode($request->query->get('path', '/'));
 
-        $objects = [];
+        $directories = [];
+        $files = [];
+
         foreach ($this->getFilesystem()->listContents($path) as $object) {
-            $objects[] = [
+            $isDir = $object['type'] === 'dir';
+            $params = [
                 'path' => '/'.$object['path'],
                 'name' => basename($object['path']),
                 'date' => isset($object['timestamp']) ? date(DATE_W3C, $object['timestamp']) : null,
-                'is_dir' => $object['type'] === 'dir',
+                'is_dir' => $isDir,
                 'size' => isset($object['size']) ? $object['size'] : 0,
                 'url' => $object['path'],
             ];
+
+            if ($isDir) {
+                $directories[] = $params;
+            } else {
+                $files[] = $params;
+            }
         }
-        usort($objects, function ($a, $b) {
-            return $b['is_dir'] - $a['is_dir'];
+
+        usort($directories, function ($a, $b) {
+            return strcmp($a["name"], $b["name"]);
         });
+        usort($files, function ($a, $b) {
+            return strcmp($a["name"], $b["name"]);
+        });
+
+        $objects = array_merge($directories, $files);
 
         $breadcrumbs = [
             [
