@@ -22,7 +22,7 @@
         <hr>
 
         <div class="files-container" data-filemanager="true" data-wysiwyg="{{ request.query.get('wysiwyg') }}">
-            <ul class="file-manager__breadcrumbs">
+            <ul class="b-filemanager__breadcrumbs">
                 {% for bc in breadcrumbs %}
                     <li>
                         {% if loop.last %}
@@ -42,47 +42,54 @@
             </ul>
 
             {% if objects|length %}
-                <table class="b-table file-manager__table">
+                <table class="b-table b-filemanager__table">
                     <thead class="b-table__thead">
                     <tr class="b-table__tr">
                         <th class="b-table__th"></th>
                         <th class="b-table__th">{{ t('file.column.name') }}</th>
-                        <th align="right" class="b-table__th file-manager__table-actions">{{ t('file.column.actions') }}</th>
+                        <th class="b-table__th">{{ t('file.column.actions') }}</th>
+                        <th align="right"
+                            class="b-table__th b-filemanager__table-actions">{{ t('file.column.actions') }}</th>
                     </tr>
                     </thead>
                     <tbody class="b-table__tbody">
                     {% for entry in objects %}
                         <tr class="b-table__tr">
-                            <td class="b-table__td file-manager__table-icon">
+                            <td class="b-table__td b-filemanager__td b-filemanager__td_icon">
                                 {% if entry.is_dir %}
-                                    <i class="icon folder"></i>
+                                    <i class="material-icons">&#xE2C7;</i>
                                 {% else %}
-                                    <i class="icon file outline"></i>
+                                    <i class="material-icons">&#xE226;</i>
                                 {% endif %}
                             </td>
-                            <td class="b-table__td">
+                            <td class="b-table__td b-filemanager__td b-filemanager__td_name">
                                 {% if entry.is_dir %}
                                     <a href="{{ url('file_list', ['path' => entry.path, 'wysiwyg' => wysiwyg]) }}">{{ entry.name }}</a>
                                 {% else %}
-                                    <a href="{{ asset(entry.url, 'media') }}" target="_blank">{{ entry.name }}</a>
+                                    <a href="{{ entry.url|asset('media') }}" target="_blank">{{ entry.name }}</a>
                                 {% endif %}
                             </td>
-                            <td align="right" class="b-table__td file-manager__table-actions">
+                            <td class="b-table__td b-filemanager__td b-filemanager__td_container">
                                 {% if not entry.is_dir %}
-                                    <input type="text" value="{{ entry.url }}" class="file-manager__table-input" readonly>
-                                    <a href="#"
-                                       class="file-manager__table-copy"
-                                       data-text="{{ entry.url }}">{{ t('file.copy_link') }}</a>
+                                    <div class="b-filemanager__container">
+                                        <input type="text" value="{{ entry.url|asset('media') }}"
+                                               class="b-input b-filemanager__input" readonly/>
+                                        <a href="#"
+                                           class="b-filemanager__copy"
+                                           data-text="{{ entry.url|asset('media') }}">{{ t('file.copy_link') }}</a>
+                                    </div>
                                     {% if isWysiwyg %}
                                         <a href="#"
                                            data-name="{{ entry.name }}"
-                                           data-url="{{ asset(entry.url, 'media') }}"
-                                           class="file-manager__table-paste"
-                                           data-text="{{ entry.url }}">Вставить элемент</a>
+                                           data-url="{{ entry.url|asset('media') }}"
+                                           class="b-filemanager__table-paste"
+                                           data-text="{{ entry.url }}">{{ t('file.insert') }}</a>
                                     {% endif %}
                                 {% endif %}
+                            </td>
+                            <td class="b-table__td b-filemanager__td b-filemanager__td_actions" align="right">
                                 <a href="{{ url('file_delete', ['path' => entry.path]) }}"
-                                   class="file-manager__table-remove"
+                                   class="b-button b-filemanager__table-remove"
                                    data-confirm-message="{{ t('file.delete_confirm') }}"
                                    title="{{ t('file.remove') }}">&times;</a>
                             </td>
