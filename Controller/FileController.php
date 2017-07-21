@@ -81,6 +81,9 @@ class FileController extends Controller
                 'url' => $object['path'],
             ];
         }
+        usort($objects, function ($a, $b) {
+            return $b['is_dir'] - $a['is_dir'];
+        });
 
         $breadcrumbs = [
             [
