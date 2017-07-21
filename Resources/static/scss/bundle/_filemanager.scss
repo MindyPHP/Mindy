@@ -1,8 +1,4 @@
-@import "mindy/colors/flat";
-@import "mindy/mixins/base";
-
-$blue: #005ECB;
-$base-color: $blue;
+$progress-height: 18px;
 
 .b-filemanager {
   &__label {
@@ -30,30 +26,31 @@ $base-color: $blue;
   }
 
   &__progress {
-    $height: 26px;
-
+    margin: 1em 0;
     display: none;
     width: 100%;
-    height: $height;
-    border-radius: 4px;
+    height: $progress-height;
+    border-radius: $flexy-theme-border-radius;
     background: {
       color: #fafafa;
     }
     transition: all .2s ease;
-    opacity: 0;
 
-    .progress-state {
-      height: $height;
-      line-height: $height;
-      text-align: center;
-      width: 60%;
-      background: {
-        color: $emerald;
-      }
-      color: #fff;
-      font-size: .9rem;
-      border-radius: 4px;
+    &_visible {
+      display: block;
     }
+  }
+
+  &__state {
+    height: $progress-height;
+    line-height: $progress-height;
+    text-align: center;
+    width: 60%;
+    background: {
+      color: flexy-color();
+    }
+    color: #fff;
+    border-radius: $flexy-theme-border-radius;
   }
 
   &__dropzone {
@@ -101,6 +98,11 @@ $base-color: $blue;
 
     &_container {
       width: 500px;
+    }
+
+    &_actions {
+      width: 120px;
+      text-align: center;
     }
   }
 

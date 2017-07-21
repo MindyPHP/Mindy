@@ -6,12 +6,11 @@ let getUrlParam = paramName => {
         match = window.location.search.match(reParam);
 
     return (match && match.length > 1) ? match[1] : null;
-};  
+};
 
 let wysiwyg = {
-    ckeditor: e => {
-        e.preventDefault();
-        let $link = $(e.target),
+    ckeditor: target => {
+        let $link = $(target),
             url = $link.attr('data-url'),
             text = $link.attr('data-text');
 
@@ -20,10 +19,8 @@ let wysiwyg = {
         window.close();
     },
 
-    tinymce: e => {
-        e.preventDefault();
-
-        let $link = $(e.target),
+    tinymce: target => {
+        let $link = $(target),
             url = $link.attr('data-url'),
             text = $link.attr('data-text'),
             parts = name.split('.'),
@@ -41,17 +38,15 @@ let wysiwyg = {
     }
 };
 
-$(() => {
-    let $container = $('[data-filemanager]');
+$(document)
+    .on('click', '.b-filemanager__paste', e => {
+        e.preventDefault();
 
-    switch ($container.attr('data-wysiwyg')) {
-        case 'ckeditor':
-            $(document).on('click', '.file-manager__table-paste', wysiwyg.ckeditor);
-            break;
-        case 'tinymce':
-            $(document).on('click', '.file-manager__table-paste', wysiwyg.tinymce);
-            break;
-        default:
-            break;
-    }
-});
+        let $target = $(e.target).closest('.b-filemanager__paste'),
+            $container = $(e.target).closest('[data-filemanager]');
+
+        const editor = $container.attr('data-wysiwyg');
+        if (wysiwyg[editor]) {
+            wysiwyg[editor]($target);
+        }
+    });

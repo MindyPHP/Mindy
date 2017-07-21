@@ -5,6 +5,10 @@ const settings = {
     VERBOSE: true
 };
 
+const defaultHeaders = {
+    'X-Requested-With': 'XMLHttpRequest',
+};
+
 const doMethod = (method, url, data = {}, params = {}, headers = {}) => {
     let isGet = /^(GET|HEAD|OPTIONS|TRACE)$/.test(method.toUpperCase());
 
@@ -15,13 +19,18 @@ const doMethod = (method, url, data = {}, params = {}, headers = {}) => {
     if (!isGet) {
         headers = {
             "Accept": 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             ...headers
         }
     }
 
-    let config = { url, params, data, method, headers };
+    let config = {
+        url,
+        params,
+        data,
+        method,
+        headers: { ...defaultHeaders, ...headers }
+    };
 
     return fetch(config)
         .then(response => {
