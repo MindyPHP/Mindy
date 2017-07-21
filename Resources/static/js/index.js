@@ -1,6 +1,4 @@
-import $ from "expose?$!expose?jQuery!jquery";
-import "expose?fetch!./fetch";
-import "expose?notify!./notify";
+import $ from "jquery";
 
 import "jquery-ui/ui/widget.js";
 import "jquery-ui/ui/widgets/sortable.js";

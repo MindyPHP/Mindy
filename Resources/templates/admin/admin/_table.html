@@ -50,14 +50,14 @@
                             {% if sortHandler %}
                                 <td class="sorting b-table__td b-table__td_tbody">
                                     <span class="sorting--container">
-                                        <i class="icon content" aria-hidden="true"></i>
+                                        <i class="b-icon" aria-hidden="true">&#xE25D;</i>
                                     </span>
                                 </td>
                             {% endif %}
 
                             <td class="b-table__td b-table__td_tbody b-table__td_actions" align="right">
                                 <div class="b-dropdown b-dropdown_dark b-dropdown_large">
-                                    <i class="icon ellipsis horizontal"></i>
+                                    <i class="b-icon" aria-hidden="true">&#xE5D2;</i>
                                     <ul class="b-dropdown__container">
                                         {% include admin.findTemplate('_actions.html') %}
                                     </ul>
@@ -120,7 +120,7 @@
                     $next = $to.next(),
                     data = $(this).sortable('toArray', { attribute: 'data-pk' });
 
-                fetch.post('{{ admin.getAdminUrl('sort', ['pk' => request.query.get('pk')]) }}', {}, {
+                api.post('{{ admin.getAdminUrl('sort', ['pk' => request.query.get('pk')]) }}', {}, {
                     parent_id: '{{ request.query.get('parent_id') }}',
                     models: data,
                     pk: $to.data('pk'),

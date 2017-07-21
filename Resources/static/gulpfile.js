@@ -1,81 +1,142 @@
-'use strict';
-
-var path = require('path'),
+let path = require('path'),
     gulp = require('gulp'),
     concat = require('gulp-concat'),
-    clean = require('gulp-clean'),
-    sass = require('gulp-sass'),
-    autoprefixer = require('gulp-autoprefixer'),
+    imagemin = require('gulp-imagemin'),
+    autoprefixer = require('autoprefixer'),
+    gulpif = require('gulp-if'),
     flatten = require('gulp-flatten'),
-    csso = require('gulp-csso'),
+    plumber = require('gulp-plumber'),
+    changed = require('gulp-changed'),
+    postcss = require('gulp-postcss'),
+    flexbugs = require('postcss-flexbugs-fixes'),
+    csso = require('postcss-csso'),
+    webp = require('gulp-webp'),
+    del = require('del'),
+    sass = require('gulp-sass'),
+    watch = require('gulp-watch'),
     browserSync = require('browser-sync').create();
 
-var dst = {
-    ckeditor: '../public/ckeditor/',
-    js: '../public/js',
-    css: '../public/css',
-    images: '../public/images',
-    fonts: '../public/fonts'
+const isProd = process.env.NODE_ENV === 'production';
+
+let settings = {
+    scsso: {
+        comments: false,
+        restructure: false
+    },
+    sass: {
+        includePaths: [
+            path.join(__dirname, 'node_modules/flexy-framework')
+        ]
+    },
+    paths: {
+        clean: '../public/*',
+        webp: './images/**/*{.jpg,.png,.jpeg}',
+        images: './images/**/*{.jpg,.png,.jpeg,.gif,.svg}',
+        fonts: [
+            './fonts/**/*{.eot,.otf,.woff,.woff2,.ttf,.svg}',
+            './node_modules/material-design-icons/iconfont/**/*{.eot,.otf,.woff,.woff2,.ttf,.svg}',
+        ],
+        css: [
+            './fonts/**/*.css',
+            './scss/**/*.scss'
+        ],
+        serviceWorker: '../public/**/*',
+    },
+    dst: {
+        serviceWorker: path.resolve('../public'),
+        css: path.resolve('../public/css'),
+        images: path.resolve('../public/images'),
+        fonts: path.resolve('../public/fonts')
+    }
 };
 
-var paths = {
-    ckeditor: './ckeditor/**/*',
-    images: './images/**/*{.jpg,.jpeg,.png}',
-    fonts: './fonts/*/fonts/*{.otf,.eot,.ttf,.svg,.woff,.woff2}',
-    css: [
-        './scss/**/*.scss',
-        './fonts/**/*.css'
-    ],
-    views: '../templates/**/*'
-};
-
-let sassOptions = {
-    outputStyle: 'nested',
-    includePaths: [
-        path.join(__dirname, 'node_modules', 'flexy-framework'),
-    ]
-};
-
-gulp.task('ckeditor', function () {
-    return gulp.src(paths.ckeditor)
-        .pipe(gulp.dest(dst.ckeditor));
-});
-
-gulp.task('images', function () {
-    return gulp.src(paths.images)
-        .pipe(gulp.dest(dst.images))
-        .pipe(browserSync.stream());
-});
-
-gulp.task('fonts', function () {
-    return gulp.src(paths.fonts)
+gulp.task('fonts', () => {
+    return gulp.src(settings.paths.fonts)
         .pipe(flatten())
-        .pipe(gulp.dest(dst.fonts));
+        .pipe(gulp.dest(settings.dst.fonts));
 });
 
-gulp.task('css', function () {
-    return gulp.src(paths.css)
-        .pipe(sass(sassOptions).on('error', sass.logError))
-        .pipe(autoprefixer())
-        .pipe(csso())
-        .pipe(concat('admin.css'))
-        .pipe(gulp.dest(dst.css))
+gulp.task('image:webp', () => {
+    return gulp.src(settings.paths.images)
+        .pipe(changed(settings.dst.images))
+        .pipe(webp())
+        .pipe(gulp.dest(settings.dst.images))
         .pipe(browserSync.stream());
 });
 
-gulp.task('watch', ['default'], function () {
+gulp.task('image:optimize', () => {
+    return gulp.src(settings.paths.images)
+        .pipe(changed(settings.dst.images))
+        // Alternative use imagemin
+        .pipe(gulpif(isProd, imagemin([
+            imagemin.gifsicle({ interlaced: true }),
+            imagemin.jpegtran({ progressive: true }),
+            imagemin.optipng({ optimizationLevel: 5 }),
+            imagemin.svgo({ plugins: [{ removeViewBox: false }] })
+        ])))
+        .pipe(gulp.dest(settings.dst.images))
+        .pipe(browserSync.stream());
+});
+
+gulp.task('images', ['image:optimize', 'image:webp']);
+
+gulp.task('css', ['fonts'], () => {
+    const plugins = [
+        flexbugs,
+        autoprefixer({
+            browsers: [
+                '>1%',
+                'last 4 versions',
+                'Firefox ESR',
+                'not ie < 9', // React doesn't support IE8 anyway
+            ],
+            // cascade: false,
+            flexbox: 'no-2009'
+        }),
+        csso
+    ];
+
+    return gulp.src(settings.paths.css)
+        .pipe(plumber())
+        .pipe(sass(settings.sass).on('error', sass.logError))
+        .pipe(postcss(plugins))
+        .pipe(concat('admin.bundle.css'))
+        .pipe(gulp.dest(settings.dst.css))
+        .pipe(browserSync.stream());
+});
+
+gulp.task('watch', () => {
     browserSync.init({
-        proxy: "localhost:8000",
-        open: false
+        open: false,
+        proxy: "localhost:8000"
     });
 
-    gulp.watch(dst.js).on('change', browserSync.reload);
-    gulp.watch(paths.images, ['images']).on('change', browserSync.reload);
-    gulp.watch(paths.css, ['css']);
-    gulp.watch(paths.fonts, ['fonts']);
-    gulp.watch(paths.views).on('change', browserSync.reload);
+    watch('../public/js/**/*.js', () => {
+        browserSync.reload();
+    });
+    watch(settings.paths.css, () => {
+        gulp.start('css');
+    });
+    watch(path.join(__dirname, 'node_modules/flexy-framework/flexy/**/*.scss'), () => {
+        gulp.start('css');
+    });
+    watch(settings.paths.fonts, () => {
+        gulp.start('fonts', 'css');
+    });
+    watch(settings.paths.images, () => {
+        gulp.start('images');
+    });
+    watch([
+        '../templates/**/*.html',
+    ], () => {
+        browserSync.reload();
+    });
 });
 
-gulp.task('default', function () {
-    return gulp.start('css', 'images', 'fonts');
+gulp.task('clean', () => {
+    return del.sync(settings.paths.clean, {
+        force: true
+    });
 });
+
+gulp.task('default', ['css', 'images']);

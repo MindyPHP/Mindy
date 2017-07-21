@@ -1,6 +1,8 @@
+import $ from 'jquery';
+
 $(document)
     .on('click', '.b-tab-header__item:not(.b-tab-header__item_active)', function (e) {
-        var $this = $(e.target),
+        let $this = $(e.target),
             $header = $this.closest('.b-tab-header');
 
         if ($this.is('a') && $this.attr('href') === '#') {

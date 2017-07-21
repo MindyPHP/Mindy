@@ -8,7 +8,7 @@
 
         {% if filterForm %}
             <a href="#" class="b-button b-button_icon b-filter-button">
-                <i class="icon filter"></i>
+                <i class="b-icon">&#xE8B6;</i>
             </a>
         {% endif %}
     </div>
@@ -20,9 +20,9 @@
                    class="b-input"
                    value="{{ searchHandler.getValue() }}"/>
             <button type="submit"
-                    class="b-button"
+                    class="b-button b-button_icon"
                     value="{{ t('admin.search.placeholder') }}">
-                <i class="icon search"></i>
+                Поиск
             </button>
         </form>
     {% endif %}
