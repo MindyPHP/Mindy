@@ -70,24 +70,37 @@ class FileController extends Controller
     {
         $path = urldecode($request->query->get('path', '/'));
 
-        $objects = [];
+        $directories = [];
+        $files = [];
+
         foreach ($this->getFilesystem()->listContents($path) as $object) {
-            $objects[] = [
+            $isDir = $object['type'] === 'dir';
+            $params = [
                 'path' => '/'.$object['path'],
                 'name' => basename($object['path']),
                 'date' => isset($object['timestamp']) ? date(DATE_W3C, $object['timestamp']) : null,
-                'is_dir' => $object['type'] === 'dir',
+                'is_dir' => $isDir,
                 'size' => isset($object['size']) ? $object['size'] : 0,
                 'url' => $object['path'],
             ];
+
+            if ($isDir) {
+                $directories[] = $params;
+            } else {
+                $files[] = $params;
+            }
         }
 
-        $breadcrumbs = [
-            [
-                'url' => $this->generateUrl('file_list'),
-                'name' => $this->get('translator')->trans('admin.file.name'),
-            ],
-        ];
+        usort($directories, function ($a, $b) {
+            return strcmp($a["name"], $b["name"]);
+        });
+        usort($files, function ($a, $b) {
+            return strcmp($a["name"], $b["name"]);
+        });
+
+        $objects = array_merge($directories, $files);
+
+        $breadcrumbs = [];
         $prev = [];
         foreach (array_filter(explode('/', $path)) as $part) {
             $prev[] = $part;
@@ -97,10 +110,12 @@ class FileController extends Controller
             $breadcrumbs[] = ['url' => $url, 'name' => $part];
         }
 
-        return $this->render('file/list.html', [
-            'breadcrumbs' => $breadcrumbs,
+        $data = [
+            'fileBreadcrumbs' => $breadcrumbs,
             'objects' => $objects,
-        ]);
+        ];
+
+        return $request->isXmlHttpRequest() ? $this->render('file/_list.html', $data) : $this->render('file/list.html', $data);
     }
 
     public function deleteAction(Request $request)

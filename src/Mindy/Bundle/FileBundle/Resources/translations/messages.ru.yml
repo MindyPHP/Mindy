@@ -1,5 +1,11 @@
-file.create_directory: Создать директорию
-file.upload_files: Загрузить файлы
-admin.file.name: Файлы
-file.column.name: Название
-file.column.actions: Действия
+file.create_directory: 'Создать директорию'
+file.upload_files: 'Нажмите для загрузки файлов или перетащите их в данную область'
+admin.file.name: 'Файлы'
+file.column.name: 'Название'
+file.remove: 'Удалить файл'
+file.copy_link: 'Копировать'
+file.insert: 'Вставить'
+file.drop_zone: 'Бросьте файлы в эту область'
+file.admin.title: 'Файлы'
+file.list: 'Файлы'
+file.empty: 'Файлы отсутствуют'
