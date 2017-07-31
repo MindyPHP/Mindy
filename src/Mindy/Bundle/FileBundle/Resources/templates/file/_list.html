@@ -29,7 +29,7 @@
                     </td>
                     <td class="b-table__td b-filemanager__td b-filemanager__td_name">
                         {% if entry.is_dir %}
-                            <a href="{{ url('file_list', ['path' => entry.path, 'wysiwyg' => wysiwyg]|merge(request.query.all())) }}">{{ entry.name }}</a>
+                            <a href="{{ url('file_list', request.query.all()|merge(['path' => entry.path, 'wysiwyg' => wysiwyg])) }}">{{ entry.name }}</a>
                         {% else %}
                             <a href="{{ entry.url|asset('media') }}" target="_blank">{{ entry.name }}</a>
                         {% endif %}
