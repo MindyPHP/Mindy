@@ -36,6 +36,7 @@ abstract class TreeModel extends Model
                 'class' => ForeignField::class,
                 'modelClass' => get_called_class(),
                 'null' => true,
+                'verboseName' => 'Родитель',
             ],
             'lft' => [
                 'class' => IntField::class,

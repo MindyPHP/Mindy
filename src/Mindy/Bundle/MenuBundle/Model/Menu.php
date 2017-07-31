@@ -32,13 +32,16 @@ class Menu extends TreeModel
                 'validators' => [
                     new Alphanumeric(),
                 ],
+                'verboseName' => 'Слаг',
             ],
             'name' => [
                 'class' => CharField::class,
+                'verboseName' => 'Название',
             ],
             'url' => [
                 'class' => CharField::class,
                 'null' => true,
+                'verboseName' => 'Ссылка',
             ],
         ]);
     }
