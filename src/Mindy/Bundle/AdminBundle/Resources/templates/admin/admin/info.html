@@ -6,8 +6,8 @@
     <div class="b-group">
         <div class="b-input-group">
             <a href="{{ admin.getAdminUrl('print') }}?pk={{ model.pk }}" target="_blank"
-               class="window-open b-button b-button_icon">
-                <i class="icon print"></i>
+               class="window-open b-button">
+                Печать
             </a>
             {% if method_exists(model, 'getAbsoluteUrl') %}
                 <a href="{{ model.getAbsoluteUrl() }}" target="_blank"
@@ -23,8 +23,8 @@
                 Изменить
             </a>
             <a href="{{ admin.getAdminUrl('delete', ['pk' => model.pk]) }}"
-               class="b-button b-button_icon">
-                <i class="icon trash"></i>
+               class="b-button">
+                Удалить
             </a>
         </div>
     </div>

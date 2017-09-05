@@ -44,6 +44,12 @@
             <tag name="form.type_extension" extended_type="Symfony\Component\Form\Extension\Core\Type\CheckboxType" />
         </service>
 
+        <service id="mindy.bundle.form.type.file_type"
+                 class="Mindy\Bundle\FormBundle\Form\Type\FileType">
+            <argument type="service" id="request_stack"/>
+            <tag name="form.type" />
+        </service>
+
         <service id="mindy.bundle.form.data_transformer.query_set"
                  public="false"
                  class="Mindy\Bundle\FormBundle\Form\DataTransformer\QuerySetTransformer"/>

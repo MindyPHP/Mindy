@@ -14,7 +14,7 @@
         {% set label = label_format ? label_format|strtr(['%name%' => name, '%id%' => id]) : form_humanize(name) %}
     {% endif %}
     <label {% for k, v in label_attr %} {{ k }}="{{ v }}"{% endfor %}>
-    {{ translation_domain ? translator.trans(label, [], translation_domain) : label }}
+    {{ translation_domain and translator ? translator.trans(label, [], translation_domain) : label }}
     {% if tooltip %}
         <span class="b-label-help b-tooltip b-tooltip_top" data-tooltip="{{ tooltip }}">
             <i class="b-icon">question</i>
