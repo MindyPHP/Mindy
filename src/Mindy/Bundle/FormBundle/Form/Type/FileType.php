@@ -55,6 +55,9 @@ class FileType extends AbstractType
         $fileUrl = null;
         if (null !== $formInstance) {
             $fileUrl = PropertyAccess::createPropertyAccessor()->getValue($formInstance, $fieldName);
+            if (false === is_string($fileUrl)) {
+                $fileUrl = '';
+            }
         }
 
         // set an "image_url" variable that will be available when rendering this field
