@@ -158,6 +158,11 @@ abstract class Q
         } elseif (is_array($part)) {
             $sql = [];
             foreach ($part as $key => $value) {
+                // TODO test me
+                if (is_bool($value)) {
+                    $value = (int)$value;
+                }
+
                 if ($part instanceof QueryBuilder) {
                     $sql[] = $part->toSQL();
                 } elseif ($value instanceof self) {
