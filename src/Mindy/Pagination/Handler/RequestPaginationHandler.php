@@ -72,19 +72,13 @@ class RequestPaginationHandler implements PaginationHandlerInterface
      */
     public function getUrlForQueryParam($key, $value)
     {
-        $attributes = $this->request->attributes;
-        if ($attributes->has('_forwarded')) {
-            $attributes = $attributes->get('_forwarded');
-        }
+        $uri = $this->request->getUri();
+        $params = parse_url($uri);
+        $query = isset($params['query']) ? $params['query'] : '';
 
-        $params = $attributes->all();
-        unset($params['_route']);
-
-        return $this->urlGenerator->generate($attributes->get('_route'), array_merge(
-            $params,
-            $this->request->query->all(),
-            [$key => $value]
-        ));
+        return sprintf("%s?%s", $params['path'], implode('&', array_merge(explode('&', $query), [
+            $key.'='.$value
+        ])));
     }
 
     /**
