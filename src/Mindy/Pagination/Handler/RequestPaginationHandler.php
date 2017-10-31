@@ -72,13 +72,12 @@ class RequestPaginationHandler implements PaginationHandlerInterface
      */
     public function getUrlForQueryParam($key, $value)
     {
-        $uri = $this->request->getUri();
-        $params = parse_url($uri);
-        $query = isset($params['query']) ? $params['query'] : '';
+        $path = strtok($this->request->getRequestUri(), '?');
+        $query = array_merge($this->request->query->all(), [
+            $key => $value
+        ]);
 
-        return sprintf("%s?%s", $params['path'], implode('&', array_merge(explode('&', $query), [
-            $key.'='.$value
-        ])));
+        return sprintf("%s?%s", $path, http_build_query($query));
     }
 
     /**
