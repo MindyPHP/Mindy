@@ -72,7 +72,7 @@ class Builder
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
-        $filesystem->dumpFile($filePath, $fileContent);
+        file_put_contents($filePath, $fileContent);
 
         return $this;
     }
