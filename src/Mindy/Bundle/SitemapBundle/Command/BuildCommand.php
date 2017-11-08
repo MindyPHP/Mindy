@@ -49,6 +49,9 @@ class BuildCommand extends ContainerAwareCommand
         }
 
         $name = $input->getOption('name');
+        if (empty($name)) {
+            $name = 'sitemap.xml';
+        }
 
         $this
             ->getContainer()
