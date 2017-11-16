@@ -44,7 +44,7 @@ class SeoHelper
     {
         // Remove all special characters to only leave alphanumeric characters (and whitespace)
         // Explode the phrase into an array, splitting by whitespace
-        $keywords = preg_split("/[\s,]+/", $this->removeHtml($source));
+        $keywords = preg_split('/[\\s,]+/', $this->removeHtml($source));
 
         // Create an empty array to store keywords
         $end = [];
@@ -53,20 +53,17 @@ class SeoHelper
         foreach ($keywords as $keyword) {
             // Check that the keyword is greater than 3 characters long
             // If it is, add it to the $end array
-            if (strlen($keyword) > $minLength) {
-                $end[] = mb_strtolower($keyword, 'UTF-8');
+            if (mb_strlen($keyword, 'UTF-8') <= $minLength) {
+                continue;
             }
+
+            $end[] = mb_strtolower($keyword, 'UTF-8');
         }
 
-        // Implode the $end array into a comma seperated list
-        $result = implode(',', $end);
-        while (mb_strlen($result) > $length) {
-            $temp = explode(',', $result);
-            unset($temp[count($temp)]);
-            $result = implode(',', $temp);
+        while (mb_strlen(implode(',', $end), 'UTF-8') > $length) {
+            $end = array_slice($end, 0, count($end) - 1);
         }
-
-        return $result;
+        return implode(',', $end);
     }
 
     /**
