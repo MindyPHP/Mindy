@@ -66,10 +66,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/SeoBundle.git',
         'path' => 'src/Mindy/Bundle/SeoBundle',
     ],
-    'sentry-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/SentryBundle.git',
-        'path' => 'src/Mindy/Bundle/SentryBundle',
-    ],
     'sitemap-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/SitemapBundle.git',
         'path' => 'src/Mindy/Bundle/SitemapBundle',
