@@ -73,7 +73,11 @@ class FileType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($builder) {
             $params = $this->requestStack->getMasterRequest()->request->all();
             $parentName = $event->getForm()->getParent()->getName();
+<<<<<<< HEAD
             $formParams = isset($params[$parentName]) ? $params[$parentName] : $params;
+=======
+            $formParams = empty($parentName) ? $params : $params[$parentName];
+>>>>>>> 6a11fbf09ab8c5b4d772ca8060458b5581ac722a
 
             if (
                 isset($formParams[$builder->getName()]) &&
