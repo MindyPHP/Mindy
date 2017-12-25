@@ -62,10 +62,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/SeoBundle.git',
         'path' => 'src/Mindy/Bundle/SeoBundle',
     ],
-    'sitemap-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/SitemapBundle.git',
-        'path' => 'src/Mindy/Bundle/SitemapBundle',
-    ],
     'application' => [
         'remote_url' => 'git@github.com:MindyPHP/Application.git',
         'path' => 'src/Mindy/Application',
@@ -97,10 +93,6 @@ $subtrees = [
     'query-builder' => [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
         'path' => 'src/Mindy/QueryBuilder',
-    ],
-    'sitemap' => [
-        'remote_url' => 'git@github.com:MindyPHP/Sitemap.git',
-        'path' => 'src/Mindy/Sitemap',
     ],
     'validation' => [
         'remote_url' => 'git@github.com:MindyPHP/Validation.git',
