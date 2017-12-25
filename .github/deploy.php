@@ -94,10 +94,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
         'path' => 'src/Mindy/QueryBuilder',
     ],
-    'validation' => [
-        'remote_url' => 'git@github.com:MindyPHP/Validation.git',
-        'path' => 'src/Mindy/Validation',
-    ],
 ];
 
 if (!isset($argv[1])) {
