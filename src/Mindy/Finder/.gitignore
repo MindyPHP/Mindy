@@ -1,7 +1,0 @@
-.idea
-*.iml
-*.log
-*.lock
-phpunit.xml
-.DS_Store
-/vendor
