@@ -54,10 +54,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/PageBundle.git',
         'path' => 'src/Mindy/Bundle/PageBundle',
     ],
-    'pagination-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/PaginationBundle.git',
-        'path' => 'src/Mindy/Bundle/PaginationBundle',
-    ],
     'seo-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/SeoBundle.git',
         'path' => 'src/Mindy/Bundle/SeoBundle',
@@ -85,10 +81,6 @@ $subtrees = [
     'orm-slug-field' => [
         'remote_url' => 'git@github.com:MindyPHP/OrmSlugField.git',
         'path' => 'src/Mindy/OrmSlugField',
-    ],
-    'pagination' => [
-        'remote_url' => 'git@github.com:MindyPHP/Pagination.git',
-        'path' => 'src/Mindy/Pagination',
     ],
     'query-builder' => [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
