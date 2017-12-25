@@ -22,10 +22,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/AdminBundle.git',
         'path' => 'src/Mindy/Bundle/AdminBundle',
     ],
-    'ckeditor-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/CKEditorBundle.git',
-        'path' => 'src/Mindy/Bundle/CKEditorBundle',
-    ],
     'dashboard-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/DashboardBundle.git',
         'path' => 'src/Mindy/Bundle/DashboardBundle',
@@ -70,17 +66,9 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/SitemapBundle.git',
         'path' => 'src/Mindy/Bundle/SitemapBundle',
     ],
-    'template-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/TemplateBundle.git',
-        'path' => 'src/Mindy/Bundle/TemplateBundle',
-    ],
     'application' => [
         'remote_url' => 'git@github.com:MindyPHP/Application.git',
         'path' => 'src/Mindy/Application',
-    ],
-    'finder' => [
-        'remote_url' => 'git@github.com:MindyPHP/Finder.git',
-        'path' => 'src/Mindy/Finder',
     ],
     'orm' => [
         'remote_url' => 'git@github.com:MindyPHP/Orm.git',
@@ -113,10 +101,6 @@ $subtrees = [
     'sitemap' => [
         'remote_url' => 'git@github.com:MindyPHP/Sitemap.git',
         'path' => 'src/Mindy/Sitemap',
-    ],
-    'template' => [
-        'remote_url' => 'git@github.com:MindyPHP/Template.git',
-        'path' => 'src/Mindy/Template',
     ],
     'validation' => [
         'remote_url' => 'git@github.com:MindyPHP/Validation.git',
