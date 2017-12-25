@@ -78,10 +78,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/OrmNestedSet.git',
         'path' => 'src/Mindy/OrmNestedSet',
     ],
-    'orm-slug-field' => [
-        'remote_url' => 'git@github.com:MindyPHP/OrmSlugField.git',
-        'path' => 'src/Mindy/OrmSlugField',
-    ],
     'query-builder' => [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
         'path' => 'src/Mindy/QueryBuilder',
