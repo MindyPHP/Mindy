@@ -70,10 +70,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/OrmFileField.git',
         'path' => 'src/Mindy/OrmFileField',
     ],
-    'query-builder' => [
-        'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
-        'path' => 'src/Mindy/QueryBuilder',
-    ],
 ];
 
 if (!isset($argv[1])) {
