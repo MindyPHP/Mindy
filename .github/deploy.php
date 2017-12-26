@@ -58,10 +58,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/SeoBundle.git',
         'path' => 'src/Mindy/Bundle/SeoBundle',
     ],
-    'orm-fields' => [
-        'remote_url' => 'git@github.com:MindyPHP/OrmFields.git',
-        'path' => 'src/Mindy/OrmFields',
-    ],
 ];
 
 if (!isset($argv[1])) {
