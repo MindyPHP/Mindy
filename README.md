@@ -42,7 +42,6 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 | MenuBundle | [![Build Status](https://travis-ci.org/MindyPHP/MenuBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/MenuBundle) |
 | Validation | [![Build Status](https://travis-ci.org/MindyPHP/Validation.svg?branch=master)](https://travis-ci.org/MindyPHP/Validation) |
 | Sitemap | [![Build Status](https://travis-ci.org/MindyPHP/Sitemap.svg?branch=master)](https://travis-ci.org/MindyPHP/Sitemap) |
-| Finder | [![Build Status](https://travis-ci.org/MindyPHP/Finder.svg?branch=master)](https://travis-ci.org/MindyPHP/Finder) |
 | Template | [![Build Status](https://travis-ci.org/MindyPHP/Template.svg?branch=master)](https://travis-ci.org/MindyPHP/Template) |
 | Pagination | [![Build Status](https://travis-ci.org/MindyPHP/Pagination.svg?branch=master)](https://travis-ci.org/MindyPHP/Pagination) |
 | Orm | [![Build Status](https://travis-ci.org/MindyPHP/Orm.svg?branch=master)](https://travis-ci.org/MindyPHP/Orm) |
