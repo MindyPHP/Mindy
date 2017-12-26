@@ -62,10 +62,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/Application.git',
         'path' => 'src/Mindy/Application',
     ],
-    'orm' => [
-        'remote_url' => 'git@github.com:MindyPHP/Orm.git',
-        'path' => 'src/Mindy/Orm',
-    ],
     'orm-fields' => [
         'remote_url' => 'git@github.com:MindyPHP/OrmFields.git',
         'path' => 'src/Mindy/OrmFields',
@@ -73,10 +69,6 @@ $subtrees = [
     'orm-file-field' => [
         'remote_url' => 'git@github.com:MindyPHP/OrmFileField.git',
         'path' => 'src/Mindy/OrmFileField',
-    ],
-    'orm-nested-set' => [
-        'remote_url' => 'git@github.com:MindyPHP/OrmNestedSet.git',
-        'path' => 'src/Mindy/OrmNestedSet',
     ],
     'query-builder' => [
         'remote_url' => 'git@github.com:MindyPHP/QueryBuilder.git',
