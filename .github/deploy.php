@@ -66,10 +66,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/OrmFields.git',
         'path' => 'src/Mindy/OrmFields',
     ],
-    'orm-file-field' => [
-        'remote_url' => 'git@github.com:MindyPHP/OrmFileField.git',
-        'path' => 'src/Mindy/OrmFileField',
-    ],
 ];
 
 if (!isset($argv[1])) {
