@@ -40,7 +40,6 @@ $ php web/app_dev.php server:run 0.0.0.0:8000 -vvv
 | PageBundle | [![Build Status](https://travis-ci.org/MindyPHP/PageBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/PageBundle) |
 | Application | [![Build Status](https://travis-ci.org/MindyPHP/Application.svg?branch=master)](https://travis-ci.org/MindyPHP/Application) |
 | MenuBundle | [![Build Status](https://travis-ci.org/MindyPHP/MenuBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/MenuBundle) |
-| SentryBundle | [![Build Status](https://travis-ci.org/MindyPHP/SentryBundle.svg?branch=master)](https://travis-ci.org/MindyPHP/SentryBundle) |
 | Validation | [![Build Status](https://travis-ci.org/MindyPHP/Validation.svg?branch=master)](https://travis-ci.org/MindyPHP/Validation) |
 | Sitemap | [![Build Status](https://travis-ci.org/MindyPHP/Sitemap.svg?branch=master)](https://travis-ci.org/MindyPHP/Sitemap) |
 | Finder | [![Build Status](https://travis-ci.org/MindyPHP/Finder.svg?branch=master)](https://travis-ci.org/MindyPHP/Finder) |
