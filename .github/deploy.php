@@ -18,10 +18,6 @@
  * php .github/deploy.php create
  */
 $subtrees = [
-    'admin-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/AdminBundle.git',
-        'path' => 'src/Mindy/Bundle/AdminBundle',
-    ],
     'dashboard-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/DashboardBundle.git',
         'path' => 'src/Mindy/Bundle/DashboardBundle',
