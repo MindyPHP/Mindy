@@ -34,10 +34,6 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/FormBundle.git',
         'path' => 'src/Mindy/Bundle/FormBundle',
     ],
-    'mail-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/MailBundle.git',
-        'path' => 'src/Mindy/Bundle/MailBundle',
-    ],
     'menu-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/MenuBundle.git',
         'path' => 'src/Mindy/Bundle/MenuBundle',
