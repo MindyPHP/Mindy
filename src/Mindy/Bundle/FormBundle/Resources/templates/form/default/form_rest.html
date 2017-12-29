@@ -1,5 +1,0 @@
-{% for child in form.children %}
-    {% if not child.isRendered() %}
-        {{ form_row(child)|safe }}
-    {% endif %}
-{% endfor %}
