@@ -1,4 +1,0 @@
-services:
-    dashboard:
-        class: Mindy\Bundle\DashboardBundle\Dashboard\Dashboard
-        arguments: [ '@template' ]
