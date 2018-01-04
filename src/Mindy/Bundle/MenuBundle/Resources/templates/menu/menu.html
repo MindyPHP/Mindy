@@ -1,8 +1,0 @@
-{% for item in items %}
-    <li>
-        <a href="{{ item.url }}">{{ item.name }}</a>
-        {% if item.items|length > 0 %}
-            <ul>{% include "menu/menu.html" with ['items' => item.items] %}</ul>
-        {% endif %}
-    </li>
-{% endfor %}

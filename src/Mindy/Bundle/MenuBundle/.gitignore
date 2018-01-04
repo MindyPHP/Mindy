@@ -1,7 +1,0 @@
-*.lock
-/vendor
-.idea
-*.iml
-.DS_Store
-phpunit.xml
-php-cs-fixer

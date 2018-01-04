@@ -22,25 +22,9 @@ $subtrees = [
         'remote_url' => 'git@github.com:MindyPHP/DashboardBundle.git',
         'path' => 'src/Mindy/Bundle/DashboardBundle',
     ],
-    'file-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/FileBundle.git',
-        'path' => 'src/Mindy/Bundle/FileBundle',
-    ],
-    'menu-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/MenuBundle.git',
-        'path' => 'src/Mindy/Bundle/MenuBundle',
-    ],
-    'mindy-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/MindyBundle.git',
-        'path' => 'src/Mindy/Bundle/MindyBundle',
-    ],
     'page-bundle' => [
         'remote_url' => 'git@github.com:MindyPHP/PageBundle.git',
         'path' => 'src/Mindy/Bundle/PageBundle',
-    ],
-    'seo-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/SeoBundle.git',
-        'path' => 'src/Mindy/Bundle/SeoBundle',
     ],
 ];
 
