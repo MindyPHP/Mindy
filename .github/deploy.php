@@ -18,14 +18,7 @@
  * php .github/deploy.php create
  */
 $subtrees = [
-    'dashboard-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/DashboardBundle.git',
-        'path' => 'src/Mindy/Bundle/DashboardBundle',
-    ],
-    'page-bundle' => [
-        'remote_url' => 'git@github.com:MindyPHP/PageBundle.git',
-        'path' => 'src/Mindy/Bundle/PageBundle',
-    ],
+    
 ];
 
 if (!isset($argv[1])) {
